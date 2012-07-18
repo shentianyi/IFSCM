@@ -85,6 +85,10 @@ module DemanderHelper
     if !partId=Part.find_partKey_by_orgId_partNr(demand.clientId,demand.cpartNr)
       msg.result=false
       msg.content_key<<:pnrNotEx
+         # File.open(File.join('initData/lackData','LackPart.csv'),'a') do |f|
+           # f.puts demand.cpartNr
+           # puts demand.cpartNr
+         # end
     else
     demand.cpartId=partId
     end

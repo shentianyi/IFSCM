@@ -2,6 +2,7 @@ module FormatHelper
   # parse string to date
   # string like '0000/00/00' is valid
   def self.str_to_date str
+    return nil if str.nil?
     str=str.match(/^\d{4}\/(0?[1-9]|1[0-2])\/(0?[1-9]|[1-2]\d|3[0-1])$/)
     if str
       begin
@@ -56,7 +57,7 @@ module FormatHelper
   def self.demand_date_by_str_type date,type
     date=str_to_date(date)
     if date
-      if type=='D'
+      if type=='D' or type=='T'
         return  "#{date.year}/#{date.month}/#{date.day}"
       elsif type=='W'
         return  "#{date.year}/#{date.cweek}"

@@ -4,12 +4,12 @@ class CleanRedisData
      puts 'total:'+total.to_s
     pages=total/Demander::NumPer+(total%Demander::NumPer==0?0:1)
     puts "pages:#{pages}"
-   for i in 0...pages
+   for i in 0...pages+1
   demands=Demander.search({:clientId=>id,:page=>i})[0]
   puts "pageIndex:#{i}"
   if !demands.nil?
       demands.each do |d|
-     
+        if d
         if    dhs=DemandHistory.get_demander_hitories(d,0,-1,false)
         dhs.each do |dh|
            dh.destory if dh
@@ -18,6 +18,7 @@ class CleanRedisData
         DemandHistory.delete_zset d
           d.destory
       end 
+      end
   end
   end
   end
