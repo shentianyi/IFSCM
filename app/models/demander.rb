@@ -1,6 +1,6 @@
 class Demander
   
-  def initialize( key, hash )
+  def initialize( key="new", hash={:new=>"new"} )
       $redis.hmset( key, *hash.to_a.flatten )
       @client = hash[:client]
       @supplier = hash[:supplier]
@@ -9,9 +9,9 @@ class Demander
       @type = hash[:type]
       $redis.sadd( "#{Rns::C}:#{@client}", key )
       $redis.sadd( "#{Rns::S}:#{@supplier}", key )
-      $redis.sadd( "part:#{@part}", key )
-      $redis.zadd( "date", @date, key )
-      $redis.sadd( "type:#{@type}", key )
+      $redis.sadd( "#{Rns::RP}:#{@part}", key )
+      $redis.zadd( Rns::Date, @date, key )
+      $redis.sadd( "#{Rns::T}:#{@type}", key )
   end
   
   def self.get_key( id )
@@ -23,18 +23,29 @@ class Demander
     $redis.hgetall( key )
   end
   
-  def self.search( hash )
+  def search( hash )
       list = []
       resultKey = "resultKey"
       ###########################  client
-      client = union_params( hash[:client], Rns::C )
+      if client = union_params( hash[:client], Rns::C )
       list<<client
+      end
       ###########################  supplier
-      supplier = union_params( hash[:supplier], Rns::S )
+      if supplier = union_params( hash[:supplier], Rns::S )
       list<<supplier
+      end
       ###########################  part
-      part = union_params( hash[:partNr], Rns::C )
-      list<<part
+      # if relpart = union_params( hash[:partNr], Rns::RP )
+      # list<<relpart
+      # end
+      ###########################  type
+      if type = union_params( hash[:type], Rns::T )
+      # list<<type
+      end
+      ###########################  date
+      list<<Rns::Date
+      
+
       
       $redis.zinterstore( resultKey, list )
       $redis.expire( resultKey, 30 )
@@ -50,15 +61,17 @@ private
   def union_params( param, column )
       if param.is_a?(String)
           key = "#{column}:#{param}"
+                puts "_"*200
+      puts type
       elsif param.is_a?(Array)
+          key = column
           param.each do |c|
             c.insert( 0, "#{column}:" )
           end
-          key = column
           $redis.zunionstore( key, param )
+          key
       else
-        raise "wrong Type of arguments"
+          return false
       end
-      key
   end
 end

@@ -1,5 +1,5 @@
 Demand::Application.routes.draw do
-  root :to => "demand_forecast#index"
+  root :to => "demander#index"
 
   resources :organisation_manager do
     collection do

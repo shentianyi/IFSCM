@@ -5,6 +5,9 @@ class Rns
   Org = "organisation"
   
   De = "demand"
+  T = "type"
+  RP = "relpart"
+  Date = "date"
   
   
 end
