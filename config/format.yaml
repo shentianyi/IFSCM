@@ -1,0 +1,4 @@
+#coding:utf-8
+# format settings
+csv:
+ splitor: ';' 

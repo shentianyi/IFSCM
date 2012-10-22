@@ -1,0 +1,64 @@
+<%= form_tag(:controller=>"demand_forecast", :action=>"search") do  %>
+	Start:<%= text_field_tag :start, nil, :placeholder => "example: 12/10/10 12:23" %>
+	End:<%= text_field_tag :end, nil, :placeholder => "example: 12/10/10 12:23" %>
+	<br/>
+	Client:<%= text_field_tag :client, nil, :placeholder => "example: Leoni" %><br/>
+	Supplier:<%= text_field_tag :supplier, nil, :placeholder => "example: Dex" %><br/>
+	PartNr:<%= text_field_tag :partNr, nil, :placeholder => "example: 53423233" %><br/>
+	Type:<%= text_field_tag :type, nil, :placeholder => "example: D" %>
+    <%= submit_tag "Search" %>
+<% end %>
+
+
+<hr/>
+<%= form_tag :controller=>"demand_forecast", :action=>"create" do  %>
+    <div>
+    <%= label_tag :id %>
+    <%= text_field_tag :id, nil, :placeholder => "example: 001" %>
+    </div>
+    <div>
+    <%= label_tag :client %>
+    <%= text_field_tag :client, nil, :placeholder => "example: Leoni" %>
+    </div>
+    <div>
+    <%= label_tag :supplier %>
+    <%= text_field_tag :supplier, nil, :placeholder => "example: Dex" %>
+    </div>
+    <div>
+    <%= label_tag :partNr %>
+    <%= text_field_tag :partNr, nil, :placeholder => "example: 53423233" %>
+    </div>
+    <div>
+    <%= label_tag :date %>
+    <%= text_field_tag :date, nil, :placeholder => "example: 12/10/10 12:23" %>
+    </div>
+    <div>
+    <%= label_tag :type %>
+    <%= text_field_tag :type, nil, :placeholder => "example: D" %>
+    </div>
+    <%= submit_tag "Create" %>
+<% end %>
+
+Class DemandForecast, Method Test : <%= DemandForecast.test(:sdi=>"one", :sed=>"two" )%><br/>
+<%= $redis.exists( "client:Leoni" )%>
+<%= $redis.exists( "supplier:De" )%><br/>
+<%= $redis.keys("client:*")%>
+<%= $redis.keys("supplier:*")%>
+<%= $redis.keys("part:*")%>
+
+<hr/>
+There is(are) <%= @demands.size %> record(s):<br/>
+<ul class="projects">
+<% @demands.each do |demand| %>
+  <li>
+  	<div>TYPE:<%= demand.class%></div>
+    <div class="info">
+   	<% demand.each do |k, v|%>
+        <%= k%>: <%= v %>
+    <% end %>
+    </div>
+  </li>
+<% end %>
+</ul>
+
+

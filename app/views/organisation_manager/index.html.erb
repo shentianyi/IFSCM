@@ -1,0 +1,51 @@
+<br/>
+<%= form_tag :controller=>"organisation_manager", :action=>"create", :multipart => true do  %>
+    <div>
+    <%= label_tag :client %>
+    <%= text_field_tag :client, nil, :placeholder => "example: Leoni" %>
+    </div>
+    <div>
+    <%= label_tag :supplier %>
+    <%= text_field_tag :supplier, nil, :placeholder => "example: Dex" %>
+    </div>
+    <div>
+    <%= label_tag :partNr %>
+    <%= text_field_tag :partNr, nil, :placeholder => "example: 53423233" %>
+    </div>
+    <div>
+    <%= label_tag :date %>
+    <%= text_field_tag :date, nil, :placeholder => "example: 12/10/10 12:23" %>
+    </div>
+    <div>
+    <%= label_tag :type %>
+    <%= text_field_tag :type, nil, :placeholder => "example: D" %>
+    </div>
+    <%= submit_tag "Create" %>
+<% end %>
+
+<hr/>
+<%= form_tag(:controller=>"organisation_manager", :action=>"search") do  %>
+	Start:<%= text_field_tag :start, nil, :placeholder => "example: 12/10/10 12:23" %>
+	<br/>
+	End:<%= text_field_tag :end, nil, :placeholder => "example: 12/10/10 12:23" %>
+	<br/>
+    <%= submit_tag "Search" %>
+<% end %>
+
+<hr/>
+<%= @orgs.size %><br/>
+<%= Rns::Org %>
+<ul class="projects">
+<% @orgs.each do |org| %>
+  <li>
+  	<h2>TYPE:<%= org.class%></h2>
+    <div class="info">
+   	<% org.each do |k, v|%>
+        <%= k%>: <%= v %><br/>
+    <% end %>
+    </div>
+  </li>
+<% end %>
+</ul>
+
+

@@ -1,0 +1,28 @@
+<%= form_tag(:controller=>"demand_forecast", :action=>"search") do  %>
+	Start:<%= text_field_tag :start, nil, :placeholder => "example: 12/10/10 12:23" %>
+	End:<%= text_field_tag :end, nil, :placeholder => "example: 12/10/10 12:23" %>
+	<br/>
+	Client:<%= text_field_tag :client, nil, :placeholder => "example: Leoni" %><br/>
+	Supplier:<%= text_field_tag :supplier, nil, :placeholder => "example: Dex" %><br/>
+	PartNr:<%= text_field_tag :partNr, nil, :placeholder => "example: 53423233" %><br/>
+	Type:<%= text_field_tag :type, nil, :placeholder => "example: D" %>
+    <%= submit_tag "Search" %>
+<% end %>
+
+
+<hr/>
+There is(are) <%= @demands.size %> record(s):<br/>
+<ul class="projects">
+<% @demands.each do |demand| %>
+  <li>
+  	<div>TYPE:<%= demand.class%></div>
+    <div class="info">
+   	<% demand.each do |k, v|%>
+        <%= k%>: <%= v %>
+    <% end %>
+    </div>
+  </li>
+<% end %>
+</ul>
+
+
