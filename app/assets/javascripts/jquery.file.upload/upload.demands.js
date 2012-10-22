@@ -17,7 +17,7 @@ $(function() {'use strict';
 	// Initialize the jQuery File Upload widget:
 	$('#demandupload').fileupload({
 		beforeSend : function(xhr) {
-			xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))
+			xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'));
 		},
 		success : function(data) {
 			//alert(data.msg);
@@ -26,7 +26,7 @@ $(function() {'use strict';
 
 		},
 		done : function(e, data) {
-			data.context.text('Upload finished.')
+			data.context.text('Upload finished.');
 		}
 	});
 

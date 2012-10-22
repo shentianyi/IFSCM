@@ -1,5 +1,5 @@
 Demand::Application.routes.draw do
-  root :to => "demand_forecast#index"
+  root :to => "demander#index"
 
   resources :organisation_manager do
     collection do
@@ -7,14 +7,11 @@ Demand::Application.routes.draw do
     end
   end
 
-  resources :demand_forecast do
+  resources :demander do
     collection do
       post :search
+      match :upload_demands 
     end
-  end
-
-  controller :demander do
-    match 'demander/upload_demands'=>:upload_demands
   end
 
 end

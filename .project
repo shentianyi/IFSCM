@@ -7,6 +7,10 @@
 	<buildSpec>
 	</buildSpec>
 	<natures>
+<<<<<<< HEAD
 		<nature>com.aptana.projects.webnature</nature>
+=======
+		<nature>org.radrails.rails.core.railsnature</nature>
+>>>>>>> 5afdcfbb51f66cc650a4303b3bd7c99700a201f7
 	</natures>
 </projectDescription>

@@ -1,4 +1,4 @@
 #coding:utf-8
 # format settings
-csv:
- splitor: ';' 
+format:
+ :csv_splitor: ';' 
