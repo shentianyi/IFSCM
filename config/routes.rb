@@ -7,7 +7,7 @@ Demand::Application.routes.draw do
     end
   end
 
-  resources :demand_forecast do
+  resources :demander do
     collection do
       post :search
     end
