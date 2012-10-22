@@ -57,12 +57,12 @@ class DemanderController<ApplicationController
   end
   
   def create
-    # key = Demand.get_key( params[:id] )
-    key = "#{Rns::De}:#{params[:id]}"
+    key = Demander.get_key( params[:id] )
+    # key = "#{Rns::De}:#{params[:id]}"
     if $redis.exists( key )
       # puts "_"*200
     else
-      demand = DemandForecast.new( key, :client=>params[:client],
+      demand = Demander.new( key, :client=>params[:client],
                                                                                   :supplier=>params[:supplier],
                                                                                   :partNr=>params[:partNr],
                                                                                   :date=>params[:date],
@@ -76,12 +76,14 @@ class DemanderController<ApplicationController
   def search
     
     @demands = []
-    key = DemandForecast.search( :client=>[params[:client], "Leoni"],
+    key = Demander.new().search( :client=>params[:client],
                                                                     :supplier=>params[:supplier],
                                                                     :partNr=>params[:partNr],
-                                                                    :date=>{ :start=>params[:start], :end=>params[:end] },
+                                                                    # :date=>{ :start=>params[:start], :end=>params[:end] },
                                                                     :type=>params[:type] )
-    $redis.zrange( key, 0, -1, :withscores=>false ).each do |item|
+    start = params[:start]?params[:start]:0
+    timeend = params[:end]?params[:end]:-1
+    $redis.zrange( key, start, timeend, :withscores=>false ).each do |item|
           hash = $redis.hgetall( item )
           hash["key"] = item
           @demands << hash
