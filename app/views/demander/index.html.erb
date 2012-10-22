@@ -41,7 +41,7 @@
 
 Class DemandForecast, Method Test : <%= Demander.test(:sdi=>"one", :sed=>"two" )%><br/>
 <%= $redis.exists( "client:Leoni" )%>
-<%= $redis.exists( "supplier:De" )%><br/>
+<%= $redis.zcard( "date" )%><br/>
 <%= $redis.keys("client:*")%>
 <%= $redis.keys("supplier:*")%>
 <%= $redis.keys("part:*")%>

@@ -40,7 +40,6 @@ class DemanderController<ApplicationController
           @demands << hash
         end
     else
-      puts "-"*10+"this is index"
     end
 
     respond_to do |format|
@@ -51,16 +50,14 @@ class DemanderController<ApplicationController
   
   def create
     key = Demander.get_key( params[:id] )
-    # key = "#{Rns::De}:#{params[:id]}"
     if $redis.exists( key )
-      # puts "_"*200
     else
       demand = Demander.new( key, :client=>params[:client],
                                                                                   :supplier=>params[:supplier],
                                                                                   :partNr=>params[:partNr],
                                                                                   :date=>params[:date],
                                                                                   :type=>params[:type] )
-      # puts "成功" 
+      demand.save
     end
     
     redirect_to root_path
@@ -69,15 +66,16 @@ class DemanderController<ApplicationController
   def search
     
     @demands = []
-    key = Demander.new().search( :client=>params[:client],
+    key = Demander.search( :client=>params[:client],
                                                                     :supplier=>params[:supplier],
                                                                     :partNr=>params[:partNr],
                                                                     # :date=>{ :start=>params[:start], :end=>params[:end] },
                                                                     :type=>params[:type] )
-    start = params[:start]?params[:start]:0
-    timeend = params[:end]?params[:end]:-1
-    $redis.zrange( key, start, timeend, :withscores=>false ).each do |item|
-          hash = $redis.hgetall( item )
+    start = params[:start].size>0 ? params[:start].to_i : -(1/0.0)
+    timeend = params[:end].size>0 ? params[:end].to_i : (1/0.0)
+    # puts "#{$redis.zcount( key, start, timeend)}"+"_"*200
+    $redis.zrangebyscore( key, start, timeend, :withscores=>true ).each do |item|
+          hash = $redis.hgetall( item[0] )
           hash["key"] = item
           @demands << hash
     end
