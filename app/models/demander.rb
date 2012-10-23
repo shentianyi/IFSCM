@@ -4,7 +4,7 @@ require 'digest/md5'
 class Demander
   attr_accessor :key,:clientId,:clientNr,
   :supplierId,:supplierNr,:cpartId,:cpartNr,:spartId,:spartNr,
-  :type,:amount,:date,:filedate,:md5key
+  :type,:amount,:date,:filedate,:md5key,:md5repeatKey
   
   # def initialize( key, hash )
     # # $redis.hmset( key, *hash.to_a.flatten )
@@ -80,6 +80,10 @@ class Demander
   
   def gen_md5_key
     @md5key=Digest::MD5.hexdigest(@clientId.to_s+':'+@partNr+':'+@amount.to_s+':'+@type+':'+@filedate+':'+@supplierNr)
+  end
+  
+  def gen_md5_repeat_key
+    @md5repeatKey=Digest::MD5.hexdigest(@clientId.to_s+':'+@partNr+':'+@type+':'+@filedate+':'+@supplierNr)
   end
   
   def redis_validated

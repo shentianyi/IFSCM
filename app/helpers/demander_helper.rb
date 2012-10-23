@@ -5,32 +5,45 @@ require 'digest/md5'
 module DemanderHelper
   # alias :PartNr  :
   def generate_by_csv(files,clientId)
+
       begin
         uuid=UUID.new
         upload_files_uuid=uuid.generate
         files_error_count=0
         upload_file_key_uuid=uuid.generate
-        $redis.hset upload_files_uuid,'files_count',files.count,'files_key',upload_file_key_uuid
+        batch_upload_items_key=uuid.generate
+      #  $redis.hset upload_files_uuid,'files_count',files.count,'files_key',upload_file_key_uuid,'batch_upload_items_key',batch_upload_items_key
           files.each do |f|
-            $redis.sadd upload_file_key_uuid,f[:uuidName]
+          #  $redis.sadd upload_file_key_uuid,f[:uuidName]
             
             file_valid=true
             file_item_count=0
             file_item_error_count=0
             file_items_key=uuid.generate
-            $redis.hset f[:uuidName],'file_items_key',file_items_key
+           # $redis.hset f[:uuidName],'file_items_key',file_items_key
             # csv header
             CSV.foreach(File.join(f[:path],f[:pathName]),:headers=>true,:col_sep=>$CSVSP) do |row|
              file_item_count+=1
-             demand=
-              Demander.new :cpartNr=>row[0],:clientId=>clientId,:supplierNr=>row[1],:filedate=>row[2],:type=>row[3],:amount=>row[4]
-             
+            # demand= Demander.new :cpartNr=>row[0],:clientId=>clientId,:supplierNr=>row[1],:filedate=>row[2],:type=>row[3],:amount=>row[4]
+              # validate demand
+               
+              #-------------
+            end
+          end
+      rescue=>e
+        puts e.to_s
+      end
+    end
+    
+    def demand_validate demand,file_items_key,batch_key
              # gen md5 key
              demand.gen_md5_key
-             # check repeat
-             if $redis.sismember file_items_key,demand.md5key
+             demand.gen_md5_repeat_key
+             
+             # check repeat in batch
+             if $redis.sismember batch_key,demand.md5repeatKey
              # check redis
-             if demand.redis_validated # demand has ben checked
+             if demand.redis_validated # demand has ben checked              
               $redis.sadd file_items_key,demand.md5key
               if $redis.hget(demand.md5key,'valid')=='false'
                 file_valid=false
@@ -71,17 +84,12 @@ module DemanderHelper
                end
                
                # vali date
+               if  DateHelper::str_less_today(demand.filedate)
+                 msg.result=false
+                 msg.content_key<<:fcDateErr
+               end
                
-               
-               
-             end
-             end
-            end
+               end
           end
-      rescue=>e
-        puts e.to_s
-      end
     end
-    
-    
 end
