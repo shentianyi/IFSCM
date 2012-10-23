@@ -2,16 +2,26 @@
 require 'digest/md5'
 
 class Demander
-  attr_accessor :clientId,:clientNr,:supplierId,:supplierNr,:cpartId,:cpartNr,:spartId,:spartNr,:type,:amount,:date,:filedate
+  attr_accessor :key,:clientId,:clientNr,
+  :supplierId,:supplierNr,:cpartId,:cpartNr,:spartId,:spartNr,
+  :type,:amount,:date,:filedate,:md5key
   
-  def initialize( key, hash )
-    # $redis.hmset( key, *hash.to_a.flatten )
-      @key = key
-      @client = hash[:client]
-      @supplier = hash[:supplier]
-      @part = hash[:partNr]
-      @date = hash[:date]
-      @type = hash[:type]
+  # def initialize( key, hash )
+    # # $redis.hmset( key, *hash.to_a.flatten )
+      # @key = key
+      # @client = hash[:client]
+      # @supplier = hash[:supplier]
+      # @part = hash[:partNr]
+      # @date = hash[:date]
+      # @type = hash[:type]
+  # end
+  
+  def initialize args={}
+    if args.count>0
+     args.each do |k,v|
+       instance_variable_set "@#{k}",v
+      end
+    end
   end
   
   def save
@@ -68,13 +78,12 @@ class Demander
     
   end
   
+  def gen_md5_key
+    @md5key=Digest::MD5.hexdigest(@clientId.to_s+':'+@partNr+':'+@amount.to_s+':'+@type+':'+@filedate+':'+@supplierNr)
+  end
+  
   def redis_validated
-    key=Digest::MD5.hexdigest(@partNr+':'+@supplier+':'+@type)
-    if $redis.exists(key)
-      return true,$redis.hgetall(key)
-    else
-      return false
-    end
+    $redis.exists(@md5key)
   end
   
   

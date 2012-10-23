@@ -18,14 +18,16 @@ class DemanderController<ApplicationController
           uuid=UUID.new
           files.each do |f|
             hf={:oriName=>f.original_filename,:uuidName=>uuid.generate,:path=>path}
-            dcsv=FileData.new({:data=>f,:type=>FileDataType::Demand}.merge(hf))
+            dcsv=FileData.new :data=>f,:type=>FileDataType::Demand,:oriName=>f.original_filename,:uuidName=>uuid.generate,:path=>path
             dcsv.save
             hf[:pathName]=dcsv.pathName
             hfiles<<hf
           end
         
+          # clietId should be from session
+          clientId=session[:userId]
           # validate and show result
-           generate_by_csv(hfiles)
+           generate_by_csv(hfiles,clientId)
           
           #...........
             render :json=>{:flag=>true,:msg=>'ok'}

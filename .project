@@ -12,14 +12,7 @@
 		</buildCommand>
 	</buildSpec>
 	<natures>
-<<<<<<< HEAD
 		<nature>com.aptana.projects.webnature</nature>
-=======
-		<nature>org.radrails.rails.core.railsnature</nature>
-<<<<<<< HEAD
->>>>>>> 5afdcfbb51f66cc650a4303b3bd7c99700a201f7
-=======
 		<nature>com.aptana.ruby.core.rubynature</nature>
->>>>>>> d08abc6c5fda9cfd15e0b7b596da3ced5a48ed80
 	</natures>
 </projectDescription>
