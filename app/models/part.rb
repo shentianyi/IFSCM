@@ -10,7 +10,7 @@ class Part
     $redis.hget 'orgId:'+orgId.to_s+':parts',partNr
   end
 
-  def self.get_supplier_parts clientId,supplierId,cpartId
+  def self.get_supplier_partIds clientId,supplierId,cpartId
     pv=$redis.hget('clientId:'+clientId.to_s+':supplierId:'+supplierId.to_s+':cspartRel',cpartId)
     if pv
       ps=$redis.smembers(pv)
