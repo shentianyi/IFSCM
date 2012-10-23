@@ -3,17 +3,13 @@ require 'digest/md5'
 
 class Demander
   attr_accessor :key,:clientId,:clientNr,
-  :supplierId,:supplierNr,:cpartId,:cpartNr,:spartId,:spartNr,
+  :supplierId,:supplierNr,:cpartId,:cpartNr,:spartId,:spartNr,:rpartNr,
   :type,:amount,:date,:filedate,:md5key
   
   # def initialize( key, hash )
     # # $redis.hmset( key, *hash.to_a.flatten )
       # @key = key
       # @client = hash[:client]
-      # @supplier = hash[:supplier]
-      # @part = hash[:partNr]
-      # @date = hash[:date]
-      # @type = hash[:type]
   # end
   
   def initialize args={}
@@ -25,11 +21,11 @@ class Demander
   end
   
   def save
-      $redis.hmset( @key, "client", @client, "supplier", @supplier, "partNr", @part, "date", @date, "type", @type )
+      $redis.hmset( @key, "client", @client, "supplier", @supplier, "partNr", @rpartNr, "date", @date, "type", @type )
       $redis.sadd( "#{Rns::C}:#{@client}", @key )
       $redis.sadd( "#{Rns::S}:#{@supplier}", @key )
-      $redis.sadd( "#{Rns::RP}:#{@part}", @key )
-      $redis.zadd( Rns::Date, @date, @key )
+      $redis.sadd( "#{Rns::RP}:#{@rpartNr}", @key )
+      $redis.zadd( Rns::Date, @date.to_i, @key )
       $redis.sadd( "#{Rns::T}:#{@type}", @key )
   end
   
@@ -54,7 +50,7 @@ class Demander
       list<<supplier
       end
       ###########################  part
-      if relpart = union_params( hash[:partNr], Rns::RP )
+      if relpart = union_params( hash[:rpartNr], Rns::RP )
       list<<relpart
       end
       ###########################  type
@@ -64,7 +60,7 @@ class Demander
       ###########################  date
       list<<Rns::Date
       
-      $redis.zinterstore( resultKey, list )
+      $redis.zinterstore( resultKey, list, :aggregate=>"MAX" )
       $redis.expire( resultKey, 30 )
       resultKey
       

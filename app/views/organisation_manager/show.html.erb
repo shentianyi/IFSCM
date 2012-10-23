@@ -1,0 +1,35 @@
+
+<input type="button" value="Refresh" onclick="window.location.reload()"/> 
+
+<br/>
+<%= form_tag :controller=>"organisation_manager", :action=>"add_supplier" do  %>
+    <div>
+    <%= label_tag :id %>
+    <%= text_field_tag :id, @id, :readOnly=>true %>
+    </div>
+	<div>
+			<label>Supplier List:</label><%= select_tag :organisation,  options_for_select($redis.keys( Rns::Org+":*" ).collect { |p| [ $redis.hget(p,"name"), p.delete("#{Rns::Org}:") ] } ),  prompt: "All" %>
+	</div>
+    <div>
+    <%= label_tag :name, "Local Name" %>
+    <%= text_field_tag :name, nil, :placeholder => "example: Leoni" %>
+    </div>
+    <%= submit_tag "Create" %>
+<% end %>
+
+<hr/>
+<%= @orgs.size %><br/>
+<ul class="projects">
+<% @orgs.each do |org| %>
+  <li>
+  	<h2>Local Name:<%= org["SNr"]%></h2>
+    <div class="info">
+   	<% org.each do |k, v|%>
+        <%= k%>: <%= v %>
+    <% end %>
+    </div>
+  </li>
+<% end %>
+</ul>
+
+

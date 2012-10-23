@@ -46,6 +46,7 @@ class DemanderController<ApplicationController
         $redis.keys( "#{Rns::De}:*" ).each do |key|
           hash = $redis.hgetall( key )
           hash["key"] = key
+          hash["score"] = $redis.zscore( Rns::Date, key )
           @demands << hash
         end
     else
@@ -61,9 +62,10 @@ class DemanderController<ApplicationController
     key = Demander.get_key( params[:id] )
     if $redis.exists( key )
     else
-      demand = Demander.new( key, :client=>params[:client],
+      
+      demand = Demander.new( :key=>key, :client=>params[:client],
                                                                                   :supplier=>params[:supplier],
-                                                                                  :partNr=>params[:partNr],
+                                                                                  :rpartNr=>params[:partNr],
                                                                                   :date=>params[:date],
                                                                                   :type=>params[:type] )
       demand.save
@@ -76,16 +78,17 @@ class DemanderController<ApplicationController
     
     @demands = []
     key = Demander.search( :client=>params[:client],
-                                                                    :supplier=>params[:supplier],
-                                                                    :partNr=>params[:partNr],
-                                                                    # :date=>{ :start=>params[:start], :end=>params[:end] },
-                                                                    :type=>params[:type] )
+                                                      :supplier=>params[:supplier],
+                                                      :rpartNr=>params[:partNr],
+                                                      # :date=>{ :start=>params[:start], :end=>params[:end] },
+                                                      :type=>params[:type] )
     start = params[:start].size>0 ? params[:start].to_i : -(1/0.0)
     timeend = params[:end].size>0 ? params[:end].to_i : (1/0.0)
     # puts "#{$redis.zcount( key, start, timeend)}"+"_"*200
     $redis.zrangebyscore( key, start, timeend, :withscores=>true ).each do |item|
           hash = $redis.hgetall( item[0] )
-          hash["key"] = item
+          hash["key"] = item[0]
+          hash["score"] = item[1]
           @demands << hash
     end
     
@@ -94,4 +97,7 @@ class DemanderController<ApplicationController
       format.json { render json: @demands }
     end
   end
+  
+  # def
+  
 end
