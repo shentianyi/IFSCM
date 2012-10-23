@@ -4,13 +4,7 @@ require 'digest/md5'
 class Demander
   attr_accessor :key,:clientId,:clientNr,
   :supplierId,:supplierNr,:cpartId,:cpartNr,:spartId,:spartNr,:rpartNr,
-  :type,:amount,:date,:filedate,:md5key
-  
-  # def initialize( key, hash )
-    # # $redis.hmset( key, *hash.to_a.flatten )
-      # @key = key
-      # @client = hash[:client]
-  # end
+  :type,:amount,:date,:filedate,:md5repeatKey,:vali
   
   def initialize args={}
     if args.count>0
@@ -18,6 +12,10 @@ class Demander
        instance_variable_set "@#{k}",v
       end
     end
+  end
+  
+  def self.gen_index
+    $redis.incr 'demand:index:incr'
   end
   
   def save
@@ -33,7 +31,7 @@ class Demander
     Rns::De+":#{id}"
   end
   
-  
+
   def self.find( key )
     $redis.hgetall( key )
   end
@@ -70,17 +68,17 @@ class Demander
     hash[:sdi]
   end
   
-  def validate
-    
+  def save_temp_in_redis uuid,msgs
+    $redis.hmset uuid,'clientId',@clientId,'supplierNr',@supplierNr,'cpartNr',@cpartNr,'cpartId',@cpartId,'amount',@amount,'type',@type,'filedate',@filedate,'date',@date,'vali',@vali
+    if !@vali
+      $redis.hset uuid,'msg',msgs.to_json
+    end
   end
+   
   
-  def gen_md5_key
-    @md5key=Digest::MD5.hexdigest(@clientId.to_s+':'+@partNr+':'+@amount.to_s+':'+@type+':'+@filedate+':'+@supplierNr)
-  end
-  
-  def redis_validated
-    $redis.exists(@md5key)
-  end
+  def gen_md5_repeat_key
+    @md5repeatKey=Digest::MD5.hexdigest(@clientId.to_s+':'+@partNr+':'+@type+':'+@date+':'+@supplierNr)
+  end 
   
   
 private

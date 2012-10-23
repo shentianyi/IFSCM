@@ -1,5 +1,5 @@
 #coding:utf-8
-require 'enum/file_data_type'
+# require 'enum/file_data_type.rb'
 
 class DemanderController<ApplicationController
   
@@ -18,6 +18,7 @@ class DemanderController<ApplicationController
           uuid=UUID.new
           files.each do |f|
             hf={:oriName=>f.original_filename,:uuidName=>uuid.generate,:path=>path}
+            puts FileDataType::Demand
             dcsv=FileData.new :data=>f,:type=>FileDataType::Demand,:oriName=>f.original_filename,:uuidName=>uuid.generate,:path=>path
             dcsv.save
             hf[:pathName]=dcsv.pathName
