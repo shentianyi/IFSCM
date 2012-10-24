@@ -19,11 +19,11 @@ class Demander
   end
   
   def save
-      $redis.hmset( @key, "client", @client, "supplier", @supplier, "partNr", @part, "date", @date, "type", @type )
+      $redis.hmset( @key, "client", @client, "supplier", @supplier, "partNr", @rpartNr, "date", @date, "type", @type )
       $redis.sadd( "#{Rns::C}:#{@client}", @key )
       $redis.sadd( "#{Rns::S}:#{@supplier}", @key )
-      $redis.sadd( "#{Rns::RP}:#{@part}", @key )
-      $redis.zadd( Rns::Date, @date, @key )
+      $redis.sadd( "#{Rns::RP}:#{@rpartNr}", @key )
+      $redis.zadd( Rns::Date, @date.to_i, @key )
       $redis.sadd( "#{Rns::T}:#{@type}", @key )
   end
   
@@ -48,7 +48,7 @@ class Demander
       list<<supplier
       end
       ###########################  part
-      if relpart = union_params( hash[:partNr], Rns::RP )
+      if relpart = union_params( hash[:rpartNr], Rns::RP )
       list<<relpart
       end
       ###########################  type
@@ -58,7 +58,7 @@ class Demander
       ###########################  date
       list<<Rns::Date
       
-      $redis.zinterstore( resultKey, list )
+      $redis.zinterstore( resultKey, list, :aggregate=>"MAX" )
       $redis.expire( resultKey, 30 )
       resultKey
       

@@ -1,15 +1,19 @@
 class Organisation
+  ## Hash Key Like "organisation:1234567890"  ,    id must be numeric
+  def initialize args={}
+    if args.count>0
+     args.each do |k,v|
+       instance_variable_set "@#{k}",v
+      end
+    end
+  end
+  
+  def save
+    $redis.hmset( @key, "name", @name, "address", @address, "tel", @tel, "website", @website )
+  end
   
   def self.get_key( id )
     Rns::Org+":#{id}"
-  end
-  
-  def self.new( key, hash )
-    if $redis.exists( key )
-      return false
-    else
-      $redis.hmset( key, *hash.to_a.flatten )
-    end
   end
   
   def self.find( key )

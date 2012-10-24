@@ -4,6 +4,7 @@ Demand::Application.routes.draw do
   resources :organisation_manager do
     collection do
       get :search
+      post :add_supplier
     end
   end
 
