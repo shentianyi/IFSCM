@@ -1,5 +1,7 @@
+require 'base_class'
+
 class ValidMsg<BaseMsg
-  attr_accessor :result,:content,:content_key,:fields
+  attr_accessor :result,:content_key,:fields,:content
   
   @@valids={:pnrNotEx=>'part nr does not exist',
             :spNrNotEx=>'supplier nr not exsit',
@@ -11,18 +13,14 @@ class ValidMsg<BaseMsg
             :fcRepeat=>'forcast is repeat in this time',
             :pOneToMuti=>'part is one to muti rela'}
             
-  def initialize
-    @result=true
-    @content_key=[]
-  end
-  
   def countents
+    @content=[] if !@content
     if @content_key.count>0
-      @content=[]
       @content_key.each do |key|
-        @content<<@@valids[key]
+       @content<<@@valids[key]
       end
     end
+    return @content
   end
   
   def add_content msg

@@ -1,12 +1,6 @@
-class Organisation
+require 'base_class'
+class Organisation<CZ::BaseClass
   ## Hash Key Like "organisation:1234567890"  ,    id must be numeric
-  def initialize args={}
-    if args.count>0
-     args.each do |k,v|
-       instance_variable_set "@#{k}",v
-      end
-    end
-  end
   
   def save
     $redis.hmset( @key, "name", @name, "address", @address, "tel", @tel, "website", @website )

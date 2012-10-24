@@ -24,20 +24,20 @@ module FormatHelper
      if date
        return date<Date.today
      end
-     return false
+     return true
    end
    
    # valid if string is int and less than 0
    def self.str_is_int_less_zero str
      if str.to_i.to_s==str
-       return str.to_i>0
+       return str.to_i<0
      end
      return false
    end
    
    # demand date by date string and type
    def self.demand_date_by_str_type date,type
-    date=str_to_date(str)
+    date=str_to_date(date)
     if date
      if type=='D'
      return  "year:#{date.year.to_s} month:#{date.month.to_s}day:#{date.day.to_s}"
