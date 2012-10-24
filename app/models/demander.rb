@@ -3,7 +3,7 @@ require 'digest/md5'
 
 class Demander
   attr_accessor :key,:clientId,:clientNr,
-  :supplierId,:supplierNr,:cpartId,:cpartNr,:spartId,:spartNr,
+  :supplierId,:supplierNr,:cpartId,:cpartNr,:spartId,:spartNr,:relpartId,
   :type,:amount,:date,:filedate,:vali,:rate
   
   def initialize args={}
@@ -19,10 +19,10 @@ class Demander
   end
   
   def save
-      $redis.hmset( @key, "client", @client, "supplier", @supplier, "partNr", @rpartNr, "date", @date, "type", @type )
-      $redis.sadd( "#{Rns::C}:#{@client}", @key )
-      $redis.sadd( "#{Rns::S}:#{@supplier}", @key )
-      $redis.sadd( "#{Rns::RP}:#{@rpartNr}", @key )
+      $redis.hmset( @key, "clientId", @clientId, "supplierId", @supplierId, "relpartId", @relpartId, "date", @date, "type", @type )
+      $redis.sadd( "#{Rns::C}:#{@clientId}", @key )
+      $redis.sadd( "#{Rns::S}:#{@supplierId}", @key )
+      $redis.sadd( "#{Rns::RP}:#{@relpartId}", @key )
       $redis.zadd( Rns::Date, @date.to_i, @key )
       $redis.sadd( "#{Rns::T}:#{@type}", @key )
   end
@@ -33,7 +33,15 @@ class Demander
   
 
   def self.find( key )
-    $redis.hgetall( key )
+    hash = $redis.hgetall( key )
+    demander = Demander.new
+    demander.key = key
+    demander.clientId = hash["clientId"]
+    demander.supplierId = hash["supplierId"]
+    demander.relpartId = hash["relpartId"]
+    demander.date = hash["date"]
+    demander.type = hash["type"]
+    demander
   end
   
   def self.search( hash )

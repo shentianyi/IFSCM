@@ -28,7 +28,7 @@ module FormatHelper
    end
    
    # valid if string is int and less than 0
-   def sef.str_is_int_less_zero str
+   def self.str_is_int_less_zero str
      if str.to_i.to_s==str
        return str.to_i>0
      end

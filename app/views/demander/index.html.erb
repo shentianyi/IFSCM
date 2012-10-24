@@ -40,22 +40,25 @@
 <% end %>
 
 Class DemandForecast, Method Test : <%= Demander.test(:sdi=>"one", :sed=>"two" )%><br/>
-<%= $redis.exists( "client:Leoni" )%>
 <%= $redis.zcard( "date" )%><br/>
-<%= $redis.keys("client:*")%>
-<%= $redis.keys("supplier:*")%>
-<%= $redis.keys("part:*")%>
+<%= $redis.keys("#{Rns::De}:*")%>
+<%= $redis.keys("#{Rns::C}:*")%>
+<%= $redis.keys("#{Rns::S}:*")%>
+<%= $redis.keys("#{Rns::RP}:*")%>
 
 <hr/>
 There is(are) <%= @demands.size %> record(s):<br/>
 <ul class="projects">
-<% @demands.each do |demand| %>
+<% @demands.each do |d| %>
   <li>
-  	<div>TYPE:<%= demand.class%></div>
+  	<div>TYPE:<%= d.class%></div>
     <div class="info">
-   	<% demand.each do |k, v|%>
-        <%= k%>: <%= v %>
-    <% end %>
+   	<%= d.key%>
+   	Client:<%= $redis.hget("#{Rns::Org}:#{d.clientId}","name") %>
+   	Supplier:<%= $redis.hget("#{Rns::Org}:#{d.supplierId}","name") %>
+   	Part:<%= d.relpartId%>
+   	Date:<%= d.date%>
+   	Type:<%= d.type%>
     </div>
   </li>
 <% end %>
