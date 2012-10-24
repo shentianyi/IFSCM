@@ -1,4 +1,6 @@
-class BaseMsg
+require 'base_class'
+
+class BaseMsg<CZ::BaseClass
   attr_accessor :type,:content
   
   def self.gen_index

@@ -1,18 +1,11 @@
 #coding:utf-8
 require 'digest/md5'
+require 'base_class'
 
-class Demander
+class Demander<CZ::BaseClass
   attr_accessor :key,:clientId,:clientNr,
   :supplierId,:supplierNr,:cpartId,:cpartNr,:spartId,:spartNr,
   :type,:amount,:date,:filedate,:vali,:rate
-  
-  def initialize args={}
-    if args.count>0
-     args.each do |k,v|
-       instance_variable_set "@#{k}",v
-      end
-    end
-  end
   
   def self.gen_index
     $redis.incr 'demand:index:incr'

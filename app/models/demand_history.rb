@@ -1,13 +1,8 @@
-class DemandHistory
+require 'base_class'
+
+# the score of histoty is Time.to_i
+class DemandHistory<CZ::BaseClass
   attr_accessor :clientId,:supplierId,:cpartId,:type,:date,:rate,:timeseconds,:amount
-  
-  def initialize args={}
-    if args.count>0
-     args.each do |k,v|
-       instance_variable_set "@#{k}",v
-      end
-    end
-  end
   
   def redis_key
     "cId:#{@clientId}:spId:#{@supplierId}:partId:#{@cpartId}:type:#{@type}:date:#{@date}"
