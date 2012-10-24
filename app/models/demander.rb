@@ -4,18 +4,20 @@ require 'base_class'
 
 class Demander<CZ::BaseClass
   attr_accessor :key,:clientId,:clientNr,
+ 
   :supplierId,:supplierNr,:cpartId,:cpartNr,:spartId,:spartNr,
   :type,:amount,:date,:filedate,:vali,:rate,:lineNo,:uuid,:msg
+ 
   
   def self.gen_index
     $redis.incr 'demand:index:incr'
   end
   
   def save
-      $redis.hmset( @key, "client", @client, "supplier", @supplier, "partNr", @rpartNr, "date", @date, "type", @type )
-      $redis.sadd( "#{Rns::C}:#{@client}", @key )
-      $redis.sadd( "#{Rns::S}:#{@supplier}", @key )
-      $redis.sadd( "#{Rns::RP}:#{@rpartNr}", @key )
+      $redis.hmset( @key, "clientId", @clientId, "supplierId", @supplierId, "relpartId", @relpartId, "date", @date, "type", @type )
+      $redis.sadd( "#{Rns::C}:#{@clientId}", @key )
+      $redis.sadd( "#{Rns::S}:#{@supplierId}", @key )
+      $redis.sadd( "#{Rns::RP}:#{@relpartId}", @key )
       $redis.zadd( Rns::Date, @date.to_i, @key )
       $redis.sadd( "#{Rns::T}:#{@type}", @key )
   end
@@ -26,7 +28,15 @@ class Demander<CZ::BaseClass
   
 
   def self.find( key )
-    $redis.hgetall( key )
+    hash = $redis.hgetall( key )
+    demander = Demander.new
+    demander.key = key
+    demander.clientId = hash["clientId"]
+    demander.supplierId = hash["supplierId"]
+    demander.relpartId = hash["relpartId"]
+    demander.date = hash["date"]
+    demander.type = hash["type"]
+    demander
   end
   
   def self.search( hash )

@@ -83,12 +83,11 @@ class DemanderController<ApplicationController
   def index
     @demands = []
     if request.get?
-      $redis.keys( "#{Rns::De}:*" ).each do |key|
-        hash = $redis.hgetall( key )
-        hash["key"] = key
-        hash["score"] = $redis.zscore( Rns::Date, key )
-        @demands << hash
-      end
+        $redis.keys( "#{Rns::De}:*" ).each do |k|
+          demander = Demander.find( k )
+          # hash["score"] = $redis.zscore( Rns::Date, k )
+          @demands << demander
+        end
     else
     end
 
@@ -101,14 +100,13 @@ class DemanderController<ApplicationController
   def create
     key = Demander.get_key( params[:id] )
     if $redis.exists( key )
-      else
-
-      demand = Demander.new( :key=>key, :client=>params[:client],
-      :supplier=>params[:supplier],
-      :rpartNr=>params[:partNr],
-      :date=>params[:date],
-      :type=>params[:type] )
-    demand.save
+    else
+      demand = Demander.new( :key=>key, :clientId=>params[:client],
+                                                                                  :supplierId=>params[:supplier],
+                                                                                  :relpartId=>params[:partNr],
+                                                                                  :date=>params[:date],
+                                                                                  :type=>params[:type] )
+      demand.save
     end
 
     redirect_to root_path
