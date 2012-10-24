@@ -6,7 +6,7 @@ class DemanderController<ApplicationController
   #include
   include DemanderHelper
   # ws upload demands from csv -- support muti files
-  def upload_demands
+  def upload_files
     session[:userId]=1
     if request.get?
       else
@@ -14,6 +14,7 @@ class DemanderController<ApplicationController
       puts '---------------------------'
       puts files
       begin
+        msg=ReturnMsg.new(:result=>false,:content=>'')
         path=$DECSVP
         hfiles=[]
         if files.count>0
@@ -32,19 +33,49 @@ class DemanderController<ApplicationController
           # validate and show result
           batch_file=DemanderHelper::generate_by_csv(hfiles,clientId)
           if batch_file
-            # this part will be done later....in session is the best?
-            # if very batch has its state and saved in redis with datetime,
-            # it will be easier to manage the upload process?
-            # session[:not_finish_upload]=batch_uuid
-            render :json=>{:flag=>true,:filesInfo=>batch_file}
+          # this part will be done later....in session is the best?
+          # if very batch has its state and saved in redis with datetime,
+          # it will be easier to manage the upload process?
+          # session[:not_finish_upload]=batch_uuid
+          #render :json=>{:flag=>true,:filesInfo=>batch_file}
+          msg.result=true
+          msg.object=batch_file
           else
-            render :json=>{:flag=>false,:msg=>'upload faild please retry'}
+            msg.content='upload faild please retry'
           end
         else
-          render :json=>{:flag=>false,:msg=>'no files'}
+          msg.content='no files'
         end
       rescue Exception => e
-        render :json=>{:flag=>false,:msg=>e.message+'//'+ e.backtrace.inspect }
+        msg.content=e.message+'//'+ e.backtrace.inspect
+      end
+      respond_to do |format|
+        format.xml {render :xml=>JSON.parse(msg.to_json).to_xml(:root=>'FilesInfo')}
+        format.json { render json: msg }
+      end
+    end
+  end
+
+  # ws get file item errors
+  def get_error
+    if request.post?
+      demands=get_demand_items 'error'
+      respond_to do |format|
+        format.xml {render :xml=>JSON.parse(demands.to_json).to_xml(:root=>'Demands')}
+        format.json { render json: demands }
+        format.html { render partial:'error_items',:locals=>{:demands=>demands}}
+      end
+    end
+  end
+
+  # ws get file item normals
+  def get_normal
+    if request.post?
+      demands=get_demand_items 'normal'
+      respond_to do |format|
+        format.xml {render :xml=>JSON.parse(demands.to_json).to_xml(:root=>'Demands')}
+        format.json { render json: demands }
+        format.html { render partial:'normal_items',:locals=>{:demands=>demands}}
       end
     end
   end
@@ -107,6 +138,16 @@ class DemanderController<ApplicationController
     end
   end
 
-# def
+  private
+
+  # ws private get demands
+  def get_demand_items type
+    fileId=params[:fileId]
+    pageIndex=params[:pageIndex].to_i
+    pageSize=$DEPSIZE
+    startIndex=(pageIndex-1)*pageSize
+    endIndex=pageIndex*pageSize-1
+    return DemanderHelper::get_file_demands fileId,startIndex,endIndex,type
+  end
 
 end

@@ -23,8 +23,8 @@ class RedisCsvFile<CZ::BaseClass
     @items<<item
   end
 
-  def add_error_item item_key
-    $redis.sadd @errorItemKey,item_key
+  def add_error_item score,item_key
+    $redis.zadd @errorItemKey,score,item_key
   end
 
   def remove_error_item item_key
@@ -48,5 +48,22 @@ class RedisCsvFile<CZ::BaseClass
      return $redis.hget(@repeatItemKey,repeat_key)
     end
     return nil
+  end
+  
+  # ws get file error items
+  def get_error_item_keys startIndex,endIndex
+    @errorItemKey=$redis.hget @index,'errorItemKey'
+    return $redis.zrange @errorItemKey,startIndex,endIndex
+  end
+
+    # ws get file error items
+  def get_normal_item_keys startIndex,endIndex
+    @normalItemKey=$redis.hget @index,'normalItemKey'
+    return $redis.zrange @normalItemKey,startIndex,endIndex
+  end
+    
+  # ws: ws get file item count
+  def get_items_count item_zset_key
+    @itemCount=$redis.zcard item_zset_key
   end
 end

@@ -4,3 +4,5 @@ format:
  :csv_splitor: ';'
 path:
  :demand_csv_path: 'uploadfiles/demands/csv'
+page:
+ :demand_page_size: 20

@@ -1,4 +1,4 @@
 class ReturnMsg<BaseMsg
-  attr_accessor :result
+  attr_accessor :result,:object
   
 end

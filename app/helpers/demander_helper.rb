@@ -3,7 +3,7 @@ require 'csv'
 require 'digest/md5'
 
 module DemanderHelper
-  # alias :PartNr  :
+  # ws: generate files demands from csvs
   def self.generate_by_csv(files,clientId)
     begin
       uuid=UUID.new
@@ -17,7 +17,8 @@ module DemanderHelper
         CSV.foreach(File.join(f[:path],f[:pathName]),:headers=>true,:col_sep=>$CSVSP) do |row|
         
           sfile.itemCount+=1
-          demand= Demander.new :key=>Demander.gen_index,:cpartNr=>row[0],:clientId=>clientId,:supplierNr=>row[1],:filedate=>row[2],:type=>row[3],:amount=>row[4]
+          demand= Demander.new(:cpartNr=>row[0],:clientId=>clientId,:supplierNr=>row[1],
+                  :filedate=>row[2],:type=>row[3],:amount=>row[4],:lineNo=>sfile.itemCount)
           demand.date=FormatHelper::demand_date_by_str_type demand.filedate,demand.type
           # validate demand
           msg=demand_validate(demand)
@@ -31,17 +32,18 @@ module DemanderHelper
             puts repeatItem.class 
             msg.add_content("existsFile:#{repeatItem['oriName']},line#{repeatItem['line']}")
           else
-            batch_file.set_repeat_item(repeat_key,{:oriName=>f[:oriName],:line=> sfile.itemCount}.to_json)
+            batch_file.set_repeat_item(repeat_key,{:oriName=>f[:oriName],:line=>demand.lineNo}.to_json)
           end
 
           sfile.errorCount+= 1 if !msg.result
           demand.vali=msg.result
           duuid=uuid.generate
+          demand.uuid=duuid
           demand.save_temp_in_redis duuid,msg.countents
           if msg.result
             sfile.add_normal_item demand.rate,duuid
           else
-            sfile.add_error_item duuid
+            sfile.add_error_item sfile.itemCount,duuid
           end
         end
         # csv --end
@@ -57,10 +59,12 @@ module DemanderHelper
       puts '-------------exception msg---------------------'
       puts e.message
       puts e.backtrace.inspect
+      # should move all file infos from redis
     end
     return nil
   end
-
+  
+  # ws: valid single demand
   def self.demand_validate demand
     # valid msg
     msg=ValidMsg.new(:result=>true,:content_key=>Array.new)
@@ -118,5 +122,24 @@ module DemanderHelper
 
     return msg
   end
+  
+  # ws: get file demands by type
+  def self.get_file_demands fileId,startIndex,endIndex,type
+    demands=RedisCsvFile.new(:index=>fileId)
+    itemKeys=demands.send "get_#{type}_item_keys".to_sym,startIndex,endIndex
+    demands.itemCount=itemKeys.count
+    if demands.itemCount>0
+      demands.items=[]
+      itemKeys.each do |k|
+      h=Demander.find(k)
+      if h.count>0
+       demand=Demander.new(h)
+       demands.items<<demand
+       end
+      end
+    end
+    return demands
+  end
+  
 end
 

@@ -5,7 +5,7 @@ require 'base_class'
 class Demander<CZ::BaseClass
   attr_accessor :key,:clientId,:clientNr,
   :supplierId,:supplierNr,:cpartId,:cpartNr,:spartId,:spartNr,
-  :type,:amount,:date,:filedate,:vali,:rate
+  :type,:amount,:date,:filedate,:vali,:rate,:lineNo,:uuid,:msg
   
   def self.gen_index
     $redis.incr 'demand:index:incr'
@@ -61,8 +61,12 @@ class Demander<CZ::BaseClass
     hash[:sdi]
   end
   
+  #
+  
+  # ws: save demand temp in redis
   def save_temp_in_redis uuid,msgs
-    $redis.hmset(uuid,'clientId',@clientId,'supplierNr',@supplierNr,'cpartNr',@cpartNr,
+    @uuid=uuid
+    $redis.hmset(uuid,'uuid',@uuid,'clientId',@clientId,'supplierNr',@supplierNr,'cpartNr',@cpartNr,'lineNo',@lineNo,
         'cpartId',@cpartId,'amount',@amount,'type',@type,'filedate',@filedate,'date',@date,'vali',@vali)
     if !@vali
       $redis.hset uuid,'msg',msgs.to_json

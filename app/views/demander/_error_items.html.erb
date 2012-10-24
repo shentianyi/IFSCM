@@ -1,0 +1,13 @@
+index:<%=demands.index%><br />
+errorItemKey:<%=demands.errorItemKey%><br />
+itemCount:<%=demands.itemCount%><br />
+<%demands.items.each do |d|%>
+<hr />
+ lineNo:<%=d.lineNo%><br />
+ cpartNr:<%=d.cpartNr%><br />
+ uuid:<%=d.uuid%><br/>
+ msg:<%=d.msg%><br/>
+ msg.class:<%=d.msg.class%>
+<%end%>
+<hr/>
+
