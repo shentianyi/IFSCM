@@ -12,7 +12,7 @@ class DemanderController<ApplicationController
       else
       files=params[:files]
       begin
-        path='uploadfiles/demands/csv'
+        path=$DECSVP
         hfiles=[]
         if files.count>0
           uuid=UUID.new
@@ -24,14 +24,21 @@ class DemanderController<ApplicationController
             hf[:pathName]=dcsv.pathName
             hfiles<<hf
           end
-        
           # clietId should be from session
           clientId=session[:userId]
           # validate and show result
-           generate_by_csv(hfiles,clientId)
-          
-          #...........
-            render :json=>{:flag=>true,:msg=>'ok'}
+           batch_uuid,valid=DemanderHelper::generate_by_csv(hfiles,clientId)
+           if batch_uuid
+             # this part will be done later....in session is the best?
+             # if very batch has its state and saved in redis with datetime,
+             # it will be easier to manage the upload process?
+             # session[:not_finish_upload]=batch_uuid
+             if valid
+               # wait the pview complete
+             end
+           else
+            render :json=>{:flag=>false,:msg=>'upload faild please retry'}
+           end
         else
           render :json=>{:flag=>false,:msg=>'no files'}
         end

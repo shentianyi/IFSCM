@@ -4,7 +4,7 @@ require 'digest/md5'
 class Demander
   attr_accessor :key,:clientId,:clientNr,
   :supplierId,:supplierNr,:cpartId,:cpartNr,:spartId,:spartNr,
-  :type,:amount,:date,:filedate,:md5repeatKey,:vali
+  :type,:amount,:date,:filedate,:vali,:rate
   
   def initialize args={}
     if args.count>0
@@ -69,15 +69,21 @@ class Demander
   end
   
   def save_temp_in_redis uuid,msgs
-    $redis.hmset uuid,'clientId',@clientId,'supplierNr',@supplierNr,'cpartNr',@cpartNr,'cpartId',@cpartId,'amount',@amount,'type',@type,'filedate',@filedate,'date',@date,'vali',@vali
+    $redis.hmset(uuid,'clientId',@clientId,'supplierNr',@supplierNr,'cpartNr',@cpartNr,
+        'cpartId',@cpartId,'amount',@amount,'type',@type,'filedate',@filedate,'date',@date,'vali',@vali)
     if !@vali
       $redis.hset uuid,'msg',msgs.to_json
+    else
+      #caluate rate
+      h=DemandHistory.new(:clientId=>@clientId,:supplierId=>@supplierId,:cpartId=>@cpartId,:type=>@type,:date=>@date,:amount=>@amount)
+      @rate=h.calculate_rate
+      $redis.hset uuid,'rate',@rate
     end
   end
    
   
   def gen_md5_repeat_key
-    @md5repeatKey=Digest::MD5.hexdigest(@clientId.to_s+':'+@partNr+':'+@type+':'+@date+':'+@supplierNr)
+    Digest::MD5.hexdigest(@clientId.to_s+':'+@cpartNr+':'+@type+':'+(@date.nil?? '' : @date)+':'+@supplierNr)
   end 
   
   

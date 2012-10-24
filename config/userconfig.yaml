@@ -1,0 +1,6 @@
+#coding:utf-8
+# format settings
+format:
+ :csv_splitor: ';'
+path:
+ :demand_csv_path: 'uploadfiles/demands/csv'

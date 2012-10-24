@@ -1,4 +1,7 @@
 module FormatHelper
+   
+  # parse string to date 
+  # string like '0000/00/00' is valid
   def self.str_to_date str
     str=str.match(/^\d{4}\/(0?[1-9]|1[0-2])\/(0?[1-9]|[1-2]\d|3[0-1])$/)
     if str
@@ -15,6 +18,7 @@ module FormatHelper
     return nil
   end
 
+   # valid if the date string is less than today
    def self.str_less_today str
      date=str_to_date(str)
      if date
@@ -23,6 +27,7 @@ module FormatHelper
      return false
    end
    
+   # valid if string is int and less than 0
    def sef.str_is_int_less_zero str
      if str.to_i.to_s==str
        return str.to_i>0
@@ -30,7 +35,8 @@ module FormatHelper
      return false
    end
    
-   def self.nwd_by_dateStr_type date,type
+   # demand date by date string and type
+   def self.demand_date_by_str_type date,type
     date=str_to_date(str)
     if date
      if type=='D'
@@ -45,7 +51,5 @@ module FormatHelper
    end
    return nil
    end
-   
-  
-   
+
 end

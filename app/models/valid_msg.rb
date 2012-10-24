@@ -24,4 +24,9 @@ class ValidMsg<BaseMsg
       end
     end
   end
+  
+  def add_content msg
+      @content=[] if !@content
+      @content<<msg
+  end
 end
