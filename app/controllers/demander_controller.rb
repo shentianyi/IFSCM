@@ -50,7 +50,7 @@ class DemanderController<ApplicationController
         msg.content=e.message+'//'+ e.backtrace.inspect
       end
       respond_to do |format|
-        format.xml {render :xml=>JSON.parse(msg.to_json).to_xml(:root=>'FilesInfo')}
+        format.xml {render :xml=>JSON.parse(msg.to_json).to_xml(:root=>'filesInfo')}
         format.json { render json: msg }
       end
     end
@@ -61,7 +61,7 @@ class DemanderController<ApplicationController
     if request.post?
       demands=get_demand_items 'error'
       respond_to do |format|
-        format.xml {render :xml=>JSON.parse(demands.to_json).to_xml(:root=>'Demands')}
+        format.xml {render :xml=>JSON.parse(demands.to_json).to_xml(:root=>'demands')}
         format.json { render json: demands }
         format.html { render partial:'error_items',:locals=>{:demands=>demands}}
       end
@@ -73,18 +73,20 @@ class DemanderController<ApplicationController
     if request.post?
       demands=get_demand_items 'normal'
       respond_to do |format|
-        format.xml {render :xml=>JSON.parse(demands.to_json).to_xml(:root=>'Demands')}
+        format.xml {render :xml=>JSON.parse(demands.to_json).to_xml(:root=>'demands')}
         format.json { render json: demands }
         format.html { render partial:'normal_items',:locals=>{:demands=>demands}}
       end
     end
   end
 
+ # ws rewrite dinging's method
   def index
     @demands = []
     if request.get?
         $redis.keys( "#{Rns::De}:*" ).each do |k|
-          demander = Demander.find( k )
+          demander=Demander.new(Demander.find(k))
+          #demander = Demander.find( k )
           # hash["score"] = $redis.zscore( Rns::Date, k )
           @demands << demander
         end

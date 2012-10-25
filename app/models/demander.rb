@@ -3,8 +3,7 @@ require 'digest/md5'
 require 'base_class'
 
 class Demander<CZ::BaseClass
-  attr_accessor :key,:clientId,:clientNr,
- 
+  attr_accessor :key,:clientId,:clientNr,:relpartId,
   :supplierId,:supplierNr,:cpartId,:cpartNr,:spartId,:spartNr,
   :type,:amount,:date,:filedate,:vali,:rate,:lineNo,:uuid,:msg
  
@@ -26,17 +25,18 @@ class Demander<CZ::BaseClass
     Rns::De+":#{id}"
   end
   
-
+  # ws rewrite ding's method
   def self.find( key )
-    hash = $redis.hgetall( key )
-    demander = Demander.new
-    demander.key = key
-    demander.clientId = hash["clientId"]
-    demander.supplierId = hash["supplierId"]
-    demander.relpartId = hash["relpartId"]
-    demander.date = hash["date"]
-    demander.type = hash["type"]
-    demander
+    $redis.hgetall key
+    # hash = $redis.hgetall( key )
+    # demander = Demander.new
+    # demander.key = key
+    # demander.clientId = hash["clientId"]
+    # demander.supplierId = hash["supplierId"]
+    # demander.relpartId = hash["relpartId"]
+    # demander.date = hash["date"]
+    # demander.type = hash["type"]
+    # demander
   end
   
   def self.search( hash )

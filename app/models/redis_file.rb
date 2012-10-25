@@ -1,14 +1,7 @@
 require 'base_class'
 
-class RedisCsvFile<CZ::BaseClass
+class RedisFile<CZ::BaseClass
   attr_accessor :index,:oriName,:uuidName,:itemCount,:errorCount,:uuidName,:normalItemKey,:errorItemKey,:repeatItemKey,:items
-  def initialize args={}
-    if args.count>0
-      args.each do |k,v|
-        instance_variable_set "@#{k}",v
-      end
-    end
-  end
 
   def save_in_redis
     $redis.hmset @index,'itemCount',@itemCount,'errorCount',@errorCount,'normalItemKey',@normalItemKey

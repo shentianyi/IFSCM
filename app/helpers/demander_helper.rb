@@ -8,11 +8,11 @@ module DemanderHelper
     begin
       uuid=UUID.new
       # in batch_file normalKey=>file set, repeat Key=>repeat hash
-      batch_file=RedisCsvFile.new(:index=>uuid.generate,:itemCount=>0,:errorCount=>0,:normalItemKey=>uuid.generate,:repeatItemKey=>uuid.generate)
+      batch_file=RedisFile.new(:index=>uuid.generate,:itemCount=>0,:errorCount=>0,:normalItemKey=>uuid.generate,:repeatItemKey=>uuid.generate)
       files.each do |f|
-        sfile=RedisCsvFile.new(:index=>f[:uuidName],:oriName=>f[:oriName],:uuidName=>f[:uuidName],
+        sfile=RedisFile.new(:index=>f[:uuidName],:oriName=>f[:oriName],:uuidName=>f[:uuidName],
         :itemCount=>0,:errorCount=>0,:normalItemKey=>uuid.generate,:errorItemKey=>uuid.generate)
-        puts sfile
+      
         # csv header---
         CSV.foreach(File.join(f[:path],f[:pathName]),:headers=>true,:col_sep=>$CSVSP) do |row|
         
