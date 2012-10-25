@@ -10,6 +10,10 @@ class RedisFile<CZ::BaseClass
     $redis.hset @index,'errorItemKey',@errorItemKey if @errorItemKey
     $redis.hset @index,'repeatItemKey',@repeatItemKey if @repeatItemKey
   end
+  
+  def self.find(index)
+    $redis.hgetall(index)
+  end
 
   def add_item item
     @items=[] if !@items
@@ -21,19 +25,37 @@ class RedisFile<CZ::BaseClass
   end
 
   def remove_error_item item_key
-    $redis.srem @errorItemKey,item_key
+    $redis.zrem @errorItemKey,item_key
   end
 
   def add_normal_item score,item_key
     $redis.zadd @normalItemKey,score,item_key
   end
-
+   
   def remove_normal_item item_key
     $redis.zrem @normalItemKey,item_key
   end
-
-  def set_repeat_item repeat_key,repeat_item
+    
+   #ws remove item from error to normal
+   def move_error_to_normal score,item_key
+       remove_error_item item_key
+       add_normal_item score,item_key
+   end
+   
+   #ws remove item from normal to error
+   def move_normal_to_error score,item_key
+       remove_normal_item item_key
+       add_error_item score,item_key
+   end   
+    
+  def add_repeat_item repeat_key,repeat_item
     $redis.hset @repeatItemKey,repeat_key,repeat_item
+  end
+  
+  def remove_repeat_item repeat_key,baseuuid
+    if baseuuid==$redis.hget(@repeatItemKey,repeat_key)
+       $redis.hdel @repeatItemKey,repeat_key
+    end
   end
 
   def get_repeat_item repeat_key
@@ -52,11 +74,13 @@ class RedisFile<CZ::BaseClass
     # ws get file error items
   def get_normal_item_keys startIndex,endIndex
     @normalItemKey=$redis.hget @index,'normalItemKey'
-    return $redis.zrange @normalItemKey,startIndex,endIndex
+    return $redis.zrevrange @normalItemKey,startIndex,endIndex
   end
     
-  # ws: ws get file item count
+  #  ws get file item count
   def get_items_count item_zset_key
     @itemCount=$redis.zcard item_zset_key
   end
+  
+  
 end

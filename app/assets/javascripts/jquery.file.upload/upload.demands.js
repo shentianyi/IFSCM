@@ -21,7 +21,13 @@ $(function() {'use strict';
 			xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'));
 		},
 		success : function(data) {
-			//alert(data.msg);
+			// alert(data.object.index);
+			$('#batchId').val(data.object.index); 
+			if(data.object.items.length>0){
+			    for(var i=0;i<data.object.items.length;i++){
+			         $('#items').append(i+">fileId:::<p>"+data.object.items[i].index+"</p>");
+			    }
+			}
 		},
 		error : function() {
 

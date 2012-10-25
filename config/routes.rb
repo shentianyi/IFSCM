@@ -14,6 +14,7 @@ Demand::Application.routes.draw do
       match :upload_files
       match :get_error
       match :get_normal
+      match :correct_error
     end
   end
 

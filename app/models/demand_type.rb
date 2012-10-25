@@ -1,6 +1,6 @@
 require 'base_class'
 
-class DemandType
+class DemandType<CZ::BaseClass
   attr_accessor :type
   
 end

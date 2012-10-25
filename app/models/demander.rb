@@ -5,7 +5,7 @@ require 'base_class'
 class Demander<CZ::BaseClass
   attr_accessor :key,:clientId,:clientNr,:relpartId,
   :supplierId,:supplierNr,:cpartId,:cpartNr,:spartId,:spartNr,
-  :type,:amount,:date,:filedate,:vali,:rate,:lineNo,:uuid,:msg
+  :type,:amount,:date,:filedate,:vali,:rate,:lineNo,:uuid,:msg,:source
  
   
   def self.gen_index
@@ -74,17 +74,17 @@ class Demander<CZ::BaseClass
   #
   
   # ws: save demand temp in redis
-  def save_temp_in_redis uuid,msgs
-    @uuid=uuid
-    $redis.hmset(uuid,'uuid',@uuid,'clientId',@clientId,'supplierNr',@supplierNr,'cpartNr',@cpartNr,'lineNo',@lineNo,
-        'cpartId',@cpartId,'amount',@amount,'type',@type,'filedate',@filedate,'date',@date,'vali',@vali)
+  def save_temp_in_redis msgs
+    $redis.hmset(@uuid,'uuid',@uuid,'clientId',@clientId,'supplierNr',@supplierNr,'cpartNr',@cpartNr,'lineNo',@lineNo,
+        'cpartId',@cpartId,'amount',@amount,'type',@type,'filedate',@filedate,'date',@date,'vali',@vali,'source',@source)
     if !@vali
-      $redis.hset uuid,'msg',msgs.to_json
+      @msg=msgs.to_json
+      $redis.hset @uuid,'msg',@msg
     else
       #caluate rate
       h=DemandHistory.new(:clientId=>@clientId,:supplierId=>@supplierId,:cpartId=>@cpartId,:type=>@type,:date=>@date,:amount=>@amount)
       @rate=h.calculate_rate
-      $redis.hset uuid,'rate',@rate
+      $redis.hset @uuid,'rate',@rate
     end
   end
    

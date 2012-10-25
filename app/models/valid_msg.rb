@@ -13,7 +13,7 @@ class ValidMsg<BaseMsg
             :fcRepeat=>'forcast is repeat in this time',
             :pOneToMuti=>'part is one to muti rela'}
             
-  def countents
+  def contents
     @content=[] if !@content
     if @content_key.count>0
       @content_key.each do |key|

@@ -1,13 +1,68 @@
-index:<%=demands.index%><br />
-errorItemKey:<%=demands.errorItemKey%><br />
-itemCount:<%=demands.itemCount%><br />
-<%demands.items.each do |d|%>
-<hr />
- lineNo:<%=d.lineNo%><br />
- cpartNr:<%=d.cpartNr%><br />
- uuid:<%=d.uuid%><br/>
- msg:<%=d.msg%><br/>
- msg.class:<%=d.msg.class%>
-<%end%>
-<hr/>
+||index:<%= demands.index%>||
+errorItemKey:<%= demands.errorItemKey%>||
+itemCount:<%= demands.itemCount%>||
+<br />
+<style>
+table td,tr{
+     border: solid red 1px;
+}
+     #uuid{width: 300px;}
+     .type{width: 40px;}
+     .msg{width: 300px;}
+     .clientId{width: 10px;}
+     .partNr{width: 100px;}
+      .supplierNr{width: 100px;}
+</style>
+<table>
+     <tr><td>&nbsp;</td>
+           <td>DemandId</td>
+           <td>Client</td>
+           <td>PartNr</td>
+           <td>SupplierNr</td>
+           <td>FileDate</td>
+           <td>Type</td>
+           <td>Amount</td>
+           <td>Date</td>
+           <td>Msg</td>
+           <td>&nbsp;</td>
+     </tr>
+    <% i=0
+     demands.items.each do |d|%>
+     <tr class="<%=d.uuid%>">
+          <td class="type"><%=(i+=1)%></td>
+         <td ><label id="uuid"><%=d.uuid%></label></td>
+         <td class="clientId"><input id="<%=d.uuid%>-clientId" class="clientId" type="text" value="<%=d.clientId%>"/></td>
+         <td class="partNr"><input  class="partNr" id='<%=d.uuid%>-partNr'  type="text" value="<%= d.cpartNr%>"/></td>
+         <td class='supplierNr' ><input class='supplierNr'   id='<%=d.uuid%>-supplierNr'  type="text" value="<%= d.supplierNr%>"/></td>
+         <td class='supplierNr' ><input  class='supplierNr'  id='<%=d.uuid%>-filedate'  type="text" value="<%= d.filedate%>"/></td>
+         <td class="type"><input  id='<%=d.uuid%>-type' class="type" type="text" value="<%= d.type%>"/></td>
+         <td class="type"><input  id='<%=d.uuid%>-amount'  type="text" class="type" value="<%= d.amount%>"/></td>
+         <td><input  id='date'  type="text" value="<%= d.date%>"/></td>
+         <td class="msg" id='<%=d.uuid%>-msg'><%=d.msg%></td>
+          <td><input   type="button" value="Correct Error" onclick="correct_error('<%=d.uuid%>');"/></td>
+     </tr>
+    <%end%>
+</table>
+<script>
+     function correct_error(uuid) {
+          $.ajax({
+               url : '../demander/correct_error',
+               data : {
+                    'batchId': $('#batchId').val(),
+                    'fileId' : $('#fileId').val(),
+                    'uuid' : uuid,
+                    'partNr':$('#'+uuid+'-partNr').val(),
+                    'supplierNr':$('#'+uuid+'-supplierNr').val(),
+                    'filedate':$('#'+uuid+'-filedate').val(),
+                    'type':$('#'+uuid+'-type').val(),
+                    'amount':$('#'+uuid+'-amount').val()
+               },
+               dataType : 'json',
+               type : 'post',
+               success : function(data) {
+                  $('#'+uuid+'-msg').html(data.object.msg);
+               }
+          });
+     }
+</script>
 

@@ -11,8 +11,6 @@ class DemanderController<ApplicationController
     if request.get?
       else
       files=params[:files]
-      puts '---------------------------'
-      puts files
       begin
         msg=ReturnMsg.new(:result=>false,:content=>'')
         path=$DECSVP
@@ -22,7 +20,6 @@ class DemanderController<ApplicationController
           files.each do |f|
             uuidName=uuid.generate
             hf={:oriName=>f.original_filename,:uuidName=>uuidName,:path=>path}
-            # puts FileDataType::Demand
             dcsv=FileData.new(:data=>f,:type=>FileDataType::Demand,:oriName=>f.original_filename,:uuidName=>uuidName,:path=>path)
             dcsv.save
             hf[:pathName]=dcsv.pathName
@@ -33,11 +30,6 @@ class DemanderController<ApplicationController
           # validate and show result
           batch_file=DemanderHelper::generate_by_csv(hfiles,clientId)
           if batch_file
-          # this part will be done later....in session is the best?
-          # if very batch has its state and saved in redis with datetime,
-          # it will be easier to manage the upload process?
-          # session[:not_finish_upload]=batch_uuid
-          #render :json=>{:flag=>true,:filesInfo=>batch_file}
           msg.result=true
           msg.object=batch_file
           else
@@ -80,16 +72,64 @@ class DemanderController<ApplicationController
     end
   end
 
- # ws rewrite dinging's method
+  # ws correct error
+  def correct_error
+    session[:userId]=1
+    if request.post?
+      clientId=session[:userId]
+      msg=ReturnMsg.new(:result=>false,:content=>'')
+      hbf=RedisFile.find(params[:batchId])
+      hsf=RedisFile.find(params[:fileId])
+      hod=Demander.find(params[:uuid])
+
+      if hbf.count!=0 or hsf.count==0 or hod.count==0
+        bf=RedisFile.new(hbf)
+        puts '=======bf======'
+        puts bf
+        puts '+++++sf++++++'
+        sf=RedisFile.new(hsf)
+        puts sf
+        od=Demander.new(hod)
+
+        nd= Demander.new(:uuid=>od.uuid,:cpartNr=>params[:partNr],:clientId=>clientId,:supplierNr=>params[:supplierNr],
+        :filedate=>params[:filedate],:type=>params[:type],:amount=>params[:amount],:lineNo=>od.lineNo,:source=>od.source)
+        okey=od.gen_md5_repeat_key
+        nkey=nd.gen_md5_repeat_key
+        if okey!=nkey
+        bf.remove_repeat_item(od.gen_md5_repeat_key,od.uuid)
+        end
+        vmsg=DemanderHelper::demand_field_validate(nd,bf)
+        nd.vali=vmsg.result
+        nd.save_temp_in_redis(vmsg.contents)
+        #move demand
+        if nd.vali.to_s!=od.vali
+          from=!nd.vali ? 'normal':'error'
+          to=nd.vali ? 'normal':'error'
+          score=nd.vali ? nd.rate : nd.lineNo
+          sf.send "move_#{from}_to_#{to}".to_sym,score,nd.uuid
+        end
+      msg.result=true
+      msg.object=nd
+      else
+        msg.content='batchFileId or singleFileId or dmeandId not exists'
+      end
+      respond_to do |format|
+        format.xml {render :xml=>JSON.parse(msg.to_json).to_xml(:root=>'validInfo')}
+        format.json { render json: msg }
+      end
+    end
+  end
+
+  # ws rewrite dinging's method
   def index
     @demands = []
     if request.get?
-        $redis.keys( "#{Rns::De}:*" ).each do |k|
-          demander=Demander.new(Demander.find(k))
-          #demander = Demander.find( k )
-          # hash["score"] = $redis.zscore( Rns::Date, k )
-          @demands << demander
-        end
+      $redis.keys( "#{Rns::De}:*" ).each do |k|
+        demander=Demander.new(Demander.find(k))
+        #demander = Demander.find( k )
+        # hash["score"] = $redis.zscore( Rns::Date, k )
+        @demands << demander
+      end
     else
     end
 
@@ -102,13 +142,13 @@ class DemanderController<ApplicationController
   def create
     key = Demander.get_key( params[:id] )
     if $redis.exists( key )
-    else
+      else
       demand = Demander.new( :key=>key, :clientId=>params[:client],
-                                                                                  :supplierId=>params[:supplier],
-                                                                                  :relpartId=>params[:partNr],
-                                                                                  :date=>params[:date],
-                                                                                  :type=>params[:type] )
-      demand.save
+      :supplierId=>params[:supplier],
+      :relpartId=>params[:partNr],
+      :date=>params[:date],
+      :type=>params[:type] )
+    demand.save
     end
 
     redirect_to root_path
