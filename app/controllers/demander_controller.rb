@@ -136,6 +136,7 @@ class DemanderController<ApplicationController
         demander = Demander.find( k )
         @demands << demander
       end
+      @list = Organisation.option_list
     else
     end
 
@@ -150,11 +151,11 @@ class DemanderController<ApplicationController
     if $redis.exists( key )
     else
       demand = Demander.new( :key=>key, :clientId=>params[:client],
-      :supplierId=>params[:supplier],
-      :relpartId=>params[:partNr],
-      :date=>params[:date],
-      :type=>params[:type] )
-      demand.save
+                                                                                  :supplierId=>params[:supplier],
+                                                                                  :relpartId=>params[:partNr],
+                                                                                  :date=>params[:date],
+                                                                                  :type=>params[:type] )
+      demand.save_to_send
     end
 
     redirect_to root_path
@@ -163,20 +164,12 @@ class DemanderController<ApplicationController
   def search
 
     @demands = []
-    key = Demander.search( :client=>params[:client],
-    :supplier=>params[:supplier],
-    :rpartNr=>params[:partNr],
-    # :date=>{ :start=>params[:start], :end=>params[:end] },
-    :type=>params[:type] )
-    start = params[:start].size>0 ? params[:start].to_i : -(1/0.0)
-    timeend = params[:end].size>0 ? params[:end].to_i : (1/0.0)
-    # puts "#{$redis.zcount( key, start, timeend)}"+"_"*200
-    $redis.zrangebyscore( key, start, timeend, :withscores=>true ).each do |item|
-      hash = $redis.hgetall( item[0] )
-      hash["key"] = item[0]
-      hash["score"] = item[1]
-      @demands << hash
-    end
+    @demands = Demander.search( :client=>params[:client],
+                                                      :supplier=>params[:supplier],
+                                                      :rpartNr=>params[:partNr],
+                                                      :start=>params[:start],
+                                                      :end=>params[:end],
+                                                      :type=>params[:type] )
 
     respond_to do |format|
       format.html # index.html.erb

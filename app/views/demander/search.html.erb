@@ -13,16 +13,19 @@
 <hr/>
 There is(are) <%= @demands.size %> record(s):<br/>
 <ul class="projects">
-<% @demands.each do |demand| %>
+<% @demands.each do |d| %>
   <li>
-  	<div>TYPE:<%= demand.class%></div>
+  	<div>TYPE:<%= d[0].class%></div>
     <div class="info">
-   	<% demand.each do |k, v|%>
-        <%= k%>: <%= v %>
-    <% end %>
+   	<%= d[0].key%>
+   	Client:<%= d[0].clientNr %>
+   	Supplier:<%= d[0].supplierNr %>
+   	Part:<%= d[0].relpartId%>
+   	Date:<%= d[0].date%>
+   	Type:<%= d[0].type%>
+   	&nbsp;&nbsp;
+   	Score:<%= d[1]%>
     </div>
   </li>
 <% end %>
 </ul>
-
-

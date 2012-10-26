@@ -18,11 +18,11 @@
     </div>
     <div>
     <%= label_tag :client %>
-    <%= select_tag :client,  options_for_select($redis.keys( Rns::Org+":*" ).collect { |p| [ $redis.hget(p,"name"), p.delete("#{Rns::Org}:") ] } ) %>
+    <%= select_tag :client,  options_for_select( @list ) %>
     </div>
     <div>
     <%= label_tag :supplier %>
-    <%= select_tag :supplier,  options_for_select($redis.keys( Rns::Org+":*" ).collect { |p| [ $redis.hget(p,"name"), p.delete("#{Rns::Org}:") ] } ) %>
+    <%= select_tag :supplier,  options_for_select( @list ) %>
     </div>
     <div>
     <%= label_tag :partNr %>
@@ -53,8 +53,8 @@ There is(are) <%= @demands.size %> record(s):<br/>
   	<div>TYPE:<%= d.class%></div>
     <div class="info">
    	<%= d.key%>
-   	Client:<%= $redis.hget("#{Rns::Org}:#{d.clientId}","name") %>
-   	Supplier:<%= $redis.hget("#{Rns::Org}:#{d.supplierId}","name") %>
+   	Client:<%= d.clientNr %>
+   	Supplier:<%= d.supplierNr %>
    	Part:<%= d.relpartId%>
    	Date:<%= d.date%>
    	Type:<%= d.type%>
