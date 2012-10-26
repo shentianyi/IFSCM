@@ -2,17 +2,19 @@
 <input type="button" value="Refresh" onclick="window.location.reload()"/> 
 
 <br/>
+<h1><%= @org.name %></h1>
 <%= form_tag :controller=>"organisation_manager", :action=>"add_supplier" do  %>
     <div>
-    <%= label_tag :id %>
-    <%= text_field_tag :id, @id, :readOnly=>true %>
+	    <%= label_tag :key %>
+	    <%= text_field_tag :key, @org.key, :readOnly=>true %>
     </div>
 	<div>
-			<label>Supplier List:</label><%= select_tag :organisation,  options_for_select($redis.keys( Rns::Org+":*" ).collect { |p| [ $redis.hget(p,"name"), p.delete("#{Rns::Org}:") ] } ),  prompt: "All" %>
+		<label>Supplier List:</label>
+		<%= select_tag :orgId,  options_for_select(@list),  prompt: "All" %>
 	</div>
     <div>
-    <%= label_tag :name, "Local Name" %>
-    <%= text_field_tag :name, nil, :placeholder => "example: Leoni" %>
+	    <%= label_tag :name, "Local Name" %>
+	    <%= text_field_tag :name, nil, :placeholder => "example: Leoni" %>
     </div>
     <%= submit_tag "Create" %>
 <% end %>
@@ -20,13 +22,16 @@
 <hr/>
 <%= @orgs.size %><br/>
 <ul class="projects">
-<% @orgs.each do |org| %>
+<% @orgs.each do |o| %>
   <li>
-  	<h2>Local Name:<%= org["SNr"]%></h2>
+  	<h2>Local Name:<%= o[0]%></h2>
     <div class="info">
-   	<% org.each do |k, v|%>
-        <%= k%>: <%= v %>
-    <% end %>
+    <%= o[1].key%>
+   	Name:<%= o[1].name%>
+   	Address:<%= o[1].address%>
+   	Tel:<%= o[1].tel%>
+   	Website:<%= o[1].website%>
+    <%= link_to "Show", organisation_manager_path(o[1].key)%>
     </div>
   </li>
 <% end %>

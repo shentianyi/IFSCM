@@ -27,16 +27,13 @@ class Demander<CZ::BaseClass
   
   # ws rewrite ding's method
   def self.find( key )
-    $redis.hgetall key
-    # hash = $redis.hgetall( key )
-    # demander = Demander.new
-    # demander.key = key
-    # demander.clientId = hash["clientId"]
-    # demander.supplierId = hash["supplierId"]
-    # demander.relpartId = hash["relpartId"]
-    # demander.date = hash["date"]
-    # demander.type = hash["type"]
-    # demander
+    hash = $redis.hgetall( key )
+    demander = Demander.new
+    demander.key = key
+    hash.each do |k,v|
+      demander.instance_variable_set "@#{k}",v
+    end
+    demander
   end
   
   def self.search( hash )
@@ -66,12 +63,6 @@ class Demander<CZ::BaseClass
       resultKey
       
   end
-  
-  def self.test( hash )
-    hash[:sdi]
-  end
-  
-  #
   
   # ws: save demand temp in redis
   def save_temp_in_redis msgs

@@ -26,14 +26,17 @@
 <hr/>
 <%= @orgs.size %><br/>
 <ul class="projects">
-<% @orgs.each do |org| %>
+<% @orgs.each do |o| %>
   <li>
-  	<h2>TYPE:<%= org.class%></h2>
+  	<h2>TYPE:<%= o.class%></h2>
     <div class="info">
-   	<% org.each do |k, v|%>
-        <%= k%>: <%= v %>
-    <% end %>
-    <%= link_to "Show", organisation_manager_path(org["key"])%>
+    <%= o.id%>
+    <%= o.key%>
+   	Name:<%= o.name%>
+   	Address:<%= o.address%>
+   	Tel:<%= o.tel%>
+   	Website:<%= o.website%>
+    <%= link_to "Show", organisation_manager_path(o.key)%>
     </div>
   </li>
 <% end %>

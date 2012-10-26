@@ -39,7 +39,6 @@
     <%= submit_tag "Create" %>
 <% end %>
 
-Class DemandForecast, Method Test : <%= Demander.test(:sdi=>"one", :sed=>"two" )%><br/>
 <%= $redis.zcard( "date" )%><br/>
 <%= $redis.keys("#{Rns::De}:*")%>
 <%= $redis.keys("#{Rns::C}:*")%>
