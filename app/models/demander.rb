@@ -3,29 +3,25 @@ require 'digest/md5'
 require 'base_class'
 
 class Demander<CZ::BaseClass
-  attr_accessor :key,:clientId,:clientNr,:relpartId,
-  :supplierId,:supplierNr,:cpartId,:cpartNr,:spartId,:spartNr,
-  :type,:amount,:date,:filedate,:vali,:rate,:lineNo,:uuid,:msg,:source
- 
+  attr_accessor :key,:clientId,:relpartId,:supplierId, :type,:amount,:date,:rate
   
   def self.gen_index
     $redis.incr 'demand:index:incr'
   end
   
-  def save
-      $redis.hmset( @key, "clientId", @clientId, "supplierId", @supplierId, "relpartId", @relpartId, "date", @date, "type", @type )
-      $redis.sadd( "#{Rns::C}:#{@clientId}", @key )
-      $redis.sadd( "#{Rns::S}:#{@supplierId}", @key )
-      $redis.sadd( "#{Rns::RP}:#{@relpartId}", @key )
-      $redis.zadd( Rns::Date, @date.to_i, @key )
-      $redis.sadd( "#{Rns::T}:#{@type}", @key )
-  end
+  # def save
+      # $redis.hmset( @key, "clientId", @clientId, "supplierId", @supplierId, "relpartId", @relpartId, "date", @date, "type", @type )
+      # $redis.sadd( "#{Rns::C}:#{@clientId}", @key )
+      # $redis.sadd( "#{Rns::S}:#{@supplierId}", @key )
+      # $redis.sadd( "#{Rns::RP}:#{@relpartId}", @key )
+      # $redis.zadd( Rns::Date, @date.to_i, @key )
+      # $redis.sadd( "#{Rns::T}:#{@type}", @key )
+  # end
   
   def self.get_key( id )
     Rns::De+":#{id}"
   end
   
-  # ws rewrite ding's method
   def self.find( key )
     hash = $redis.hgetall( key )
     demander = Demander.new
