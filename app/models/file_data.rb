@@ -12,7 +12,7 @@ class FileData<CZ::BaseClass
     end
   end
   
-  def save
+  def saveFile
     @extention=File.extname(@oriName).downcase
     @pathName=@uuidName+@extention
     File.open(File.join(@path,@pathName),'wb') do |f|

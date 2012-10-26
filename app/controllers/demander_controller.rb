@@ -21,7 +21,7 @@ class DemanderController<ApplicationController
             uuidName=uuid.generate
             hf={:oriName=>f.original_filename,:uuidName=>uuidName,:path=>path}
             dcsv=FileData.new(:data=>f,:type=>FileDataType::Demand,:oriName=>f.original_filename,:uuidName=>uuidName,:path=>path)
-            dcsv.save
+            dcsv.saveFile
             hf[:pathName]=dcsv.pathName
             hfiles<<hf
           end
@@ -80,33 +80,42 @@ class DemanderController<ApplicationController
       msg=ReturnMsg.new(:result=>false,:content=>'')
       hbf=RedisFile.find(params[:batchId])
       hsf=RedisFile.find(params[:fileId])
-      hod=Demander.find(params[:uuid])
+      od=DemanderTemp.find(params[:uuid])
 
-      if hbf.count!=0 or hsf.count==0 or hod.count==0
+      if hbf.count!=0 and hsf.count!=0 and od
         bf=RedisFile.new(hbf)
         puts '=======bf======'
         puts bf
         puts '+++++sf++++++'
         sf=RedisFile.new(hsf)
         puts sf
-        od=Demander.new(hod)
 
-        nd= Demander.new(:uuid=>od.uuid,:cpartNr=>params[:partNr],:clientId=>clientId,:supplierNr=>params[:supplierNr],
-        :filedate=>params[:filedate],:type=>params[:type],:amount=>params[:amount],:lineNo=>od.lineNo,:source=>od.source)
+        nd= DemanderTemp.new(:key=>od.key,:cpartNr=>params[:partNr],:clientId=>clientId,:supplierNr=>params[:supplierNr],
+        :filedate=>params[:filedate],:date=>params[:date],:type=>params[:type],:amount=>params[:amount],:lineNo=>od.lineNo,:source=>od.source)
         okey=od.gen_md5_repeat_key
         nkey=nd.gen_md5_repeat_key
         if okey!=nkey
-        bf.remove_repeat_item(od.gen_md5_repeat_key,od.uuid)
+          puts '------------------------------------remove repeat'+od.key
+        bf.remove_repeat_item(od.gen_md5_repeat_key,od.key)
         end
         vmsg=DemanderHelper::demand_field_validate(nd,bf)
         nd.vali=vmsg.result
-        nd.save_temp_in_redis(vmsg.contents)
+
+        if vmsg.result
+          nd.rate=DemandHistory.compare_rate(
+        nd.clientId,nd.supplierId,
+        nd.cpartId,nd.type,nd.date,nd.amount)
+        else
+        nd.msg=vmsg.contents.to_json
+        end
+        nd.save
+
         #move demand
         if nd.vali.to_s!=od.vali
           from=!nd.vali ? 'normal':'error'
           to=nd.vali ? 'normal':'error'
           score=nd.vali ? nd.rate : nd.lineNo
-          sf.send "move_#{from}_to_#{to}".to_sym,score,nd.uuid
+          sf.send "move_#{from}_to_#{to}".to_sym,score,nd.key
         end
       msg.result=true
       msg.object=nd
@@ -120,14 +129,12 @@ class DemanderController<ApplicationController
     end
   end
 
-  # ws rewrite dinging's method
   def index
     @demands = []
     if request.get?
       $redis.keys( "#{Rns::De}:*" ).each do |k|
-        demander=Demander.new(Demander.find(k))
-        #demander = Demander.find( k )
-        # hash["score"] = $redis.zscore( Rns::Date, k )
+        demander = Demander.find( k )
+        hash["score"] = $redis.zscore( Rns::Date, k )
         @demands << demander
       end
     else

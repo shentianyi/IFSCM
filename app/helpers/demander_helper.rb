@@ -12,25 +12,31 @@ module DemanderHelper
       files.each do |f|
         sfile=RedisFile.new(:index=>f[:uuidName],:oriName=>f[:oriName],:uuidName=>f[:uuidName],
         :itemCount=>0,:errorCount=>0,:normalItemKey=>uuid.generate,:errorItemKey=>uuid.generate)
-
         # csv header---
         CSV.foreach(File.join(f[:path],f[:pathName]),:headers=>true,:col_sep=>$CSVSP) do |row|
-
         sfile.itemCount+=1
-          demand= Demander.new(:uuid=>uuid.generate,:cpartNr=>row[0],:clientId=>clientId,:supplierNr=>row[1],
+          demand= DemanderTemp.new(:key=>uuid.generate,:cpartNr=>row[0],:clientId=>clientId,:supplierNr=>row[1],
           :filedate=>row[2],:type=>row[3],:amount=>row[4],:lineNo=>sfile.itemCount,:source=>f[:oriName])
           demand.date=FormatHelper::demand_date_by_str_type demand.filedate,demand.type
 
           # validate demand field
           msg=demand_field_validate(demand,batchFile)
 
-          sfile.errorCount+= 1 if !msg.result
           demand.vali=msg.result
-          demand.save_temp_in_redis msg.contents
           if msg.result
-            sfile.add_normal_item demand.rate,demand.uuid
+            demand.rate=DemandHistory.compare_rate(
+          demand.clientId,demand.supplierId,
+          demand.cpartId,demand.type,demand.date,demand.amount)
           else
-            sfile.add_error_item demand.lineNo,demand.uuid
+          demand.msg=msg.contents.to_json
+          end
+          demand.save
+
+          sfile.errorCount+= 1 if !msg.result
+          if msg.result
+          sfile.add_normal_item demand.rate,demand.key
+          else
+          sfile.add_error_item demand.lineNo,demand.key
           end
         end
         # csv --end
@@ -45,7 +51,7 @@ module DemanderHelper
     rescue Exception=>e
       puts '-------------exception msg---------------------'
       puts e.message
-      puts e.backtrace.inspect
+      puts e.backtrace.inspect.split(',')
     # should move all file infos from redis
     end
     return nil
@@ -106,15 +112,19 @@ module DemanderHelper
     else
     demand.amount=demand.amount.to_i
     end
-    
+
     #valid repeat
     repeat_key= demand.gen_md5_repeat_key
-    if baseuuid=batchFile.get_repeat_item(repeat_key)
-      baseDemand=Demander.find(baseuuid)
-      msg.result=false
-      msg.add_content("existsFile:#{baseDemand['source']},line#{baseDemand['lineNo']}")
+    if key=batchFile.get_repeat_item(repeat_key)
+      puts key+'******************888'
+      baseDemand=DemanderTemp.find(key)
+      puts baseDemand
+      if baseDemand and baseDemand.key!=demand.key
+        msg.result=false
+        msg.add_content("existsFile:#{baseDemand.source},line#{baseDemand.lineNo}")
+      end
     else
-      batchFile.add_repeat_item(repeat_key,demand.uuid)
+    batchFile.add_repeat_item(repeat_key,demand.key)
     end
     return msg
   end
@@ -127,10 +137,11 @@ module DemanderHelper
     if demands.itemCount>0
       demands.items=[]
       itemKeys.each do |k|
-        h=Demander.find(k)
-        if h.count>0
-          demand=Demander.new(h)
-        demands.items<<demand
+        puts '***********************'
+        puts k
+        if d=DemanderTemp.find(k)
+          puts '&&&&&&&&&&&&&&&&&&&&&&&&7'
+        demands.items<<d
         end
       end
     end

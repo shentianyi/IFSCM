@@ -3,31 +3,28 @@ require 'digest/md5'
 require 'base_class'
 
 class Demander<CZ::BaseClass
-  attr_accessor :key,:clientId,:clientNr,:relpartId,
-  :supplierId,:supplierNr,:cpartId,:cpartNr,:spartId,:spartNr,
-  :type,:amount,:date,:filedate,:vali,:rate,:lineNo,:uuid,:msg,:source
- 
+  attr_accessor :key,:clientId,:relpartId,:supplierId, :type,:amount,:date,:rate
   
   def self.gen_index
     $redis.incr 'demand:index:incr'
   end
   
-  def save
-      $redis.hmset( @key, "clientId", @clientId, "supplierId", @supplierId, "relpartId", @relpartId, "date", @date, "type", @type )
-      $redis.sadd( "#{Rns::C}:#{@clientId}", @key )
-      $redis.sadd( "#{Rns::S}:#{@supplierId}", @key )
-      $redis.sadd( "#{Rns::RP}:#{@relpartId}", @key )
-      $redis.zadd( Rns::Date, @date.to_i, @key )
-      $redis.sadd( "#{Rns::T}:#{@type}", @key )
-  end
+  # def save
+      # $redis.hmset( @key, "clientId", @clientId, "supplierId", @supplierId, "relpartId", @relpartId, "date", @date, "type", @type )
+      # $redis.sadd( "#{Rns::C}:#{@clientId}", @key )
+      # $redis.sadd( "#{Rns::S}:#{@supplierId}", @key )
+      # $redis.sadd( "#{Rns::RP}:#{@relpartId}", @key )
+      # $redis.zadd( Rns::Date, @date.to_i, @key )
+      # $redis.sadd( "#{Rns::T}:#{@type}", @key )
+  # end
   
   def self.get_key( id )
     Rns::De+":#{id}"
   end
-  
-  # ws rewrite ding's method
-  def self.find( key )
-    $redis.hgetall key
+   
+   
+  # def self.find( key )
+    # $redis.hgetall key
     # hash = $redis.hgetall( key )
     # demander = Demander.new
     # demander.key = key
@@ -37,7 +34,7 @@ class Demander<CZ::BaseClass
     # demander.date = hash["date"]
     # demander.type = hash["type"]
     # demander
-  end
+  # end
   
   def self.search( hash )
       list = []
@@ -70,28 +67,6 @@ class Demander<CZ::BaseClass
   def self.test( hash )
     hash[:sdi]
   end
-  
-  #
-  
-  # ws: save demand temp in redis
-  def save_temp_in_redis msgs
-    $redis.hmset(@uuid,'uuid',@uuid,'clientId',@clientId,'supplierNr',@supplierNr,'cpartNr',@cpartNr,'lineNo',@lineNo,
-        'cpartId',@cpartId,'amount',@amount,'type',@type,'filedate',@filedate,'date',@date,'vali',@vali,'source',@source)
-    if !@vali
-      @msg=msgs.to_json
-      $redis.hset @uuid,'msg',@msg
-    else
-      #caluate rate
-      h=DemandHistory.new(:clientId=>@clientId,:supplierId=>@supplierId,:cpartId=>@cpartId,:type=>@type,:date=>@date,:amount=>@amount)
-      @rate=h.calculate_rate
-      $redis.hset @uuid,'rate',@rate
-    end
-  end
-   
-  
-  def gen_md5_repeat_key
-    Digest::MD5.hexdigest(@clientId.to_s+':'+@cpartNr+':'+@type+':'+(@date.nil?? '' : @date)+':'+@supplierNr)
-  end 
   
   
 private
