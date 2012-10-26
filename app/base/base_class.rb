@@ -10,13 +10,8 @@ module CZ
 
     def save
       return false  if $redis.exists @key
-      puts '--------key---'
-      puts @key
       instance_variables.each do |attr|
-        puts attr
-          #$redis.hset @key,attr.to_s.sub(/@/,''),instance_variable_get(attr) if instance_variable_defined?(attr)
-         
-         puts instance_variable_get(attr).class if instance_variable_defined?(attr)
+       $redis.hset @key,attr.to_s.sub(/@/,''),instance_variable_get(attr) if instance_variable_defined?(attr)
       end
       return true
     end

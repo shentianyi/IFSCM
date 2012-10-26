@@ -1,19 +1,8 @@
 require 'base_class'
 
 class RedisFile<CZ::BaseClass
-  attr_accessor :index,:oriName,:uuidName,:itemCount,:errorCount,:uuidName,:normalItemKey,:errorItemKey,:repeatItemKey,:items
+  attr_accessor :key,:oriName,:uuidName,:itemCount,:errorCount,:uuidName, :normalItemKey,:errorItemKey,:repeatItemKey,:items
 
-  def save_in_redis
-    $redis.hmset @index,'itemCount',@itemCount,'errorCount',@errorCount,'normalItemKey',@normalItemKey
-    $redis.hmset @index,'oriName',@oriName if @oriName
-    $redis.hset @index,'uuidName',@uuidName if @uuidname
-    $redis.hset @index,'errorItemKey',@errorItemKey if @errorItemKey
-    $redis.hset @index,'repeatItemKey',@repeatItemKey if @repeatItemKey
-  end
-  
-  def self.find(index)
-    $redis.hgetall(index)
-  end
 
   def add_item item
     @items=[] if !@items
@@ -67,13 +56,11 @@ class RedisFile<CZ::BaseClass
   
   # ws get file error items
   def get_error_item_keys startIndex,endIndex
-    @errorItemKey=$redis.hget @index,'errorItemKey'
     return $redis.zrange @errorItemKey,startIndex,endIndex
   end
 
     # ws get file error items
   def get_normal_item_keys startIndex,endIndex
-    @normalItemKey=$redis.hget @index,'normalItemKey'
     return $redis.zrevrange @normalItemKey,startIndex,endIndex
   end
     

@@ -8,9 +8,9 @@ module DemanderHelper
     begin
       uuid=UUID.new
       # in batchFile normalKey=>file set, repeat Key=>repeat hash
-      batchFile=RedisFile.new(:index=>uuid.generate,:itemCount=>0,:errorCount=>0,:normalItemKey=>uuid.generate,:repeatItemKey=>uuid.generate)
+      batchFile=RedisFile.new(:key=>uuid.generate,:itemCount=>0,:errorCount=>0,:normalItemKey=>uuid.generate,:repeatItemKey=>uuid.generate)
       files.each do |f|
-        sfile=RedisFile.new(:index=>f[:uuidName],:oriName=>f[:oriName],:uuidName=>f[:uuidName],
+        sfile=RedisFile.new(:key=>f[:uuidName],:oriName=>f[:oriName],:uuidName=>f[:uuidName],
         :itemCount=>0,:errorCount=>0,:normalItemKey=>uuid.generate,:errorItemKey=>uuid.generate)
         # csv header---
         CSV.foreach(File.join(f[:path],f[:pathName]),:headers=>true,:col_sep=>$CSVSP) do |row|
@@ -40,13 +40,13 @@ module DemanderHelper
           end
         end
         # csv --end
-        sfile.save_in_redis
-        batchFile.add_normal_item sfile.errorCount,sfile.index # order the files by error items count
+        sfile.save
+        batchFile.add_normal_item sfile.errorCount,sfile.key # order the files by error items count
         batchFile.add_item sfile
         batchFile.errorCount+=1 if sfile.errorCount>0
         batchFile.itemCount+=1
       end
-      batchFile.save_in_redis
+      batchFile.save
       return batchFile
     rescue Exception=>e
       puts '-------------exception msg---------------------'
@@ -92,6 +92,7 @@ module DemanderHelper
         end
       end
     end
+    
     # valid demand type
     if !$redis.hget('demand:type',demand.type)
       msg.result=false
@@ -131,14 +132,12 @@ module DemanderHelper
 
   # ws: get file demands by type
   def self.get_file_demands fileId,startIndex,endIndex,type
-    demands=RedisFile.new(:index=>fileId)
+    demands=RedisFile.find(fileId)
     itemKeys=demands.send "get_#{type}_item_keys".to_sym,startIndex,endIndex
     demands.itemCount=itemKeys.count
     if demands.itemCount>0
       demands.items=[]
       itemKeys.each do |k|
-        puts '***********************'
-        puts k
         if d=DemanderTemp.find(k)
           puts '&&&&&&&&&&&&&&&&&&&&&&&&7'
         demands.items<<d

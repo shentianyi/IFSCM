@@ -78,24 +78,17 @@ class DemanderController<ApplicationController
     if request.post?
       clientId=session[:userId]
       msg=ReturnMsg.new(:result=>false,:content=>'')
-      hbf=RedisFile.find(params[:batchId])
-      hsf=RedisFile.find(params[:fileId])
+      bf=RedisFile.find(params[:batchId])
+      sf=RedisFile.find(params[:fileId])
       od=DemanderTemp.find(params[:uuid])
 
-      if hbf.count!=0 and hsf.count!=0 and od
-        bf=RedisFile.new(hbf)
-        puts '=======bf======'
-        puts bf
-        puts '+++++sf++++++'
-        sf=RedisFile.new(hsf)
+      if bf and sf and od
         puts sf
-
         nd= DemanderTemp.new(:key=>od.key,:cpartNr=>params[:partNr],:clientId=>clientId,:supplierNr=>params[:supplierNr],
         :filedate=>params[:filedate],:date=>params[:date],:type=>params[:type],:amount=>params[:amount],:lineNo=>od.lineNo,:source=>od.source)
         okey=od.gen_md5_repeat_key
         nkey=nd.gen_md5_repeat_key
         if okey!=nkey
-          puts '------------------------------------remove repeat'+od.key
         bf.remove_repeat_item(od.gen_md5_repeat_key,od.key)
         end
         vmsg=DemanderHelper::demand_field_validate(nd,bf)

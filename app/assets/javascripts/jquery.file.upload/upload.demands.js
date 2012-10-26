@@ -22,10 +22,12 @@ $(function() {'use strict';
 		},
 		success : function(data) {
 			// alert(data.object.index);
-			$('#batchId').val(data.object.index); 
+			$('#batchId').val(data.object.key); 
+			
 			if(data.object.items.length>0){
+			     $('#fileId').val(data.object.items[0].key);
 			    for(var i=0;i<data.object.items.length;i++){
-			         $('#items').append(i+">fileId:::<p>"+data.object.items[i].index+"</p>");
+			         $('#items').append(i+">fileId:::<p>"+data.object.items[i].key+"</p>");
 			    }
 			}
 		},

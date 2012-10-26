@@ -8,34 +8,12 @@ class Demander<CZ::BaseClass
   def self.gen_index
     $redis.incr 'demand:index:incr'
   end
-  
-  # def save
-      # $redis.hmset( @key, "clientId", @clientId, "supplierId", @supplierId, "relpartId", @relpartId, "date", @date, "type", @type )
-      # $redis.sadd( "#{Rns::C}:#{@clientId}", @key )
-      # $redis.sadd( "#{Rns::S}:#{@supplierId}", @key )
-      # $redis.sadd( "#{Rns::RP}:#{@relpartId}", @key )
-      # $redis.zadd( Rns::Date, @date.to_i, @key )
-      # $redis.sadd( "#{Rns::T}:#{@type}", @key )
-  # end
+   
   
   def self.get_key( id )
     Rns::De+":#{id}"
   end
    
-   
-  # def self.find( key )
-    # $redis.hgetall key
-    # hash = $redis.hgetall( key )
-    # demander = Demander.new
-    # demander.key = key
-    # demander.clientId = hash["clientId"]
-    # demander.supplierId = hash["supplierId"]
-    # demander.relpartId = hash["relpartId"]
-    # demander.date = hash["date"]
-    # demander.type = hash["type"]
-    # demander
-  # end
-  
   def self.search( hash )
       list = []
       resultKey = "resultKey"
