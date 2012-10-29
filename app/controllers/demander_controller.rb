@@ -148,6 +148,7 @@ class DemanderController<ApplicationController
                                                                                   :relpartId=>params[:partNr],
                                                                                   :date=>params[:date],
                                                                                   :type=>params[:type] )
+      demand.save
       demand.save_to_send
     end
 

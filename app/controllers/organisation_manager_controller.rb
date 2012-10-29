@@ -30,9 +30,13 @@ class OrganisationManagerController < ApplicationController
   end
   
   def show
-    @org = Organisation.find( params[:id] )
     @list = Organisation.option_list
-    @orgs = @org.list( @org.s_key )
+    if @org = Organisation.find( params[:id] )
+      @orgs = @org.list( @org.s_key )
+    else
+      @org = Organisation.new
+      @orgs = []
+    end
   end
   
   def add_supplier
