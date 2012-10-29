@@ -3,10 +3,9 @@ class OrganisationManagerController < ApplicationController
   def index
 
     @orgs = []
-    $redis.keys( Rns::Org+":*" ).each do |key|
-        hash = $redis.hgetall( key )
-        hash["key"] = key
-        @orgs << hash
+    $redis.keys( Rns::Org+":*" ).each do |k|
+        org = Organisation.find( k )
+        @orgs << org
     end
 
     respond_to do |format|
@@ -17,14 +16,12 @@ class OrganisationManagerController < ApplicationController
   
   def create
     key = Organisation.get_key( params[:id] )
-    # puts "----------------------------"<<params.to_a.to_s
     if $redis.exists( key )
     else
       organisation = Organisation.new( :key=>key, 
                                                         :name=>params[:name],
                                                         :address=>params[:address],
                                                         :tel=>params[:tel],
-                                                        # :website=>params[:website],
                                                         :website=>params[:website] )
       organisation.save
     end
@@ -33,22 +30,16 @@ class OrganisationManagerController < ApplicationController
   end
   
   def show
-    @id = params[:id].delete "#{Rns::Org}:"
-    key = "#{@id}:#{Rns::S}"
-    @orgs = []
-    $redis.zrange( key, 0, -1, :withscores=>true ).each do |item|
-        hash = $redis.hgetall( "#{Rns::Org}:#{item[1].to_i}" )
-        hash["SNr"] = item[0]
-        # hash["key"] = key
-        @orgs << hash
-    end
+    @org = Organisation.find( params[:id] )
+    @list = Organisation.option_list
+    @orgs = @org.list( @org.s_key )
   end
   
   def add_supplier
-    @id = params[:id]
-    Organisation.add_supplier( @id, params[:organisation], params[:name] )
+    org = Organisation.find( params[:key] )
+    org.add_supplier( params[:orgId], params[:name] )
     
-    redirect_to organisation_manager_path("#{Rns::Org}:#{@id}")
+    redirect_to organisation_manager_path( org.key )
   end
   
 end

@@ -13,7 +13,7 @@ class Demander<CZ::BaseClass
   def self.get_key( id )
     Rns::De+":#{id}"
   end
-   
+
   def self.search( hash )
       list = []
       resultKey = "resultKey"
@@ -41,10 +41,7 @@ class Demander<CZ::BaseClass
       resultKey
       
   end
-  
-  def self.test( hash )
-    hash[:sdi]
-  end
+
   
   
 private
