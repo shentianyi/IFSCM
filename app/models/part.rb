@@ -1,6 +1,8 @@
 require 'base_class'
 
 class Part<CZ::BaseClass
+  attr_accessor :key,:orgId,:partNr,:createTime
+  
   def self.exist_by_partId partId
     $redis.sismember 'partId:set',partId.to_s
   end

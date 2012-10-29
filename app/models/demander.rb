@@ -14,22 +14,7 @@ class Demander<CZ::BaseClass
     Rns::De+":#{id}"
   end
 
-<<<<<<< HEAD
 
-#   
-  # def self.find( key )
-    # hash = $redis.hgetall( key )
-    # demander = Demander.new
-    # demander.instance_variable_set "@key", key
-    # hash.each do |k,v|
-      # demander.instance_variable_set "@#{k}",v
-    # end
-    # demander
-  # end
-  
-
-=======
->>>>>>> 32c24b044ed7f3211a47b4eca8bb67074502f22c
   def self.search( hash )
       list = []
       resultKey = "resultKey"

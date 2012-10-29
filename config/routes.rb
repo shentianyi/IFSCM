@@ -16,6 +16,7 @@ Demand::Application.routes.draw do
       match :get_normal
       match :correct_error
       match :cancel_upload
+      match :demand_history
     end
   end
 
