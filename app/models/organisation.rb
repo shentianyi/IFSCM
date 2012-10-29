@@ -8,26 +8,12 @@ class Organisation<CZ::BaseClass
     Rns::Org+":#{id}"
   end
   
-  def self.find( key )
-    hash = $redis.hgetall( key )
-    organisation = Organisation.new
-    organisation.instance_variable_set "@key", key
-    hash.each do |k,v|
-      organisation.instance_variable_set "@#{k}",v
-    end
-    organisation
-  end
-  
   def self.find_by_id( id )
     find( get_key( id ) )
   end
   
   def self.option_list
     $redis.keys( Rns::Org+":*" ).collect { |p| [ $redis.hget(p,"name"), p.delete("#{Rns::Org}:") ] }
-  end
-  
-  def save
-    $redis.hmset( @key, "name", @name, "address", @address, "tel", @tel, "website", @website )
   end
   
   def id

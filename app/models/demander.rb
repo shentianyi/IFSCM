@@ -14,6 +14,7 @@ class Demander<CZ::BaseClass
     Rns::De+":#{id}"
   end
 
+<<<<<<< HEAD
 
 #   
   # def self.find( key )
@@ -27,6 +28,8 @@ class Demander<CZ::BaseClass
   # end
   
 
+=======
+>>>>>>> 32c24b044ed7f3211a47b4eca8bb67074502f22c
   def self.search( hash )
       list = []
       resultKey = "resultKey"
@@ -68,15 +71,14 @@ class Demander<CZ::BaseClass
   end
   
   def clientNr
-    $redis.hget( Organisation.get_key(clientId),"name")
+    $redis.hget( Organisation.get_key(clientId), :name)
   end
   
   def supplierNr
-    $redis.hget( Organisation.get_key(supplierId),"name")
+    $redis.hget( Organisation.get_key(supplierId), :name)
   end
   
   def save_to_send
-      $redis.hmset( key, "clientId", clientId, "supplierId", supplierId, "relpartId", relpartId, "date", date, "type", type )
       $redis.sadd( "#{Rns::C}:#{clientId}", key )
       $redis.sadd( "#{Rns::S}:#{supplierId}", key )
       $redis.sadd( "#{Rns::RP}:#{relpartId}", key )

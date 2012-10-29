@@ -162,11 +162,12 @@ class DemanderController<ApplicationController
     if $redis.exists( key )
       else
       demand = Demander.new( :key=>key, :clientId=>params[:client],
-      :supplierId=>params[:supplier],
-      :relpartId=>params[:partNr],
-      :date=>params[:date],
-      :type=>params[:type] )
-    demand.save_to_send
+                                                                                  :supplierId=>params[:supplier],
+                                                                                  :relpartId=>params[:partNr],
+                                                                                  :date=>params[:date],
+                                                                                  :type=>params[:type] )
+      demand.save
+      demand.save_to_send 
     end
 
     redirect_to root_path
