@@ -8,6 +8,7 @@ gem 'jquery-rails'
 gem 'redis'
 
 gem "uuid"
+gem 'resque'
 
 group :assets do
   gem 'sass-rails',   '~> 3.2.3'

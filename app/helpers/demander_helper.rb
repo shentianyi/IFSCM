@@ -9,6 +9,7 @@ module DemanderHelper
       uuid=UUID.new
       # in batchFile normalKey=>file set, repeat Key=>repeat hash
       batchFile=RedisFile.new(:key=>uuid.generate,:itemCount=>0,:errorCount=>0,:normalItemKey=>uuid.generate,:repeatItemKey=>uuid.generate)
+      items=[]
       files.each do |f|
         sfile=RedisFile.new(:key=>f[:uuidName],:oriName=>f[:oriName],:uuidName=>f[:uuidName],
         :itemCount=>0,:errorCount=>0,:normalItemKey=>uuid.generate,:errorItemKey=>uuid.generate)
@@ -42,11 +43,12 @@ module DemanderHelper
         # csv --end
         sfile.save
         batchFile.add_normal_item sfile.errorCount,sfile.key # order the files by error items count
-        batchFile.add_item sfile
+        items<<sfile
         batchFile.errorCount+=1 if sfile.errorCount>0
         batchFile.itemCount+=1
       end
       batchFile.save
+      batchFile.items=items if items.count>0
       return batchFile
     rescue Exception=>e
       puts '-------------exception msg---------------------'
@@ -61,6 +63,7 @@ module DemanderHelper
   def self.demand_field_validate demand,batchFile
     # valid msg
     msg=ValidMsg.new(:result=>true,:content_key=>Array.new)
+
     # vali partNr
     partId=supplierId=nil
     if !partId=Part.find_partId_by_orgId_partNr(demand.clientId,demand.cpartNr)
@@ -71,11 +74,13 @@ module DemanderHelper
     end
 
     # vali supplier
-    if !supplierId=Organisation.search_supplier_byNr(demand.clientId,demand.supplierNr)
-      msg.result=false
-      msg.content_key<<:spNrNotEx
-    else
-    demand.supplierId=supplierId
+    if client=Organisation.find_by_id(demand.clientId)
+      if !supplierId=client.search_supplier_byNr(demand.supplierNr)
+        msg.result=false
+        msg.content_key<<:spNrNotEx
+      else
+      demand.supplierId=supplierId
+      end
     end
 
     # vali part relation
@@ -92,7 +97,7 @@ module DemanderHelper
         end
       end
     end
-    
+
     # valid demand type
     if !$redis.hget('demand:type',demand.type)
       msg.result=false
@@ -139,7 +144,8 @@ module DemanderHelper
       demands.items=[]
       itemKeys.each do |k|
         if d=DemanderTemp.find(k)
-          puts '&&&&&&&&&&&&&&&&&&&&&&&&7'
+          puts '----************s'
+          puts d.class
         demands.items<<d
         end
       end

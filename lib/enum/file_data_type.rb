@@ -3,5 +3,5 @@ require_relative 'enum'
 
 class FileDataType
   include Enum
-  FileDataType.define :Demand,100,'demand'
+  FileDataType.define :CSVDemand,100,"csv demand"
 end
