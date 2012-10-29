@@ -8,11 +8,24 @@ class Demander<CZ::BaseClass
   def self.gen_index
     $redis.incr 'demand:index:incr'
   end
-   
+
   
   def self.get_key( id )
     Rns::De+":#{id}"
   end
+
+
+  
+  def self.find( key )
+    hash = $redis.hgetall( key )
+    demander = Demander.new
+    demander.instance_variable_set "@key", key
+    hash.each do |k,v|
+      demander.instance_variable_set "@#{k}",v
+    end
+    demander
+  end
+  
 
   def self.search( hash )
       list = []
@@ -38,11 +51,40 @@ class Demander<CZ::BaseClass
       
       $redis.zinterstore( resultKey, list, :aggregate=>"MAX" )
       $redis.expire( resultKey, 30 )
-      resultKey
       
+      start = hash[:start].size>0 ? hash[:start].to_i : -(1/0.0)
+      timeend = hash[:end].size>0 ? hash[:end].to_i : (1/0.0)
+      demands = []
+      $redis.zrangebyscore( resultKey, start, timeend, :withscores=>true ).each do |item|
+        arr = [ Demander.find( item[0] ), item[1] ]
+        demands << arr
+      end
+      demands
   end
 
   
+  def id
+    key.delete "#{Rns::De}:"
+  end
+  
+  def clientNr
+    $redis.hget( Organisation.get_key(clientId),"name")
+  end
+  
+  def supplierNr
+    $redis.hget( Organisation.get_key(supplierId),"name")
+  end
+  
+  def save_to_send
+      $redis.hmset( key, "clientId", clientId, "supplierId", supplierId, "relpartId", relpartId, "date", date, "type", type )
+      $redis.sadd( "#{Rns::C}:#{clientId}", key )
+      $redis.sadd( "#{Rns::S}:#{supplierId}", key )
+      $redis.sadd( "#{Rns::RP}:#{relpartId}", key )
+      $redis.zadd( Rns::Date, date.to_i, key )
+      $redis.sadd( "#{Rns::T}:#{type}", key )
+  end
+
+
   
 private
   def self.union_params( param, column )
