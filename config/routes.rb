@@ -15,7 +15,9 @@ Demand::Application.routes.draw do
       match :get_error
       match :get_normal
       match :correct_error
+      match :cancel_upload
     end
   end
 
+  mount Resque::Server.new, :at=>"/admin/resque"
 end

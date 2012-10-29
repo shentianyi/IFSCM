@@ -2,7 +2,14 @@
 # format settings
 format:
  :csv_splitor: ';'
+ 
 path:
  :demand_csv_path: 'uploadfiles/demands/csv'
+ 
 page:
  :demand_page_size: 20
+ 
+resque:
+ :resquedb: 0
+ :resquehost: 192.168.0.138 
+ :resqueport: 6378

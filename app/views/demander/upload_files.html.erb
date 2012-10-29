@@ -108,7 +108,7 @@
 <hr />
 <div>
      <div id="batchInfo">
-          BatchId<input id="batchId" type="text" />
+          BatchId<input id="batchId" type="text" /><input type="button" onclick="cancel_upload();" value="cancel upload" />
           <div id="items"></div>
      </div>
 </div>
@@ -134,6 +134,19 @@
                     'pageIndex' : $('#pageIndex').val()
                },
                dataType : $('#rtype').val(),
+               type : 'post',
+               success : function(data) {
+                    $('#demands').html(data);
+               }
+          });
+     }
+     function cancel_upload(){
+           $.ajax({
+               url : '../demander/cancel_upload',
+               data : {
+                    'batchId' : $('#batchId').val(), 
+               },
+               dataType : 'json',
                type : 'post',
                success : function(data) {
                     $('#demands').html(data);

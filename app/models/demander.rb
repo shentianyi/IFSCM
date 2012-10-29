@@ -15,16 +15,16 @@ class Demander<CZ::BaseClass
   end
 
 
-  
-  def self.find( key )
-    hash = $redis.hgetall( key )
-    demander = Demander.new
-    demander.instance_variable_set "@key", key
-    hash.each do |k,v|
-      demander.instance_variable_set "@#{k}",v
-    end
-    demander
-  end
+#   
+  # def self.find( key )
+    # hash = $redis.hgetall( key )
+    # demander = Demander.new
+    # demander.instance_variable_set "@key", key
+    # hash.each do |k,v|
+      # demander.instance_variable_set "@#{k}",v
+    # end
+    # demander
+  # end
   
 
   def self.search( hash )

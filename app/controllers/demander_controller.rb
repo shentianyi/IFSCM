@@ -20,7 +20,7 @@ class DemanderController<ApplicationController
           files.each do |f|
             uuidName=uuid.generate
             hf={:oriName=>f.original_filename,:uuidName=>uuidName,:path=>path}
-            dcsv=FileData.new(:data=>f,:type=>FileDataType::Demand,:oriName=>f.original_filename,:uuidName=>uuidName,:path=>path)
+            dcsv=FileData.new(:data=>f,:type=>FileDataType::CSVDemand,:oriName=>f.original_filename,:uuidName=>uuidName,:path=>path)
             dcsv.saveFile
             hf[:pathName]=dcsv.pathName
             hfiles<<hf
@@ -89,7 +89,7 @@ class DemanderController<ApplicationController
         okey=od.gen_md5_repeat_key
         nkey=nd.gen_md5_repeat_key
         if okey!=nkey
-        bf.remove_repeat_item(od.gen_md5_repeat_key,od.key)
+        bf.del_repeat_item(od.gen_md5_repeat_key,od.key)
         end
         vmsg=DemanderHelper::demand_field_validate(nd,bf)
         nd.vali=vmsg.result
@@ -122,6 +122,24 @@ class DemanderController<ApplicationController
     end
   end
 
+  # ws cancel upload
+  def cancel_upload
+    if request.post?
+      msg=ReturnMsg.new(:result=>false,:content=>'')
+      if batchFile=RedisFile.find(params[:batchId])
+        Resque.enqueue(DemandUploadCanceler,batchFile.key)
+        msg.result=true
+        msg.content='cancel success'
+      else
+        msg.content='batch file not exists or has been canceled.'
+      end
+      respond_to do |format|
+        format.xml {render :xml=>JSON.parse(msg.to_json).to_xml(:root=>'validInfo')}
+        format.json { render json: msg }
+      end
+    end
+  end
+
   def index
     @demands = []
     if request.get?
@@ -142,13 +160,13 @@ class DemanderController<ApplicationController
   def create
     key = Demander.get_key( params[:id] )
     if $redis.exists( key )
-    else
+      else
       demand = Demander.new( :key=>key, :clientId=>params[:client],
-                                                                                  :supplierId=>params[:supplier],
-                                                                                  :relpartId=>params[:partNr],
-                                                                                  :date=>params[:date],
-                                                                                  :type=>params[:type] )
-      demand.save_to_send
+      :supplierId=>params[:supplier],
+      :relpartId=>params[:partNr],
+      :date=>params[:date],
+      :type=>params[:type] )
+    demand.save_to_send
     end
 
     redirect_to root_path

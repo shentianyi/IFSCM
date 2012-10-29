@@ -4,6 +4,5 @@ class DemanderTemp<Demander
   def gen_md5_repeat_key
     Digest::MD5.hexdigest(@clientId.to_s+':'+@cpartNr+':'+@type+':'+(@date.nil?? '' : @date)+':'+@supplierNr)
   end
-  
-  
+ 
 end
