@@ -4,6 +4,7 @@ require 'base_class'
 
 class Demander<CZ::BaseClass
   attr_accessor :key,:clientId,:relpartId,:supplierId, :type,:amount,:date,:rate
+  NumPer=5
   
   def self.gen_index
     $redis.incr 'demand:index:incr'
@@ -43,7 +44,7 @@ class Demander<CZ::BaseClass
       start = hash[:start].size>0 ? hash[:start].to_i : -(1/0.0)
       timeend = hash[:end].size>0 ? hash[:end].to_i : (1/0.0)
       demands = []
-      $redis.zrangebyscore( resultKey, start, timeend, :withscores=>true ).each do |item|
+      $redis.zrangebyscore( resultKey, start, timeend, :withscores=>true, :limit=>[(hash[:page].to_i-1)*NumPer, NumPer] ).each do |item|
         arr = [ Demander.find( item[0] ), item[1] ]
         demands << arr
       end

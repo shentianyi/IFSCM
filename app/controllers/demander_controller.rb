@@ -210,7 +210,8 @@ class DemanderController<ApplicationController
                                                       :rpartNr=>params[:partNr],
                                                       :start=>params[:start],
                                                       :end=>params[:end],
-                                                      :type=>params[:type] )
+                                                      :type=>params[:type],
+                                                      :page=>params[:page] )
 
     respond_to do |format|
       format.html # index.html.erb
