@@ -1,5 +1,13 @@
+require 'active_support'
+
 module CZ
   class BaseClass
+    attr_accessor :created_at
+    include ActiveSupport::Callbacks
+
+    define_callbacks :update
+    define_callbacks :destory
+    define_callbacks :save
     def initialize args={}
       if args.count>0
         args.each do |k,v|
@@ -9,11 +17,17 @@ module CZ
     end
 
     def save
-      return false  if $redis.exists @key 
-      instance_variables.each do |attr| 
-        $redis.hset @key,attr.to_s.sub(/@/,''),instance_variable_get(attr) if instance_variable_defined?(attr)
-      end 
+      return false  if $redis.exists @key
+      instance_variables.each do |attr|
+        $redis.hset @key,attr.to_s.sub(/@/,''),instance_variable_get(attr)
+      end
+      $redis.hset @key,'created_at',Time.now.to_i
+      run_callbacks :save
       return true
+    end
+
+    def update
+      run_callbacks :update
     end
 
     def self.find key
@@ -26,6 +40,7 @@ module CZ
     def destory
       if $redis.exists @key
         $redis.del @key
+        run_callbacks :destory
       return true
       end
       return false
