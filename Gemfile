@@ -7,6 +7,10 @@ gem 'mysql2'
 gem 'jquery-rails'
 gem 'redis'
 
+gem 'chinese_pinyin', '0.4.1'
+gem 'rmmseg-cpp-huacnlee', '0.2.9'
+gem 'redis-namespace'
+
 gem "uuid"
 gem 'resque'
 
@@ -20,14 +24,3 @@ group :assets do
   gem 'uglifier', '>= 1.0.3'
 end
 
-
-
-
-# Use unicorn as the app server
-# gem 'unicorn'
-
-# Deploy with Capistrano
-# gem 'capistrano'
-
-# To use debugger
-# gem 'debugger'
