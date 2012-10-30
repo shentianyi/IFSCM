@@ -134,6 +134,35 @@ class DemanderController<ApplicationController
         msg.content='batch file not exists or has been canceled.'
       end
       respond_to do |format|
+        format.xml {render :xml=>JSON.parse(msg.to_json).to_xml(:root=>'demandhistory')}
+        format.json { render json: msg }
+      end
+    end
+  end
+
+  # ws demand history
+  def demand_history
+    if request.post?
+      demandId=params[:demandId]
+      startIndex=params[:startIndex].to_i
+      endIndex=params[:endIndex].to_i
+      msg=ReturnMsg.new(:result=>false,:content=>'')
+      if demander=Demander.find(demandId)
+        demander.gen_key
+        keys= DemandHistory.get_demander_keys(demander.key,startIndex,endIndex)
+        if keys.count>0
+          msg.result=true
+          msg.object=[]
+          keys.each do |k|
+            if dh=DemandHistory.find(k)
+            msg.object<<dh
+            end
+          end
+        else
+          msg.content='no history'
+        end
+      end
+      respond_to do |format|
         format.xml {render :xml=>JSON.parse(msg.to_json).to_xml(:root=>'validInfo')}
         format.json { render json: msg }
       end
@@ -162,12 +191,12 @@ class DemanderController<ApplicationController
     if $redis.exists( key )
       else
       demand = Demander.new( :key=>key, :clientId=>params[:client],
-                                                                                  :supplierId=>params[:supplier],
-                                                                                  :relpartId=>params[:partNr],
-                                                                                  :date=>params[:date],
-                                                                                  :type=>params[:type] )
-      demand.save
-      demand.save_to_send 
+      :supplierId=>params[:supplier],
+      :relpartId=>params[:partNr],
+      :date=>params[:date],
+      :type=>params[:type] )
+    demand.save
+    demand.save_to_send
     end
 
     redirect_to root_path

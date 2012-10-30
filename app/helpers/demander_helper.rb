@@ -26,8 +26,8 @@ module DemanderHelper
           demand.vali=msg.result
           if msg.result
             demand.rate=DemandHistory.compare_rate(
-          demand.clientId,demand.supplierId,
-          demand.cpartId,demand.type,demand.date,demand.amount)
+            demand.clientId,demand.supplierId,
+            demand.relpartId,demand.type,demand.date,demand.amount)
           else
           demand.msg=msg.contents.to_json
           end
@@ -94,6 +94,7 @@ module DemanderHelper
           msg.content_key<<:partMutiFitOrgP
         else
         demand.spartId=parts
+        demand.relpartId=PartRel.get_partrelId(demand.clientId,demand.supplierId,demand.partNr,PartRelType::Client)
         end
       end
     end
