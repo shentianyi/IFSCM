@@ -7,9 +7,9 @@ class InitData
     for j in 1..3 do
       for i in 1...10 do
         key=Part.gen_key
-        p=Part.new(:key=>key,:orgId=>j,:partNr=>"PartNr:"+key)
+        p=Part.new(:key=>key,:orgId=>j,:partNr=>"PartNr"+((10*(j-1))+i).to_s)
         p.save
-        puts key
+        puts p.partNr
       end
     end
   end

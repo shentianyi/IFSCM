@@ -5,13 +5,15 @@ class PartController<ApplicationController
  
   # ws part search
   def search
-    session[:userId]=1
+    session[:userId]=2
     params[:q].gsub!(/'/,'')
     arr=[]
     @search = Redis::Search.complete("Part", params[:q],:conditions=>{:orgId=>session[:userId]})
-    lines = @search.collect do |item|
-      puts item
+    parts =[]
+     @search.collect do |item|
+       puts item
+         parts<<Part.new(:key=>item['key'],:orgId=>item['orgId'],:partNr=>item['partNr'])
     end
-    render :text => lines.join("\n")
+    render :json=>parts
   end
 end
