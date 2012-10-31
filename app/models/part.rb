@@ -4,7 +4,7 @@ class Part<CZ::BaseClass
   attr_accessor :key,:orgId,:partNr
   
   def self.gen_key
-    "part:#{$redis.incr('part:index:incr')}"
+  $redis.incr('part:index:incr')
   end
   
   # redis search -----------------------------
@@ -14,8 +14,8 @@ class Part<CZ::BaseClass
                      :alias_field => :alias,
                      :prefix_index_enable => true,
                      :condition_fields=>[:orgId],
-                     :score_field => :rank,
-                     :ext_fields =>  [:key,:orgId,:partNr])
+                    :score_field=>:created_at,
+                     :ext_fields =>  [:key,:partNr])
 
   def alias
     [self.partNr]
