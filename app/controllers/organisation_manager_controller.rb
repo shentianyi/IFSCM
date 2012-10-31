@@ -42,8 +42,25 @@ class OrganisationManagerController < ApplicationController
   def add_supplier
     org = Organisation.find( params[:key] )
     org.add_supplier( params[:orgId], params[:name] )
+    Supplier.new( s_key:org.s_key, supplierNr:params[:name] ).save_index
     
     redirect_to organisation_manager_path( org.key )
+  end
+  
+  #################  for Fuzzy Search
+  def search
+    if params[:q].blank?
+      render :text => ""
+      return
+    end
+    params[:q].gsub!(/'/,'')
+    @search = Redis::Search.query("Supplier", params[:q], :conditions=>{:s_key=>"12345:#{Rns::S}"} )
+    # @search = Redis::Search.complete("Forecast", params[:q])
+    puts @search
+    lines = @search.collect do |item|
+      "#{item['title']}#!##{item['id']}#!##{item['name']}#!##{item['name']}#!##{item['name']}"
+    end
+    render :text => lines.join("\n")
   end
   
 end
