@@ -18,6 +18,7 @@ class Redis
         ext_fields = options[:ext_fields] || []
         score_field = options[:score_field] || :created_at
         condition_fields = options[:condition_fields] || []
+        ref=options[:ref]||nil
         # Add score field to ext_fields
         ext_fields |= [score_field]
         # Add condition fields to ext_fields
@@ -28,10 +29,16 @@ class Redis
         Search.indexed_models << self
         # bind instance methods and callback events
         class_eval %(
-          def redis_search_fields_to_hash(ext_fields)
+          def redis_search_fields_to_hash(ext_fields,ref=nil)
             exts = {}
             ext_fields.each do |f|
               exts[f] = instance_eval(f.to_s)
+            end
+            if ref
+            refItem=eval(ref[:class].to_s).find(instance_eval(ref[:key].to_s))
+              ref[:fields].each do |f|
+                exts[f]=instance_eval("refItem.\#{f}")
+              end
             end
             exts
           end
@@ -50,7 +57,7 @@ class Redis
             s = Search::Index.new(:title => self.#{title_field},
                                   :aliases => self.redis_search_alias_value(#{alias_field.inspect}),
                                   :id => self.key,
-                                  :exts => self.redis_search_fields_to_hash(#{ext_fields.inspect}),
+                                  :exts => self.redis_search_fields_to_hash(#{ext_fields.inspect},#{ref}),
                                   :type => self.class.to_s,
                                   :condition_fields => #{condition_fields},
                                   :score => self.#{score_field}.to_i,
@@ -63,15 +70,23 @@ class Redis
 
           def redis_search_index_delete(titles)
             titles.uniq.each do |title|
-              Search::Index.remove(:id => self.id, :title => title, :type => self.class.to_s)
+              Search::Index.remove(:id => self.key, :title => title, :type => self.class.to_s)
             end
+            true
+          end
+
+          set_callback :destory, :before do
+           titles = []
+            titles = redis_search_alias_value("#{alias_field}")
+            titles << self.#{title_field}
+            redis_search_index_delete(titles)
             true
           end
 
           def redis_search_index_need_reindex
             index_fields_changed = false
             #{ext_fields.inspect}.each do |f|
-              next if f.to_s == "id"
+              next if f.to_s == "key"
               field_method = f.to_s + "_changed?"
               if !self.methods.include?(field_method.to_sym)
                 Search.warn("#{self.class.name} model reindex on update need "+field_method+" method.")
@@ -93,36 +108,22 @@ class Redis
             return index_fields_changed
           end
 
-          def redis_search_index_update
-              titles = []
-              titles = redis_search_alias_value("#{alias_field}")
-              titles << self.#{title_field}
-              redis_search_index_delete(titles)
-              self.redis_search_index_create
-            true
-          end
-
-           set_callback :update, :after do
+          set_callback :update, :after do
+            # if self.redis_search_index_need_reindex
               titles = []
               titles = redis_search_alias_value("#{alias_field}_was")
               titles << self.#{title_field}_was
               redis_search_index_delete(titles)
+           # end
             true
           end
 
            set_callback :save, :after do
+          #  if self.redis_search_index_need_reindex
               self.redis_search_index_create
+           # end
             true
           end
-
-          set_callback :destory, :before do
-           titles = []
-            titles = redis_search_alias_value("#{alias_field}")
-            titles << self.#{title_field}
-            redis_search_index_delete(titles)
-            true
-          end
-
         )
       end
     end
