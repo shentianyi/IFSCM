@@ -14,6 +14,9 @@
 //= require jquery.ui/jquery.ui.core
 
 //= require jquery.ui/jquery.ui.widget.min
+ //=require jquery.ui/jquery.ui.position
+//=require  jquery.ui/jquery.ui.autocomplete
+
 //= require jquery.file.upload/tmpl.min
 //= require jquery.file.upload/load-image.min
 //= require jquery.ui/jquery.iframe-transport

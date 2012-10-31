@@ -21,7 +21,9 @@ module CZ
       instance_variables.each do |attr|
         $redis.hset @key,attr.to_s.sub(/@/,''),instance_variable_get(attr)
       end
-      $redis.hset @key,'created_at',Time.now.to_i
+      t=Time.now.to_i
+      $redis.hset @key,'created_at',t
+      self.created_at=t
       run_callbacks :save
       return true
     end

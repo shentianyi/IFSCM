@@ -1,8 +1,31 @@
 require 'base_class'
 
 class Part<CZ::BaseClass
-  attr_accessor :key,:orgId,:partNr,:createTime
+  attr_accessor :key,:orgId,:partNr
   
+  def self.gen_key
+    "part:#{$redis.incr('part:index:incr')}"
+  end
+  
+  # redis search -----------------------------
+  include Redis::Search
+  
+  redis_search_index(:title_field => :partNr,
+                     :alias_field => :alias,
+                     :prefix_index_enable => true,
+                     :condition_fields=>[:orgId],
+                     :score_field => :rank,
+                     :ext_fields =>  [:key,:orgId,:partNr])
+
+  def alias
+    [self.partNr]
+  end
+
+  def rank
+    self.created_at
+  end
+  # -------------------------------------------------
+
   def self.exist_by_partId partId
     $redis.sismember 'partId:set',partId.to_s
   end
@@ -21,9 +44,9 @@ class Part<CZ::BaseClass
       if ps and ps.count>0
         parts=[]
         ps.each do |p|
-         parts<<$redis.hget(p,'partId')
+          parts<<$redis.hget(p,'partId')
         end
-        return parts
+      return parts
       else
         return nil
       end
@@ -31,5 +54,5 @@ class Part<CZ::BaseClass
       return nil
     end
   end
-  
+
 end

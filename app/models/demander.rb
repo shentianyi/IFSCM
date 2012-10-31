@@ -6,8 +6,8 @@ class Demander<CZ::BaseClass
   attr_accessor :key,:clientId,:relpartId,:supplierId, :type,:amount,:date,:rate
   NumPer=5
   
-  def self.gen_index
-    $redis.incr 'demand:index:incr'
+  def self.gen_key
+        Rns::De+":#{$redis.incr 'demand:index:incr'}"
   end
 
   

@@ -19,6 +19,13 @@ Demand::Application.routes.draw do
       match :demand_history
     end
   end
+  
+  resources :part do
+    collection do
+     get :searcher
+     get :search
+    end
+  end
 
   mount Resque::Server.new, :at=>"/admin/resque"
 end
