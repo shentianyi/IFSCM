@@ -7,26 +7,56 @@
 	PartNr:<%= text_field_tag :partNr, nil, :placeholder => "example: 53423233" %><br/>
 	Type:<%= text_field_tag :type, nil, :placeholder => "example: D" %>
     <%= submit_tag "Search" %>
-    Page:<%= text_field_tag :page, nil, :size=>5 %>
+    Page:<%= text_field_tag :page, 1, :size=>5 %>
 <% end %>
 
+<div class="forcasttypes">
+	<div class="forcasttype typeactive">显示全部</div>
+	<div class="forcasttype">
+		D-天预测<span class="badge badge-warning notifyNewForcast">1</span>
+	</div>
+	<div class="forcasttype">
+		M-月预测<span class="badge badge-warning notifyNewForcast">3</span>
+	</div>
+	<div class="forcasttype">
+		Y-年预测<span class="badge badge-warning notifyNewForcast">4</span>
+	</div>
+	<div class="forcasttype">
+		O-订单<span class="badge badge-warning notifyNewForcast">4</span>
+	</div>
+	<div class="forcasttype forcastright">T-提货计划</div>
+</div>
+
+<div class="tableview">
+	<table class="upData">
+		<tr class="lineone">
+			<th>客户号</th>
+			<th>零件号</th>
+			<th>日期</th>
+			<th>数量</th>
+			<th>预测类型</th>
+			<th>变动量</th>
+		</tr>
+		<tr class="divide" style="display: none">
+			<th class="nordvd"></th>
+			<th class="nordvd"></th>
+			<th class="nordvd"></th>
+			<th class="nordvd"></th>
+			<th class="nordvd"></th>
+			<th class="lastdvd"></th>
+		</tr>
+		<% @demands.each do |d| %>
+		  <tr class="norline">
+		    <th><%= d[0].clientNr %></th>
+		    <th><%= d[0].relpartId%></th>
+		    <th><%= d[0].date%></th>
+		    <th><%= d[0].amount%></th>
+		    <th><%= d[0].type%></th>
+		   	<th><%= d[0].key%>&nbsp;&nbsp;Score:<%= d[1]%></th>
+		  </tr>
+		<% end %>
+	</table>
+</div>
 
 <hr/>
 There is(are) <%= @demands.size %> record(s):<br/>
-<ul class="projects">
-<% @demands.each do |d| %>
-  <li>
-  	<div>TYPE:<%= d[0].class%></div>
-    <div class="info">
-   	<%= d[0].key%>
-   	Client:<%= d[0].clientNr %>
-   	Supplier:<%= d[0].supplierNr %>
-   	Part:<%= d[0].relpartId%>
-   	Date:<%= d[0].date%>
-   	Type:<%= d[0].type%>
-   	&nbsp;&nbsp;
-   	Score:<%= d[1]%>
-    </div>
-  </li>
-<% end %>
-</ul>

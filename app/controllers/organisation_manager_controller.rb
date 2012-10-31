@@ -54,7 +54,7 @@ class OrganisationManagerController < ApplicationController
       return
     end
     params[:q].gsub!(/'/,'')
-    @search = Redis::Search.query("Supplier", params[:q], :conditions=>{:s_key=>"12345:#{Rns::S}"} )
+    @search = Redis::Search.complete("Supplier", params[:q], :conditions=>{:s_key=>"9999:#{Rns::S}"} )
     # @search = Redis::Search.complete("Forecast", params[:q])
     puts @search
     lines = @search.collect do |item|
