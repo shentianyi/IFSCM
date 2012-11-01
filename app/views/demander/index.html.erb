@@ -1,4 +1,4 @@
-<%= form_tag(:controller=>"demander", :action=>"search") do  %>
+<%= form_tag(:controller=>"demander", :action=>"search")  do  %>
 	Start:<%= text_field_tag :start, nil, :placeholder => "example: 12/10/10 12:23" %>
 	End:<%= text_field_tag :end, nil, :placeholder => "example: 12/10/10 12:23" %>
 	<br/>
@@ -7,7 +7,7 @@
 	PartNr:<%= text_field_tag :partNr, nil, :placeholder => "example: 53423233" %><br/>
 	Type:<%= text_field_tag :type, nil, :placeholder => "example: D" %>
     <%= submit_tag "Search" %>
-    Page:<%= text_field_tag :page, nil, :size=>5 %>
+    Page:<%= text_field_tag :page, 1, :size=>5 %>
 <% end %>
 
 
@@ -32,6 +32,10 @@
     <div>
     <%= label_tag :date %>
     <%= text_field_tag :date, nil, :placeholder => "example: 12/10/10 12:23" %>
+    </div>
+    <div>
+    <%= label_tag :amount %>
+    <%= text_field_tag :amount, nil, :placeholder => "example: 1000" %>
     </div>
     <div>
     <%= label_tag :type %>
