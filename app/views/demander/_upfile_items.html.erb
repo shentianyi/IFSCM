@@ -1,0 +1,40 @@
+<%if msg.result%>
+<% batch=msg.object%>
+<div class="abstractline">
+     <p>
+          上传文件：
+     </p>
+     <p>
+          共<%= batch.itemCount%>个
+     </p>
+     <p class="sepstructure filerr">
+          ，其中<%= batch.errorCount%>个有错误
+     </p>
+     <p>
+          上传时间：<%= Time.at(batch.created_at)%>
+     </p>
+</div>
+<div class="listoffiles">
+     <input type="hidden" value="<%=batch.key%>" id="batchFileId" />
+     <% i=0
+     batch.items.each do |item|
+     i+=1
+     title,cssclass= item.errorCount>0 ? "查看错误需求": "查看需求"
+     %>
+     <div class='file' style="cursor:pointer" onclick="get_upfile_demands(this.id,0);" id=<%=item.key%>>
+          <span class="filenum currentview"><%= i%></span>
+          <span class="filename"><%= item.oriName%></span>
+          <% if item.errorCount>0%>
+          <span class="filestatus filerr">有<%= item.errorCount%>处错误</span>
+          <%else%>
+          <span class="filestatus noshowfile">没有错误</span>
+          <%end%>
+     </div>
+     <%end%>
+     <%else%>
+     <%= msg.content%>
+     <%end%>
+</div>
+<div id="demands">
+     
+</div>

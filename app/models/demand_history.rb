@@ -35,7 +35,7 @@ class DemandHistory<CZ::BaseClass
     item_key=get_last_item_key,key 
     if item_key
       hamount=$redis.hget(item_key,'amount').to_i
-    return (amount-hamount)/hamount*100.round.abs
+    return (amount-hamount)/hamount*100.round
     end
     return 0
   end

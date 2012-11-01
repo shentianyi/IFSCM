@@ -5,6 +5,11 @@ class DemanderController<ApplicationController
 
   #include
   include DemanderHelper
+  # ws
+  def demand_upload
+    # to the view
+  end
+
   # ws upload demands from csv -- support muti files
   def upload_files
     session[:userId]=1
@@ -44,33 +49,45 @@ class DemanderController<ApplicationController
       respond_to do |format|
         format.xml {render :xml=>JSON.parse(msg.to_json).to_xml(:root=>'filesInfo')}
         format.json { render json: msg }
+        format.html {render partial:'upfile_items',:locals=>{:msg=>msg}}
       end
     end
   end
 
   # ws get file item errors
-  def get_error
+  def get_tempdemand_items
     if request.post?
-      demands=get_demand_items 'error'
+      fileId=params[:fileId]
+      demands=[]
+      file=RedisFile.find(fileId)
+      if file
+        type=file.errorCount.to_i>0 ? 'error':'nomal'
+
+        pageIndex=params[:pageIndex].to_i
+        pageSize=$DEPSIZE
+        startIndex=(pageIndex-1)*pageSize
+        endIndex=pageIndex*pageSize-1
+        demands= DemanderHelper::get_file_demands fileId,startIndex,endIndex,type
+      end
       respond_to do |format|
         format.xml {render :xml=>JSON.parse(demands.to_json).to_xml(:root=>'demands')}
         format.json { render json: demands }
-        format.html { render partial:'error_items',:locals=>{:demands=>demands}}
+        format.html { render partial: type+'_items',:locals=>{:demands=>demands}}
       end
     end
   end
 
-  # ws get file item normals
-  def get_normal
-    if request.post?
-      demands=get_demand_items 'normal'
-      respond_to do |format|
-        format.xml {render :xml=>JSON.parse(demands.to_json).to_xml(:root=>'demands')}
-        format.json { render json: demands }
-        format.html { render partial:'normal_items',:locals=>{:demands=>demands}}
-      end
-    end
-  end
+  # # ws get file item normals
+  # def get_normal
+  # if request.post?
+  # demands=get_demand_items 'normal'
+  # respond_to do |format|
+  # format.xml {render :xml=>JSON.parse(demands.to_json).to_xml(:root=>'demands')}
+  # format.json { render json: demands }
+  # format.html { render partial:'normal_items',:locals=>{:demands=>demands}}
+  # end
+  # end
+  # end
 
   # ws correct error
   def correct_error
@@ -85,23 +102,30 @@ class DemanderController<ApplicationController
       if bf and sf and od
         puts sf
         nd= DemanderTemp.new(:key=>od.key,:cpartNr=>params[:partNr],:clientId=>clientId,:supplierNr=>params[:supplierNr],
-        :filedate=>params[:filedate],:date=>params[:date],:type=>params[:type],:amount=>params[:amount],:lineNo=>od.lineNo,:source=>od.source)
+        :filedate=>params[:filedate],:date=>(FormatHelper::demand_date_by_str_type(params[:filedate],params[:type])),
+        :type=>params[:type],:amount=>params[:amount],:lineNo=>od.lineNo,:source=>od.source)
+
         okey=od.gen_md5_repeat_key
         nkey=nd.gen_md5_repeat_key
         if okey!=nkey
-        bf.del_repeat_item(od.gen_md5_repeat_key,od.key)
+           bf.del_repeat_item(od.gen_md5_repeat_key,od.key)
         end
         vmsg=DemanderHelper::demand_field_validate(nd,bf)
         nd.vali=vmsg.result
 
         if vmsg.result
           nd.rate=DemandHistory.compare_rate(
-        nd.clientId,nd.supplierId,
-        nd.cpartId,nd.type,nd.date,nd.amount)
+          nd.clientId,nd.supplierId,
+          nd.cpartId,nd.type,nd.date,nd.amount)
+          sf.update(:errorCount=> sf.errorCount-=1)
+          if sf.errorCount==0
+            bf.update(:errorCount=> bf.errorCount-=1)
+          end
         else
         nd.msg=vmsg.contents.to_json
         end
-        nd.save
+
+        nd.cover
 
         #move demand
         if nd.vali.to_s!=od.vali
@@ -235,16 +259,11 @@ class DemanderController<ApplicationController
     end
   end
 
-  private
-
-  # ws private get demands
-  def get_demand_items type
-    fileId=params[:fileId]
-    pageIndex=params[:pageIndex].to_i
-    pageSize=$DEPSIZE
-    startIndex=(pageIndex-1)*pageSize
-    endIndex=pageIndex*pageSize-1
-    return DemanderHelper::get_file_demands fileId,startIndex,endIndex,type
-  end
+# private
+#
+# # ws private get demands
+# def get_demand_items type
+#
+# end
 
 end

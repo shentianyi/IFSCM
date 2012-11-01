@@ -17,7 +17,7 @@ module CZ
     end
 
     def save
-      return false  if $redis.exists @key
+      return false  if $redis.exists(@key)
       instance_variables.each do |attr|
         $redis.hset @key,attr.to_s.sub(/@/,''),instance_variable_get(attr)
       end
@@ -27,8 +27,21 @@ module CZ
       run_callbacks :save
       return true
     end
+    
+    def cover
+       instance_variables.each do |attr|
+        $redis.hset @key,attr.to_s.sub(/@/,''),instance_variable_get(attr)
+      end
+    end
 
-    def update
+    def update attrs={}
+       return false  unless $redis.exists(@key)
+      if attrs.count>0
+        args.each do |k,v|
+          instance_variable_set "@#{k}",v
+          $redis.hset @key,k,v
+        end
+      end
       run_callbacks :update
     end
 

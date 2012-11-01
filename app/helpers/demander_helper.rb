@@ -85,7 +85,7 @@ module DemanderHelper
 
     # vali part relation
     if partId and supplierId
-      if !parts=Part.get_supplier_parts(clientId,suplierId,partId)
+      if !parts=Part.get_single_part_cs_parts(clientId,suplierId,partId,PartRelType::Client)
         msg.result=false
         msg.content_key<<:partNotFitOrgP
       else
@@ -93,14 +93,14 @@ module DemanderHelper
           msg.result=false
           msg.content_key<<:partMutiFitOrgP
         else
-        demand.spartId=parts
-        demand.relpartId=PartRel.get_partrelId(demand.clientId,demand.supplierId,demand.partNr,PartRelType::Client)
+        demand.spartId=parts.key
+        demand.relpartId=PartRel.get_partrelId_by_partNr(demand.clientId,demand.supplierId,demand.partNr,PartRelType::Client)
         end
       end
     end
 
     # valid demand type
-    if !$redis.hget('demand:type',demand.type)
+    if !DemandType.find_by_type(demand.type)
       msg.result=false
       msg.content_key<<:fcTypeNotEx
     end
@@ -123,9 +123,9 @@ module DemanderHelper
     #valid repeat
     repeat_key= demand.gen_md5_repeat_key
     if key=batchFile.get_repeat_item(repeat_key)
-      puts key+'******************888'
+      puts 'repeat_key:'+repeat_key
+      puts 'key:'+key
       baseDemand=DemanderTemp.find(key)
-      puts baseDemand
       if baseDemand and baseDemand.key!=demand.key
         msg.result=false
         msg.add_content("existsFile:#{baseDemand.source},line#{baseDemand.lineNo}")
@@ -145,8 +145,6 @@ module DemanderHelper
       demands.items=[]
       itemKeys.each do |k|
         if d=DemanderTemp.find(k)
-          puts '----************s'
-          puts d.class
         demands.items<<d
         end
       end

@@ -14,35 +14,30 @@
 
 $(function() {'use strict';
 
-	// Initialize the jQuery File Upload widget:
-	$('#demandupload').fileupload({
-		dataType:'json',
-		beforeSend : function(xhr) {
-			xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'));
-		},
-		success : function(data) {
-			// alert(data.object.index);
-			$('#batchId').val(data.object.key); 
-			
-			if(data.object.items.length>0){
-			     $('#fileId').val(data.object.items[0].key);
-			    for(var i=0;i<data.object.items.length;i++){
-			         $('#items').append(i+">fileId:::<p>"+data.object.items[i].key+"</p>");
-			    }
-			}
-		},
-		error : function() {
+     // Initialize the jQuery File Upload widget:
+     $('#demandupload').fileupload({
+          dataType : 'html',
+          beforeSend : function(xhr) {
+               xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'));
+          },
+          success : function(data) {
+               // $('.fileinput-button').attr("disabled", "disabled");
+               // $('#mutiUploadInput').attr("disabled", "disabled");
+               $('#upload-file-area').hide();
+               $('#upresult').html(data);
+          },
+          error : function() {
 
-		},
-		done : function(e, data) {
-			data.context.text('Upload finished.');
-		}
-	});
+          },
+          done : function(e, data) {
+               // data.context.text('Upload finished.');
+          }
+     });
 
-	// settings:
-	$('#demandupload').fileupload('option', {
-		singleFileUploads : false,
-		maxFileSize : 50000000,
-		acceptFileTypes : /(\.|\/)(csv)$/i
-	});
+     // settings:
+     $('#demandupload').fileupload('option', {
+          singleFileUploads : false,
+          maxFileSize : 50000000,
+          acceptFileTypes : /(\.|\/)(csv)$/i
+     });
 });

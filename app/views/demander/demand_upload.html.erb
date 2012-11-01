@@ -1,0 +1,146 @@
+<script language="javascript">
+     function changetype(obj) {
+          var tag = obj.firstChild.tagName;
+          if( typeof (tag) != "undefined" && (tag == "INPUT" || tag == "TEXTAREA"))
+               return;
+          var val = obj.innerHTML;
+          var txt = document.createElement("INPUT");
+          txt.value = val;
+          txt.style.background = "#FFC";
+          txt.style.width = obj.offsetWidth + "px";
+          obj.innerHTML = "";
+          obj.appendChild(txt);
+          txt.focus();
+          txt.onblur = function(e) {
+               if(txt.value.length == 0)
+                    txt.value = val;
+               obj.innerHTML = txt.value;
+               return false;
+          }
+          return false;
+     }
+
+     function clicked(className) {
+          var o, i, j;
+          var allPageTags = document.getElementsByTagName('table');
+          if(allPageTags != null) {
+               for( i = 0; i < allPageTags.length; i++) {
+                    if(allPageTags[i].className == "upData") {
+                         o = allPageTags[i].rows;
+                    }
+               }
+               for( i = 1; i < o.length; i++) {
+                    for( j = 0; j < o[i].cells.length - 1; j++) {
+                         if(o[i].cells[j].className == 'on-type-change')
+                              continue;
+                         o[i].cells[j].ondblclick = function() {
+                              changetype(this);
+                         }
+                    }
+               }
+          }
+     }
+</script>
+<div class="uploadline">
+     <div id="upload-file-area">
+          <div name="upload" class="uploadfile">
+               请上传预测表格:
+          </div>
+          <div id="qunit-fixture">
+               <!-- The file upload form used as target for the file upload widget -->
+               <form id="demandupload" action="../demander/upload_files/" method="POST" enctype="multipart/form-data">
+                    <!-- The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload -->
+                    <div class="row fileupload-buttonbar">
+                         <div class="span7">
+                              <!-- The fileinput-button span is used to style the file input field as button -->
+                              <span class="btn btn-success fileinput-button"> <i class="icon-plus icon-white"></i> <span>Add files...</span>
+                                   <input id="mutiUploadInput" type="file" name="files[]" multiple>
+                              </span>
+                              <button type="submit" class="btn btn-primary start">
+                                   <i class="icon-plus icon-white"></i>
+                                   <span>Start upload</span>
+                              </button>
+                              <button type="reset" class="btn btn-warning cancel">
+                                   <i class="icon-ban-circle icon-white"></i>
+                                   <span>Cancel upload</span>
+                              </button>
+                         </div>
+                         <!-- The global progress information -->
+
+                    </div>
+                    <!-- The loading indicator is shown during file processing -->
+                    <div class="fileupload-loading"></div>
+                    <br>
+                    <!-- The table listing the files available for upload/download -->
+                    <table role="presentation" class="table table-striped">
+                         <tbody class="files" data-toggle="modal-gallery" data-target="#modal-gallery"></tbody>
+                    </table>
+               </form>
+          </div>
+
+          <!-- The template to display files available for upload -->
+          <script id="template-upload" type="text/x-tmpl">
+               {% for (var i=0, file; file=o.files[i]; i++) { %}
+               <tr class="template-upload fade">
+               <td class="preview"><span class="fade"></span></td>
+               <td class="name"><span>{%=file.name%}</span></td>
+               <td class="size"><span>{%=o.formatFileSize(file.size)%}</span></td>
+               {% if (file.error) { %}
+               <td class="error" colspan="2"><span class="label label-important">Error</span> {%=file.error%}</td>
+               {% } else if (o.files.valid && !i) { %}
+               <td>
+               <div class="progress progress-success progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="bar" style="width:0%;"></div></div>
+               </td>
+               <td class="start" style=" display: none;">{% if (!o.options.autoUpload) { %}
+               <button class="btn btn-primary">
+               <i class="icon-upload icon-white"></i>
+               <span>Start</span>
+               </button>
+               {% } %}</td>
+               {% } else { %}
+               <td colspan="2"></td>
+               {% } %}
+               <td class="cancel">{% if (!i) { %}
+               <button class="btn btn-warning">
+               <i class="icon-ban-circle icon-white"></i>
+               <span>Cancel</span>
+               </button>
+               {% } %}</td>
+               </tr>
+               {% } %}
+          </script>
+          <!-- The template to display files available for download -->
+          <script id="template-download" type="text/x-tmpl">
+               {% for (var i=0, file; file=o.files[i]; i++) { %}
+               <tr class="template-download fade">
+               {% if (file.error) { %}
+               <td></td>
+               <td class="name"><span>{%=file.name%}</span></td>
+               <td class="size"><span>{%=o.formatFileSize(file.size)%}</span></td>
+               <td class="error" colspan="2"><span class="label label-important">Error</span> {%=file.error%}</td>
+               {% } else { %}
+               <td class="preview">{% if (file.thumbnail_url) { %}
+               <a href="{%=file.url%}" title="{%=file.name%}" rel="gallery" download="{%=file.name%}"><img src="{%=file.thumbnail_url%}"></a>
+               {% } %}</td>
+               <td class="name">
+               <a href="{%=file.url%}" title="{%=file.name%}" rel="{%=file.thumbnail_url&&'gallery'%}" download="{%=file.name%}">{%=file.name%}</a>
+               </td>
+               <td class="size"><span>{%=o.formatFileSize(file.size)%}</span></td>
+               <td colspan="2"></td>
+               {% } %}
+               <td class="delete">
+               <button class="btn btn-danger" data-type="{%=file.delete_type%}" data-url="{%=file.delete_url%}">
+               <i class="icon-trash icon-white"></i>
+               <span>Delete</span>
+               </button>
+               <input type="checkbox" name="delete" value="1">
+               </td>
+               </tr>
+               {% } %}
+          </script>
+     </div>
+     <div id='upresult'>
+
+     </div>
+</div>
+

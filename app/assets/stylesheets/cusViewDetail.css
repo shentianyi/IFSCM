@@ -1,0 +1,991 @@
+@charset "UTF-8";
+/* CSS Document */
+
+/*Another version*/
+@media screen and (min-width:800px) {
+	.searchsupp {
+		float: left;
+		padding-right: 5px;
+		border-width: 1px;
+		border-style: solid;
+		border-color: #dbdbdb;
+		color: #9d9d9d;
+		width: 227px;
+		height: 30px;
+		font-size: 14px;
+		padding-left: 5px;
+		margin-top: -15px;
+	}
+	.searchsupp:active,.searchsupp:focus {
+		border-color: #b1b1b1;
+		color: #7c7c7c;
+	}
+	.logosearchv {
+		float: left;
+		margin-left: 10px;
+		margin-top: -14px;
+		border-width: 0px;
+		width: 76px;
+		height: 32px;
+		background-color: transparent;
+		background-image: url(btnbg.png);
+		background-repeat: no-repeat;
+		font-size: 18px;
+		color: #ffffff;
+		font-size: 18px;
+	}
+	.logosearchv:hover {
+		background-image: url(btnhov.png);
+	}
+	.supplierinfo {
+		heiht: 80px;
+		width: 1000px;
+		float: left;
+		display: block;
+		border-bottom-width: 1px;
+		border-bottom-color: #dbdbdb;
+		border-bottom-style: solid;
+		padding-bottom: 5px;
+	}
+	.supplierinfo img {
+		float: left;
+		margin: 5px 5px 5px 5px;
+		border-width: 1px;
+		border-color: #dbdbdb;
+		border-style: solid;
+	}
+	.supplierinfo p {
+		float: left;
+		display: block;
+		padding: 0px;
+	}
+	.normalstyle {
+		text-decoration: none;
+		color: #000000;
+		display: block;
+		float: left;
+	}
+	.namestyle {
+		text-decoration: none;
+		color: #0063de;
+		display: block;
+		float: left;
+	}
+	.suppname {
+		margin: 10px 10px 0px 10px;
+		font-size: 18px;
+	}
+	.address {
+		margin: 10px 180px 0px 10px;
+		width: 80px;
+		text-align: left;
+		float: left;
+		font-size: 18px;
+	}
+	.qltall {
+		width: 20px;
+		height: 20px;
+		border-width: 0px;
+		background-color: transparent;
+		background-image: url(iconqltall.png);
+		margin: 10px 80px 0px 0px;
+		float: left;
+		display: block;
+	}
+	.qltall:hover {
+		background-image: url(iconqltallh.png);
+	}
+	.products {
+		float: left;
+		margin: 3px 10px 0px 10px;
+		width: 500px;
+		font-size: 13px;
+	}
+	.contacts {
+		float: left;
+		width: 500px;
+		font-size: 13px;
+		margin: 3px 10px 0px 10px;
+	}
+	.partsdetail {
+		width: 1040px;
+		float: left;
+	}
+	.parts {
+		float: left;
+		margin: 20px 18px 20px 5px;
+	}
+	.addbt {
+		background-image: url(partplus.png);
+		width: 120px;
+		height: 165px;
+		border-width: 0px;
+		background-color: transparent;
+	}
+	.addbt:hover {
+		background-image: url(partplush.png);
+	}
+	.partsadd {
+		background-image: url(partplus.png);
+		width: 120px;
+		height: 165px;
+		border: 1px dashed #666666;
+	}
+	.partsadd:hover {
+		background-image: url(partplush.png);
+		border-color: #000000;
+	}
+	.partsimage {
+		background-image: url(part1.png);
+		width: 120px;
+		height: 120px;
+		border: 1px solid #dbdbdb;
+	}
+	.parts p {
+		margin: 0px;
+		padding: 0px;
+		width: 122px;
+	}
+	.partname {
+		color: #0063de;
+		font-size: 13px;
+		margin-top: 5px;
+	}
+	.partnmc {
+		font-size: 12px;
+		margin-top: 3px;
+	}
+	.partnms {
+		font-size: 12px;
+		margin-top: 3px;
+	}
+	.bottombtns {
+		position: relative;
+		top: 97px;
+		left: 37px;
+		width: auto;
+	}
+	.editbtn {
+		background-color: transparent;
+		background-image: url(iconedit.png);
+		width: 20px;
+		height: 20px;
+		border-width: 0px;
+		padding: 0px;
+		margin: 0px;
+		float: left;
+	}
+	.editbtn:hover {
+		background-image: url(iconedith.png);
+	}
+	.lockbtn {
+		background-color: transparent;
+		background-image: url(iconlock.png);
+		width: 20px;
+		height: 20px;
+		border-width: 0px;
+		margin: 0px;
+		padding: 0px;
+		float: left;
+	}
+	.lockbtn:hover {
+		background-image: url(iconlockh.png);
+	}
+	.qltbtn {
+		background-color: transparent;
+		background-image: url(iconqlt.png);
+		width: 20px;
+		height: 20px;
+		border-width: 0px;
+		margin: 0px;
+		padding: 0px;
+		float: left;
+	}
+	.qltbtn:hover {
+		background-image: url(iconqlth.png);
+	}
+	.partstatus {
+		width: 20px;
+		height: 20px;
+		background-image: url(iconunlocked.png);
+		background-repeat: no-repeat;
+		float: left;
+		margin-left: 3px;
+		margin-top: 3px;
+	}
+	/*the pop up window codes*/
+	.popup {
+		position: fixed;
+		left: 350px;
+		top: 180px;
+		background-color: #ffffff;
+		border-color: #dbdbdb;
+		border-width: 1px;
+		border-style: solid;
+		padding: 10px;
+		width: 430px;
+		height: 200px;
+	}
+	.closeeditbt {
+		float: left;
+		margin-left: 415px;
+		margin-top: -5px;
+		margin-bottom: 5px;
+		width: 20px;
+		height: 20px;
+		background-image: url(closeicon.png);
+		background-position: center;
+		background-repeat: no-repeat;
+		background-color: transparent;
+		border-width: 0px;
+		background-color: transparent;
+		width: 20px;
+	}
+	.closeeditbt:hover {
+		background-image: url(closeiconh.png);
+	}
+	.editimage {
+		margin-left: 10px;
+		margin-top: 0px;
+		float: left;
+	}
+	.editinput {
+		float: left;
+		height: 25px;
+		border-width: 1px;
+		border-color: #dbdbdb;
+		border-style: solid;
+		padding-left: 5px;
+		color: #666666;
+		width: 195px;
+	}
+	.editinput:active,.editinput:focus {
+		border-color: #b1b1b1;
+		color: #7c7c7c;
+	}
+	.errorline {
+		float: left;
+		width: 200px;
+		margin: 0px 0px 0px 80px;
+	}
+	.btline {
+		margin-top: 10px;
+	}
+	.errormsg {
+		font-size: 12px;
+		color: red;
+		margin: 0px;
+		padding: 0px;
+	}
+	.inputline {
+		height: 32px;
+		width: 280px;
+		float: left;
+		line-height: 30px;
+		margin-bottom: 0px;
+		margin-left: 10px;
+	}
+	.topline {
+		margin-bottom: 10px;
+	}
+	.popup P {
+		float: left;
+		font-size: 12px;
+		float: left;
+		margin: 0px;
+	}
+	.updatepic {
+		float: left;
+	}
+	.uploadpic {
+		float: left;
+		padding: 0px;
+		background-color: #1297cf;
+		color: #ffffff;
+		background-color: #1297cf;
+	}
+	.uploadpic:hover {
+		background-color: #0e80b0;
+	}
+	.innerpartsname {
+		float: left;
+		margin-left: 10px;
+	}
+	.outerpartsname {
+		float: left;
+		margin-left: 10px;
+	}
+	.inputlines {
+		margin-top: 0px;
+		margin-left: 5px;
+		float: left;
+		width: 280px;
+	}
+	.editbt {
+		border-width: 0px;
+		height: 29px;
+		width: 70px;
+		font-size: 14px;
+	}
+	.canclebt:hover {
+		background-color: #b1b1b1;
+		color: #7c7c7c;
+	}
+	.canclebt {
+		margin-left: 120px;
+		background-color: #dbdbdb;
+		color: #9d9d9d;
+	}
+	.ensurebt {
+		margin-left: 7px;
+		background-color: #1297cf;
+		color: #ffffff;
+	}
+	.ensurebt:hover {
+		background-color: #0e80b0;
+	}
+	/*quality popup window goes here*/
+	.popupqlt {
+		position: fixed;
+		left: 370px;
+		top: 180px;
+		background-color: #ffffff;
+		border-color: #dbdbdb;
+		border-width: 1px;
+		border-style: solid;
+		padding: 10px;
+		width: 395px;
+		height: 270px;
+		font-size: 14px;
+	}
+	.closeqltbt {
+		float: left;
+		margin-left: 380px;
+		margin-top: -5px;
+		margin-bottom: 5px;
+		width: 20px;
+		height: 20px;
+		background-image: url(closeicon.png);
+		background-position: center;
+		background-repeat: no-repeat;
+		background-color: transparent;
+		border-width: 0px;
+		background-color: transparent;
+		width: 20px;
+	}
+	.closeqltbt:hover {
+		background-image: url(closeiconh.png);
+	}
+	.instruction {
+		font-size: 14px;
+		margin: 0px 10px 0px 5px;
+		padding: 0px;
+		float: left;
+	}
+	.checktype {
+		float: left;
+		margin: 0px 15px 0px 0px;
+		border: 1px dashed #dbdbdb;
+	}
+	.checktype:active,.checktype:focus {
+		background-color: #efefef;
+	}
+	.checkline {
+		width: 400px;
+		height: 40px;
+		line-height: 40px;
+		float: left;
+		margin-left: 10px;
+	}
+	.checkpoint {
+		float: left;
+		height: 25px;
+		border-width: 1px;
+		border-color: #dbdbdb;
+		border-style: solid;
+		padding-left: 5px;
+		color: #666666;
+		width: 247px;
+	}
+	.checkpoint:active,.checkpoint:focus {
+		border-color: #b1b1b1;
+		color: #7c7c7c;
+	}
+	.checknum {
+		float: left;
+		height: 25px;
+		border-width: 1px;
+		border-color: #dbdbdb;
+		border-style: solid;
+		padding-left: 5px;
+		color: #666666;
+		width: 125px;
+	}
+	.checknum:active,.checknum:focus {
+		border-color: #b1b1b1;
+		color: #7c7c7c;
+	}
+	.inputlineqlt {
+		height: 32px;
+		width: 400px;
+		float: left;
+		line-height: 30px;
+		margin-bottom: 0px;
+		margin-left: 10px;
+	}
+	.midspace {
+		margin-top: 15px;
+	}
+	.errorlineqlt {
+		float: left;
+		width: 200px;
+		margin: -2px 0px 5px 20px;
+	}
+	.btlineqlt {
+		margin-left: 100px;
+		margin-top: 0px;
+	}
+	.radiobt {
+		font-size: 12px;
+	}
+	/*all products' quality strategy*/
+	.popupqltall {
+		position: fixed;
+		left: 370px;
+		top: 180px;
+		background-color: #ffffff;
+		border-color: #dbdbdb;
+		border-width: 1px;
+		border-style: solid;
+		padding: 10px;
+		width: 395px;
+		height: 250px;
+		font-size: 14px;
+	}
+	.titleqltall {
+		font-size: 16px;
+		padding: 10px 0px 10px 5px;
+		margin: -10px 0px 30px -10px;
+		display: block;
+		width: 410px;
+		background-color: #1297cf;
+		color: white;
+		float: left;
+	}
+	.closeqltbtall {
+		position:absolute;
+		left:390px;
+		z-index:2;	
+		width: 20px;
+		height: 20px;
+		background-image: url(closeicona.png);
+		background-position: center;
+		background-repeat: no-repeat;
+		background-color: transparent;
+		border-width: 0px;
+		background-color: transparent;
+		width: 20px;
+	}
+	.closeqltbtall:hover {
+		background-image: url(closeiconh.png);
+	}
+	.btlineall{
+	margin-left:96px;
+	}
+}
+
+/*different media*/
+@media screen and (max-width: 800px) {
+	.searchsupp {
+		float: left;
+		padding-right: 5px;
+		border-width: 1px;
+		border-style: solid;
+		border-color: #dbdbdb;
+		color: #9d9d9d;
+		width: 127px;
+		height: 25px;
+		font-size: 12px;
+		padding-left: 5px;
+		margin-top: -10px;
+	}
+	.searchsupp:active,.searchsupp:focus {
+		border-color: #b1b1b1;
+		color: #7c7c7c;
+	}
+	.logosearchv {
+		float: left;
+		margin-left: 5px;
+		margin-top: -9px;
+		width: 50px;
+		height: 27px;
+		border-width: 0px;
+		background-color: transparent;
+		background-image: url(btnbg.png);
+		background-repeat: no-repeat;
+		font-size: 18px;
+		color: #ffffff;
+		font-size: 12px;
+		background-position: center;
+	}
+	.logosearchv:hover {
+		background-image: url(btnhov.png);
+	}
+	.supplierinfo {
+		height: 80px;
+		width: 700px;
+		float: left;
+		display: block;
+		border-bottom-width: 1px;
+		border-bottom-color: #dbdbdb;
+		border-bottom-style: solid;
+		padding-bottom: 5px;
+	}
+	.supplierinfo img {
+		float: left;
+		margin: 5px 0px 5px 5px;
+		border: 1px solid #dbdbdb;
+	}
+	.supplierinfo p {
+		float: left;
+		display: block;
+		padding: 0px;
+	}
+	.normalstyle {
+		text-decoration: none;
+		color: #000000;
+		display: block;
+	}
+	.namestyle {
+		text-decoration: none;
+		color: #0063de;
+		display: block;
+	}
+	.suppname {
+		margin: 10px 10px 0px 10px;
+		font-size: 18px;
+	}
+	.address {
+		margin: 10px 10px 0px 10px;
+		width: 80px;
+		text-align: left;
+		float: left;
+		font-size: 18px;
+	}
+	.qltall {
+		width: 20px;
+		height: 20px;
+		border-width: 0px;
+		background-color: transparent;
+		background-image: url(iconqltall.png);
+		margin: 10px 80px 0px 0px;
+		float: left;
+		display: block;
+	}
+	.qltall:hover {
+		background-image: url(iconqltallh.png);
+	}
+	.products {
+		float: left;
+		margin: 3px 10px 0px 10px;
+		width: 400px;
+		font-size: 14px;
+	}
+	.contacts {
+		float: left;
+		width: 400px;
+		font-size: 14px;
+		margin: 3px 10px 0px 10px;
+	}
+	.partsdetail {
+		width: 740px;
+		float: left;
+	}
+	.parts {
+		float: left;
+		margin: 20px 18px 20px 5px;
+	}
+	.partsadd {
+		background-image: url(partplus.png);
+		width: 120px;
+		height: 120px;
+		border: 1px dashed #666666;
+	}
+	.partsimage {
+		background-image: url(part1.png);
+		width: 120px;
+		height: 120px;
+		border: 1px solid #dbdbdb;
+	}
+	.parts p {
+		margin: 0px;
+		padding: 0px;
+		width: 122px;
+	}
+	.partname {
+		color: #0063de;
+		font-size: 13px;
+		margin-top: 5px;
+	}
+	.partnmc {
+		font-size: 12px;
+		margin-top: 3px;
+	}
+	.partnms {
+		font-size: 12px;
+		margin-top: 3px;
+	}
+	.bottombtns {
+		position: relative;
+		top: 97px;
+		left: 37px;
+		width: auto;
+	}
+	.editbtn {
+		background-color: transparent;
+		background-image: url(iconedit.png);
+		width: 20px;
+		height: 20px;
+		border-width: 0px;
+		padding: 0px;
+		margin: 0px;
+		float: left;
+	}
+	.editbtn:hover {
+		background-image: url(iconedith.png);
+	}
+	.lockbtn {
+		background-color: transparent;
+		background-image: url(iconlock.png);
+		width: 20px;
+		height: 20px;
+		border-width: 0px;
+		margin: 0px;
+		padding: 0px;
+		float: left;
+	}
+	.lockbtn:hover {
+		background-image: url(iconlockh.png);
+	}
+	.qltbtn {
+		background-color: transparent;
+		background-image: url(iconqlt.png);
+		width: 20px;
+		height: 20px;
+		border-width: 0px;
+		margin: 0px;
+		padding: 0px;
+		float: left;
+	}
+	.qltbtn:hover {
+		background-image: url(iconqlth.png);
+	}
+	.partstatus {
+		width: 20px;
+		height: 20px;
+		background-image: url(iconunlocked.png);
+		background-repeat: no-repeat;
+		float: left;
+		margin-left: 3px;
+		margin-top: 3px;
+	}
+	.addbt {
+		background-image: url(partplus.png);
+		width: 120px;
+		height: 165px;
+		border-width: 0px;
+		background-color: transparent;
+	}
+	.addbt:hover {
+		background-image: url(partplush.png);
+	}
+	.partsadd {
+		background-image: url(partplus.png);
+		width: 120px;
+		height: 165px;
+		border: 1px dashed #666666;
+	}
+	.partsadd:hover {
+		background-image: url(partplush.png);
+		border-color: #000000;
+	}
+	/*popup window goes here*/
+	.popup {
+		position: fixed;
+		left: 200px;
+		top: 180px;
+		background-color: #ffffff;
+		border-color: #dbdbdb;
+		border-width: 1px;
+		border-style: solid;
+		padding: 10px;
+		width: 430px;
+		height: 200px;
+	}
+	.closeeditbt {
+		float: left;
+		margin-left: 415px;
+		margin-top: -5px;
+		margin-bottom: 5px;
+		width: 20px;
+		height: 20px;
+		background-image: url(closeicon.png);
+		background-position: center;
+		background-repeat: no-repeat;
+		background-color: transparent;
+		border-width: 0px;
+		background-color: transparent;
+		width: 20px;
+	}
+	.closeeditbt:hover {
+		background-image: url(closeiconh.png);
+	}
+	.editimage {
+		margin-left: 10px;
+		margin-top: 0px;
+		float: left;
+	}
+	.editinput {
+		float: left;
+		height: 25px;
+		border-width: 1px;
+		border-color: #dbdbdb;
+		border-style: solid;
+		padding-left: 5px;
+		color: #666666;
+		width: 195px;
+	}
+	.editinput:active,.editinput:focus {
+		border-color: #b1b1b1;
+		color: #7c7c7c;
+	}
+	.errorline {
+		float: left;
+		width: 200px;
+		margin: 0px 0px 0px 80px;
+	}
+	.btline {
+		margin-top: 10px;
+	}
+	.errormsg {
+		font-size: 12px;
+		color: red;
+		margin: 0px;
+		padding: 0px;
+	}
+	.inputline {
+		height: 32px;
+		width: 280px;
+		float: left;
+		line-height: 30px;
+		margin-bottom: 0px;
+		margin-left: 10px;
+	}
+	.topline {
+		margin-bottom: 10px;
+	}
+	.popup P {
+		float: left;
+		font-size: 12px;
+		float: left;
+		margin: 0px;
+	}
+	.updatepic {
+		float: left;
+	}
+	.uploadpic {
+		float: left;
+		padding: 0px;
+		background-color: #1297cf;
+		color: #ffffff;
+		background-color: #1297cf;
+	}
+	.uploadpic:hover {
+		background-color: #0e80b0;
+	}
+	.innerpartsname {
+		float: left;
+		margin-left: 10px;
+	}
+	.outerpartsname {
+		float: left;
+		margin-left: 10px;
+	}
+	.inputlines {
+		margin-top: 0px;
+		margin-left: 5px;
+		float: left;
+		width: 280px;
+	}
+	.editbt {
+		border-width: 0px;
+		height: 29px;
+		width: 70px;
+		font-size: 14px;
+	}
+	.canclebt:hover {
+		background-color: #b1b1b1;
+		color: #7c7c7c;
+	}
+	.canclebt {
+		margin-left: 120px;
+		background-color: #dbdbdb;
+		color: #9d9d9d;
+	}
+	.ensurebt {
+		margin-left: 7px;
+		background-color: #1297cf;
+		color: #ffffff;
+	}
+	.ensurebt:hover {
+		background-color: #0e80b0;
+	}
+	/*quality controls goes here*/
+	.popupqlt {
+		position: fixed;
+		left: 200px;
+		top: 180px;
+		background-color: #ffffff;
+		border-color: #dbdbdb;
+		border-width: 1px;
+		border-style: solid;
+		padding: 10px;
+		width: 395px;
+		height: 270px;
+		font-size: 14px;
+	}
+	.closeqltbt {
+		float: left;
+		margin-left: 380px;
+		margin-top: -5px;
+		margin-bottom: 5px;
+		width: 20px;
+		height: 20px;
+		background-image: url(closeicon.png);
+		background-position: center;
+		background-repeat: no-repeat;
+		background-color: transparent;
+		border-width: 0px;
+		background-color: transparent;
+		width: 20px;
+	}
+	.closeqltbt:hover {
+		background-image: url(closeiconh.png);
+	}
+	.instruction {
+		font-size: 14px;
+		margin: 0px 10px 0px 5px;
+		padding: 0px;
+		float: left;
+	}
+	.checktype {
+		float: left;
+		margin: 0px 15px 0px 0px;
+		border: 1px dashed #dbdbdb;
+	}
+	.checktype:active,.checktype:focus {
+		background-color: #efefef;
+	}
+	.checkline {
+		width: 400px;
+		height: 40px;
+		line-height: 40px;
+		float: left;
+		margin-left: 10px;
+	}
+	.checkpoint {
+		float: left;
+		height: 25px;
+		border-width: 1px;
+		border-color: #dbdbdb;
+		border-style: solid;
+		padding-left: 5px;
+		color: #666666;
+		width: 245px;
+	}
+	.checkpoint:active,.checkpoint:focus {
+		border-color: #b1b1b1;
+		color: #7c7c7c;
+	}
+	.checknum {
+		float: left;
+		height: 25px;
+		border-width: 1px;
+		border-color: #dbdbdb;
+		border-style: solid;
+		padding-left: 5px;
+		color: #666666;
+		width: 125px;
+	}
+	.checknum:active,.checknum:focus {
+		border-color: #b1b1b1;
+		color: #7c7c7c;
+	}
+	.inputlineqlt {
+		height: 32px;
+		width: 400px;
+		float: left;
+		line-height: 30px;
+		margin-bottom: 0px;
+		margin-left: 10px;
+	}
+	.midspace {
+		margin-top: 15px;
+	}
+	.errorlineqlt {
+		float: left;
+		width: 200px;
+		margin: -2px 0px 5px 20px;
+	}
+	.btlineqlt {
+		margin-left: 100px;
+		margin-top: 0px;
+	}
+	.radiobt {
+		font-size: 12px;
+	}
+	/*all products' quality strategy*/
+	.popupqltall {
+		position: fixed;
+		left: 200px;
+		top: 180px;
+		background-color: #ffffff;
+		border-color: #dbdbdb;
+		border-width: 1px;
+		border-style: solid;
+		padding: 10px;
+		width: 395px;
+		height: 250px;
+		font-size: 14px;
+	}
+	.titleqltall {
+		font-size: 16px;
+		padding: 10px 0px 10px 5px;
+		margin: -10px 0px 30px -10px;
+		display: block;
+		width: 410px;
+		background-color: #1297cf;
+		color: white;
+		float: left;
+	}
+	.closeqltbtall {
+		position:absolute;
+		left:390px;
+		z-index:2;	
+		width: 20px;
+		height: 20px;
+		background-image: url(closeicona.png);
+		background-position: center;
+		background-repeat: no-repeat;
+		background-color: transparent;
+		border-width: 0px;
+		background-color: transparent;
+		width: 20px;
+	}
+	.closeqltbtall:hover {
+		background-image: url(closeiconh.png);
+	}
+	.btlineall{
+	margin-left:96px;
+	}
+}
