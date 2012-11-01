@@ -23,7 +23,8 @@ Demand::Application.routes.draw do
   resources :part do
     collection do
      get :searcher
-     get :search
+     get :redis_search
+     
     end
   end
 

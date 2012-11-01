@@ -28,13 +28,11 @@ class Redis
       rangelen = Redis::Search.config.complete_max_length
       prefix = w.downcase
       key = Search.mk_complete_key(type)
-      
-      puts 'key:'+key
+
       if start = Redis::Search.config.redis.zrank(key,prefix)
         count = limit
         max_range = start+(rangelen*limit)-1
         range = Redis::Search.config.redis.zrange(key,start,max_range)
-        # puts range
         # while prefix_matchs.length <count
           # start += rangelen
           # break if !range or range.length == 0
@@ -50,43 +48,30 @@ class Redis
             end
           } 
           # range = range[start..max_range]
-          # puts 'PPPP'
-          # puts range
         end
       end
       
       # 组合 words 的特别 key 名
       words = []
       words = prefix_matchs.uniq.collect { |w| Search.mk_sets_key(type,w) }
-      puts 'words:'
-      puts words 
-      puts '????????'
       # 组合特别 key ,但这里不会像 query 那样放入 words， 因为在 complete 里面 words 是用 union 取的，condition_keys 和 words 应该取交集
       condition_keys = []
       if !conditions.blank?
         conditions = conditions[0] if conditions.is_a?(Array)
         conditions.keys.each do |c|
           condition_keys << Search.mk_condition_key(type,c,conditions[c])
-     puts '///////////////////// condition keys //////////////////////'
-        puts condition_keys
-        puts '///////////////////////////////////////////'
         end
       end
       
       # 按词语搜索
       temp_store_key = "tmpsunionstore:#{words.join("+")}"
       if words.length > 1
-      #  if !Redis::Search.config.redis.exists(temp_store_key)
+       if !Redis::Search.config.redis.exists(temp_store_key)
           # 将多个词语组合对比，得到并集，并存入临时区域   
           Redis::Search.config.redis.sunionstore(temp_store_key,*words)
-          puts 'wwwwwwww'
-         words.each do |ww|
-           puts Redis::Search.config.redis.smembers(ww)
-         end          
-         puts 'wwwwwwww'
           # 将临时搜索设为1天后自动清除
           Redis::Search.config.redis.expire(temp_store_key,86400)
-       # end
+        end
         # 根据需要的数量取出 ids
       else
         temp_store_key = words.first
@@ -95,26 +80,11 @@ class Redis
       # 如果有条件，这里再次组合一下
       if !condition_keys.blank?
        condition_keys << temp_store_key if !words. blank?
-        puts '///////////////////// condition keys //////////////////////'
-        puts condition_keys
-        puts '///////////////////////////////////////////'
         temp_store_key = "tmpsinterstore:#{condition_keys.join('+')}"
-        puts '$$$$$$$$$$$  temp keys  $$$$$$$$$$$$$$$$$$$'
-        puts temp_store_key
-        puts '$$$$$$$$$$$$$$$$$$$$$$$$$$$$$4'
-       # if !Redis::Search.config.redis.exists(temp_store_key)
-          puts '---------------   temp_store_key members        ------------$$$$'
-                    puts Redis::Search.config.redis.smembers(temp_store_key)
-         puts '-------------- -------------$$$$'
+        if !Redis::Search.config.redis.exists(temp_store_key)
           Redis::Search.config.redis.sinterstore(temp_store_key,*condition_keys)
-                    puts '-------------------condition_keys members--------***************'
-                    puts '<<<<<<<<<<<<<<'
-                    puts condition_keys
-                    puts '<<<<<<<<<<<<<<<<<<<'
-          puts Redis::Search.config.redis.smembers(temp_store_key)
-                              puts '---------------------------***************'
           Redis::Search.config.redis.expire(temp_store_key,86400)
-        #end
+        end
       end
       
       ids = Redis::Search.config.redis.sort(temp_store_key,

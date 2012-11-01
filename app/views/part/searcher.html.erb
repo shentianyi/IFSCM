@@ -1,6 +1,8 @@
 <script type="text/javascript">
      $(function() {
-          $("#partSearchTxt").autocomplete("/part/search");
+          $("#partSearchTxt").autocomplete("/part/redis_search",{
+               dataType:'json'
+          });
      }); 
 </script>
 

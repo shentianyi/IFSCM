@@ -4,6 +4,10 @@ class Organisation<CZ::BaseClass
   attr_accessor :name, :description, :address, :tel, :website
   attr_reader :key
   
+  def self.gen_id
+   $redis.incr('org:index:incr')
+  end
+  
   def self.get_key( id )
     Rns::Org+":#{id}"
   end
@@ -80,4 +84,16 @@ class Organisation<CZ::BaseClass
     end
   end
   
+  # ws get org id by cNr or sNr
+  # if client, get supplier id
+  # if supplier, get client id
+  def get_parterId_by_parterNr orgOpeType,partnerNr
+    orgId=nil
+    if orgOpeType==OrgOperateType::Client
+       orgId=search_supplier_byNr(partnerNr)
+    elsif orgOpeType==OrgOperateType::Supplier
+       orgId=search_customer_byNr(partnerNr)
+    end
+    return orgId
+  end
 end
