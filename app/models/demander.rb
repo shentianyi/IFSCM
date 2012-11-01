@@ -7,7 +7,7 @@ class Demander<CZ::BaseClass
   NumPer=5
   
   def self.gen_key
-        Rns::De+":#{$redis.incr 'demand:index:incr'}"
+        Rns::De+":#{$redis.incr 'demand_index_incr'}"
   end
 
   
@@ -20,19 +20,19 @@ class Demander<CZ::BaseClass
       list = []
       resultKey = "resultKey"
       ###########################  client
-      if client = union_params( hash[:client], Rns::C )
+      if client = union_params( Rns::C, hash[:clientId] )
       list<<client
       end
       ###########################  supplier
-      if supplier = union_params( hash[:supplier], Rns::S )
+      if supplier = union_params( Rns::S, hash[:supplier] )
       list<<supplier
       end
       ###########################  part
-      if relpart = union_params( hash[:rpartNr], Rns::RP )
+      if relpart = union_params( Rns::RP, hash[:rpartNr] )
       list<<relpart
       end
       ###########################  type
-      if type = union_params( hash[:type], Rns::T )
+      if type = union_params( Rns::T, hash[:type] )
       list<<type
       end
       ###########################  date
@@ -41,11 +41,11 @@ class Demander<CZ::BaseClass
       $redis.zinterstore( resultKey, list, :aggregate=>"MAX" )
       $redis.expire( resultKey, 30 )
       
-      start = hash[:start].size>0 ? hash[:start].to_i : -(1/0.0)
-      timeend = hash[:end].size>0 ? hash[:end].to_i : (1/0.0)
+      start = (hash[:start]&&hash[:start].size>0) ? hash[:start].to_i : -(1/0.0)
+      timeend = (hash[:end]&&hash[:end].size>0) ? hash[:end].to_i : (1/0.0)
       demands = []
       $redis.zrangebyscore( resultKey, start, timeend, :withscores=>true, :limit=>[(hash[:page].to_i-1)*NumPer, NumPer] ).each do |item|
-        arr = [ Demander.find( item[0] ), item[1] ]
+        arr = [ Demander.find( item[0] ), item[1].to_i ]
         demands << arr
       end
       demands
@@ -75,7 +75,8 @@ class Demander<CZ::BaseClass
 
   
 private
-  def self.union_params( param, column )
+  def self.union_params( column, param )
+      return false unless param
       if param.size>0 && param.is_a?(String)
           key = "#{column}:#{param}"
       elsif param.is_a?(Array)

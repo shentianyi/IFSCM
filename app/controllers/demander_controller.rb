@@ -187,10 +187,11 @@ class DemanderController<ApplicationController
   end
 
   def create
-    key = Demander.get_key( params[:id] )
-    if $redis.exists( key )
-      else
-      demand = Demander.new( :key=>key, :clientId=>params[:client],
+    # key = Demander.get_key( 445 )
+    # if $redis.exists( key )
+      # else
+      demand = Demander.new( :key=>Demander.gen_key,
+      :clientId=>params[:client],
       :supplierId=>params[:supplier],
       :relpartId=>params[:partNr],
       :date=>params[:date],
@@ -198,24 +199,38 @@ class DemanderController<ApplicationController
       :type=>params[:type] )
     demand.save
     demand.save_to_send
-    end
+    # end
 
     redirect_to root_path
   end
 
   def search
-
+    
+    c = params[:client]
+    org = Organisation.find('organisation:1002')
+    @list = Organisation.option_list
     @demands = []
-    @demands = Demander.search( :client=>params[:client],
-                                                      :supplier=>params[:supplier],
-                                                      :rpartNr=>params[:partNr],
-                                                      :start=>params[:start],
-                                                      :end=>params[:end],
-                                                      :type=>params[:type],
-                                                      :page=>params[:page] )
+    clientId=nil
+#     
+    if c && c.size>0
+      clientId = org.search_customer_byNr( c ).to_s
+      puts clientId
+    end
+    # if !(  c && clientId = org.search_customer_byNr( c ) && clientId.size>0 )
+    # elsif !(  s && supplierId = org.search_supplier_byNr( s ) && supplierId.size>0 )
+    # else
+      @demands = Demander.search( :clientId=>clientId,
+                                                                        :supplier=>params[:supplier],
+                                                                        :rpartNr=>params[:partNr],
+                                                                        :start=>params[:start],
+                                                                        :end=>params[:end],
+                                                                        :type=>params[:type],
+                                                                        :page=>params[:page] )
+                                                         puts @demands
+    # end
 
     respond_to do |format|
-      format.html # index.html.erb
+      format.html {render :partial=>"table" }
       format.json { render json: @demands }
     end
   end

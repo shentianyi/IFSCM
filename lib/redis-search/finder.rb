@@ -76,7 +76,7 @@ class Redis
       # 按词语搜索
       temp_store_key = "tmpsunionstore:#{words.join("+")}"
       if words.length > 1
-      #  if !Redis::Search.config.redis.exists(temp_store_key)
+       if !Redis::Search.config.redis.exists(temp_store_key)
           # 将多个词语组合对比，得到并集，并存入临时区域   
           Redis::Search.config.redis.sunionstore(temp_store_key,*words)
           puts 'wwwwwwww'
@@ -86,7 +86,7 @@ class Redis
          puts 'wwwwwwww'
           # 将临时搜索设为1天后自动清除
           Redis::Search.config.redis.expire(temp_store_key,86400)
-       # end
+       end
         # 根据需要的数量取出 ids
       else
         temp_store_key = words.first
@@ -102,7 +102,7 @@ class Redis
         puts '$$$$$$$$$$$  temp keys  $$$$$$$$$$$$$$$$$$$'
         puts temp_store_key
         puts '$$$$$$$$$$$$$$$$$$$$$$$$$$$$$4'
-       # if !Redis::Search.config.redis.exists(temp_store_key)
+       if !Redis::Search.config.redis.exists(temp_store_key)
           puts '---------------   temp_store_key members        ------------$$$$'
                     puts Redis::Search.config.redis.smembers(temp_store_key)
          puts '-------------- -------------$$$$'
@@ -114,7 +114,7 @@ class Redis
           puts Redis::Search.config.redis.smembers(temp_store_key)
                               puts '---------------------------***************'
           Redis::Search.config.redis.expire(temp_store_key,86400)
-        #end
+        end
       end
       
       ids = Redis::Search.config.redis.sort(temp_store_key,
