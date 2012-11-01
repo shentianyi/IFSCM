@@ -5,7 +5,7 @@ class Organisation<CZ::BaseClass
   attr_reader :key
   
   def self.gen_id
-   $redis.incr('org:index:incr')
+   $redis.incr('org_index_incr')
   end
   
   def self.get_key( id )

@@ -1,100 +1,131 @@
-||index:<%= demands.key%>||
+<!-- ||index:<%= demands.key%>||
 errorItemKey:<%= demands.errorItemKey%>||
 itemCount:<%= demands.itemCount%>||
 <br />
 <style>
-     table td, tr {
-          border: solid red 1px;
-     }
-     #uuid {
-          width: 300px;
-     }
-     .type {
-          width: 40px;
-     }
-     .msg {
-          width: 300px;
-     }
-     .clientId {
-          width: 10px;
-     }
-     .partNr {
-          width: 100px;
-     }
-     .supplierNr {
-          width: 100px;
-     }
+table td, tr {
+border: solid red 1px;
+}
+#uuid {
+width: 300px;
+}
+.type {
+width: 40px;
+}
+.msg {
+width: 300px;
+}
+.clientId {
+width: 10px;
+}
+.partNr {
+width: 100px;
+}
+.supplierNr {
+width: 100px;
+}
 </style>
 <table>
-     <tr>
-          <td>&nbsp;</td>
-          <td>DemandId</td>
-          <td>Client</td>
-          <td>PartNr</td>
-          <td>SupplierNr</td>
-          <td>FileDate</td>
-          <td>Type</td>
-          <td>Amount</td>
-          <td>Date</td>
-          <td>Msg</td>
-          <td>&nbsp;</td>
-     </tr>
-     <% i=0
-     demands.items.each do |d|%>
-     <tr class="<%= d.key%>">
-          <td class="type"><%= (i+=1)%></td>
-          <td ><label id="uuid"><%= d.key%></label></td>
-          <td class="clientId">
-          <input id="<%= d.key%>-clientId" class="clientId" type="text" value="<%= d.clientId%>"/>
-          </td>
-          <td class="partNr">
-          <input  class="partNr" id='<%= d.key%>-partNr'  type="text" value="<%= d.cpartNr%>"/>
-          </td>
-          <td class='supplierNr' >
-          <input class='supplierNr'   id='<%= d.key%>-supplierNr'  type="text" value="<%= d.supplierNr%>"/>
-          </td>
-          <td class='supplierNr' >
-          <input  class='supplierNr'  id='<%= d.key%>-filedate'  type="text" value="<%= d.filedate%>"/>
-          </td>
-          <td class="type">
-          <input  id='<%= d.key%>-type' class="type" type="text" value="<%= d.type%>"/>
-          </td>
-          <td class="type">
-          <input  id='<%= d.key%>-amount'  type="text" class="type" value="<%= d.amount%>"/>
-          </td>
-          <td>
-          <input  id='<%= d.key%>-date'  type="text" value="<%= d.date%>"/>
-          </td>
-          <td class="msg" id='<%= d.key%>-msg'><%= d.msg%></td>
-          <td>
-          <input   type="button" value="Correct Error" onclick="correct_error('<%= d.key%>');"/>
-          </td>
-     </tr>
-     <%end%>
-</table>
-<script>
-     function correct_error(uuid) {
-          $.ajax({
-               url : '../demander/correct_error',
-               data : {
-                    'batchId' : $('#batchId').val(),
-                    'fileId' : $('#fileId').val(),
-                    'uuid' : uuid,
-                    'partNr' : $('#' + uuid + '-partNr').val(),
-                    'supplierNr' : $('#' + uuid + '-supplierNr').val(),
-                    'filedate' : $('#' + uuid + '-filedate').val(),
-                    'date' : $('#' + uuid + '-date').val(),
-                    'type' : $('#' + uuid + '-type').val(),
-                    'amount' : $('#' + uuid + '-amount').val()
-               },
-               dataType : 'json',
-               type : 'post',
-               success : function(data) {
-                    if(data.result) {
-                         $('#' + uuid + '-msg').html(data.object.msg);
-                    }
-               }
-          });
-     }
-</script>
+<tr>
+<td>&nbsp;</td>
+<td>DemandId</td>
+<td>Client</td>
+<td>PartNr</td>
+<td>SupplierNr</td>
+<td>FileDate</td>
+<td>Type</td>
+<td>Amount</td>
+<td>Date</td>
+<td>Msg</td>
+<td>&nbsp;</td>
+</tr>
+<% i=0
+demands.items.each do |d|%>
+<tr class="<%= d.key%>">
+<td class="type"><%= (i+=1)%></td>
+<td ><label id="uuid"><%= d.key%></label></td>
+<td class="clientId">
+<input id="<%= d.key%>-clientId" class="clientId" type="text" value="<%= d.clientId%>"/>
+</td>
+<td class="partNr">
+<input  class="partNr" id='<%= d.key%>-partNr'  type="text" value="<%= d.cpartNr%>"/>
+</td>
+<td class='supplierNr' >
+<input class='supplierNr'   id='<%= d.key%>-supplierNr'  type="text" value="<%= d.supplierNr%>"/>
+</td>
+<td class='supplierNr' >
+<input  class='supplierNr'  id='<%= d.key%>-filedate'  type="text" value="<%= d.filedate%>"/>
+</td>
+<td class="type">
+<input  id='<%= d.key%>-type' class="type" type="text" value="<%= d.type%>"/>
+</td>
+<td class="type">
+<input  id='<%= d.key%>-amount'  type="text" class="type" value="<%= d.amount%>"/>
+</td>
+<td>
+<input  id='<%= d.key%>-date'  type="text" value="<%= d.date%>"/>
+</td>
+<td class="msg" id='<%= d.key%>-msg'><%= d.msg%></td>
+<td>
+<input   type="button" value="Correct Error" onclick="correct_error('<%= d.key%>');"/>
+</td>
+</tr>
+<%end%>
+</table> -->
+<%if demands.items.count>0%>
+<div class="tableview" id='tableview'>
+     <table class="upData" id="<%=demands.key%>">
+          <tr class="lineone">
+               <th>&nbsp;</th>
+               <th>供应商号</th>
+               <th>零件号</th>
+               <th>文件日期</th>
+               <th>要货日期</th>
+               <th>数量</th>
+               <th>预测类型</th>
+               <th>错误提示</th>
+               <th>&nbsp;</th>
+          </tr>
+          <tr class="divide" style="display: none">
+               <th class="nordvd">&nbsp;</th>
+               <th class="nordvd"></th>
+               <th class="nordvd"></th>
+               <th class="nordvd"></th>
+               <th class="nordvd"></th>
+               <th class="nordvd"></th>
+               <th class="nordvd"></th>
+               <th class="lastdvd"></th>
+               <th>&nbsp;</th>
+          </tr>
+          <% i=0
+          demands.items.each do |item|
+          i+=1
+          %>
+          <tr class="norline" id="<%=item.key%>">
+               <th class="on-type-change"><%= i%></th>
+               <th class="supplierNr"><%= item.supplierNr%></th>
+               <th class="partNr"><%= item.cpartNr%></th>
+               <th class="filedate"><%= item.filedate%></th>
+               <th class="on-type-change" id="date"><%= item.date%></th>
+               <th class="amount"><%= item.amount%></th>
+               <th class="type"><%= item.type%></th>
+               <th class='on-type-change'> <div style="text-align:left;" class="demand-msg-div">
+                    <% msg=JSON.parse(item.msg)%>
+                         <%msg.each do |m|%>
+                                <span><%=m%>/</span>
+                         <%end%>
+                 </th>
+                 </div>
+               <th>
+               <input   type="button" value="修改" onclick="correct_demand_error(this);"/>
+               </th>
+          </tr>
+          <%end%>
+     </table>
+</div>
+<%else%>
+<p>
+     文件中无预测
+</p>>
+<%end%>
 

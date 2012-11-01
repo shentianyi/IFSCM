@@ -11,9 +11,9 @@ Demand::Application.routes.draw do
   resources :demander do
     collection do
       post :search
+      get :demand_upload
       match :upload_files
-      match :get_error
-      match :get_normal
+      post :get_tempdemand_items
       match :correct_error
       match :cancel_upload
       match :demand_history

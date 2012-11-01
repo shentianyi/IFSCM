@@ -1,17 +1,17 @@
+#coding:utf-8
 require 'base_class'
 
 class ValidMsg<BaseMsg
   attr_accessor :result,:content_key,:fields,:content
   
-  @@valids={:pnrNotEx=>'part nr does not exist',
-            :spNrNotEx=>'supplier nr not exsit',
-            :partNotFitOrgP=>'part nr not fit org part',
-            :partMutiFitOrgP=>'part nr fit muti org parts',
-            :fcDateErr=>'forecast date format error or less than now',
-            :fcTypeNotEx=>'forecast type not exist',
-            :pAmountIsIntOrLessZero=>'part amount is not int or less than 0',
-            :fcRepeat=>'forcast is repeat in this time',
-            :pOneToMuti=>'part is one to muti rela'}
+  @@valids={:pnrNotEx=>'零件号不存在',
+            :spNrNotEx=>'供应商号不存在',
+            :partNotFitOrgP=>'零件非此供应商生产',
+            :partMutiFitOrgP=>'零件对应多个供应商零件',
+            :fcDateErr=>'日期小于今日或格式错误',
+            :fcTypeNotEx=>'预测类型不存在',
+            :pAmountIsIntOrLessZero=>'数量应大于0',
+            :fcRepeat=>'预测重复'}
             
   def contents
     @content=[] if !@content

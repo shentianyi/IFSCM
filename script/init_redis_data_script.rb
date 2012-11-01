@@ -1,8 +1,17 @@
 # 1. init part data
 require 'redis'
-
-redis=Redis.new
+ 
 class InitData
+  
+  # init demand type in redis
+  def self.initDemandType
+    $red.del DemandType.gen_set_key
+    ['D','W','M','Y'].each do |t| 
+       $redis.sadd DemandType.gen_set_key,t
+    end
+  end
+  
+  # init demand Part in redis
   def self.initPart
     for j in 1..2 do
       for i in 1...10 do
@@ -14,5 +23,5 @@ class InitData
     end
   end
 end
-
-InitData.initPart
+InitData.initDemandType
+# InitData.initPart
