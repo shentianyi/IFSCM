@@ -8,7 +8,6 @@ class PartController<ApplicationController
 
   # ws part redis search
   def redis_search
-    session[:org_id]=1
     org_id=session[:org_id]
     params[:q].gsub!(/'/,'')
     parts=[]

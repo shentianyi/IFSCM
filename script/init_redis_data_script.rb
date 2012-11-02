@@ -1,6 +1,13 @@
 # 1. init part data
 require 'redis'
  require 'enum/part_rel_type'
+ 
+ Staff.create(  :staffNr => 'wstest',
+                          :name=>'wstest',
+                          :orgId=>1,
+                          :password => 'wstest',
+                          :password_confirmation => 'wstest')
+ 
 class InitData
   
   # init demand type 
@@ -26,6 +33,12 @@ class InitData
     delpi=Organisation.new(:key=>Organisation.get_key(Organisation.gen_id),:name=>'Delpi', :description=>'we donot like Leoni, we are enemy', :address=>'beside Leoni', :tel=>'012-00000003', :website=>'www.killleoni.com')
     delpi.save
     orgs<<delpi
+    
+    leoni.add_supplier(vw.id,'VW-LEONI')
+    leoni.add_supplier(delpi.id,'DELPI-LEONI')
+    
+    vw.add_client(leoni.id,'LEONI-VW')
+    vw.add_client(leoni.id,'LEONI-DELPI')
     
    initPart orgs 
   end
