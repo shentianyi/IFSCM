@@ -11,7 +11,7 @@ module DemanderHelper
       batchFile=RedisFile.new(:key=>uuid.generate,:itemCount=>0,:errorCount=>0,:normalItemKey=>uuid.generate,:repeatItemKey=>uuid.generate)
       items=[]
       files.each do |f|
-        sfile=RedisFile.new(:key=>f[:uuidName],:oriName=>f[:oriName],:uuidName=>f[:uuidName],
+        sfile=RedisFile.new(:key=>f[:uuidName],:oriName=>f[:oriName],
         :itemCount=>0,:errorCount=>0,:normalItemKey=>uuid.generate,:errorItemKey=>uuid.generate)
         # csv header---
         CSV.foreach(File.join(f[:path],f[:pathName]),:headers=>true,:col_sep=>$CSVSP) do |row|
@@ -100,7 +100,7 @@ module DemanderHelper
     end
 
     # valid demand type
-    if !DemandType.find_by_type(demand.type)
+    if !DemandType.contains(demand.type)
       msg.result=false
       msg.content_key<<:fcTypeNotEx
     end

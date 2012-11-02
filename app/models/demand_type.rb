@@ -11,7 +11,7 @@ class DemandType<CZ::BaseClass
     'demand:type:set'
   end
   
-  def self.find_by_type type
+  def self.contains type
     $redis.sismember gen_set_key,type
   end
 end

@@ -73,7 +73,7 @@ class PartRel<CZ::BaseClass
    
   private
   def generate_key cid,sid,partRelType
-    "clientId#{cid}:supplierId:#{sid}:#{PartRelType.get_by_value(partRelType)}"
+    "clientId:#{cid}:supplierId:#{sid}:#{PartRelType.get_by_value(partRelType)}"
   end
    
 end

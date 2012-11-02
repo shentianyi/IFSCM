@@ -4,7 +4,7 @@ class Part<CZ::BaseClass
   attr_accessor :key,:orgId,:partNr
   
   def self.gen_key
-    "part:#{$redis.incr('part:index:incr')}"
+    "part:#{$redis.incr('part_index_incr')}"
   end
   
   
