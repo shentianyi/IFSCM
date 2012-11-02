@@ -1,6 +1,12 @@
 Demand::Application.routes.draw do
   root :to => "demander#index"
 
+  controller :sessions do
+    get 'login' => :new
+    post 'login' => :create
+    get 'logout' => :destroy
+  end
+
   resources :organisation_manager do
     collection do
       get :search

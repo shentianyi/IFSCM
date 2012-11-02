@@ -9,24 +9,11 @@
 	});
 
 </script>
-<%= form_tag(:controller=>"demander", :action=>"search")  do  %>
-Start:<%= text_field_tag :start, nil, :placeholder => "example: 12/10/10 12:23" %>
-End:<%= text_field_tag :end, nil, :placeholder => "example: 12/10/10 12:23" %>
-<br/>
-Client:<%= text_field_tag :client, nil, :placeholder => "example: Leoni" %>
-<br/>
-Supplier:<%= select_tag :supplier,  options_for_select( @list ) %>
-<br/>
-PartNr:<%= text_field_tag :partNr, nil, :placeholder => "example: 53423233" %>
-<br/>
-Type:<%= text_field_tag :type, nil, :placeholder => "example: D" %>
-<%= button_tag 'search',:type=>'button',:onclick=>"demand_search_from_sup();"%>
-Page:<%= text_field_tag :page, 1, :size=>5 %>
-<% end %>
+
 		<div class="textsearchbox texts" id="client_float" style="display: none">
 			<span class="searchcontenttype">客户号</span>
 			<input type="text" name="searchcontent" class="searchcontent" placeholder="请输入客户号" />
-			<input type="button" name="startsearch" class="startsearch" value="搜索" onclick="demand_search_option_one(this);"/>
+			<input type="button" name="startsearch" class="startsearch" value="搜索" onclick="demand_search_from_sup_option_one(this);"/>
 			<input type="button" name="canclesearch" class="searchcancle" value="取消" onclick="pop_cancel(this);"/>
 		</div>
 		<div class="textsearchbox texts" id="partNr_float" style="display: none">
@@ -86,8 +73,8 @@ Page:<%= text_field_tag :page, 1, :size=>5 %>
 	</div>
 </div>
 <div id="result" class="tableview">
-	<table class="upData">
-		<tr class="lineone">
+	<table class="demandData">
+		<tr class="demandlineone">
 			<th link="client_float" style="cursor: pointer" onclick="pop(this);">客户号</th>
 			<th link="partNr_float" style="cursor: pointer" onclick="pop(this);">零件号</th>
 			<th link="date_float" style="cursor: pointer" onclick="pop(this);">日期</th>
@@ -104,17 +91,28 @@ Page:<%= text_field_tag :page, 1, :size=>5 %>
 			<th class="lastdvd"></th>
 		</tr>
 		<% @demands.each do |d| %>
-		<tr class="norline">
+		<tr class="demandnorline hoverable">
 			<th><%= d.clientNr %></th>
 			<th><%= d.relpartId%></th>
 			<th><%= d.date%></th>
 			<th><%= d.amount%></th>
 			<th><%= d.type%></th>
-			<th><%= d.key%>&nbsp;&nbsp;Score:<%= d.supplierNr%></th>
+			<th><%= d.key%> Supplier:<%= d.supplierNr%></th>
 		</tr>
 		<% end %>
 	</table>
 	<hr/>
 	There is(are) <%= @demands.size %> record(s):
 	<br/>
+	<div class="pagination">
+		<ul>
+			<li class="disabled"><a href="#">Prev</a></li>
+			<li class="active"><a href="#">1</a></li>
+			<li><a href="#">2</a></li>
+			<li><a href="#">3</a></li>
+			<li><a href="#">4</a></li>
+			<li><a href="#">Next</a></li>
+		</ul>
+	</div>
 </div>
+

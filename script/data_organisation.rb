@@ -1,3 +1,10 @@
+Staff.create(  :staffNr => 'admin',
+                          :name=>'admin',
+                          :orgId=>1002,
+                          :password => 'admin',
+                          :password_confirmation => 'admin')
+
+
 $redis.flushall
 
 org1 = Organisation.new( :key=>Organisation.get_key( 1001 ), 
@@ -48,16 +55,16 @@ Supplier.new( s_key: org1.s_key, supplierNr: 'SUMSUNG' ).save_index
 org1.add_supplier( org5.id, 'AT&T' )
 Supplier.new( s_key: org1.s_key, supplierNr: 'AT&T' ).save_index
 
-org2.add_customer( org1.id, 'CZ' )
+org2.add_client( org1.id, 'CZ' )
 Client.new( c_key: org2.c_key, clientNr: 'CZ' ).save_index
 
-org2.add_customer( org3.id, 'Lenovo' )
+org2.add_client( org3.id, 'Lenovo' )
 Client.new( c_key: org2.c_key, clientNr: 'Lenovo' ).save_index
 
-org2.add_customer( org4.id, 'SUMSUNG' )
+org2.add_client( org4.id, 'SUMSUNG' )
 Client.new( c_key: org2.c_key, clientNr: 'SUMSUNG' ).save_index
 
-org2.add_customer( org5.id, 'AT&T' )
+org2.add_client( org5.id, 'AT&T' )
 Client.new( c_key: org2.c_key, clientNr: 'AT&T' ).save_index
 #########################################################
 
@@ -68,6 +75,105 @@ demand = Demander.new( :key=>Demander.gen_key,
                                                       :date=>110001,
                                                       :amount=>1000,
                                                       :type=>'W' )
+print "Demander:  "+demand.key.ljust(25)
+puts demand.save
+demand.save_to_send
+
+demand = Demander.new( :key=>Demander.gen_key,
+                                                      :clientId=>1001,
+                                                      :supplierId=>1002,
+                                                      :relpartId=>"23423421",
+                                                      :date=>110001,
+                                                      :amount=>1000,
+                                                      :type=>'D' )
+print "Demander:  "+demand.key.ljust(25)
+puts demand.save
+demand.save_to_send
+
+demand = Demander.new( :key=>Demander.gen_key,
+                                                      :clientId=>1001,
+                                                      :supplierId=>1002,
+                                                      :relpartId=>"23423422",
+                                                      :date=>110001,
+                                                      :amount=>1000,
+                                                      :type=>'D' )
+print "Demander:  "+demand.key.ljust(25)
+puts demand.save
+demand.save_to_send
+
+demand = Demander.new( :key=>Demander.gen_key,
+                                                      :clientId=>1001,
+                                                      :supplierId=>1002,
+                                                      :relpartId=>"23423423",
+                                                      :date=>110001,
+                                                      :amount=>1000,
+                                                      :type=>'D' )
+print "Demander:  "+demand.key.ljust(25)
+puts demand.save
+demand.save_to_send
+
+demand = Demander.new( :key=>Demander.gen_key,
+                                                      :clientId=>1001,
+                                                      :supplierId=>1002,
+                                                      :relpartId=>"23423424",
+                                                      :date=>110001,
+                                                      :amount=>1000,
+                                                      :type=>'D' )
+print "Demander:  "+demand.key.ljust(25)
+puts demand.save
+demand.save_to_send
+
+demand = Demander.new( :key=>Demander.gen_key,
+                                                      :clientId=>1003,
+                                                      :supplierId=>1002,
+                                                      :relpartId=>"2342342",
+                                                      :date=>110001,
+                                                      :amount=>1000,
+                                                      :type=>'W' )
+print "Demander:  "+demand.key.ljust(25)
+puts demand.save
+demand.save_to_send
+
+demand = Demander.new( :key=>Demander.gen_key,
+                                                      :clientId=>1003,
+                                                      :supplierId=>1002,
+                                                      :relpartId=>"23423421",
+                                                      :date=>110001,
+                                                      :amount=>1000,
+                                                      :type=>'D' )
+print "Demander:  "+demand.key.ljust(25)
+puts demand.save
+demand.save_to_send
+
+demand = Demander.new( :key=>Demander.gen_key,
+                                                      :clientId=>1003,
+                                                      :supplierId=>1002,
+                                                      :relpartId=>"23423422",
+                                                      :date=>110001,
+                                                      :amount=>1000,
+                                                      :type=>'D' )
+print "Demander:  "+demand.key.ljust(25)
+puts demand.save
+demand.save_to_send
+
+demand = Demander.new( :key=>Demander.gen_key,
+                                                      :clientId=>1003,
+                                                      :supplierId=>1002,
+                                                      :relpartId=>"23423423",
+                                                      :date=>110001,
+                                                      :amount=>1000,
+                                                      :type=>'D' )
+print "Demander:  "+demand.key.ljust(25)
+puts demand.save
+demand.save_to_send
+
+demand = Demander.new( :key=>Demander.gen_key,
+                                                      :clientId=>1003,
+                                                      :supplierId=>1002,
+                                                      :relpartId=>"23423424",
+                                                      :date=>110001,
+                                                      :amount=>1000,
+                                                      :type=>'D' )
 print "Demander:  "+demand.key.ljust(25)
 puts demand.save
 demand.save_to_send

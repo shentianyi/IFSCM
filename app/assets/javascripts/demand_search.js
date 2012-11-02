@@ -27,7 +27,8 @@ function demand_search( hash ){
      });
 }
 
-function demand_search_option_one(e){
+function demand_search_from_sup_option_one(e){
+	// var hash = { supplier : $('#supplier').val() }
 	if ( $(e).parent().attr("id")=="client_float" )
 		var hash = { client : $(e).prev().val() };
 	else if ($(e).parent().attr("id")=="partNr_float" )

@@ -1,0 +1,87 @@
+<style type="text/css">
+.labs{
+	font-size:20px;
+	color:#4e4e58;
+	width: 100px;
+	height:25px;
+	line-height: 25px;
+	text-align:right;
+	margin-right:20px;
+	float:left;
+	margin-top:5px;
+}
+.submitbt{
+	height: 40px;
+     line-height:40px;
+    
+}
+.depot_form{
+	margin-left:50px;
+	margin-top:20px;
+	width:600px;
+	
+}
+#notice{
+	font-size:24px;
+	color:red;
+	margin-left:50px;
+}
+.oneline{
+	line-height:30px;
+	height:30px;
+	margin-top:10px;
+}
+.subt{
+	border-style:none;
+	background-color:#008dc2;
+border-radius:5px;
+border-color:#008dc2;
+border-width:1px;
+     height: 30px;
+     font-size:20px;
+     color:#ffffff;
+     line-height:40px;
+     width: 80px;
+     margin-top:5px;
+	margin-left:245px;
+}
+fieldset{
+	width:400px;
+	margin-left:150px;
+	font-size:20px;
+	color:#4e4e58;
+}
+.inputs{
+	width:200px;
+	height:20px;
+	line-height:20px;
+	float:left;
+}
+</style>
+<p id="notice">
+	<%= notice %>
+</p>
+
+<div class="depot_form">
+	<%= form_tag do %>
+	<fieldset>
+		<legend>
+			请登录：
+		</legend>
+
+		<div class="oneline">
+			<div class="labs">员工号:</div>
+			<input name="staffNr" type="text" class="inputs"/>
+			
+		</div>
+		<div class="oneline">
+			<div class="labs">密码:</div>
+			<input name="password" type="password" class="inputs">
+			
+		</div>
+		<div class="submitbt">
+         <input type="submit" value="登录" class="subt" />
+		</div>
+	</fieldset>
+	<% end %>
+</div>

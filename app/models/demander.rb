@@ -4,7 +4,7 @@ require 'base_class'
 
 class Demander<CZ::BaseClass
   attr_accessor :key,:clientId,:relpartId,:supplierId, :type,:amount,:date,:rate
-  NumPer=5
+  NumPer=20
   
   def self.gen_key
         Rns::De+":#{$redis.incr 'demand_index_incr'}"
@@ -24,7 +24,7 @@ class Demander<CZ::BaseClass
       list<<client
       end
       ###########################  supplier
-      if supplier = union_params( Rns::S, hash[:supplier] )
+      if supplier = union_params( Rns::S, hash[:supplierId] )
       list<<supplier
       end
       ###########################  part
@@ -44,9 +44,9 @@ class Demander<CZ::BaseClass
       start = (hash[:start]&&hash[:start].size>0) ? hash[:start].to_i : -(1/0.0)
       timeend = (hash[:end]&&hash[:end].size>0) ? hash[:end].to_i : (1/0.0)
       demands = []
-      $redis.zrangebyscore( resultKey, start, timeend, :withscores=>true, :limit=>[(hash[:page].to_i-1)*NumPer, NumPer] ).each do |item|
-        arr = [ Demander.find( item[0] ), item[1].to_i ]
-        demands << arr
+      $redis.zrangebyscore( resultKey, start, timeend, :withscores=>false, :limit=>[(hash[:page].to_i-1)*NumPer, NumPer] ).each do |item|
+        # arr = [ Demander.find( item[0] ), item[1].to_i ]
+        demands << Demander.find( item )
       end
       demands
   end
@@ -57,11 +57,11 @@ class Demander<CZ::BaseClass
   end
   
   def clientNr
-    $redis.hget( Organisation.get_key(clientId), :name)
+    Organisation.find_by_id(supplierId).search_client_byId( clientId )
   end
   
   def supplierNr
-    $redis.hget( Organisation.get_key(supplierId), :name)
+    Organisation.find_by_id(clientId).search_supplier_byId( supplierId )
   end
   
   def save_to_send

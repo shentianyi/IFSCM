@@ -18,7 +18,7 @@
 				<li>数据分析</li>
 				<li>零件入库</li>
 			</ul>
-			<p class="greeting">早上好！沈天一，您现在代表的是彩卓公司</p>
+			<p class="greeting">早上好！<%= Staff.find(session[:staff_id]).name %>，您现在代表的是：<%= @cz_org.name%>公司</p>
 		</div>
 	</div>
 	

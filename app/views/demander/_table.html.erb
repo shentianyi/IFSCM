@@ -1,6 +1,6 @@
 
-	<table class="upData">
-		<tr class="lineone">
+	<table class="demandData">
+		<tr class="demandlineone">
 			<th link="client_float" style="cursor: pointer" onclick="pop(this);">客户号</th>
 			<th link="partNr_float" style="cursor: pointer" onclick="pop(this);">零件号</th>
 			<th link="date_float" style="cursor: pointer" onclick="pop(this);">日期</th>
@@ -17,15 +17,25 @@
 			<th class="lastdvd"></th>
 		</tr>
 		<% @demands.each do |d| %>
-		  <tr class="norline">
-		    <th><%= d[0].clientNr %></th>
-		    <th><%= d[0].relpartId%></th>
-		    <th><%= d[0].date%></th>
-		    <th><%= d[0].amount%></th>
-		    <th><%= d[0].type%></th>
-		   	<th><%= d[0].key%>&nbsp;&nbsp;Score:<%= d[1]%></th>
+		  <tr class="demandnorline hoverable">
+			<th><%= d.clientNr %></th>
+			<th><%= d.relpartId%></th>
+			<th><%= d.date%></th>
+			<th><%= d.amount%></th>
+			<th><%= d.type%></th>
+			<th><%= d.key%> Supplier:<%= d.supplierNr%></th>
 		  </tr>
 		<% end %>
 	</table>
 	<hr/>
 	There is(are) <%= @demands.size %> record(s):<br/>
+	<div class="pagination">
+		<ul>
+			<li class="disabled"><a href="#">Prev</a></li>
+			<li class="active"><a href="#">1</a></li>
+			<li><a href="#">2</a></li>
+			<li><a href="#">3</a></li>
+			<li><a href="#">4</a></li>
+			<li><a href="#">Next</a></li>
+		</ul>
+	</div>
