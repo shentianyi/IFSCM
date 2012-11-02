@@ -66,7 +66,7 @@ module DemanderHelper
 
     # vali partNr
     partId=supplierId=nil
-    if !partId=Part.find_partId_by_orgId_partNr(demand.clientId,demand.cpartNr)
+    if !partId=Part.find_partKey_by_orgId_partNr(demand.clientId,demand.cpartNr)
       msg.result=false
       msg.content_key<<:pnrNotEx
     else
