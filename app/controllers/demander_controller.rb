@@ -13,7 +13,6 @@ class DemanderController<ApplicationController
 
   # ws upload demands from csv -- support muti files
   def upload_files
-    session[:org_id]=1
     if request.get?
       else
       files=params[:files]
