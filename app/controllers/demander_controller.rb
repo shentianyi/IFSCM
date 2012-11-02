@@ -12,7 +12,7 @@ class DemanderController<ApplicationController
 
   # ws upload demands from csv -- support muti files
   def upload_files
-    session[:userId]=1
+    session[:org_id]=1
     if request.get?
       else
       files=params[:files]
@@ -31,7 +31,7 @@ class DemanderController<ApplicationController
             hfiles<<hf
           end
           # clietId should be from session
-          clientId=session[:userId]
+          clientId=session[:org_Id]
           # validate and show result
           batch_file=DemanderHelper::generate_by_csv(hfiles,clientId)
           if batch_file
@@ -80,9 +80,9 @@ class DemanderController<ApplicationController
 
   # ws correct error
   def correct_error
-    session[:userId]=1
+    session[:org_id]=1
     if request.post?
-      clientId=session[:userId]
+      clientId=session[:org_id]
       msg=ReturnMsg.new(:result=>false,:content=>'')
       bf=RedisFile.find(params[:batchId])
       sf=RedisFile.find(params[:fileId])
