@@ -77,17 +77,6 @@ class DemanderController<ApplicationController
     end
   end
 
-  # # ws get file item normals
-  # def get_normal
-  # if request.post?
-  # demands=get_demand_items 'normal'
-  # respond_to do |format|
-  # format.xml {render :xml=>JSON.parse(demands.to_json).to_xml(:root=>'demands')}
-  # format.json { render json: demands }
-  # format.html { render partial:'normal_items',:locals=>{:demands=>demands}}
-  # end
-  # end
-  # end
 
   # ws correct error
   def correct_error
@@ -244,11 +233,5 @@ class DemanderController<ApplicationController
     end
   end
 
-# private
-#
-# # ws private get demands
-# def get_demand_items type
-#
-# end
 
 end
