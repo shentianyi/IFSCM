@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Demand</title>
+  <%= stylesheet_link_tag    "application", :media => "all" %>
+  <%= javascript_include_tag "application" %>
+  <%= csrf_meta_tags %>
+</head>
+<body>
+	<div class="subicons">
+		<div class="fixedtop">
+			<ul class="subs">
+				<li><input type="button" name="home" class="iconhome bt" /></li>
+				<li><input type="button" name="back" class="iconback bt" /></li>
+				<li><a href="../demander/demand_upload">上传需求</a></li>
+				<li>查看需求</li>
+				<li>供应商信息</li>
+				<li>数据分析</li>
+				<li>零件入库</li>
+			</ul>
+			<p class="greeting">早上好！</p>
+		</div>
+	</div>
+	
+	<div class="lefticons" id="lefticons">
+		<div class="hm licon">
+			<a> <input type="button" name="headicon" class="headicon" />
+			</a>
+		</div>
+		<div class="cus licon">
+			<a> <input type="button" name="customericon" class="customericon" />
+			</a>
+		</div>
+		<div class="sup licon">
+			<a> <input type="button" name="suppliericon" class="suppliericon" />
+			</a>
+		</div>
+	</div>
+	
+<div class="content">
+	  <div class="wrapcontent">
+			<%= yield %>
+	  </div>
+</div>
+
+</body>
+</html>

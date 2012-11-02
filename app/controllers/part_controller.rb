@@ -1,4 +1,7 @@
 class PartController<ApplicationController
+  
+  before_filter  :authorize
+  
   def searcher
 
   end

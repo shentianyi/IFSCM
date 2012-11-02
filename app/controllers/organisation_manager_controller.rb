@@ -1,5 +1,7 @@
 class OrganisationManagerController < ApplicationController
   
+  before_filter  :authorize
+  
   def index
 
     @orgs = []
