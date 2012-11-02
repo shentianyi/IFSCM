@@ -3,6 +3,7 @@ require 'enum/file_data_type.rb'
 
 class DemanderController<ApplicationController
 
+  before_filter  :authorize
   #include
   include DemanderHelper
   # ws
@@ -195,14 +196,18 @@ class DemanderController<ApplicationController
 
   def index
     @demands = []
-    if request.get?
-      $redis.keys( "#{Rns::De}:*" ).each do |k|
-        demander = Demander.find( k )
-        @demands << demander
-      end
-      @list = Organisation.option_list
-    else
-    end
+    @list = Organisation.option_list
+    
+    clientId=nil
+    supplierId=nil
+    ######  判断类型 C or S ， 将session[:id]赋值给 id
+    # if session[:usertype]=="Client"
+    # elsif session[:usertype]=="Supplier"
+      supplierId = @cz_org.id
+    # end
+    
+    @demands = Demander.search( :clientId=>clientId, :supplierId=>supplierId,
+                                                                      :page=>1 )
 
     respond_to do |format|
       format.html # index.html.erb
@@ -231,20 +236,29 @@ class DemanderController<ApplicationController
   def search
     
     c = params[:client]
-    org = Organisation.find('organisation:1002')
+    s = params[:supplier]
+    
+    if c && c.size>0
+      clientId = @cz_org.search_client_byNr( c )
+    elsif s && s.size>0
+      supplierId = @cz_org.search_supplier_byNr( s )
+    else
+      clientId=nil
+      supplierId=nil
+    end
+    ######  判断类型 C or S ， 将session[:id]赋值给 id
+    # if session[:usertype]=="Client"
+    # elsif session[:usertype]=="Supplier"
+      supplierId = @cz_org.id
+    # end
+    
+    
+    
+    
     @list = Organisation.option_list
     @demands = []
-    clientId=nil
-#     
-    if c && c.size>0
-      clientId = org.search_customer_byNr( c ).to_s
-      puts clientId
-    end
-    # if !(  c && clientId = org.search_customer_byNr( c ) && clientId.size>0 )
-    # elsif !(  s && supplierId = org.search_supplier_byNr( s ) && supplierId.size>0 )
-    # else
       @demands = Demander.search( :clientId=>clientId,
-                                                                        :supplier=>params[:supplier],
+                                                                        :supplierId=>supplierId,
                                                                         :rpartNr=>params[:partNr],
                                                                         :start=>params[:start],
                                                                         :end=>params[:end],

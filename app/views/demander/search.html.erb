@@ -1,13 +1,16 @@
-<%= form_tag(:controller=>"demander", :action=>"search") do  %>
+<%= form_tag(:controller=>"demander", :action=>"search")  do  %>
 	Start:<%= text_field_tag :start, nil, :placeholder => "example: 12/10/10 12:23" %>
 	End:<%= text_field_tag :end, nil, :placeholder => "example: 12/10/10 12:23" %>
 	<br/>
-	Client:<%= text_field_tag :client, nil, :placeholder => "example: Leoni" %><br/>
-	Supplier:<%= select_tag :supplier,  options_for_select($redis.zrange( "12345:#{Rns::S}", 0, -1, :withscores=>true ).collect { |m,s| [ m, s.to_i ] } ),  prompt: "All" %><br/>
-	PartNr:<%= text_field_tag :partNr, nil, :placeholder => "example: 53423233" %><br/>
+	Client:<%= text_field_tag :client, nil, :placeholder => "example: Leoni" %>
+	<br/>
+	Supplier:<%= select_tag :supplier,  options_for_select( @list ) %>
+	<br/>
+	PartNr:<%= text_field_tag :partNr, nil, :placeholder => "example: 53423233" %>
+	<br/>
 	Type:<%= text_field_tag :type, nil, :placeholder => "example: D" %>
-    <%= submit_tag "Search" %>
-    Page:<%= text_field_tag :page, 1, :size=>5 %>
+	<%= button_tag 'search',:type=>'button',:onclick=>"demand_search_from_sup();"%>
+	Page:<%= text_field_tag :page, 1, :size=>5 %>
 <% end %>
 
 

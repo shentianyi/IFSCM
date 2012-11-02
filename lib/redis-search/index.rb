@@ -29,12 +29,6 @@ class Redis
 
         # 将目前的编号保存到条件(conditions)字段所创立的索引上面
         self.condition_fields.each do |field|
-          puts '--------------condition-------------'
-          puts field
-          puts '-----------------------------'
-          puts '-----id-------'
-          puts data
-          puts '-----'
           Redis::Search.config.redis.sadd(Search.mk_condition_key(self.type,field,data[field.to_sym]), self.id)
         end
 
