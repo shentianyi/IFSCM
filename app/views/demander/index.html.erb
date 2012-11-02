@@ -1,71 +1,120 @@
+<script language="javascript">
+	$(function() {
+		$("#client_float").draggable();
+		$("#partNr_float").draggable();
+		$("#date_float").draggable();
+		$("#amount_float").draggable();
+		$("#type_float").draggable();
+		$("#rate_float").draggable();
+	});
+
+</script>
 <%= form_tag(:controller=>"demander", :action=>"search")  do  %>
-	Start:<%= text_field_tag :start, nil, :placeholder => "example: 12/10/10 12:23" %>
-	End:<%= text_field_tag :end, nil, :placeholder => "example: 12/10/10 12:23" %>
+Start:<%= text_field_tag :start, nil, :placeholder => "example: 12/10/10 12:23" %>
+End:<%= text_field_tag :end, nil, :placeholder => "example: 12/10/10 12:23" %>
+<br/>
+Client:<%= text_field_tag :client, nil, :placeholder => "example: Leoni" %>
+<br/>
+Supplier:<%= select_tag :supplier,  options_for_select( @list ) %>
+<br/>
+PartNr:<%= text_field_tag :partNr, nil, :placeholder => "example: 53423233" %>
+<br/>
+Type:<%= text_field_tag :type, nil, :placeholder => "example: D" %>
+<%= button_tag 'search',:type=>'button',:onclick=>"demand_search_from_sup();"%>
+Page:<%= text_field_tag :page, 1, :size=>5 %>
+<% end %>
+		<div class="textsearchbox texts" id="client_float" style="display: none">
+			<span class="searchcontenttype">客户号</span>
+			<input type="text" name="searchcontent" class="searchcontent" placeholder="请输入客户号" />
+			<input type="button" name="startsearch" class="startsearch" value="搜索" onclick="demand_search_option_one(this);"/>
+			<input type="button" name="canclesearch" class="searchcancle" value="取消" onclick="pop_cancel(this);"/>
+		</div>
+		<div class="textsearchbox texts" id="partNr_float" style="display: none">
+			<span class="searchcontenttype">零件号</span>
+			<input type="text" name="searchcontent" class="searchcontent" placeholder="请输入零件号" />
+			<input type="button" name="startsearch" class="startsearch" value="搜索" onclick="demand_search_option_one(this);"/>
+			<input type="button" name="canclesearch" class="searchcancle" value="取消" onclick="pop_cancel(this);"/>
+		</div>
+		<div class="textsearchbox ranges" id="date_float" style="display: none">
+			<span class="searchcontenttype ">日期</span>
+			<input type="text" name="searchcontent" class="searchcontent" placeholder="请选择开始时间" />
+			<input type="text" name="searchcontent" class="searchcontent" placeholder="请选择结束时间" />
+			<input type="button" name="startsearch"	class="startsearch" value="搜索" onclick="demand_search_option(this);"/>
+			<input type="button"	name="canclesearch" class="searchcancle" value="取消" onclick="pop_cancel(this);"/>
+		</div>
+		<div class="textsearchbox ranges" id="amount_float" style="display: none">
+			<span class="searchcontenttype ">数量</span>
+			<input type="text" name="searchcontent" class="searchcontent" placeholder="请输入起始数字" />
+			<input type="text" name="searchcontent" class="searchcontent" placeholder="请选择截止数字" />
+			<input type="button" name="startsearch"	class="startsearch" value="搜索" onclick="demand_search_option(this);"/>
+			<input type="button"	name="canclesearch" class="searchcancle" value="取消" onclick="pop_cancel(this);"/>
+		</div>
+		<div class="textsearchbox texts" id="type_float" style="display: none">
+			<span class="searchcontenttype ">预测类型</span>
+			<input type="button"	name="searchtype" class="searchforcasttype activetype" value="D" />
+			<input type="button" name="searchtype" class="searchforcasttype"	value="M" />
+			<input type="button" name="searchtype"	class="searchforcasttype" value="Y" />
+			<input type="button"	name="searchtype" class="searchforcasttype righttype" value="O" />
+			<input type="button" name="startsearch" class="startsearch" value="搜索" onclick="demand_search_option(this);"/>
+			<input type="button" name="canclesearch" class="searchcancle"	value="取消" onclick="pop_cancel(this);"/>
+		</div>
+		<div class="textsearchbox ranges" id="rate_float" style="display: none">
+			<span class="searchcontenttype ">变动量</span>
+			<input type="text" name="searchcontent" class="searchcontent" value="请输入起始百分比" />
+			<input	type="text" name="searchcontent" class="searchcontent"	value="请选择截止百分比" />
+			<input type="button" name="startsearch"	class="startsearch" value="搜索" onclick="demand_search_option(this);"/>
+			<input type="button"	name="canclesearch" class="searchcancle" value="取消" onclick="pop_cancel(this);" />
+		</div>
+<div class="forcasttypes">
+	<div class="forcasttype typeactive" demand="" onclick="demand_search_type(this);">
+		显示全部
+	</div>
+	<div class="forcasttype" demand="D" onclick="demand_search_type(this);">
+		D-天预测<span class="badge badge-warning notifyNewForcast">1</span>
+	</div>
+	<div class="forcasttype" demand="M" onclick="demand_search_type(this);">
+		M-月预测<span class="badge badge-warning notifyNewForcast">3</span>
+	</div>
+	<div class="forcasttype" demand="Y" onclick="demand_search_type(this);">
+		Y-年预测<span class="badge badge-warning notifyNewForcast">4</span>
+	</div>
+	<div class="forcasttype" demand="O" onclick="demand_search_type(this);">
+		O-订单<span class="badge badge-warning notifyNewForcast">4</span>
+	</div>
+	<div class="forcasttype forcastright" demand="T" onclick="demand_search_type(this);">
+		T-提货计划
+	</div>
+</div>
+<div id="result" class="tableview">
+	<table class="upData">
+		<tr class="lineone">
+			<th link="client_float" style="cursor: pointer" onclick="pop(this);">客户号</th>
+			<th link="partNr_float" style="cursor: pointer" onclick="pop(this);">零件号</th>
+			<th link="date_float" style="cursor: pointer" onclick="pop(this);">日期</th>
+			<th link="amount_float" style="cursor: pointer" onclick="pop(this);">数量</th>
+			<th link="type_float" style="cursor: pointer" onclick="pop(this);">预测类型</th>
+			<th link="rate_float" style="cursor: pointer" onclick="pop(this);">变动量</th>
+		</tr>
+		<tr class="divide" style="display: none">
+			<th class="nordvd"></th>
+			<th class="nordvd"></th>
+			<th class="nordvd"></th>
+			<th class="nordvd"></th>
+			<th class="nordvd"></th>
+			<th class="lastdvd"></th>
+		</tr>
+		<% @demands.each do |d| %>
+		<tr class="norline">
+			<th><%= d.clientNr %></th>
+			<th><%= d.relpartId%></th>
+			<th><%= d.date%></th>
+			<th><%= d.amount%></th>
+			<th><%= d.type%></th>
+			<th><%= d.key%>&nbsp;&nbsp;Score:<%= d.supplierNr%></th>
+		</tr>
+		<% end %>
+	</table>
+	<hr/>
+	There is(are) <%= @demands.size %> record(s):
 	<br/>
-	Client:<%= text_field_tag :client, nil, :placeholder => "example: Leoni" %><br/>
-	Supplier:<%= select_tag :supplier,  options_for_select($redis.zrange( "12345:#{Rns::S}", 0, -1, :withscores=>true ).collect { |m,s| [ m, s.to_i ] } ),  prompt: "All" %><br/>
-	PartNr:<%= text_field_tag :partNr, nil, :placeholder => "example: 53423233" %><br/>
-	Type:<%= text_field_tag :type, nil, :placeholder => "example: D" %>
-    <%= submit_tag "Search" %>
-    Page:<%= text_field_tag :page, 1, :size=>5 %>
-<% end %>
-
-
-<hr/>
-<%= form_tag :controller=>"demander", :action=>"create" do  %>
-    <div>
-    <%= label_tag :id %>
-    <%= text_field_tag :id, nil, :placeholder => "example: 001" %>
-    </div>
-    <div>
-    <%= label_tag :client %>
-    <%= select_tag :client,  options_for_select( @list ) %>
-    </div>
-    <div>
-    <%= label_tag :supplier %>
-    <%= select_tag :supplier,  options_for_select( @list ) %>
-    </div>
-    <div>
-    <%= label_tag :partNr %>
-    <%= text_field_tag :partNr, nil, :placeholder => "example: 53423233" %>
-    </div>
-    <div>
-    <%= label_tag :date %>
-    <%= text_field_tag :date, nil, :placeholder => "example: 12/10/10 12:23" %>
-    </div>
-    <div>
-    <%= label_tag :amount %>
-    <%= text_field_tag :amount, nil, :placeholder => "example: 1000" %>
-    </div>
-    <div>
-    <%= label_tag :type %>
-    <%= text_field_tag :type, nil, :placeholder => "example: D" %>
-    </div>
-    <%= submit_tag "Create" %>
-<% end %>
-
-<%= $redis.zcard( "date" )%><br/>
-<%= $redis.keys("#{Rns::De}:*")%>
-<%= $redis.keys("#{Rns::C}:*")%>
-<%= $redis.keys("#{Rns::S}:*")%>
-<%= $redis.keys("#{Rns::RP}:*")%>
-
-<hr/>
-There is(are) <%= @demands.size %> record(s):<br/>
-<ul class="projects">
-<% @demands.each do |d| %>
-  <li>
-  	<div>TYPE:<%= d.class%></div>
-    <div class="info">
-   	<%= d.key%>
-   	Client:<%= d.clientNr %>
-   	Supplier:<%= d.supplierNr %>
-   	Part:<%= d.relpartId%>
-   	Date:<%= d.date%>
-   	Type:<%= d.type%>
-    </div>
-  </li>
-<% end %>
-</ul>
-
-
+</div>

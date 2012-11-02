@@ -1,0 +1,31 @@
+
+	<table class="upData">
+		<tr class="lineone">
+			<th link="client_float" style="cursor: pointer" onclick="pop(this);">客户号</th>
+			<th link="partNr_float" style="cursor: pointer" onclick="pop(this);">零件号</th>
+			<th link="date_float" style="cursor: pointer" onclick="pop(this);">日期</th>
+			<th link="amount_float" style="cursor: pointer" onclick="pop(this);">数量</th>
+			<th link="type_float" style="cursor: pointer" onclick="pop(this);">预测类型</th>
+			<th link="rate_float" style="cursor: pointer" onclick="pop(this);">变动量</th>
+		</tr>
+		<tr class="divide" style="display: none">
+			<th class="nordvd"></th>
+			<th class="nordvd"></th>
+			<th class="nordvd"></th>
+			<th class="nordvd"></th>
+			<th class="nordvd"></th>
+			<th class="lastdvd"></th>
+		</tr>
+		<% @demands.each do |d| %>
+		  <tr class="norline">
+		    <th><%= d[0].clientNr %></th>
+		    <th><%= d[0].relpartId%></th>
+		    <th><%= d[0].date%></th>
+		    <th><%= d[0].amount%></th>
+		    <th><%= d[0].type%></th>
+		   	<th><%= d[0].key%>&nbsp;&nbsp;Score:<%= d[1]%></th>
+		  </tr>
+		<% end %>
+	</table>
+	<hr/>
+	There is(are) <%= @demands.size %> record(s):<br/>

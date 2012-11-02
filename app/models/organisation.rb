@@ -45,7 +45,7 @@ class Organisation<CZ::BaseClass
   
   def search_supplier_byNr( supplierNr )
     key = s_key
-    $redis.zscore( key, supplierNr )
+    $redis.zscore( key, supplierNr ).to_i
   end
   
   def search_supplier_byId( supplierId )
@@ -64,19 +64,19 @@ class Organisation<CZ::BaseClass
     "#{id}:"<<Rns::C
   end
   
-  def add_customer( customerId, customerNr )
+  def add_customer( clientId, clientNr )
     key = c_key
-    $redis.zadd( key, customerId, customerNr )
+    $redis.zadd( key, clientId, clientNr )
   end
   
-  def search_customer_byNr( customerNr )
+  def search_customer_byNr( clientNr )
     key = c_key
-    $redis.zscore( key, customerNr )
+    $redis.zscore( key, clientNr ).to_i
   end
   
-  def search_customer_byId( customerId )
+  def search_customer_byId( clientId )
     key = c_key
-    arr = $redis.zrangebyscore( key, customerId, customerId, :withscores=>false )
+    arr = $redis.zrangebyscore( key, clientId, clientId, :withscores=>false )
     if arr.size==0
       return nil
     else

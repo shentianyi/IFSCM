@@ -10,53 +10,36 @@
     Page:<%= text_field_tag :page, 1, :size=>5 %>
 <% end %>
 
-<div class="forcasttypes">
-	<div class="forcasttype typeactive">显示全部</div>
-	<div class="forcasttype">
-		D-天预测<span class="badge badge-warning notifyNewForcast">1</span>
-	</div>
-	<div class="forcasttype">
-		M-月预测<span class="badge badge-warning notifyNewForcast">3</span>
-	</div>
-	<div class="forcasttype">
-		Y-年预测<span class="badge badge-warning notifyNewForcast">4</span>
-	</div>
-	<div class="forcasttype">
-		O-订单<span class="badge badge-warning notifyNewForcast">4</span>
-	</div>
-	<div class="forcasttype forcastright">T-提货计划</div>
-</div>
 
-<div class="tableview">
-	<table class="upData">
-		<tr class="lineone">
-			<th>客户号</th>
-			<th>零件号</th>
-			<th>日期</th>
-			<th>数量</th>
-			<th>预测类型</th>
-			<th>变动量</th>
-		</tr>
-		<tr class="divide" style="display: none">
-			<th class="nordvd"></th>
-			<th class="nordvd"></th>
-			<th class="nordvd"></th>
-			<th class="nordvd"></th>
-			<th class="nordvd"></th>
-			<th class="lastdvd"></th>
-		</tr>
-		<% @demands.each do |d| %>
-		  <tr class="norline">
-		    <th><%= d[0].clientNr %></th>
-		    <th><%= d[0].relpartId%></th>
-		    <th><%= d[0].date%></th>
-		    <th><%= d[0].amount%></th>
-		    <th><%= d[0].type%></th>
-		   	<th><%= d[0].key%>&nbsp;&nbsp;Score:<%= d[1]%></th>
-		  </tr>
-		<% end %>
-	</table>
-</div>
-
+<div>
 <hr/>
 There is(are) <%= @demands.size %> record(s):<br/>
+<hr/>
+<%= form_tag :controller=>"demander", :action=>"create" do  %>
+    <div>
+    <%= label_tag :client %>
+    <%= select_tag :client,  options_for_select( @list ) %>
+    </div>
+    <div>
+    <%= label_tag :supplier %>
+    <%= select_tag :supplier,  options_for_select( @list ) %>
+    </div>
+    <div>
+    <%= label_tag :partNr %>
+    <%= text_field_tag :partNr, nil, :placeholder => "example: 53423233" %>
+    </div>
+    <div>
+    <%= label_tag :date %>
+    <%= text_field_tag :date, nil, :placeholder => "example: 12/10/10 12:23" %>
+    </div>
+    <div>
+    <%= label_tag :amount %>
+    <%= text_field_tag :amount, nil, :placeholder => "example: 1000" %>
+    </div>
+    <div>
+    <%= label_tag :type %>
+    <%= text_field_tag :type, nil, :placeholder => "example: D" %>
+    </div>
+    <%= submit_tag "Create" %>
+<% end %>
+</div>

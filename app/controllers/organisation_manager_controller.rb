@@ -47,6 +47,14 @@ class OrganisationManagerController < ApplicationController
     redirect_to organisation_manager_path( org.key )
   end
   
+  def add_client
+    org = Organisation.find( params[:key] )
+    org.add_customer( params[:orgId], params[:name] )
+    Client.new( c_key:org.c_key, clientNr:params[:name] ).save_index
+    
+    redirect_to organisation_manager_path( org.key )
+  end
+  
   #################  for Fuzzy Search
   def search
     if params[:q].blank?
@@ -54,8 +62,8 @@ class OrganisationManagerController < ApplicationController
       return
     end
     params[:q].gsub!(/'/,'')
-    @search = Redis::Search.complete("Supplier", params[:q], :conditions=>{:s_key=>"9999:#{Rns::S}"} )
-    # @search = Redis::Search.complete("Forecast", params[:q])
+    # @search = Redis::Search.complete("Supplier", params[:q], :conditions=>{:s_key=>"1002:#{Rns::S}"} )
+    @search = Redis::Search.complete("Supplier", params[:q])
     puts @search
     lines = @search.collect do |item|
       "#{item['title']}#!##{item['id']}#!##{item['name']}#!##{item['name']}#!##{item['name']}"
