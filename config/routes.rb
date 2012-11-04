@@ -27,13 +27,10 @@ Demand::Application.routes.draw do
       match :correct_error
       match :cancel_upload
       match :demand_history
+      post :download
     end
   end
-  
-  controller :demander do
-    post "/demander/download"=>:download
-  end
-  
+   
   resources :part do
     collection do
      get :searcher
