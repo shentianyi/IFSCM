@@ -44,6 +44,7 @@ org5.save
                                       
 #########################################################                            
 org1.add_supplier( org2.id, 'Leoni' )
+ 
 # Supplier.new( s_key: org1.s_key, supplierNr: 'Leoni' ).save_index
 
 org1.add_supplier( org3.id, 'Lenovo' )
@@ -66,6 +67,29 @@ org2.add_client( org4.id, 'SUMSUNG' )
 
 org2.add_client( org5.id, 'AT&T' )
 # Client.new( c_key: org2.c_key, clientNr: 'AT&T' ).save_index
+ 
+OrgRel.new( cs_key: org1.s_key, orgrelNr: 'Leoni' ).save_index
+
+org1.add_supplier( org3.id, 'Lenovo' )
+OrgRel.new( cs_key: org1.s_key, orgrelNr: 'Lenovo' ).save_index
+
+org1.add_supplier( org4.id, 'SUMSUNG' )
+OrgRel.new( cs_key: org1.s_key, orgrelNr: 'SUMSUNG' ).save_index
+
+org1.add_supplier( org5.id, 'AT&T' )
+OrgRel.new( cs_key: org1.s_key, orgrelNr: 'AT&T' ).save_index
+
+org2.add_client( org1.id, 'CZ' )
+OrgRel.new( cs_key: org2.c_key, orgrelNr: 'CZ' ).save_index
+
+org2.add_client( org3.id, 'Lenovo' )
+OrgRel.new( cs_key: org2.c_key, orgrelNr: 'Lenovo' ).save_index
+
+org2.add_client( org4.id, 'SUMSUNG' )
+OrgRel.new( cs_key: org2.c_key, orgrelNr: 'SUMSUNG' ).save_index
+
+org2.add_client( org5.id, 'AT&T' )
+OrgRel.new( cs_key: org2.c_key, orgrelNr: 'AT&T' ).save_index 
 #########################################################
 
 demand = Demander.new( :key=>Demander.gen_key,

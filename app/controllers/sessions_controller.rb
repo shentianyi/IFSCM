@@ -10,7 +10,7 @@ class SessionsController < ApplicationController
     if staff = Staff.authenticate( params[:staffNr], params[:password] )
           session[:staff_id] = staff.id
           session[:org_id] = staff.orgId
-          redirect_to root_url
+          redirect_to :controller=>'welman',action: 'index'
     else
           redirect_to login_url, :notice => "用户名或密码错误"
     end

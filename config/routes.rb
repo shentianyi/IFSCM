@@ -1,5 +1,5 @@
 Demand::Application.routes.draw do
-  root :to => "welman#index"
+  root :to => "sessions#new"
 
   controller :welman do
     get 'welcome' => :index
