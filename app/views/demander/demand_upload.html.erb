@@ -31,8 +31,13 @@
                }
                for( i = 1; i < o.length; i++) {
                     for( j = 0; j < o[i].cells.length - 1; j++) {
-                         if(o[i].cells[j].className == 'on-type-change')
+                         // not change the text type
+                         if(o[i].cells[j].className == 'no-type-change')
                               continue;
+                          // the cell has specific onclick event
+                          if(o[i].cells[j].className=='no-auto-click-bind')
+                            continue;
+                            
                          o[i].cells[j].ondblclick = function() {
                               changetype(this);
                          }
@@ -142,5 +147,28 @@
      <div id='upresult'>
 
      </div>
+     <div class="botbts" style="display: none;">
+          <div class="btsave botbtn">
+               <p>保存到草稿</p>
+          </div>
+          <div class="btdownload botbtn"  onclick="download_demand();">
+                 <p>下载</p>
+          </div>
+          <div class="btcancel botbtn" onclick="cancel_demand_upload();">
+               <p>取消</p>
+          </div>
+          <div class="btsend botbtn">
+               <p>发送</p>
+          </div> 
+     </div>
 </div>
+
+
+<script type="text/javascript">
+function download_demand (ele) {
+  var form=$('#download_demand_form');
+  form.submit();
+}
+  
+</script>
 

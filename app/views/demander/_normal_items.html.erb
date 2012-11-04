@@ -1,13 +1,83 @@
-index:<%=demands.key%><br />
-errorItemKey:<%=demands.errorItemKey%><br />
-itemCount:<%=demands.itemCount%><br />
-<%if demands.itemCount>0%>
-<%demands.items.each do |d|%>
-<hr />
- lineNo:<%=d.lineNo%><br />
- cpartNr:<%=d.cpartNr%><br />
- uuid:<%=d.key%><br/>
+<% if demands%>
+<%if demands.items.count>0%>
+<div class="tableview" id='tableview'>
+     <table class="upData" id="<%= demands.key%>">
+          <tr class="lineone">
+               <th>&nbsp;</th>
+               <th>供应商号</th>
+               <th>零件号</th>
+               <th>文件日期</th>
+               <th>要货日期</th>
+               <th>数量</th>
+               <th>预测类型</th>
+               <th>变动量</th>
+          </tr>
+          <tr class="divide" style="display: none">
+               <th class="nordvd">&nbsp;</th>
+               <th class="nordvd"></th>
+               <th class="nordvd"></th>
+               <th class="nordvd"></th>
+               <th class="nordvd"></th>
+               <th class="nordvd"></th>
+               <th class="nordvd"></th>
+               <th class="lastdvd"></th>
+          </tr>
+          <% i=0
+          demands.items.each do |item|
+          i+=1
+          thisLineWidth=lastLineWidth=nil
+          if item.rate.to_i>=0
+          thisLineWidth=100
+          lastLineWidth= item.oldamount.to_i>0 ? 100-item.rate.to_i.abs : 0
+          else
+          thisLineWidth=100-item.rate.to_i.abs
+          lastLineWidth=item.oldamount.to_i>0 ? 100 : 0
+          end
+          %>
+          <tr class="norline" id="<%= item.key%>">
+               <th class="no-type-change"><%= i%></th>
+               <th class="no-type-change" id='supplierNr'><%= item.supplierNr%></th>
+               <th class="no-type-change" id="partNr"><%= item.cpartNr%></th>
+               <th class="no-type-change" id="filedate"><%= item.filedate%></th>
+               <th class="no-type-change" id="date"><%= item.date%></th>
+               <th class="no-auto-click-bind" id="amount" ondblclick="reset_demand_amount(this);"><%= item.amount%></th>
+               <th class="no-type-change" id="type"><%= item.type%></th>
+               <th class='no-type-change'>
+               <div class="forcastcompare">
+                    <div class="lineforcast">
+                         <span class="percentage"> <%= item.rate.to_i.abs %>% </span>
+                         <img src="/assets/<%= (item.rate.to_i>=0 ? 'arrup' : 'arrdown')%>.png" class='percentageImg' />
+                    </div>
+                    <div class="lineforcast">
+                         <span class="fnumbers">本次预测：<span id="this_demand_amount"><%= item.amount %></span></span>
+                         <div class="forcastbaseline">
+                              <div class="partline" style="width:<%= thisLineWidth%>%" id='thisLineWidthDiv'></div>
+                              <div class="gap"></div>
+                         </div>
+                    </div>
+                    <div class="lineforcast">
+                         <span class="fnumbers">上次预测：<%= item.oldamount %></span>
+                         <div class="forcastbaseline">
+                              <div class="partline" style="width:<%= lastLineWidth%>%" id='lastLineWidthDiv'></div>
+                         </div>
+                    </div>
+               </div></th>
+          </tr>
+          <%end%>
+     </table>
+     <!-- pager -->
+     <div class="pagers">
+     <%=bri_pager options={:class=>"pagination",:pages=>@totalPages,:current=>@currentPage,:action=>'get_upfile_demands',:targetid=>demands.key}%>
+     </div> 
+     
+</div>
+<%else%>
+<p>
+     文件中无预测
+</p>>
 <%end%>
-<hr/>
+<%else%>
+ <p>
+      文件内容获取错误
+ </p>
 <%end%>
-

@@ -1,6 +1,7 @@
 #coding:utf-8
 require 'csv'
-require 'digest/md5'
+require 'zip/zip'
+require 'enum/part_rel_type'
 
 module DemanderHelper
   # ws: generate files demands from csvs
@@ -11,13 +12,13 @@ module DemanderHelper
       batchFile=RedisFile.new(:key=>uuid.generate,:itemCount=>0,:errorCount=>0,:normalItemKey=>uuid.generate,:repeatItemKey=>uuid.generate)
       items=[]
       files.each do |f|
-        sfile=RedisFile.new(:key=>f[:uuidName],:oriName=>f[:oriName],
+        sfile=RedisFile.new(:key=>f[:uuidName],:oriName=>f[:oriName],:uuidName=>f[:pathName],
         :itemCount=>0,:errorCount=>0,:normalItemKey=>uuid.generate,:errorItemKey=>uuid.generate)
         # csv header---
         CSV.foreach(File.join(f[:path],f[:pathName]),:headers=>true,:col_sep=>$CSVSP) do |row|
         sfile.itemCount+=1
           demand= DemanderTemp.new(:key=>uuid.generate,:cpartNr=>row[0],:clientId=>clientId,:supplierNr=>row[1],
-          :filedate=>row[2],:type=>row[3],:amount=>row[4],:lineNo=>sfile.itemCount,:source=>f[:oriName])
+          :filedate=>row[2],:type=>row[3],:amount=>row[4],:lineNo=>sfile.itemCount,:source=>f[:oriName],:oldamount=>0)
           demand.date=FormatHelper::demand_date_by_str_type demand.filedate,demand.type
 
           # validate demand field
@@ -25,9 +26,9 @@ module DemanderHelper
 
           demand.vali=msg.result
           if msg.result
-            demand.rate=DemandHistory.compare_rate(
-            demand.clientId,demand.supplierId,
-            demand.relpartId,demand.type,demand.date,demand.amount)
+            demand.rate,demand.oldamount=DemandHistory.compare_rate(
+          demand.clientId,demand.supplierId,
+          demand.relpartId,demand.type,demand.date,demand.amount)
           else
           demand.msg=msg.contents.to_json
           end
@@ -75,6 +76,9 @@ module DemanderHelper
 
     # vali supplier
     if client=Organisation.find_by_id(demand.clientId)
+      puts '---------'
+      puts demand.clientId
+      puts '---------'
       if !supplierId=client.search_supplier_byNr(demand.supplierNr)
         msg.result=false
         msg.content_key<<:spNrNotEx
@@ -85,7 +89,7 @@ module DemanderHelper
 
     # vali part relation
     if partId and supplierId
-      if !parts=Part.get_single_part_cs_parts(clientId,suplierId,partId,PartRelType::Client)
+      if !parts=PartRel.get_single_part_cs_parts(demand.clientId,supplierId,partId,PartRelType::Client)
         msg.result=false
         msg.content_key<<:partNotFitOrgP
       else
@@ -93,8 +97,8 @@ module DemanderHelper
           msg.result=false
           msg.content_key<<:partMutiFitOrgP
         else
-        demand.spartId=parts.key
-        demand.relpartId=PartRel.get_partrelId_by_partNr(demand.clientId,demand.supplierId,demand.partNr,PartRelType::Client)
+          demand.spartId=parts[0].key
+          demand.relpartId=PartRel.get_partrelId_by_partNr(demand.clientId,demand.supplierId,demand.cpartNr,PartRelType::Client)
         end
       end
     end
@@ -139,7 +143,7 @@ module DemanderHelper
   # ws: get file demands by type
   def self.get_file_demands fileId,startIndex,endIndex,type
     demands=RedisFile.find(fileId)
-    itemKeys=demands.send "get_#{type}_item_keys".to_sym,startIndex,endIndex
+    itemKeys,totalCount=demands.send "get_#{type}_item_keys".to_sym,startIndex,endIndex
     demands.itemCount=itemKeys.count
     if demands.itemCount>0
       demands.items=[]
@@ -149,7 +153,68 @@ module DemanderHelper
         end
       end
     end
-    return demands
+    return demands,totalCount
   end
 
+  # ws : zip demand files
+  def self.zip_demand_cvs batchId
+    msg=ReturnMsg.new(:result=>false,:content=>'')
+    path=nil
+    if bf=RedisFile.find(batchId)
+      # if bf.errorCount==0
+        sfKeys,scount=bf.get_normal_item_keys 0,-1
+        if scount>0
+          tmps=[]
+          zfilename=File.join($DETMP, UUID.generate+'.zip')
+          Zip::ZipFile.open(zfilename, Zip::ZipFile::CREATE) do |z|
+            puts 'sfkeys'
+            puts sfKeys
+            puts sfKeys.class
+            sfKeys.each do |sk|
+              puts 'sk'
+               puts sk
+               puts 'sk--'
+              if sf=RedisFile.find(sk)
+                spath=File.join($DETMP,sf.uuidName)
+                File.open(spath,'w+') do |f|
+                  f.puts $DECSVT.join($CSVSP)
+                  
+                  nds,ncount=get_file_demands sf.key,0,-1,'normal'
+                  if ncount>0
+                    nds.items.each do |nd|
+                      f.puts [nd.cpartNr,nd.supplierNr,nd.filedate,nd.type,nd.amount].join($CSVSP)
+                    end
+                  end
+                   eds,ecount=get_file_demands sf.key,0,-1,'error'
+                  if ecount>0
+                    eds.items.each do |ed|
+                      f.puts [ed.cpartNr,ed.supplierNr,ed.filedate,ed.type,ed.amount].join($CSVSP)
+                    end
+                  end
+                  
+                end
+                tmps<<spath
+                z.add(sf.oriName,spath)
+              end
+            end
+          end
+         if tmps.count>0
+           tmps.each do |t|
+                File.delete(t)
+           end
+         end
+         
+        msg.result=true
+        msg.content=zfilename
+        else
+          msg.content='批次上次中不存在任何文件'
+        end
+      # else
+        # msg.content='仍存在错误文件，请全部修改后再下载'
+      # end
+    else
+      msg.content='上传文件被取消，无法下载'
+    end
+    return msg
+  end
 end

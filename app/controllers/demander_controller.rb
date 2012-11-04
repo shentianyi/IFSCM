@@ -31,7 +31,7 @@ class DemanderController<ApplicationController
             hfiles<<hf
           end
           # clietId should be from session
-          clientId=session[:org_Id]
+          clientId=session[:org_id]
           # validate and show result
           batch_file=DemanderHelper::generate_by_csv(hfiles,clientId)
           if batch_file
@@ -58,16 +58,19 @@ class DemanderController<ApplicationController
   def get_tempdemand_items
     if request.post?
       fileId=params[:fileId]
-      demands=[]
+      demands=nil
       file=RedisFile.find(fileId)
+      type='error'
       if file
-        type=file.errorCount.to_i>0 ? 'error':'nomal'
-
+        demands=[]
+        type=file.errorCount.to_i>0 ? 'error':'normal'
         pageIndex=params[:pageIndex].to_i
         pageSize=$DEPSIZE
         startIndex=(pageIndex-1)*pageSize
         endIndex=pageIndex*pageSize-1
-        demands= DemanderHelper::get_file_demands fileId,startIndex,endIndex,type
+        demands,totalCount= DemanderHelper::get_file_demands fileId,startIndex,endIndex,type
+        @currentPage=pageIndex
+        @totalPages=totalCount/pageSize+(totalCount%pageSize==0?0:1)
       end
       respond_to do |format|
         format.xml {render :xml=>JSON.parse(demands.to_json).to_xml(:root=>'demands')}
@@ -76,7 +79,6 @@ class DemanderController<ApplicationController
       end
     end
   end
-
 
   # ws correct error
   def correct_error
@@ -97,20 +99,24 @@ class DemanderController<ApplicationController
         okey=od.gen_md5_repeat_key
         nkey=nd.gen_md5_repeat_key
         if okey!=nkey
-           bf.del_repeat_item(od.gen_md5_repeat_key,od.key)
+        bf.del_repeat_item(od.gen_md5_repeat_key,od.key)
         end
         vmsg=DemanderHelper::demand_field_validate(nd,bf)
         nd.vali=vmsg.result
 
         if vmsg.result
-          nd.rate=DemandHistory.compare_rate(
+          nd.rate,nd.oldamount=DemandHistory.compare_rate(
           nd.clientId,nd.supplierId,
           nd.cpartId,nd.type,nd.date,nd.amount)
-          sf.update(:errorCount=> sf.errorCount-=1)
-          if sf.errorCount==0
-            bf.update(:errorCount=> bf.errorCount-=1)
+          if sf.errorCount.to_i-1==0
+            bf.update(:errorCount=> bf.errorCount.to_i-1)
           end
+          sf.update(:errorCount=> sf.errorCount.to_i-1) if sf.errorCount.to_i>0
         else
+          if sf.errorCount.to_i==0
+            bf.update(:errorCount=> bf.errorCount.to_i+1)
+          end
+          sf.update(:errorCount=> sf.errorCount.to_i+1)
         nd.msg=vmsg.contents.to_json
         end
 
@@ -142,9 +148,9 @@ class DemanderController<ApplicationController
       if batchFile=RedisFile.find(params[:batchId])
         Resque.enqueue(DemandUploadCanceler,batchFile.key)
         msg.result=true
-        msg.content='cancel success'
+        msg.content='取消成功'
       else
-        msg.content='batch file not exists or has been canceled.'
+        msg.content='上传已经取消'
       end
       respond_to do |format|
         format.xml {render :xml=>JSON.parse(msg.to_json).to_xml(:root=>'demandhistory')}
@@ -182,18 +188,28 @@ class DemanderController<ApplicationController
     end
   end
 
+  def download 
+    if request.post?
+      msg=DemanderHelper::zip_demand_cvs params[:batchFileId]
+      if msg.result
+        send_file msg.content,:type => 'application/zip', :filename => "#{UUID.generate}.zip"
+         File.delete(msg.content)
+      end 
+    end
+  end
+  
   def index
     @demands = []
     @list = Organisation.option_list
-    
+
     clientId=nil
     supplierId=nil
     ######  判断类型 C or S ， 将session[:id]赋值给 id
     # if session[:usertype]=="Client"
     # elsif session[:usertype]=="Supplier"
-      supplierId = @cz_org.id
+    supplierId = @cz_org.id
     # end
-    
+
     @demands = Demander.search( :clientId=>clientId, :supplierId=>supplierId,
                                                                       :page=>1 )
 
@@ -206,14 +222,14 @@ class DemanderController<ApplicationController
   def create
     # key = Demander.get_key( 445 )
     # if $redis.exists( key )
-      # else
-      demand = Demander.new( :key=>Demander.gen_key,
-      :clientId=>params[:client],
-      :supplierId=>params[:supplier],
-      :relpartId=>params[:partNr],
-      :date=>params[:date],
-      :amount=>params[:amount],
-      :type=>params[:type] )
+    # else
+    demand = Demander.new( :key=>Demander.gen_key,
+    :clientId=>params[:client],
+    :supplierId=>params[:supplier],
+    :relpartId=>params[:partNr],
+    :date=>params[:date],
+    :amount=>params[:amount],
+    :type=>params[:type] )
     demand.save
     demand.save_to_send
     # end
@@ -222,14 +238,14 @@ class DemanderController<ApplicationController
   end
 
   def search
-    
+
     c = params[:client]
     s = params[:supplier]
-    
+
     if c && c.size>0
-      clientId = @cz_org.search_client_byNr( c )
+    clientId = @cz_org.search_client_byNr( c )
     elsif s && s.size>0
-      supplierId = @cz_org.search_supplier_byNr( s )
+    supplierId = @cz_org.search_supplier_byNr( s )
     else
       clientId=nil
       supplierId=nil
@@ -237,22 +253,19 @@ class DemanderController<ApplicationController
     ######  判断类型 C or S ， 将session[:id]赋值给 id
     # if session[:usertype]=="Client"
     # elsif session[:usertype]=="Supplier"
-      supplierId = @cz_org.id
+    supplierId = @cz_org.id
     # end
-    
-    
-    
-    
+
     @list = Organisation.option_list
     @demands = []
-      @demands = Demander.search( :clientId=>clientId,
+    @demands = Demander.search( :clientId=>clientId,
                                                                         :supplierId=>supplierId,
                                                                         :rpartNr=>params[:partNr],
                                                                         :start=>params[:start],
                                                                         :end=>params[:end],
                                                                         :type=>params[:type],
                                                                         :page=>params[:page] )
-                                                         puts @demands
+    puts @demands
     # end
 
     respond_to do |format|
@@ -260,6 +273,5 @@ class DemanderController<ApplicationController
       format.json { render json: @demands }
     end
   end
-
 
 end

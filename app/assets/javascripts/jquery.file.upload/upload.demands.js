@@ -24,6 +24,7 @@ $(function() {'use strict';
                // $('.fileinput-button').attr("disabled", "disabled");
                // $('#mutiUploadInput').attr("disabled", "disabled");
                $('#upload-file-area').hide();
+               $('.botbts').show();
                $('#upresult').html(data);
           },
           error : function() {

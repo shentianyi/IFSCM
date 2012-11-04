@@ -13,6 +13,7 @@ gem 'redis-namespace'
 
 gem "uuid"
 gem 'resque'
+gem "rubyzip" 
 
 group :assets do
   gem 'sass-rails',   '~> 3.2.3'

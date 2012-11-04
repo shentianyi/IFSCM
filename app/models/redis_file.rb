@@ -1,7 +1,7 @@
 require 'base_class'
 
 class RedisFile<CZ::BaseClass
-  attr_accessor :key,:oriName,:itemCount,:errorCount, :normalItemKey,:errorItemKey,:repeatItemKey,:items
+  attr_accessor :key,:oriName,:itemCount,:errorCount, :normalItemKey,:errorItemKey,:repeatItemKey,:items,:uuidName
   
   def add_item item
     @items=[] if !@items
@@ -59,12 +59,12 @@ class RedisFile<CZ::BaseClass
 
   # ws get file error item keys
   def get_error_item_keys startIndex,endIndex
-    return $redis.zrange @errorItemKey,startIndex,endIndex
+    return $redis.zrange(@errorItemKey,startIndex,endIndex),$redis.zcard(@errorItemKey)
   end
 
   # ws get file error item keys
   def get_normal_item_keys startIndex,endIndex
-    return $redis.zrevrange @normalItemKey,startIndex,endIndex
+    return $redis.zrevrange(@normalItemKey,startIndex,endIndex),$redis.zcard(@normalItemKey)
   end
 
   # ws get file repeat item keys

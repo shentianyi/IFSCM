@@ -52,22 +52,22 @@ class InitData
      # build leoni and vw
        for j in 1...11
          # 1. add part
-         lp=Part.new(:key=>Part.gen_key,:orgId=>leoni.key,:partNr=>leoni.name+'Part000'+j.to_s)
+         lp=Part.new(:key=>Part.gen_key,:orgId=>leoni.id,:partNr=>leoni.name+'Part000'+j.to_s)
          lp.save
-         vp=Part.new(:key=>Part.gen_key,:orgId=>vw.key,:partNr=>vw.name+'Part000'+j.to_s)
+         vp=Part.new(:key=>Part.gen_key,:orgId=>vw.id,:partNr=>vw.name+'Part000'+j.to_s)
          vp.save
          # 2. add part to org 
-         lp.add_to_org leoni.key
-         vp.add_to_org vw.key
+         lp.add_to_org leoni.id
+         vp.add_to_org vw.id
          # 3. add part rel meta
          partRelMeta=PartRelMeta.new(:key=>PartRelMeta.gen_key,:cpartId=>lp.key,:spartId=>vp.key)
          partRelMeta.save
          # 4. add part Rel
-         cpartRel=PartRel.new(:key=>PartRel.gen_key(leoni.key,vw.key,PartRelType::Client),:cId=>leoni.key,:sId=>vw.key,:type=>PartRelType::Client)
+         cpartRel=PartRel.new(:key=>PartRel.gen_key(leoni.id,vw.id,PartRelType::Client),:cId=>leoni.id,:sId=>vw.id,:type=>PartRelType::Client)
          cpartRel.add_partRel_meta(lp.key,partRelMeta.key)
          cpartRel.save
          
-         spartRel=PartRel.new(:key=>PartRel.gen_key(leoni.key,vw.key,PartRelType::Supplier),:cId=>leoni.key,:sId=>vw.key,:type=>PartRelType::Supplier)
+         spartRel=PartRel.new(:key=>PartRel.gen_key(leoni.id,vw.id,PartRelType::Supplier),:cId=>leoni.id,:sId=>vw.id,:type=>PartRelType::Supplier)
          spartRel.add_partRel_meta(vp.key,partRelMeta.key)
          spartRel.save
 
@@ -76,22 +76,22 @@ class InitData
         # build leoni and delpi
        for j in 11...21
               # 1. add part
-         lp=Part.new(:key=>Part.gen_key,:orgId=>leoni.key,:partNr=>leoni.name+'Part000'+j.to_s)
+         lp=Part.new(:key=>Part.gen_key,:orgId=>leoni.id,:partNr=>leoni.name+'Part000'+j.to_s)
          lp.save
-         dp=Part.new(:key=>Part.gen_key,:orgId=>delpi.key,:partNr=>delpi.name+'Part000'+j.to_s)
+         dp=Part.new(:key=>Part.gen_key,:orgId=>delpi.id,:partNr=>delpi.name+'Part000'+j.to_s)
          dp.save
          # 2. add part to org 
-         lp.add_to_org leoni.key
-         dp.add_to_org delpi.key
+         lp.add_to_org leoni.id
+         dp.add_to_org delpi.id
          # 3. add part rel meta
          partRelMeta=PartRelMeta.new(:key=>PartRelMeta.gen_key,:cpartId=>lp.key,:spartId=>dp.key)
          partRelMeta.save
          # 4. add part Rel
-         cpartRel=PartRel.new(:key=>PartRel.gen_key(leoni.key,delpi.key,PartRelType::Client),:cId=>leoni.key,:sId=>delpi.key,:type=>PartRelType::Client)
+         cpartRel=PartRel.new(:key=>PartRel.gen_key(leoni.id,delpi.id,PartRelType::Client),:cId=>leoni.id,:sId=>delpi.id,:type=>PartRelType::Client)
          cpartRel.add_partRel_meta(lp.key,partRelMeta.key)
          cpartRel.save
          
-         spartRel=PartRel.new(:key=>PartRel.gen_key(leoni.key,delpi.key,PartRelType::Supplier),:cId=>leoni.key,:sId=>delpi.key,:type=>PartRelType::Supplier)
+         spartRel=PartRel.new(:key=>PartRel.gen_key(leoni.id,delpi.id,PartRelType::Supplier),:cId=>leoni.id,:sId=>delpi.id,:type=>PartRelType::Supplier)
          spartRel.add_partRel_meta(dp.key,partRelMeta.key)
          spartRel.save
        end 

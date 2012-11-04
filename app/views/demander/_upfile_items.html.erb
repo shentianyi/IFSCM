@@ -15,7 +15,9 @@
      </p>
 </div>
 <div class="listoffiles">
-     <input type="hidden" value="<%=batch.key%>" id="batchFileId" />
+    <form action='../demander/download' method="post" id="download_demand_form">
+      <input type="hidden" value="<%=batch.key%>" id="batchFileId" name="batchFileId"/>
+     </form>
      <% i=0
      batch.items.each do |item|
      i+=1

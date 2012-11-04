@@ -29,7 +29,7 @@ class PartRel<CZ::BaseClass
   # if supplier, find client's parts ...
    def self.get_single_part_cs_parts clientId,supplierId,partId,partRelType
     key=generate_key( clientId,supplierId,partRelType)
-    prelsetKey=$redis.hget(key,cpartId) # part rel set key
+    prelsetKey=$redis.hget(key,partId) # part rel set key
     if prelsetKey
       prelset=$redis.smembers(prelsetKey) # part rel set
       if prelset and prelset.count>0

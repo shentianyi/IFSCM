@@ -1,5 +1,5 @@
 class DemanderTemp<Demander
-  attr_accessor :clientId,:clientNr,:supplierNr,:cpartId,:cpartNr,:spartId,:spartNr,:filedate,:vali,:lineNo,:msg,:source
+  attr_accessor :clientId,:clientNr,:supplierNr,:cpartId,:cpartNr,:spartId,:spartNr,:filedate,:vali,:lineNo,:msg,:source,:oldamount
 
   def gen_md5_repeat_key
     Digest::MD5.hexdigest(@clientId.to_s+':'+@cpartNr+':'+@type+':'+(@date.nil?? '' : @date)+':'+@supplierNr)

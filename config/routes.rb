@@ -30,6 +30,10 @@ Demand::Application.routes.draw do
     end
   end
   
+  controller :demander do
+    post "/demander/download"=>:download
+  end
+  
   resources :part do
     collection do
      get :searcher

@@ -5,9 +5,13 @@ format:
  
 path:
  :demand_csv_path: 'uploadfiles/demands/csv'
+ :demand_tmp_path: 'uploadfiles/demands/tmp'
  
 page:
- :demand_page_size: 20
+ :demand_page_size: 10
+
+title:
+ :demand_csv_title: ["PartNr","Supplier","Date","Type","Amount"]
  
 resque:
  :resquedb: 0

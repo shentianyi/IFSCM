@@ -44,28 +44,28 @@ org5.save
                                       
 #########################################################                            
 org1.add_supplier( org2.id, 'Leoni' )
-Supplier.new( s_key: org1.s_key, supplierNr: 'Leoni' ).save_index
+# Supplier.new( s_key: org1.s_key, supplierNr: 'Leoni' ).save_index
 
 org1.add_supplier( org3.id, 'Lenovo' )
-Supplier.new( s_key: org1.s_key, supplierNr: 'Lenovo' ).save_index
+# Supplier.new( s_key: org1.s_key, supplierNr: 'Lenovo' ).save_index
 
 org1.add_supplier( org4.id, 'SUMSUNG' )
-Supplier.new( s_key: org1.s_key, supplierNr: 'SUMSUNG' ).save_index
+# Supplier.new( s_key: org1.s_key, supplierNr: 'SUMSUNG' ).save_index
 
 org1.add_supplier( org5.id, 'AT&T' )
-Supplier.new( s_key: org1.s_key, supplierNr: 'AT&T' ).save_index
+# Supplier.new( s_key: org1.s_key, supplierNr: 'AT&T' ).save_index
 
 org2.add_client( org1.id, 'CZ' )
-Client.new( c_key: org2.c_key, clientNr: 'CZ' ).save_index
+# Client.new( c_key: org2.c_key, clientNr: 'CZ' ).save_index
 
 org2.add_client( org3.id, 'Lenovo' )
-Client.new( c_key: org2.c_key, clientNr: 'Lenovo' ).save_index
+# Client.new( c_key: org2.c_key, clientNr: 'Lenovo' ).save_index
 
 org2.add_client( org4.id, 'SUMSUNG' )
-Client.new( c_key: org2.c_key, clientNr: 'SUMSUNG' ).save_index
+# Client.new( c_key: org2.c_key, clientNr: 'SUMSUNG' ).save_index
 
 org2.add_client( org5.id, 'AT&T' )
-Client.new( c_key: org2.c_key, clientNr: 'AT&T' ).save_index
+# Client.new( c_key: org2.c_key, clientNr: 'AT&T' ).save_index
 #########################################################
 
 demand = Demander.new( :key=>Demander.gen_key,

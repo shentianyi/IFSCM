@@ -37,7 +37,7 @@ module CZ
     def update attrs={}
        return false  unless $redis.exists(@key)
       if attrs.count>0
-        args.each do |k,v|
+        attrs.each do |k,v|
           instance_variable_set "@#{k}",v
           $redis.hset @key,k,v
         end

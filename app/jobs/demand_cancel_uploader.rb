@@ -24,25 +24,33 @@ class DemandUploadCanceler
             puts sf.oriName
             # 2.1 del normal,error item
             m.each do |i|
-              nnkeys=sf.send "get_#{i}_item_keys".to_sym,0,-1
-              if nnkeys.count>0
+              nnkeys,count=sf.send "get_#{i}_item_keys".to_sym,0,-1
+              if count>0
                 nnkeys.each do |dkey|
                   if d=DemanderTemp.find(dkey)
                     puts '---------------demander temp keys'
                     puts d.key
 
-                  d.destory
+                    d.destory
                   end
                 end
               end
             end
           # del sf
           sf.del_items_link
+          # delete the file
+          sfpath=File.join($DECSVP,sf.uuidName)
+          if File.exists? sfpath 
+            File.delete(sfpath)
+          end
+          
           sf.destory
           end
         end
       end
+      puts 'del links'
     r.del_items_link
+    puts 'del batch'
     r.destory
     end
   end

@@ -9,7 +9,11 @@ $CSVSP=format_config[:csv_splitor] # csv splitor
 #load path
 path_config=config['path']
 $DECSVP=path_config[:demand_csv_path] # demand csv file save path
+$DETMP=path_config[:demand_tmp_path] # demand tmo file path, for download 
 
+# load title
+title_config=config['title']
+$DECSVT=title_config[:demand_csv_title]
 #load page
 page_config=config['page']
 $DEPSIZE=page_config[:demand_page_size].to_i # demand page size
