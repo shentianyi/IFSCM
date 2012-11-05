@@ -23,10 +23,10 @@
 			<th><%= d.date%></th>
 			<th><%= d.amount%></th>
 			<th><%= d.type%></th>
-			<th><%= d.key%> Supplier:<%= d.supplierNr%></th>
+			<th><%= d.rate.to_i%>%</th>
 		  </tr>
 		<% end %>
 	</table>
 	<hr/>
 	There is(are) <%= @demands.size %> record(s):<br/>
-	<%=bri_pager options={:class=>"pagination",:pages=>@totalPages,:current=>@currentPage,:action=>'demand_search',:targetid=>@options}%>
+	<%=bri_pager options={:class=>"pagination",:pages=>@totalPages,:current=>@currentPage,:action=>'demand_search',:target=>@options}%>
