@@ -8,6 +8,7 @@ class Rns
   T = "type"
   RP = "relpart"
   Date = "date"
+  Amount = "amount"
   
   
 end

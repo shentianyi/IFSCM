@@ -26,6 +26,7 @@ module PageHelper
     if total>1
       page_concat page,total-1,total,current,action,target,true
     end    
+
     page.concat('</ul>').html_safe
     page.concat('</div>').html_safe
   end
@@ -38,6 +39,7 @@ module PageHelper
       liso[:class]= i!=current ? 'disabled':'active'
       page.concat(tag("li",liso,true))
       so={}
+      
       if i!=current
         if target.class.name.downcase=='string'
           so[:onclick]="return "+action+"('"+target+"',"+i.to_s+")"

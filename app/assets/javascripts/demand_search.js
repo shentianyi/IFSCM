@@ -1,9 +1,8 @@
 
-function demand_search( hash ){
-     if (hash["page"]&&hash["page"].length>0)
-     	;
-     else
-     	hash["page"]=1;
+function demand_search( hash, page ){
+	
+     if (page==null)
+     	page=0;
      	
      $.ajax({
           url : '../demander/search',
@@ -15,7 +14,9 @@ function demand_search( hash ){
                start: hash["start"],
                end: hash["end"],
                type: hash["type"],
-               page: hash["page"]
+               amount: hash["amount"],
+               options: hash,
+               page: page
           },
           dataType : "html",
           success : function(data) {
@@ -27,18 +28,30 @@ function demand_search( hash ){
      });
 }
 
-function demand_search_from_sup_option_one(e){
-	// var hash = { supplier : $('#supplier').val() }
-	if ( $(e).parent().attr("id")=="client_float" )
-		var hash = { client : $(e).prev().val() };
-	else if ($(e).parent().attr("id")=="partNr_float" )
-		var hash = { partNr : $(e).prev().val() };
-	demand_search(hash);	
+function demand_search_activate(e){
+	$('.forcasttype').removeClass('typeactive');
+	$(e).addClass('typeactive');
+	demand_search( {type:$(e).attr('demand')} );
 }
 
-function demand_search_type(e){
-	var hash = { 	type : e.attributes['demand'].nodeValue }
-	demand_search(hash);
+function demand_search_with_type( hash ){
+	hash['type'] =$('.typeactive').attr('demand');
+	demand_search( hash );
+}
+
+function demand_search_multi_types(){
+	arr = [];
+	$('.activetype').each(function(){
+		arr.push( $(this).val() );
+	});
+	demand_search( { type:arr } );
+}
+
+function forcasttype_reverse(e){
+	if ( $(e).hasClass('activetype') )
+		$(e).removeClass('activetype');
+	else
+		$(e).addClass('activetype');
 }
 
 function pop(e){

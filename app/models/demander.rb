@@ -4,7 +4,7 @@ require 'base_class'
 
 class Demander<CZ::BaseClass
   attr_accessor :key,:clientId,:relpartId,:supplierId, :type,:amount,:date,:rate
-  NumPer=20
+  NumPer=2
   
   def self.gen_key
         Rns::De+":#{$redis.incr 'demand_index_incr'}"
@@ -37,18 +37,33 @@ class Demander<CZ::BaseClass
       end
       ###########################  date
       list<<Rns::Date
-      
       $redis.zinterstore( resultKey, list, :aggregate=>"MAX" )
-      $redis.expire( resultKey, 30 )
       
-      start = (hash[:start]&&hash[:start].size>0) ? hash[:start].to_i : -(1/0.0)
-      timeend = (hash[:end]&&hash[:end].size>0) ? hash[:end].to_i : (1/0.0)
       demands = []
-      $redis.zrangebyscore( resultKey, start, timeend, :withscores=>false, :limit=>[(hash[:page].to_i-1)*NumPer, NumPer] ).each do |item|
-        # arr = [ Demander.find( item[0] ), item[1].to_i ]
-        demands << Demander.find( item )
+      amount = hash[:amount]
+      if amount&&amount.size>0
+          if amount.size==2
+            start = amount.first
+            amountend = amount.last
+          elsif amount.size==1
+            start = amountend = amount
+          end
+          $redis.zinterstore( resultKey, [resultKey, Rns::Amount], :weights=>[0,1] )
+          total = $redis.zcount( resultKey, start, amountend )
+          $redis.zrangebyscore( resultKey, start, amountend, :withscores=>false, :limit=>[(hash[:page].to_i)*NumPer, NumPer] ).each do |item|
+            demands << Demander.find( item )
+          end
+      else
+          start = (hash[:start]&&hash[:start].size>0) ? hash[:start].to_i : -(1/0.0)
+          timeend = (hash[:end]&&hash[:end].size>0) ? hash[:end].to_i : (1/0.0)
+          total = $redis.zcount( resultKey, start, timeend )
+          $redis.zrangebyscore( resultKey, start, timeend, :withscores=>false, :limit=>[(hash[:page].to_i)*NumPer, NumPer] ).each do |item|
+            demands << Demander.find( item )
+          end
       end
-      demands
+      
+      $redis.expire( resultKey, 30 )
+      return demands, total
   end
 
   
@@ -69,6 +84,7 @@ class Demander<CZ::BaseClass
       $redis.sadd( "#{Rns::S}:#{supplierId}", key )
       $redis.sadd( "#{Rns::RP}:#{relpartId}", key )
       $redis.zadd( Rns::Date, date.to_i, key )
+      $redis.zadd( Rns::Amount, amount, key )
       $redis.sadd( "#{Rns::T}:#{type}", key )
   end
 
