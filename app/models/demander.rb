@@ -4,7 +4,7 @@ require 'base_class'
 
 class Demander<CZ::BaseClass
   attr_accessor :key,:clientId,:relpartId,:supplierId, :type,:amount,:date,:rate
-  NumPer=2
+  NumPer=$DEPSIZE
   
   def self.gen_key
         Rns::De+":#{$redis.incr 'demand_index_incr'}"
