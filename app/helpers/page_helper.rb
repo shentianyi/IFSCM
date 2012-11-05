@@ -26,8 +26,8 @@ module PageHelper
     if total>1
       page_concat page,total-1,total,current,action,targetId,true
     end
-    page.concat('</div>').html_safe
     page.concat('</ul>').html_safe
+    page.concat('</div>').html_safe
   end
 
   private
@@ -39,7 +39,9 @@ module PageHelper
       page.concat(tag("li",liso,true))
       so={}
 
-      so[:onclick]="return "+action+"('"+targetId+"',"+i.to_s+")" if i!=current and targetId!=nil
+      so[:onclick]="return "+action+"('"+"#{targetId}"+"',"+i.to_s+")" if i!=current and targetId!=nil and targetId.class==String
+      so[:onclick]="return "+action+"("+"#{targetId.to_json}"+","+i.to_s+")" if i!=current and targetId!=nil 
+      
       so[:href]="#"
       # text= pstart==0 ? 'FIRST' : i+1
       # text="LAST"  if !last.nil? 

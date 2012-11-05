@@ -199,23 +199,10 @@ class DemanderController<ApplicationController
   end
   
   def index
-    @demands = []
-    @list = Organisation.option_list
-
-    clientId=nil
-    supplierId=nil
-    ######  判断类型 C or S ， 将session[:id]赋值给 id
-    # if session[:usertype]=="Client"
-    # elsif session[:usertype]=="Supplier"
-    supplierId = @cz_org.id
-    # end
-
-    @demands = Demander.search( :clientId=>clientId, :supplierId=>supplierId,
-                                                                      :page=>1 )
 
     respond_to do |format|
       format.html # index.html.erb
-      format.json { render json: @demands }
+      format.json 
     end
   end
 
@@ -258,15 +245,17 @@ class DemanderController<ApplicationController
 
     @list = Organisation.option_list
     @demands = []
-    @demands = Demander.search( :clientId=>clientId,
+    @demands, total = Demander.search( :clientId=>clientId,
                                                                         :supplierId=>supplierId,
                                                                         :rpartNr=>params[:partNr],
                                                                         :start=>params[:start],
                                                                         :end=>params[:end],
                                                                         :type=>params[:type],
+                                                                        :amount=>params[:amount],
                                                                         :page=>params[:page] )
-    puts @demands
-    # end
+    @totalPages=total/Demander::NumPer+(total%Demander::NumPer==0 ? 0:1)
+    @currentPage=params[:page].to_i
+    @options = params[:options]?params[:options]:{}
 
     respond_to do |format|
       format.html {render :partial=>"table" }

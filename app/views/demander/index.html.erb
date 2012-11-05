@@ -7,42 +7,44 @@
 		$("#type_float").draggable();
 		$("#rate_float").draggable();
 	});
-
+window.onload = function(){
+    demand_search( {} );
+}
 </script>
 
 		<div class="textsearchbox texts" id="client_float" style="display: none">
 			<span class="searchcontenttype">客户号</span>
 			<input type="text" name="searchcontent" class="searchcontent" placeholder="请输入客户号" />
-			<input type="button" name="startsearch" class="startsearch" value="搜索" onclick="demand_search_from_sup_option_one(this);"/>
+			<input type="button" name="startsearch" class="startsearch" value="搜索" onclick="demand_search_with_type( {client:$(this).prev().val()} );"/>
 			<input type="button" name="canclesearch" class="searchcancle" value="取消" onclick="pop_cancel(this);"/>
 		</div>
 		<div class="textsearchbox texts" id="partNr_float" style="display: none">
 			<span class="searchcontenttype">零件号</span>
 			<input type="text" name="searchcontent" class="searchcontent" placeholder="请输入零件号" />
-			<input type="button" name="startsearch" class="startsearch" value="搜索" onclick="demand_search_option_one(this);"/>
+			<input type="button" name="startsearch" class="startsearch" value="搜索" onclick="demand_search_with_type( {partNr:$(this).prev().val()} );"/>
 			<input type="button" name="canclesearch" class="searchcancle" value="取消" onclick="pop_cancel(this);"/>
 		</div>
 		<div class="textsearchbox ranges" id="date_float" style="display: none">
 			<span class="searchcontenttype ">日期</span>
 			<input type="text" name="searchcontent" class="searchcontent" placeholder="请选择开始时间" />
 			<input type="text" name="searchcontent" class="searchcontent" placeholder="请选择结束时间" />
-			<input type="button" name="startsearch"	class="startsearch" value="搜索" onclick="demand_search_option(this);"/>
+			<input type="button" name="startsearch"	class="startsearch" value="搜索" onclick="demand_search_with_type( {start:$(this).prev().prev().val(), end:$(this).prev().val()} );"/>
 			<input type="button"	name="canclesearch" class="searchcancle" value="取消" onclick="pop_cancel(this);"/>
 		</div>
 		<div class="textsearchbox ranges" id="amount_float" style="display: none">
 			<span class="searchcontenttype ">数量</span>
 			<input type="text" name="searchcontent" class="searchcontent" placeholder="请输入起始数字" />
 			<input type="text" name="searchcontent" class="searchcontent" placeholder="请选择截止数字" />
-			<input type="button" name="startsearch"	class="startsearch" value="搜索" onclick="demand_search_option(this);"/>
+			<input type="button" name="startsearch"	class="startsearch" value="搜索" onclick="demand_search_with_type( {amount:[$(this).prev().prev().val(), $(this).prev().val()]} );"/>
 			<input type="button"	name="canclesearch" class="searchcancle" value="取消" onclick="pop_cancel(this);"/>
 		</div>
 		<div class="textsearchbox texts" id="type_float" style="display: none">
 			<span class="searchcontenttype ">预测类型</span>
-			<input type="button"	name="searchtype" class="searchforcasttype activetype" value="D" />
-			<input type="button" name="searchtype" class="searchforcasttype"	value="M" />
-			<input type="button" name="searchtype"	class="searchforcasttype" value="Y" />
-			<input type="button"	name="searchtype" class="searchforcasttype righttype" value="O" />
-			<input type="button" name="startsearch" class="startsearch" value="搜索" onclick="demand_search_option(this);"/>
+			<input type="button"	name="searchtype" class="searchforcasttype" value="D" onclick="forcasttype_reverse(this);"/>
+			<input type="button" name="searchtype" class="searchforcasttype"	value="M" onclick="forcasttype_reverse(this);"/>
+			<input type="button" name="searchtype"	class="searchforcasttype" value="Y" onclick="forcasttype_reverse(this);"/>
+			<input type="button"	name="searchtype" class="searchforcasttype righttype" value="O" onclick="forcasttype_reverse(this);"/>
+			<input type="button" name="startsearch" class="startsearch" value="搜索" onclick="demand_search_multi_types(this);"/>
 			<input type="button" name="canclesearch" class="searchcancle"	value="取消" onclick="pop_cancel(this);"/>
 		</div>
 		<div class="textsearchbox ranges" id="rate_float" style="display: none">
@@ -53,66 +55,25 @@
 			<input type="button"	name="canclesearch" class="searchcancle" value="取消" onclick="pop_cancel(this);" />
 		</div>
 <div class="forcasttypes">
-	<div class="forcasttype typeactive" demand="" onclick="demand_search_type(this);">
+	<div class="forcasttype typeactive" demand="" onclick="demand_search_activate( this );">
 		显示全部
 	</div>
-	<div class="forcasttype" demand="D" onclick="demand_search_type(this);">
+	<div class="forcasttype" demand="D" onclick="demand_search_activate( this );">
 		D-天预测<span class="badge badge-warning notifyNewForcast">1</span>
 	</div>
-	<div class="forcasttype" demand="M" onclick="demand_search_type(this);">
+	<div class="forcasttype" demand="M" onclick="demand_search_activate( this );">
 		M-月预测<span class="badge badge-warning notifyNewForcast">3</span>
 	</div>
-	<div class="forcasttype" demand="Y" onclick="demand_search_type(this);">
+	<div class="forcasttype" demand="Y" onclick="demand_search_activate( this );">
 		Y-年预测<span class="badge badge-warning notifyNewForcast">4</span>
 	</div>
-	<div class="forcasttype" demand="O" onclick="demand_search_type(this);">
+	<div class="forcasttype" demand="O" onclick="demand_search_activate( this );">
 		O-订单<span class="badge badge-warning notifyNewForcast">4</span>
 	</div>
-	<div class="forcasttype forcastright" demand="T" onclick="demand_search_type(this);">
+	<div class="forcasttype forcastright" demand="T" onclick="demand_search_activate( this );">
 		T-提货计划
 	</div>
 </div>
 <div id="result" class="tableview">
-	<table class="demandData">
-		<tr class="demandlineone">
-			<th link="client_float" style="cursor: pointer" onclick="pop(this);">客户号</th>
-			<th link="partNr_float" style="cursor: pointer" onclick="pop(this);">零件号</th>
-			<th link="date_float" style="cursor: pointer" onclick="pop(this);">日期</th>
-			<th link="amount_float" style="cursor: pointer" onclick="pop(this);">数量</th>
-			<th link="type_float" style="cursor: pointer" onclick="pop(this);">预测类型</th>
-			<th link="rate_float" style="cursor: pointer" onclick="pop(this);">变动量</th>
-		</tr>
-		<tr class="divide" style="display: none">
-			<th class="nordvd"></th>
-			<th class="nordvd"></th>
-			<th class="nordvd"></th>
-			<th class="nordvd"></th>
-			<th class="nordvd"></th>
-			<th class="lastdvd"></th>
-		</tr>
-		<% @demands.each do |d| %>
-		<tr class="demandnorline hoverable">
-			<th><%= d.clientNr %></th>
-			<th><%= d.relpartId%></th>
-			<th><%= d.date%></th>
-			<th><%= d.amount%></th>
-			<th><%= d.type%></th>
-			<th><%= d.key%> Supplier:<%= d.supplierNr%></th>
-		</tr>
-		<% end %>
-	</table>
-	<hr/>
-	There is(are) <%= @demands.size %> record(s):
-	<br/>
-	<div class="pagination">
-		<ul>
-			<li class="disabled"><a href="#">Prev</a></li>
-			<li class="active"><a href="#">1</a></li>
-			<li><a href="#">2</a></li>
-			<li><a href="#">3</a></li>
-			<li><a href="#">4</a></li>
-			<li><a href="#">Next</a></li>
-		</ul>
-	</div>
 </div>
 

@@ -97,7 +97,7 @@ demand = Demander.new( :key=>Demander.gen_key,
                                                       :supplierId=>1002,
                                                       :relpartId=>"2342342",
                                                       :date=>110001,
-                                                      :amount=>1000,
+                                                      :amount=>500,
                                                       :type=>'W' )
 print "Demander:  "+demand.key.ljust(25)
 puts demand.save
@@ -107,7 +107,7 @@ demand = Demander.new( :key=>Demander.gen_key,
                                                       :clientId=>1001,
                                                       :supplierId=>1002,
                                                       :relpartId=>"23423421",
-                                                      :date=>110001,
+                                                      :date=>110002,
                                                       :amount=>1000,
                                                       :type=>'D' )
 print "Demander:  "+demand.key.ljust(25)
@@ -118,8 +118,8 @@ demand = Demander.new( :key=>Demander.gen_key,
                                                       :clientId=>1001,
                                                       :supplierId=>1002,
                                                       :relpartId=>"23423422",
-                                                      :date=>110001,
-                                                      :amount=>1000,
+                                                      :date=>110002,
+                                                      :amount=>1500,
                                                       :type=>'D' )
 print "Demander:  "+demand.key.ljust(25)
 puts demand.save
@@ -129,8 +129,8 @@ demand = Demander.new( :key=>Demander.gen_key,
                                                       :clientId=>1001,
                                                       :supplierId=>1002,
                                                       :relpartId=>"23423423",
-                                                      :date=>110001,
-                                                      :amount=>1000,
+                                                      :date=>110003,
+                                                      :amount=>2000,
                                                       :type=>'D' )
 print "Demander:  "+demand.key.ljust(25)
 puts demand.save
@@ -140,8 +140,8 @@ demand = Demander.new( :key=>Demander.gen_key,
                                                       :clientId=>1001,
                                                       :supplierId=>1002,
                                                       :relpartId=>"23423424",
-                                                      :date=>110001,
-                                                      :amount=>1000,
+                                                      :date=>110004,
+                                                      :amount=>2500,
                                                       :type=>'D' )
 print "Demander:  "+demand.key.ljust(25)
 puts demand.save
@@ -151,8 +151,8 @@ demand = Demander.new( :key=>Demander.gen_key,
                                                       :clientId=>1003,
                                                       :supplierId=>1002,
                                                       :relpartId=>"2342342",
-                                                      :date=>110001,
-                                                      :amount=>1000,
+                                                      :date=>110005,
+                                                      :amount=>3000,
                                                       :type=>'W' )
 print "Demander:  "+demand.key.ljust(25)
 puts demand.save
@@ -162,8 +162,8 @@ demand = Demander.new( :key=>Demander.gen_key,
                                                       :clientId=>1003,
                                                       :supplierId=>1002,
                                                       :relpartId=>"23423421",
-                                                      :date=>110001,
-                                                      :amount=>1000,
+                                                      :date=>110006,
+                                                      :amount=>3500,
                                                       :type=>'D' )
 print "Demander:  "+demand.key.ljust(25)
 puts demand.save
@@ -173,8 +173,8 @@ demand = Demander.new( :key=>Demander.gen_key,
                                                       :clientId=>1003,
                                                       :supplierId=>1002,
                                                       :relpartId=>"23423422",
-                                                      :date=>110001,
-                                                      :amount=>1000,
+                                                      :date=>110007,
+                                                      :amount=>4000,
                                                       :type=>'D' )
 print "Demander:  "+demand.key.ljust(25)
 puts demand.save
@@ -184,8 +184,8 @@ demand = Demander.new( :key=>Demander.gen_key,
                                                       :clientId=>1003,
                                                       :supplierId=>1002,
                                                       :relpartId=>"23423423",
-                                                      :date=>110001,
-                                                      :amount=>1000,
+                                                      :date=>110008,
+                                                      :amount=>4500,
                                                       :type=>'D' )
 print "Demander:  "+demand.key.ljust(25)
 puts demand.save
@@ -195,8 +195,8 @@ demand = Demander.new( :key=>Demander.gen_key,
                                                       :clientId=>1003,
                                                       :supplierId=>1002,
                                                       :relpartId=>"23423424",
-                                                      :date=>110001,
-                                                      :amount=>1000,
+                                                      :date=>110009,
+                                                      :amount=>5000,
                                                       :type=>'D' )
 print "Demander:  "+demand.key.ljust(25)
 puts demand.save
@@ -206,7 +206,7 @@ demand = Demander.new( :key=>Demander.gen_key,
                                                       :clientId=>1002,
                                                       :supplierId=>1003,
                                                       :relpartId=>"2343342",
-                                                      :date=>110002,
+                                                      :date=>110010,
                                                       :amount=>2000,
                                                       :type=>'W' )
 print "Demander:  "+demand.key.ljust(25)
@@ -217,7 +217,7 @@ demand = Demander.new( :key=>Demander.gen_key,
                                                       :clientId=>1003,
                                                       :supplierId=>1004,
                                                       :relpartId=>"2242342",
-                                                      :date=>110003,
+                                                      :date=>110011,
                                                       :amount=>1000,
                                                       :type=>'M' )
 print "Demander:  "+demand.key.ljust(25)
@@ -228,7 +228,7 @@ demand = Demander.new( :key=>Demander.gen_key,
                                                       :clientId=>1004,
                                                       :supplierId=>1005,
                                                       :relpartId=>"234",
-                                                      :date=>110004,
+                                                      :date=>110012,
                                                       :amount=>500,
                                                       :type=>'D' )
 print "Demander:  "+demand.key.ljust(25)
