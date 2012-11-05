@@ -24,13 +24,18 @@ Demand::Application.routes.draw do
       get :demand_upload
       match :upload_files
       post :get_tempdemand_items
-      match :correct_error
-      match :cancel_upload
+      post :correct_error
+      post :cancel_upload
       match :demand_history
       post :download
+      post :send_demand
     end
   end
-   
+#    
+   # controller :demander do
+     # post 'create'=>:create
+   # end
+#    
   resources :part do
     collection do
      get :searcher

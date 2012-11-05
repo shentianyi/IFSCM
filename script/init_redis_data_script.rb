@@ -65,11 +65,11 @@ class InitData
          # 4. add part Rel
          cpartRel=PartRel.new(:key=>PartRel.gen_key(leoni.id,vw.id,PartRelType::Client),:cId=>leoni.id,:sId=>vw.id,:type=>PartRelType::Client)
          cpartRel.add_partRel_meta(lp.key,partRelMeta.key)
-         cpartRel.save
+         # cpartRel.save
          
          spartRel=PartRel.new(:key=>PartRel.gen_key(leoni.id,vw.id,PartRelType::Supplier),:cId=>leoni.id,:sId=>vw.id,:type=>PartRelType::Supplier)
          spartRel.add_partRel_meta(vp.key,partRelMeta.key)
-         spartRel.save
+         # spartRel.save
 
        end 
        
@@ -89,11 +89,11 @@ class InitData
          # 4. add part Rel
          cpartRel=PartRel.new(:key=>PartRel.gen_key(leoni.id,delpi.id,PartRelType::Client),:cId=>leoni.id,:sId=>delpi.id,:type=>PartRelType::Client)
          cpartRel.add_partRel_meta(lp.key,partRelMeta.key)
-         cpartRel.save
+         # cpartRel.save
          
          spartRel=PartRel.new(:key=>PartRel.gen_key(leoni.id,delpi.id,PartRelType::Supplier),:cId=>leoni.id,:sId=>delpi.id,:type=>PartRelType::Supplier)
          spartRel.add_partRel_meta(dp.key,partRelMeta.key)
-         spartRel.save
+         # spartRel.save
        end 
         
    end

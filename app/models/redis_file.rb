@@ -1,7 +1,7 @@
 require 'base_class'
 
 class RedisFile<CZ::BaseClass
-  attr_accessor :key,:oriName,:itemCount,:errorCount, :normalItemKey,:errorItemKey,:repeatItemKey,:items,:uuidName
+  attr_accessor :key,:oriName,:itemCount,:errorCount, :normalItemKey,:errorItemKey,:repeatItemKey,:items,:uuidName,:finished
   
   def add_item item
     @items=[] if !@items

@@ -2,6 +2,7 @@
 require 'csv'
 require 'zip/zip'
 require 'enum/part_rel_type'
+require "iconv"  
 
 module DemanderHelper
   # ws: generate files demands from csvs
@@ -9,7 +10,7 @@ module DemanderHelper
     begin
       uuid=UUID.new
       # in batchFile normalKey=>file set, repeat Key=>repeat hash
-      batchFile=RedisFile.new(:key=>uuid.generate,:itemCount=>0,:errorCount=>0,:normalItemKey=>uuid.generate,:repeatItemKey=>uuid.generate)
+      batchFile=RedisFile.new(:key=>uuid.generate,:itemCount=>0,:errorCount=>0,:normalItemKey=>uuid.generate,:repeatItemKey=>uuid.generate,:finished=>false)
       items=[]
       files.each do |f|
         sfile=RedisFile.new(:key=>f[:uuidName],:oriName=>f[:oriName],:uuidName=>f[:pathName],
@@ -36,7 +37,7 @@ module DemanderHelper
 
           sfile.errorCount+= 1 if !msg.result
           if msg.result
-          sfile.add_normal_item demand.rate,demand.key
+          sfile.add_normal_item demand.rate.to_i.abs,demand.key
           else
           sfile.add_error_item demand.lineNo,demand.key
           end
@@ -76,13 +77,11 @@ module DemanderHelper
 
     # vali supplier
     if client=Organisation.find_by_id(demand.clientId)
-      puts '---------'
-      puts demand.clientId
-      puts '---------'
       if !supplierId=client.search_supplier_byNr(demand.supplierNr)
         msg.result=false
         msg.content_key<<:spNrNotEx
       else
+        puts 'supplierId:'+supplierId
       demand.supplierId=supplierId
       end
     end
@@ -98,7 +97,7 @@ module DemanderHelper
           msg.content_key<<:partMutiFitOrgP
         else
           demand.spartId=parts[0].key
-          demand.relpartId=PartRel.get_partrelId_by_partNr(demand.clientId,demand.supplierId,demand.cpartNr,PartRelType::Client)
+          demand.relpartId=PartRel.get_partrelId_by_partKey(demand.clientId,demand.supplierId,demand.cpartId,PartRelType::Client)
         end
       end
     end
@@ -167,9 +166,6 @@ module DemanderHelper
           tmps=[]
           zfilename=File.join($DETMP, UUID.generate+'.zip')
           Zip::ZipFile.open(zfilename, Zip::ZipFile::CREATE) do |z|
-            puts 'sfkeys'
-            puts sfKeys
-            puts sfKeys.class
             sfKeys.each do |sk|
               puts 'sk'
                puts sk
@@ -194,10 +190,11 @@ module DemanderHelper
                   
                 end
                 tmps<<spath
-                z.add(sf.oriName,spath)
+                z.add(Iconv.iconv("GBK//IGNORE", "UTF-8//IGNORE",sf.oriName),spath)
               end
             end
           end
+          
          if tmps.count>0
            tmps.each do |t|
                 File.delete(t)

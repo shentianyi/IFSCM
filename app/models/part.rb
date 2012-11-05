@@ -28,9 +28,6 @@ class Part<CZ::BaseClass
 
   def self.find_partKey_by_orgId_partNr orgId,partNr
     hash_key=generate_org_part_set_key orgId
-    puts 'orgId:'+orgId.to_s
-    puts 'partNr:'+partNr
-    puts 'hash_key:'+hash_key
     $redis.hget hash_key,partNr
   end
 

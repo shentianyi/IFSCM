@@ -12,11 +12,11 @@ development:
   adapter: mysql2
   encoding: utf8
   reconnect: false
-  database: searchdb
+  database: scmdb
   pool: 5
-  username: wiptest
-  password: wiptest
-  host: czser001
+  username: scmer
+  password: scmer@#
+  # host: czser001
   socket: /var/run/mysqld/mysqld.sock
 
 # Warning: The database defined as "test" will be erased and
@@ -26,18 +26,18 @@ test:
   adapter: mysql2
   encoding: utf8
   reconnect: false
-  database: Demand_test
+   database: scmdb_test
   pool: 5
-  username: root
-  password:
+  username: scmer
+  password: scmer@#
   socket: /var/run/mysqld/mysqld.sock
 
 production:
   adapter: mysql2
   encoding: utf8
   reconnect: false
-  database: Demand_production
+  database: scmdb
   pool: 5
-  username: root
-  password:
+  username: scmer
+  password: scmer@#
   socket: /var/run/mysqld/mysqld.sock

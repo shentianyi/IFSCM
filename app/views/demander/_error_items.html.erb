@@ -51,7 +51,7 @@
 	</table>
 	    <!-- pager -->
      <div class="pagers">
-     <%=bri_pager options={:class=>"pagination",:pages=>@totalPages,:current=>@currentPage,:action=>'get_upfile_demands',:targetid=>demands.key}%>
+     <%=bri_pager options={:class=>"pagination",:pages=>@totalPages,:current=>@currentPage,:action=>'get_upfile_demands',:target=>demands.key}%>
      </div>
 </div>
 <%else%>

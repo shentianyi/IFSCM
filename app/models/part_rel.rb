@@ -10,12 +10,14 @@ class PartRel<CZ::BaseClass
   
 
   #ws get part relation id 
-  def self.get_partrelId_by_partNr cid,sid,partNr,partRelType
+  def self.get_partrelId_by_partKey cid,sid,partKey,partRelType
     key=generate_key cid,sid,partRelType
-
-    mkey=$redis.hget key,partNr
+    mkey=$redis.hget key,partKey
     if $redis.exists mkey
       ms=$redis.smembers(mkey)
+      puts 'ms---------'
+      puts ms
+      puts 'ms---------'
       if ms.count>0
         return PartRelMeta.find(ms[0]).key
       end
@@ -27,9 +29,9 @@ class PartRel<CZ::BaseClass
   # def get single partid cs relation partid
   # if client,find supplier's parts by clients' partId
   # if supplier, find client's parts ...
-   def self.get_single_part_cs_parts clientId,supplierId,partId,partRelType
+   def self.get_single_part_cs_parts clientId,supplierId,partKey,partRelType
     key=generate_key( clientId,supplierId,partRelType)
-    prelsetKey=$redis.hget(key,partId) # part rel set key
+    prelsetKey=$redis.hget(key,partKey) # part rel set key
     if prelsetKey
       prelset=$redis.smembers(prelsetKey) # part rel set
       if prelset and prelset.count>0
@@ -72,7 +74,7 @@ class PartRel<CZ::BaseClass
    
    def add_partRel_meta partKey,metaKey
      # add meta to rel set
-     set_key=generate_rel_set_key @cid,@sid,partKey
+     set_key=generate_rel_set_key @cId,@sId,partKey
      $redis.sadd set_key,metaKey
      # add set key to rel
      $redis.hset @key,partKey,set_key

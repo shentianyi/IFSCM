@@ -6,40 +6,46 @@ module PageHelper
     options = args.last.is_a?(Hash) ? args.pop : {}
     page.concat(tag("div", {:class=>options[:class]},true))
     page.concat(tag("ul",nil,true))
-    targetId=options[:targetid]
+    target=options[:target]
     list=8
     pre=4
     after=list-pre
     total=options[:pages]
     current=options[:current]
     action=options[:action]
-    page_concat page,0,1,current,action,targetId
+    page_concat page,0,1,current,action,target
     if total<=list
-      page_concat page,1,total-1,current,action,targetId
+      page_concat page,1,total-1,current,action,target
     elsif current<pre+1
-      page_concat page,1,list,current,action,targetId
+      page_concat page,1,list,current,action,target
     elsif after+current+1>=total
-      page_concat page,total-list-1,total-1,current,action,targetId
+      page_concat page,total-list-1,total-1,current,action,target
     else
-      page_concat page,current-pre+1,current+after,current,action,targetId
+      page_concat page,current-pre+1,current+after,current,action,target
     end
     if total>1
-      page_concat page,total-1,total,current,action,targetId,true
-    end
-    page.concat('</div>').html_safe
+      page_concat page,total-1,total,current,action,target,true
+    end    
     page.concat('</ul>').html_safe
+    page.concat('</div>').html_safe
   end
 
   private
 
-  def page_concat page,pstart,pend,current,action,targetId=nil,last=nil
+  def page_concat page,pstart,pend,current,action,target=nil,last=nil
     for i in pstart...pend
       liso={}
       liso[:class]= i!=current ? 'disabled':'active'
       page.concat(tag("li",liso,true))
       so={}
-
-      so[:onclick]="return "+action+"('"+targetId+"',"+i.to_s+")" if i!=current and targetId!=nil
+      if i!=current
+        if target.class.name.downcase=='string'
+          so[:onclick]="return "+action+"('"+target+"',"+i.to_s+")"
+        else
+          so[:onclick]="return "+action+"("+target+","+i.to_s+")"
+        end
+      end
+        
       so[:href]="#"
       # text= pstart==0 ? 'FIRST' : i+1
       # text="LAST"  if !last.nil? 

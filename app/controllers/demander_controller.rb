@@ -66,8 +66,8 @@ class DemanderController<ApplicationController
         type=file.errorCount.to_i>0 ? 'error':'normal'
         pageIndex=params[:pageIndex].to_i
         pageSize=$DEPSIZE
-        startIndex=(pageIndex-1)*pageSize
-        endIndex=pageIndex*pageSize-1
+        startIndex=(pageIndex)*pageSize
+        endIndex=(pageIndex+1)*pageSize-1
         demands,totalCount= DemanderHelper::get_file_demands fileId,startIndex,endIndex,type
         @currentPage=pageIndex
         @totalPages=totalCount/pageSize+(totalCount%pageSize==0?0:1)
@@ -107,7 +107,7 @@ class DemanderController<ApplicationController
         if vmsg.result
           nd.rate,nd.oldamount=DemandHistory.compare_rate(
           nd.clientId,nd.supplierId,
-          nd.cpartId,nd.type,nd.date,nd.amount)
+          nd.relpartId,nd.type,nd.date,nd.amount)
           if sf.errorCount.to_i-1==0
             bf.update(:errorCount=> bf.errorCount.to_i-1)
           end
@@ -126,7 +126,7 @@ class DemanderController<ApplicationController
         if nd.vali.to_s!=od.vali
           from=!nd.vali ? 'normal':'error'
           to=nd.vali ? 'normal':'error'
-          score=nd.vali ? nd.rate : nd.lineNo
+          score=nd.vali ? nd.rate.to_i.abs : nd.lineNo
           sf.send "move_#{from}_to_#{to}".to_sym,score,nd.key
         end
       msg.result=true
@@ -153,7 +153,7 @@ class DemanderController<ApplicationController
         msg.content='上传已经取消'
       end
       respond_to do |format|
-        format.xml {render :xml=>JSON.parse(msg.to_json).to_xml(:root=>'demandhistory')}
+        format.xml {render :xml=>JSON.parse(msg.to_json).to_xml(:root=>'cancelMsg')}
         format.json { render json: msg }
       end
     end
@@ -188,16 +188,17 @@ class DemanderController<ApplicationController
     end
   end
 
-  def download 
+  # download up demand files as zip
+  def download
     if request.post?
       msg=DemanderHelper::zip_demand_cvs params[:batchFileId]
       if msg.result
         send_file msg.content,:type => 'application/zip', :filename => "#{UUID.generate}.zip"
-         File.delete(msg.content)
-      end 
+        File.delete(msg.content)
+      end
     end
   end
-  
+
   def index
     @demands = []
     @list = Organisation.option_list
@@ -219,22 +220,58 @@ class DemanderController<ApplicationController
     end
   end
 
-  def create
-    # key = Demander.get_key( 445 )
-    # if $redis.exists( key )
-    # else
-    demand = Demander.new( :key=>Demander.gen_key,
-    :clientId=>params[:client],
-    :supplierId=>params[:supplier],
-    :relpartId=>params[:partNr],
-    :date=>params[:date],
-    :amount=>params[:amount],
-    :type=>params[:type] )
-    demand.save
-    demand.save_to_send
-    # end
+ # ori: ding: create
+ # rewrite: ws
+  def send_demand
+    if request.post?
+      msg=ReturnMsg.new(:result=>false,:content=>'')
+      batchId=params[:batchFileId]
+      if bf=RedisFile.find(batchId)
+        if bf.errorCount.to_i==0
+          if bf.finished=='false'
+            sfKeys,scount=bf.get_normal_item_keys 0,-1
+            if scount>0
 
-    redirect_to root_path
+              sfKeys.each do |sk|
+                if sf=RedisFile.find(sk)
+                  nds,ncount=DemanderHelper::get_file_demands sf.key,0,-1,'normal'
+                  if ncount>0
+                    nds.items.each do |nd|
+                      demand = Demander.new( :key=>Demander.gen_key,
+                      :clientId=>nd.clientId,
+                      :supplierId=>nd.supplierId,
+                      :relpartId=>nd.relpartId,
+                      :date=>nd.date,
+                      :amount=>nd.amount,
+                      :type=>nd.type )
+                      demand.save
+                      demand.save_to_send
+                      demandH=DemandHistory.new(:key=>UUID.generate,:clientId=>nd.clientId,:supplierId=>nd.supplierId,:relPartId=>nd.relpartId,
+                      :type=>nd.type,:date=>nd.date,:amount=>nd.amount)
+                      demandH.add_to_history
+                      demandH.save
+                    end
+                  end
+                end
+              end
+                Resque.enqueue(DemandUploadCanceler,bf.key)
+              msg.result=true
+              msg.content='发送成功'
+            end
+          else
+            msg.content='预测已经发送成功，不可重复操作'
+          end
+        else
+          msg.content='文件中仍存在错误，请更正以后再发送'
+        end
+      else
+        msg.content='服务错误，请重新上传文件'
+      end
+         respond_to do |format|
+        format.xml {render :xml=>JSON.parse(msg.to_json).to_xml(:root=>'sendMsg')}
+        format.json { render json: msg }
+      end
+    end
   end
 
   def search

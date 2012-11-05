@@ -15,13 +15,10 @@ class DemandUploadCanceler
       end
 
       # 2. del single files
-      nkeys=r.get_normal_item_keys 0,-1
-      puts '---------------normal keys'
-      puts nkeys
-      if nkeys.count>0
+      nkeys,ncount=r.get_normal_item_keys 0,-1
+      if ncount>0
         nkeys.each do |k|
           if sf=RedisFile.find(k)
-            puts sf.oriName
             # 2.1 del normal,error item
             m.each do |i|
               nnkeys,count=sf.send "get_#{i}_item_keys".to_sym,0,-1
