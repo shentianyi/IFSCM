@@ -230,7 +230,8 @@ class DemanderController<ApplicationController
                       :relpartId=>nd.relpartId,
                       :date=>nd.date,
                       :amount=>nd.amount,
-                      :type=>nd.type )
+                      :type=>nd.type,
+                       :rate=>nd.rate)
                       demand.save
                       demand.save_to_send
                       demandH=DemandHistory.new(:key=>UUID.generate,:clientId=>nd.clientId,:supplierId=>nd.supplierId,:relPartId=>nd.relpartId,

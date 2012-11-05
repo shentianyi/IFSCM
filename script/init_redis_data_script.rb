@@ -2,14 +2,23 @@
 require 'redis'
  require 'enum/part_rel_type'
  
- Staff.create(  :staffNr => 'wstest',
-                          :name=>'wstest',
+ Staff.create(  :staffNr => 'leoni',
+                          :name=>'leoni',
                           :orgId=>1,
-                          :password => 'wstest',
-                          :password_confirmation => 'wstest')
+                          :password => 'leoni',
+                          :password_confirmation => 'leoni')
+  Staff.create(  :staffNr => 'vw',
+                          :name=>'vw',
+                          :orgId=>2,
+                          :password => 'vw',
+                          :password_confirmation => 'vw')         
+  Staff.create(  :staffNr => 'delph',
+                          :name=>'delph',
+                          :orgId=>2,
+                          :password => 'delph',
+                          :password_confirmation => 'delph')                         
  
 class InitData
-  
   # init demand type 
   def self.initDemandType
     $redis.del DemandType.gen_set_key

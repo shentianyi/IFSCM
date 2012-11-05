@@ -40,4 +40,4 @@ production:
   pool: 5
   username: scmer
   password: scmer@#
-  socket: /var/run/mysqld/mysqld.sock
+  socket: /var/run/mysqld/mysqld.sock 

@@ -15,5 +15,5 @@ title:
  
 resque:
  :resquedb: 0
- :resquehost: 192.168.0.138 
- :resqueport: 6378
+ :resquehost: 127.0.0.1
+ :resqueport: 6379
