@@ -17,12 +17,13 @@ class DemandHistory<CZ::BaseClass
     return generate_rate amount,ckey
   end
 
-  private
+
 
   def self.generate_zset_key clientId,supplierId,relpartId,type,date
     "cId:#{clientId}:spId:#{supplierId}:relpartId:#{relpartId}:type:#{type}:date:#{date}"
   end
-
+  
+  private
 
   def self.generate_rate amount,zsetkey
     item_key=get_last_item_key zsetkey
