@@ -92,7 +92,7 @@ class DemanderController<ApplicationController
       od=DemanderTemp.find(params[:uuid])
 
       if bf and sf and od
-        puts sf
+        
         nd= DemanderTemp.new(:key=>od.key,:cpartNr=>params[:partNr],:clientId=>clientId,:supplierNr=>params[:supplierNr],
         :filedate=>params[:filedate],:date=>(FormatHelper::demand_date_by_str_type(params[:filedate],params[:type])),
         :type=>params[:type],:amount=>params[:amount],:lineNo=>od.lineNo,:source=>od.source)
@@ -163,27 +163,22 @@ class DemanderController<ApplicationController
   # ws demand history
   def demand_history
     if request.post?
-      demandId='demand:3'
-      startIndex=(Time.now-1.days).to_i
-      endIndex=(Time.now+1.days).to_i
+      demandId=params[:demandId].to_i
+      startIndex=Time.parse(params[:startIndex]).to_i
+      endIndex=Time.parse(params[:endIndex]).to_i
       msg=ReturnMsg.new(:result=>false,:content=>'')
       if demander=Demander.find(demandId)
-        keys= DemandHistory.get_demander_keys(demander,startIndex,endIndex)
-        if keys.count>0
+        hs= DemandHistory.get_demander_hitories(demander,startIndex,endIndex)
+        if hs
           msg.result=true
-          msg.object=[]
-          keys.each do |k|
-            if dh=DemandHistory.find(k)
-            msg.object<<dh
-            end
-          end
+          msg.object=hs
         else
           msg.content='no history'
         end
       end
       respond_to do |format|
         format.html { render  :partial=>'chart_history', :locals=>{:data=>msg.object.collect{|p| [p.amount.to_i, p.created_at.to_i]} } }
-        format.xml {render :xml=>JSON.parse(msg.to_json).to_xml(:root=>'validInfo')}
+        format.xml {render :xml=>JSON.parse(msg.to_json).to_xml(:root=>'demandHistory')}
         format.json { render json: msg }
       end
     end
@@ -232,7 +227,7 @@ class DemanderController<ApplicationController
                       demand.save
                       demand.save_to_send
                       demandH=DemandHistory.new(:key=>UUID.generate,:amount=>nd.amount,:rate=>nd.rate,:oldmount=>nd.oldamount,:demandKey=>demand.key)
-                      demandH.save
+                      demandH.save  
                       demand.add_to_history demandH.key
                     end
                   end

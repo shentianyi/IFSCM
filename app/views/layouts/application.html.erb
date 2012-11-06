@@ -14,6 +14,7 @@
 				<li><input type="button" name="back" class="iconback bt" /></li>
 				<% if @isClient %>
 					<li><a href="../demander/demand_upload">上传需求</a></li>
+					 <li><a href="../demander">查看需求</a></li>
 					<li>供应商信息</li>
 					<li><a href="../demander/data_analysis">数据分析</a></li>
 					<li>零件入库</li>
@@ -30,16 +31,19 @@
 	
 	<div class="lefticons" id="lefticons">
 		<div class="hm licon">
-			<a href=<%= organisation_manager_path(@cz_org.key)%>> <p  name="headicon" class="headicon"  />
+			<a href=<%= organisation_manager_path(@cz_org.key)%>>
+			      <p  name="headicon" class="headicon"  />
 			</a>
 		</div>
 		<div class="cus licon">
-			<a onclick="org_type_activate(this);"> <p  name="customericon" class="customericon" style=" cursor:pointer;"/><% button_to  nil, {controller:'sessions',action: 'org_type_activate', :type=>'supplier'}  %>
-			</a>
+		     <a href="../sessions/reload?t=<%=OrgOperateType::Client%>">
+			     <p  name="customericon" class="customericon" style=" cursor:pointer;" ></p>
+			 </a> 
 		</div>
 		<div class="sup licon">
-			<a onclick="org_type_activate(this);"> <p  name="suppliericon" class="suppliericon" style=" cursor:pointer;"/>
-			</a>
+		       <a href="../sessions/reload?t=<%=OrgOperateType::Supplier%>">
+			 <p  name="suppliericon" class="suppliericon" style=" cursor:pointer;" ></p>
+			 </a>
 		</div>
 	</div>
 	
@@ -48,6 +52,10 @@
 			<%= yield %>
 	  </div>
 </div>
-
+<script>
+     function dd(){
+          alert('dd');
+     }
+</script>
 </body>
 </html>

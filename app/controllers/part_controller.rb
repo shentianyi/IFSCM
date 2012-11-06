@@ -22,8 +22,8 @@ class PartController<ApplicationController
     end
   end
 
-  #ws Get Partnrs By PartnerNr
-  def get_partNrs_by_partnerNr
+  #ws Get parts By PartnerNr
+  def get_parts_by_partnerNr
     org_id=session[:org_id]
     orgOpeType=session[:orgOpeType]
     partnerNr=params[:partnerNr]
@@ -32,9 +32,9 @@ class PartController<ApplicationController
     if org=Organisation.find_by_id(org_id)
       if  partnerId=org.get_parterId_by_parterNr(orgOpeType,partnerNr)
         if orgOpeType==OrgOperateType::Client
-          parts=Part.get_all_relationd_parts(org_id,partnerId,PartRelType::Client)
+          parts=Part.get_all_relation_parts(org_id,partnerId,PartRelType::Client)
         elsif
-        parts=Part.get_all_relationd_parts(partnerId,org_id,PartRelType::Supplier)
+        parts=Part.get_all_relation_parts(partnerId,org_id,PartRelType::Supplier)
         end
       end
     end
