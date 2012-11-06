@@ -85,31 +85,4 @@
      文件内容获取错误
 </p>
 <%end%>
-<script type="text/javascript">
-     function send_demand_batchFile(ele) {
-          $.ajax({
-               url : '../demander/send_demand',
-               data : {
-                    'batchFileId' : $('#batchFileId').val()
-               },
-               dataType : 'json',
-               type : 'post',
-               success : function(data) {
-                    if(data.result){
-                         $(ele).unbind('click').removeAttr('onclick').bind('click', function() {
-                              alert('预测已经发送成功，不可重复发送');
-                         });
-                         $('#cancelDemandUpBtn').unbind('click').removeAttr('onclick').bind('click', function() {
-                              alert('已经发送成功，不可取消');
-                         });
-                         $('[id=amount]').unbind('dblclick').removeAttr('ondblclick');
-                         alert(data.content);
-                         // window_redirect("../demander/demand_upload",1000);
-                    } else {
-                         alert(data.content);
-                    }
-               }
-          });
-     }
-</script>
 

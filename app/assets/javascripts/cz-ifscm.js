@@ -73,7 +73,7 @@ function correct_demand_error(ele) {
      });
 }
 
-  // ws: rest demand amount -- now just reset the amount of demand
+// ws: rest demand amount -- now just reset the amount of demand
 function reset_demand_amount(obj) {
      var tag = obj.firstChild.tagName;
      if( typeof (tag) != "undefined" && (tag == "INPUT" || tag == "TEXTAREA"))
@@ -105,12 +105,12 @@ function reset_demand_amount(obj) {
                                         if(rate >= 0) {
                                              demand.find('#thisLineWidthDiv').css('width', '100%');
                                              if(parseInt(de.oldamount) > 0)
-                                                  demand.find('#lastLineWidthDiv').css('width', '' + (100/(1+rate/100)) + '%');
+                                                  demand.find('#lastLineWidthDiv').css('width', '' + (100 / (1 + rate / 100)) + '%');
                                              else
                                                   demand.find('#lastLineWidthDiv').css('width', '0%');
                                              demand.find('.percentageImg').attr('src', '/assets/arrup.png');
                                         } else {
-                                             demand.find('#thisLineWidthDiv').css('width', '' + (100/(1-rate/100)) + '%');
+                                             demand.find('#thisLineWidthDiv').css('width', '' + (100 / (1 - rate / 100)) + '%');
                                              demand.find('#lastLineWidthDiv').css('width', '100%');
                                              demand.find('.percentageImg').attr('src', '/assets/arrdown.png');
                                         }
@@ -158,29 +158,57 @@ function update_demand(demand, handler) {
 }
 
 // ws: cancel demand upload
-function cancel_demand_upload(){
-     if(confirm('确定取消本次上传？')){
+function cancel_demand_upload() {
+     if(confirm('确定取消本次上传？')) {
           $.ajax({
-               url: '../demander/cancel_upload',
-               data:{
+               url : '../demander/cancel_upload',
+               data : {
                     'batchId' : $('#batchFileId').val()
                },
-               dataType:'json',
-               type:'post',
-               success:function(data){
-                    if(data.result){
+               dataType : 'json',
+               type : 'post',
+               success : function(data) {
+                    if(data.result) {
                          alert(data.content);
-                         window_redirect("../demander/demand_upload",1000);
-                    }else{
+                         window_redirect("../demander/demand_upload", 1000);
+                    } else {
                          alert(data.content);
                     }
                }
           });
      }
 }
+
 // ws: download demand files as zip
-function download_demand (ele) {
-  var form=$('#download_demand_form');
-  form.submit();
+function download_demand(ele) {
+     var form = $('#download_demand_form');
+     form.submit();
+}
+
+// ws: send demand
+function send_demand_batchFile(ele) {
+     $.ajax({
+          url : '../demander/send_demand',
+          data : {
+               'batchFileId' : $('#batchFileId').val()
+          },
+          dataType : 'json',
+          type : 'post',
+          success : function(data) {
+               if(data.result) {
+                    $(ele).unbind('click').removeAttr('onclick').bind('click', function() {
+                         alert('预测已经发送成功，不可重复发送');
+                    });
+                    $('#cancelDemandUpBtn').unbind('click').removeAttr('onclick').bind('click', function() {
+                         alert('已经发送成功，不可取消');
+                    });
+                    $('[id=amount]').unbind('dblclick').removeAttr('ondblclick');
+                    alert(data.content);
+                    // window_redirect("../demander/demand_upload",1000);
+               } else {
+                    alert(data.content);
+               }
+          }
+     });
 }
 
