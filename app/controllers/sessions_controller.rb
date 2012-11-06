@@ -11,6 +11,7 @@ class SessionsController < ApplicationController
     if staff = Staff.authenticate( params[:staffNr], params[:password] )
           session[:staff_id] = staff.id
           session[:org_id] = staff.orgId
+       #   session[:orgOpeType]=OrgOperateType::Client
           redirect_to :controller=>'welman',action: 'index'
     else
           redirect_to login_url, :notice => "用户名或密码错误"
@@ -21,6 +22,7 @@ class SessionsController < ApplicationController
   def destroy
         session[:staff_id] = nil
         session[:org_id] = nil
+        session[:orgOpeType] = nil
         redirect_to login_url, :notice => "已注销"
   end
   
@@ -34,6 +36,14 @@ class SessionsController < ApplicationController
     else
       session[:orgOpeType]=nil
       redirect_to login_url, :notice => "身份错误"
+    end
+  end
+  
+  def change_ope_type
+    if session[:orgOpeType]
+      session[:orgOpeType]= session[:orgOpeType]==OrgOperateType::Client ? OrgOperateType::Supplier : OrgOperateType::Client
+    else
+      redirect_to login_url,:notice=>'请重新登录'
     end
   end
   

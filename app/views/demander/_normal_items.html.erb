@@ -40,7 +40,11 @@
                <th class="no-type-change" id="partNr"><%= item.cpartNr%></th>
                <th class="no-type-change" id="filedate"><%= item.filedate%></th>
                <th class="no-type-change" id="date"><%= item.date%></th>
-               <th class="no-auto-click-bind" id="amount" ondblclick="reset_demand_amount(this);"><%= item.amount%></th>
+               <th class="no-auto-click-bind" id="amount"
+               <% if @finished=='false'%>
+               ondblclick='reset_demand_amount(this);'
+               <%end%>
+               ><%= item.amount%></th>
                <th class="no-type-change" id="type"><%= item.type%></th>
                <th class='no-type-change'>
                <div class="forcastcompare">
@@ -67,9 +71,9 @@
      </table>
      <!-- pager -->
      <div class="pagers">
-     <%=bri_pager options={:class=>"pagination",:pages=>@totalPages,:current=>@currentPage,:action=>'get_upfile_demands',:target=>demands.key}%>
-     </div> 
-     
+          <%= bri_pager options={:class=>"pagination",:pages=>@totalPages,:current=>@currentPage,:action=>'get_upfile_demands',:target=>demands.key}%>
+     </div>
+
 </div>
 <%else%>
 <p>
@@ -77,86 +81,35 @@
 </p>>
 <%end%>
 <%else%>
- <p>
-      文件内容获取错误
- </p>
+<p>
+     文件内容获取错误
+</p>
 <%end%>
 <script type="text/javascript">
-     function send_demand_batchFile() {
-       $.ajax({
-            url: '../demander/send_demand',
-               data:{
+     function send_demand_batchFile(ele) {
+          $.ajax({
+               url : '../demander/send_demand',
+               data : {
                     'batchFileId' : $('#batchFileId').val()
                },
-               dataType:'json',
-               type:'post',
-               success:function(data){
+               dataType : 'json',
+               type : 'post',
+               success : function(data) {
                     if(data.result){
+                         $(ele).unbind('click').removeAttr('onclick').bind('click', function() {
+                              alert('预测已经发送成功，不可重复发送');
+                         });
+                         $('#cancelDemandUpBtn').unbind('click').removeAttr('onclick').bind('click', function() {
+                              alert('已经发送成功，不可取消');
+                         });
+                         $('[id=amount]').unbind('dblclick').removeAttr('ondblclick');
                          alert(data.content);
-                         window_redirect("../demander/demand_upload",1000);
-                    }else{
+                         // window_redirect("../demander/demand_upload",1000);
+                    } else {
                          alert(data.content);
                     }
                }
-       });
+          });
      }
-     // ws: rest demand amount -- now just reset the amount of demand
-function reset_demand_amount(obj) {
-     var tag = obj.firstChild.tagName;
-     if( typeof (tag) != "undefined" && (tag == "INPUT" || tag == "TEXTAREA"))
-          return;
-     var val = obj.innerHTML;
-     var txt = document.createElement("INPUT");
-     txt.value = val;
-     txt.style.background = "#FFC";
-     txt.style.width = obj.offsetWidth + "px";
-     obj.innerHTML = "";
-     obj.appendChild(txt);
-     txt.focus();
-     txt.onblur = function(e) {
-          if(txt.value.length == 0)
-               txt.value = val;
-          obj.innerHTML = txt.value;
-          if(val != txt.value) {
-               if(notNegaNum(txt.value)) {
-                    var demand = $(obj).parent();
-                    update_demand(demand, function(data) {
-                         if(data != null) {
-                              if(data.result) {
-                                   var de = data.object;
-                                   if(de.vali) {
-                                        demand.find('#this_demand_amount').text(de.amount);
-                                        demand.find('.percentage').text(Math.abs(Math.round(de.rate)) + '%');
-                                        // gen amount bar & reset img
-                                        var rate = parseFloat(de.rate);
-                                        if(rate >= 0) {
-                                             demand.find('#thisLineWidthDiv').css('width', '100%');
-                                             if(parseInt(de.oldamount) > 0)
-                                                  demand.find('#lastLineWidthDiv').css('width', '' + (100/(1+rate/100)) + '%');
-                                             else
-                                                  demand.find('#lastLineWidthDiv').css('width', '0%');
-                                             demand.find('.percentageImg').attr('src', '/assets/arrup.png');
-                                        } else {
-                                             demand.find('#thisLineWidthDiv').css('width', '' + (100/(1-rate/100)) + '%');
-                                             demand.find('#lastLineWidthDiv').css('width', '100%');
-                                             demand.find('.percentageImg').attr('src', '/assets/arrdown.png');
-                                        }
-                                        //.....
-                                   } else {
-                                        alert(jQuery.parseJSON(de.msg)[0]);
-                                   }
-                              } else {
-                                   alert(data.content);
-                              }
-                         } else {
-                              alert('无法找到DOM');
-                         }
-                    });
-               } else {
-                    alert('请填入非负整数预测量！');
-               }
-          }
-     }
-}
 </script>
 

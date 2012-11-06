@@ -1,5 +1,5 @@
 #coding:utf-8
-require 'enum/file_data_type.rb'
+require 'enum/file_data_type'
 
 class DemanderController<ApplicationController
 
@@ -37,6 +37,7 @@ class DemanderController<ApplicationController
           if batch_file
           msg.result=true
           msg.object=batch_file
+           Resque.enqueue(DemandUpfilesDeler,batch_file.key)
           else
             msg.content='upload faild please retry'
           end
@@ -71,6 +72,7 @@ class DemanderController<ApplicationController
         demands,totalCount= DemanderHelper::get_file_demands fileId,startIndex,endIndex,type
         @currentPage=pageIndex
         @totalPages=totalCount/pageSize+(totalCount%pageSize==0?0:1)
+        @finished=file.finished
       end
       respond_to do |format|
         format.xml {render :xml=>JSON.parse(demands.to_json).to_xml(:root=>'demands')}
@@ -82,7 +84,6 @@ class DemanderController<ApplicationController
 
   # ws correct error
   def correct_error
-    session[:org_id]=1
     if request.post?
       clientId=session[:org_id]
       msg=ReturnMsg.new(:result=>false,:content=>'')
@@ -220,7 +221,7 @@ class DemanderController<ApplicationController
             if scount>0
 
               sfKeys.each do |sk|
-                if sf=RedisFile.find(sk)
+                if sf=RedisFile.find(sk) and sf.finished=='false'
                   nds,ncount=DemanderHelper::get_file_demands sf.key,0,-1,'normal'
                   if ncount>0
                     nds.items.each do |nd|
@@ -235,20 +236,21 @@ class DemanderController<ApplicationController
                        :rate=>nd.rate)
                       demand.save
                       demand.save_to_send
-                      demandH=DemandHistory.new(:key=>UUID.generate,:clientId=>nd.clientId,:supplierId=>nd.supplierId,:relPartId=>nd.relpartId,
-                      :type=>nd.type,:date=>nd.date,:amount=>nd.amount)
-                      demandH.add_to_history
+                      demandH=DemandHistory.new(:key=>UUID.generate,:amount=>nd.amount,:rate=>nd.rate,:oldmount=>nd.oldamount,:demandKey=>demand.key)
                       demandH.save
+                      demand.add_to_history demandH.key
                     end
                   end
                 end
+                sf.update(:finished=>true)
               end
-                Resque.enqueue(DemandUploadCanceler,bf.key)
+              bf.update(:finished=>true)
+             # Resque.enqueue(DemandUploadCanceler,bf.key)
               msg.result=true
               msg.content='发送成功'
             end
           else
-            msg.content='预测已经发送成功，不可重复操作'
+            msg.content='预测已经发送成功，不可重复发送'
           end
         else
           msg.content='文件中仍存在错误，请更正以后再发送'

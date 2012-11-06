@@ -1,13 +1,12 @@
 class DemandUploadCanceler
 
-  @queue='demand_upload_cancel_queue'
+  @queue='demand_queue'
   def self.perform batchId
+    puts "do DemandUploadCanceler:#{batchId}"
     m=['normal','error']
     if r=RedisFile.find(batchId)
       # 1. del repeate item keys
       rkeys=r.get_repeat_item_keys
-      puts '---------------repeat keys'
-      puts rkeys
       if rkeys.count>0
         rkeys.each do |k|
           r.del_repeat_item k
@@ -25,9 +24,6 @@ class DemandUploadCanceler
               if count>0
                 nnkeys.each do |dkey|
                   if d=DemanderTemp.find(dkey)
-                    puts '---------------demander temp keys'
-                    puts d.key
-
                     d.destory
                   end
                 end
@@ -45,9 +41,7 @@ class DemandUploadCanceler
           end
         end
       end
-      puts 'del links'
     r.del_items_link
-    puts 'del batch'
     r.destory
     end
   end
