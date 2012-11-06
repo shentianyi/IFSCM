@@ -11,7 +11,8 @@ require 'redis'
                           :name=>'vw',
                           :orgId=>2,
                           :password => 'vw',
-                          :password_confirmation => 'vw')         
+                          :password_confirmation => 'vw')       
+                            
   Staff.create(  :staffNr => 'delph',
                           :name=>'delph',
                           :orgId=>2,
@@ -47,7 +48,7 @@ class InitData
     leoni.add_supplier(delpi.id,'DELPI-LEONI')
     
     vw.add_client(leoni.id,'LEONI-VW')
-    vw.add_client(leoni.id,'LEONI-DELPI')
+    delpi.add_client(leoni.id,'LEONI-DELPI')
     
    initPart orgs 
   end
