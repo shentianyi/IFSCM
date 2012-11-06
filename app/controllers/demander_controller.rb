@@ -163,9 +163,9 @@ class DemanderController<ApplicationController
   # ws demand history
   def demand_history
     if request.post?
-      demandId=params[:demandId]
-      startIndex=params[:startIndex].to_i
-      endIndex=params[:endIndex].to_i
+      demandId=params[:demandId].to_i
+      startIndex=Time.parse(params[:startIndex]).to_i
+      endIndex=Time.parse(params[:endIndex]).to_i
       msg=ReturnMsg.new(:result=>false,:content=>'')
       if demander=Demander.find(demandId)
         keys= DemandHistory.get_demander_keys(demander,startIndex,endIndex)
@@ -182,7 +182,7 @@ class DemanderController<ApplicationController
         end
       end
       respond_to do |format|
-        format.xml {render :xml=>JSON.parse(msg.to_json).to_xml(:root=>'validInfo')}
+        format.xml {render :xml=>JSON.parse(msg.to_json).to_xml(:root=>'demandHistory')}
         format.json { render json: msg }
       end
     end
