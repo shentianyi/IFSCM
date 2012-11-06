@@ -1,6 +1,7 @@
 <script language="javascript">
 	$(function() {
 		$("#client_float").draggable();
+		$("#supplier_float").draggable();
 		$("#partNr_float").draggable();
 		$("#date_float").draggable();
 		$("#amount_float").draggable();
@@ -16,6 +17,12 @@ window.onload = function(){
 			<span class="searchcontenttype">客户号</span>
 			<input type="text" name="searchcontent" class="searchcontent" placeholder="请输入客户号" />
 			<input type="button" name="startsearch" class="startsearch" value="搜索" onclick="demand_search_with_type( {client:$(this).prev().val()} );"/>
+			<input type="button" name="canclesearch" class="searchcancle" value="取消" onclick="pop_cancel(this);"/>
+		</div>
+		<div class="textsearchbox texts" id="supplier_float" style="display: none">
+			<span class="searchcontenttype">供应商号</span>
+			<input type="text" name="searchcontent" class="searchcontent" placeholder="请输入供应商号" />
+			<input type="button" name="startsearch" class="startsearch" value="搜索" onclick="demand_search_with_type( {supplier:$(this).prev().val()} );"/>
 			<input type="button" name="canclesearch" class="searchcancle" value="取消" onclick="pop_cancel(this);"/>
 		</div>
 		<div class="textsearchbox texts" id="partNr_float" style="display: none">

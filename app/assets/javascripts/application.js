@@ -12,12 +12,6 @@
 //
 //= require jquery-1.8.2.min
 //= require jquery.ui/jquery-ui-1.9.1.custom.min
-//= require jquery.ui/jquery.ui.core
-
-
-//= require jquery.ui/jquery.ui.widget.min
- //=require jquery.ui/jquery.ui.position
-//=require  jquery.ui/jquery.ui.autocomplete
 
 //= require jquery.file.upload/tmpl.min
 //= require jquery.file.upload/load-image.min
@@ -28,7 +22,17 @@
 
 //= require_tree .
 
+function org_type_activate(e){
+	if ( $(e).parent().hasClass('sup') )
+		$.post("../activate",{type:'supplier'},
+					  function(data){ $('ul.subs').html(data); },
+					  "html");
+	else if ( $(e).parent().hasClass('cus') )
+		$.post("../activate",{type:'client'},
+					  function(data){ $('ul.subs').html(data); },
+					  "html");
 
+}
 
 
 // (function() {

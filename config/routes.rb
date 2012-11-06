@@ -9,6 +9,7 @@ Demand::Application.routes.draw do
     get 'login' => :new
     post 'login' => :create
     get 'logout' => :destroy
+    post 'activate' => :org_type_activate
   end
 
   resources :organisation_manager do

@@ -21,7 +21,22 @@ class SessionsController < ApplicationController
 
   def destroy
         session[:staff_id] = nil
-        redirect_to login_url, :notice => "注销"
+        session[:org_id] = nil
+        session[:orgOpeType] = nil
+        redirect_to login_url, :notice => "已注销"
+  end
+  
+  def org_type_activate
+    if params[:type]=='client'
+      session[:orgOpeType]=OrgOperateType::Client
+      render :partial=>'c_banner'
+    elsif params[:type]=='supplier'
+      session[:orgOpeType]=OrgOperateType::Supplier
+      render :partial=>'s_banner'
+    else
+      session[:orgOpeType]=nil
+      redirect_to login_url, :notice => "身份错误"
+    end
   end
   
   def change_ope_type

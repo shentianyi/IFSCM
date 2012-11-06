@@ -1,5 +1,5 @@
 Staff.create(  :staffNr => 'admin',
-                          :name=>'admin',
+                          :name=>'管理员',
                           :orgId=>1002,
                           :password => 'admin',
                           :password_confirmation => 'admin')
@@ -9,87 +9,51 @@ $redis.flushall
 
 org1 = Organisation.new( :key=>Organisation.get_key( 1001 ), 
                                       :name=>"彩卓",
-                                      :address=>"North Shannxi Road",
-                                      :tel=>"021-345566",
-                                      :website=>"www.cz.cn" )
+                                      :address=>"North Shannxi Road", :tel=>"021-345566", :website=>"www.cz.cn" )
 org1.save
                                       
 org2 = Organisation.new( :key=>Organisation.get_key( 1002 ), 
                                       :name=>"莱尼",
-                                      :address=>"Anting Road",
-                                      :tel=>"021-399233",
-                                      :website=>"www.leoni.de" )
+                                      :address=>"Anting Road", :tel=>"021-399233", :website=>"www.leoni.de" )
 org2.save
 
 org3 = Organisation.new( :key=>Organisation.get_key( 1003 ), 
                                       :name=>"联想",
-                                      :address=>"Zhangjiang Road",
-                                      :tel=>"021-389222",
-                                      :website=>"www.lenovo.com" )
+                                      :address=>"Zhangjiang Road", :tel=>"021-389222", :website=>"www.lenovo.com" )
 org3.save
 
 org4 = Organisation.new( :key=>Organisation.get_key( 1004 ), 
                                       :name=>"三星",
-                                      :address=>"Nanjing Road",
-                                      :tel=>"021-333444",
-                                      :website=>"www.sumsung.com" )
+                                      :address=>"Nanjing Road", :tel=>"021-333444", :website=>"www.sumsung.com" )
 org4.save
 
 org5 = Organisation.new( :key=>Organisation.get_key( 1005 ), 
                                       :name=>"美国电话电报",
-                                      :address=>"Huaihai Road",
-                                      :tel=>"021-445566",
-                                      :website=>"www.att.com" )
+                                      :address=>"Huaihai Road", :tel=>"021-445566",  :website=>"www.att.com" )
 org5.save
                                       
 #########################################################                            
 org1.add_supplier( org2.id, 'Leoni' )
- 
-# Supplier.new( s_key: org1.s_key, supplierNr: 'Leoni' ).save_index
+org2.add_client( org1.id, 'CZ' )
 
 org1.add_supplier( org3.id, 'Lenovo' )
-# Supplier.new( s_key: org1.s_key, supplierNr: 'Lenovo' ).save_index
+org3.add_client( org1.id, 'CZ' )
 
 org1.add_supplier( org4.id, 'SUMSUNG' )
-# Supplier.new( s_key: org1.s_key, supplierNr: 'SUMSUNG' ).save_index
+org4.add_client( org1.id, 'CZ' )
 
 org1.add_supplier( org5.id, 'AT&T' )
-# Supplier.new( s_key: org1.s_key, supplierNr: 'AT&T' ).save_index
+org5.add_client( org1.id, 'CZ' )
 
-org2.add_client( org1.id, 'CZ' )
-# Client.new( c_key: org2.c_key, clientNr: 'CZ' ).save_index
 
 org2.add_client( org3.id, 'Lenovo' )
-# Client.new( c_key: org2.c_key, clientNr: 'Lenovo' ).save_index
+org3.add_supplier( org2.id, 'Leoni' )
 
 org2.add_client( org4.id, 'SUMSUNG' )
-# Client.new( c_key: org2.c_key, clientNr: 'SUMSUNG' ).save_index
+org4.add_supplier( org2.id, 'Leoni' )
 
 org2.add_client( org5.id, 'AT&T' )
-# Client.new( c_key: org2.c_key, clientNr: 'AT&T' ).save_index
- 
-OrgRel.new( cs_key: org1.s_key, orgrelNr: 'Leoni' ).save_index
-
-org1.add_supplier( org3.id, 'Lenovo' )
-OrgRel.new( cs_key: org1.s_key, orgrelNr: 'Lenovo' ).save_index
-
-org1.add_supplier( org4.id, 'SUMSUNG' )
-OrgRel.new( cs_key: org1.s_key, orgrelNr: 'SUMSUNG' ).save_index
-
-org1.add_supplier( org5.id, 'AT&T' )
-OrgRel.new( cs_key: org1.s_key, orgrelNr: 'AT&T' ).save_index
-
-org2.add_client( org1.id, 'CZ' )
-OrgRel.new( cs_key: org2.c_key, orgrelNr: 'CZ' ).save_index
-
-org2.add_client( org3.id, 'Lenovo' )
-OrgRel.new( cs_key: org2.c_key, orgrelNr: 'Lenovo' ).save_index
-
-org2.add_client( org4.id, 'SUMSUNG' )
-OrgRel.new( cs_key: org2.c_key, orgrelNr: 'SUMSUNG' ).save_index
-
-org2.add_client( org5.id, 'AT&T' )
-OrgRel.new( cs_key: org2.c_key, orgrelNr: 'AT&T' ).save_index 
+org5.add_supplier( org2.id, 'Leoni' )
 #########################################################
 
 demand = Demander.new( :key=>Demander.gen_key,
