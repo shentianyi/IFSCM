@@ -8,7 +8,7 @@ path:
  :demand_tmp_path: 'uploadfiles/demands/tmp'
  
 page:
- :demand_page_size: 10
+ :demand_page_size: 5
 
 title:
  :demand_csv_title: ["PartNr","Supplier","Date","Type","Amount"]

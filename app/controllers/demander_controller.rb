@@ -4,7 +4,7 @@ require 'enum/file_data_type.rb'
 class DemanderController<ApplicationController
 
   before_filter  :authorize
-  #include
+
   include DemanderHelper
   # ws
   def demand_upload
@@ -230,6 +230,7 @@ class DemanderController<ApplicationController
                       :relpartId=>nd.relpartId,
                       :date=>nd.date,
                       :amount=>nd.amount,
+                      :oldamount=>nd.oldamount,
                       :type=>nd.type,
                        :rate=>nd.rate)
                       demand.save
@@ -276,10 +277,11 @@ class DemanderController<ApplicationController
       supplierId=nil
     end
     ######  判断类型 C or S ， 将session[:id]赋值给 id
-    # if session[:usertype]=="Client"
-    # elsif session[:usertype]=="Supplier"
-    supplierId = @cz_org.id
-    # end
+    if @isClient
+      clientId = @cz_org.id
+    else
+      supplierId = @cz_org.id
+    end
 
     @list = Organisation.option_list
     @demands = []

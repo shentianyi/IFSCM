@@ -1,7 +1,11 @@
 
 	<table class="demandData">
 		<tr class="demandlineone">
-			<th link="client_float" style="cursor: pointer" onclick="pop(this);">客户号</th>
+			<% if @isClient %>
+				<th link="supplier_float" style="cursor: pointer" onclick="pop(this);">供应商号</th>
+			<% else %>
+				<th link="client_float" style="cursor: pointer" onclick="pop(this);">客户号</th>
+			<% end %>
 			<th link="partNr_float" style="cursor: pointer" onclick="pop(this);">零件号</th>
 			<th link="date_float" style="cursor: pointer" onclick="pop(this);">日期</th>
 			<th link="amount_float" style="cursor: pointer" onclick="pop(this);">数量</th>
@@ -16,14 +20,47 @@
 			<th class="nordvd"></th>
 			<th class="lastdvd"></th>
 		</tr>
-		<% @demands.each do |d| %>
+		<% @demands.each do |d|
+	          thisLineWidth=lastLineWidth=nil
+	          if d.rate.to_i>=0
+		          thisLineWidth=100
+		          lastLineWidth= d.oldamount.to_i>0 ? 100/(1+item.rate.to_f/100) : 0
+	          else
+		          thisLineWidth=100/(1-item.rate.to_f/100)
+		          lastLineWidth=d.oldamount.to_i>0 ? 100 : 0
+	          end
+		%>
 		  <tr class="demandnorline hoverable">
-			<th><%= d.clientNr %></th>
-			<th><%= d.relpartId%></th>
+			<% if @isClient %>
+				<th><%= d.supplierNr %></th>
+			<% else %>
+				<th><%= d.clientNr %></th>
+			<% end %>
+			<th><%= d.partNr%></th>
 			<th><%= d.date%></th>
 			<th><%= d.amount%></th>
 			<th><%= d.type%></th>
-			<th><%= d.rate.to_i%>%</th>
+			<th>  
+	               <div class="forcastcompare">
+	                    <div class="lineforcast">
+	                         <span class="percentage"> <%= d.rate.to_i.abs %>% </span>
+	                         <img src="/assets/<%= (d.rate.to_i>=0 ? 'arrup' : 'arrdown')%>.png" class='percentageImg' />
+	                    </div>
+	                    <div class="lineforcast">
+	                         <span class="fnumbers">本次预测：<span id="this_demand_amount"><%= d.amount %></span></span>
+	                         <div class="forcastbaseline">
+	                              <div class="partline" style="width:<%= thisLineWidth%>%" id='thisLineWidthDiv'></div>
+	                              <div class="gap"></div>
+	                         </div>
+	                    </div>
+	                    <div class="lineforcast">
+	                         <span class="fnumbers">上次预测：<%= d.oldamount %></span>
+	                         <div class="forcastbaseline">
+	                              <div class="partline" style="width:<%= lastLineWidth%>%" id='lastLineWidthDiv'></div>
+	                         </div>
+	                    </div>
+	               </div>
+			</th>
 		  </tr>
 		<% end %>
 	</table>

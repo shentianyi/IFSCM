@@ -20,10 +20,6 @@ class Part<CZ::BaseClass
   def alias
     [self.partNr]
   end
-
-  def rank
-    self.created_at
-  end
   # -------------------------------------------------
 
   def self.find_partKey_by_orgId_partNr orgId,partNr

@@ -3,7 +3,7 @@ require 'digest/md5'
 require 'base_class'
 
 class Demander<CZ::BaseClass
-  attr_accessor :key,:clientId,:relpartId,:supplierId, :type,:amount,:date,:rate
+  attr_accessor :key,:clientId,:relpartId,:supplierId, :type,:amount,:oldamount,:date,:rate
   NumPer=$DEPSIZE
   
   def self.gen_key
@@ -77,6 +77,10 @@ class Demander<CZ::BaseClass
   
   def supplierNr
     Organisation.find_by_id(clientId).search_supplier_byId( supplierId )
+  end
+  
+  def partNr
+    Part.find(PartRelMeta.find(relpartId).spartId).partNr
   end
   
   def save_to_send
