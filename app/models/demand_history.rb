@@ -6,7 +6,7 @@ class DemandHistory<CZ::BaseClass
 
   def self.get_demander_keys demander,startIndex,endIndex
     key=generate_zset_key demander.clientId,demander.supplierId,demander.relpartId,demander.type,demander.date
-    $redis.zrange(key,startIndex,endIndex)
+    $redis.zrangebyscore(key,startIndex,endIndex)
   end
 
   def self.get_last_item_key key

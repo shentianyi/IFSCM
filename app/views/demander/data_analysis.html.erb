@@ -1,0 +1,19 @@
+<script>
+function test(){
+	$.post("./data_chart",{},
+			  function(data){ $('#result').html(data); },
+			  "html");
+}
+
+function test1(){
+	$.post("./demand_history",{},
+			  function(data){ $('#result').html(data); },
+			  "html");
+}
+</script>
+
+<input type="button" onclick="test();" />
+<input type="button" onclick="test1();" />
+
+<div id="result" class="tableview">
+</div>

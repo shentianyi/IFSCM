@@ -163,9 +163,9 @@ class DemanderController<ApplicationController
   # ws demand history
   def demand_history
     if request.post?
-      demandId=params[:demandId]
-      startIndex=params[:startIndex].to_i
-      endIndex=params[:endIndex].to_i
+      demandId='demand:3'
+      startIndex=(Time.now-1.days).to_i
+      endIndex=(Time.now+1.days).to_i
       msg=ReturnMsg.new(:result=>false,:content=>'')
       if demander=Demander.find(demandId)
         keys= DemandHistory.get_demander_keys(demander,startIndex,endIndex)
@@ -182,6 +182,7 @@ class DemanderController<ApplicationController
         end
       end
       respond_to do |format|
+        format.html { render  :partial=>'chart_history', :locals=>{:data=>msg.object.collect{|p| [p.amount.to_i, p.created_at.to_i]} } }
         format.xml {render :xml=>JSON.parse(msg.to_json).to_xml(:root=>'validInfo')}
         format.json { render json: msg }
       end
@@ -200,11 +201,6 @@ class DemanderController<ApplicationController
   end
 
   def index
-
-    respond_to do |format|
-      format.html # index.html.erb
-      format.json 
-    end
   end
 
  # ori: ding: create
@@ -286,14 +282,11 @@ class DemanderController<ApplicationController
 
     @list = Organisation.option_list
     @demands = []
-    @demands, total = Demander.search( :clientId=>clientId,
-                                                                        :supplierId=>supplierId,
-                                                                        :rpartNr=>params[:partNr],
-                                                                        :start=>params[:start],
-                                                                        :end=>params[:end],
-                                                                        :type=>params[:type],
-                                                                        :amount=>params[:amount],
-                                                                        :page=>params[:page] )
+    @demands, total = Demander.search( :clientId=>clientId, :supplierId=>supplierId,
+                                                                                :rpartNr=>params[:partNr],
+                                                                                :start=>params[:start], :end=>params[:end],
+                                                                                :type=>params[:type],  :amount=>params[:amount],
+                                                                                :page=>params[:page] )
     @totalPages=total/Demander::NumPer+(total%Demander::NumPer==0 ? 0:1)
     @currentPage=params[:page].to_i
     @options = params[:options]?params[:options]:{}
@@ -302,6 +295,13 @@ class DemanderController<ApplicationController
       format.html {render :partial=>"table" }
       format.json { render json: @demands }
     end
+  end
+  
+  def data_analysis
+  end
+  
+  def data_chart
+    render :partial=>'chart'
   end
 
 end

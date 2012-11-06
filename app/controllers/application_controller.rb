@@ -1,4 +1,5 @@
 #coding:utf-8
+require 'enum/org_operate_type'
 class ApplicationController < ActionController::Base
   # protect_from_forgery
   

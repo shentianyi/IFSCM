@@ -30,6 +30,8 @@ Demand::Application.routes.draw do
       match :demand_history
       post :download
       post :send_demand
+      get :data_analysis
+      post :data_chart
     end
   end
 #    
