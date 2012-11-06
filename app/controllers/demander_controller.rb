@@ -168,8 +168,7 @@ class DemanderController<ApplicationController
       endIndex=params[:endIndex].to_i
       msg=ReturnMsg.new(:result=>false,:content=>'')
       if demander=Demander.find(demandId)
-        demander.gen_key
-        keys= DemandHistory.get_demander_keys(demander.key,startIndex,endIndex)
+        keys= DemandHistory.get_demander_keys(demander,startIndex,endIndex)
         if keys.count>0
           msg.result=true
           msg.object=[]

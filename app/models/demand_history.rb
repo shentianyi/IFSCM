@@ -4,7 +4,8 @@ require 'base_class'
 class DemandHistory<CZ::BaseClass
   attr_accessor :key,:demandKey,:rate,:amount,:oldamount
 
-  def self.get_demander_keys startIndex,endIndex
+  def self.get_demander_keys demander,startIndex,endIndex
+    key=generate_zset_key demander.clientId,demander.supplierId,demander.relpartId,demander.type,demander.date
     $redis.zrange(key,startIndex,endIndex)
   end
 
