@@ -2,21 +2,7 @@ require 'base_class'
 
 # the score of histoty is Time.to_i
 class DemandHistory<CZ::BaseClass
-  attr_accessor :key,:clientId,:supplierId,:relPartId,:type,:date,:rate,:amount,:oldamount
-  
-  # def gen_set_key
-    # DemandHistory.generate_zset_key @clientId,@supplierId,@relPartId,@type,@date
-  # end
-
-  # def gen_rate
-    # @rate,@oldamount= DemandHistory.generate_rate(@amount,@key)
-  # end
-  
-  def add_to_history
-    zset_key=DemandHistory.generate_zset_key @clientId,@supplierId,@relPartId,@type,@date
-    $redis.zadd(zset_key,Time.now.to_i,@key)
-   @rate,@oldamount= DemandHistory.generate_rate(@amount,zset_key)
-  end
+  attr_accessor :key,:demandKey,:rate,:amount,:oldamount
 
   def self.get_demander_keys startIndex,endIndex
     $redis.zrange(key,startIndex,endIndex)

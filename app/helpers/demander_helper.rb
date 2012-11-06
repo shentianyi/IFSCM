@@ -1,4 +1,5 @@
 #coding:utf-8
+#encoding=UTF-8
 require 'csv'
 require 'zip/zip'
 require 'enum/part_rel_type'
@@ -14,7 +15,7 @@ module DemanderHelper
       items=[]
       files.each do |f|
         sfile=RedisFile.new(:key=>f[:uuidName],:oriName=>f[:oriName],:uuidName=>f[:pathName],
-        :itemCount=>0,:errorCount=>0,:normalItemKey=>uuid.generate,:errorItemKey=>uuid.generate)
+        :itemCount=>0,:errorCount=>0,:normalItemKey=>uuid.generate,:errorItemKey=>uuid.generate,:finished=>false)
         # csv header---
         CSV.foreach(File.join(f[:path],f[:pathName]),:headers=>true,:col_sep=>$CSVSP) do |row|
         sfile.itemCount+=1
@@ -74,7 +75,9 @@ module DemanderHelper
     else
     demand.cpartId=partId
     end
-
+    puts 'partid---------'
+    puts partId
+    puts 'partid---------'
     # vali supplier
     if client=Organisation.find_by_id(demand.clientId)
       if !supplierId=client.search_supplier_byNr(demand.supplierNr)
@@ -190,7 +193,8 @@ module DemanderHelper
                   
                 end
                 tmps<<spath
-                z.add(Iconv.iconv("GBK//IGNORE", "UTF-8//IGNORE",sf.oriName),spath)
+                  # z.add(Iconv.iconv("GBK//IGNORE", "UTF-8//IGNORE",sf.oriName),spath)
+                z.add(sf.oriName,spath)
               end
             end
           end

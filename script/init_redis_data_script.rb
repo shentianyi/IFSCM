@@ -2,22 +2,7 @@
 require 'redis'
  require 'enum/part_rel_type'
  
- Staff.create(  :staffNr => 'leoni',
-                          :name=>'leoni',
-                          :orgId=>1,
-                          :password => 'leoni',
-                          :password_confirmation => 'leoni')
-  Staff.create(  :staffNr => 'vw',
-                          :name=>'vw',
-                          :orgId=>2,
-                          :password => 'vw',
-                          :password_confirmation => 'vw')       
-                            
-  Staff.create(  :staffNr => 'delph',
-                          :name=>'delph',
-                          :orgId=>2,
-                          :password => 'delph',
-                          :password_confirmation => 'delph')                         
+               
  
 class InitData
   # init demand type 
@@ -34,14 +19,17 @@ class InitData
     orgs=[]
     leoni=Organisation.new(:key=>Organisation.get_key(Organisation.gen_id),:name=>'Leoni', :description=>'A great company in car-wire field', :address=>'shang hai', :tel=>'012-00000001', :website=>'www.leoni.com')
     leoni.save
+  Staff.create(  :staffNr => 'leoni', :name=>'leoni', :orgId=>leoni.id,:password => 'leoni',  :password_confirmation => 'leoni')     
     orgs<<leoni
     
     vw=Organisation.new(:key=>Organisation.get_key(Organisation.gen_id),:name=>'VW', :description=>'oh, just a car', :address=>'may be shanghai', :tel=>'012-00000002', :website=>'www.vw.com')
     vw.save
+      Staff.create(  :staffNr => 'vw', :name=>'vw', :orgId=>vw.id,:password => 'vw',  :password_confirmation => 'vw')      
     orgs<<vw
     
     delpi=Organisation.new(:key=>Organisation.get_key(Organisation.gen_id),:name=>'Delpi', :description=>'we donot like Leoni, we are enemy', :address=>'beside Leoni', :tel=>'012-00000003', :website=>'www.killleoni.com')
     delpi.save
+      Staff.create(  :staffNr => 'delpi', :name=>'delpi', :orgId=>delpi.id,:password => 'delpi',  :password_confirmation => 'delpi')     
     orgs<<delpi
     
     leoni.add_supplier(vw.id,'VW-LEONI')

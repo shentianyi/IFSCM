@@ -15,6 +15,10 @@ class Demander<CZ::BaseClass
     Rns::De+":#{id}"
   end
 
+  def add_to_history history_key
+    zset_key=DemandHistory.generate_zset_key @clientId,@supplierId,@relpartId,@type,@date
+    $redis.zadd(zset_key,Time.now.to_i,history_key)
+  end
 
   def self.search( hash )
       list = []
