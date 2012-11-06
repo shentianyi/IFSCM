@@ -82,8 +82,12 @@ class Demander<CZ::BaseClass
   def supplierNr
     Organisation.find_by_id(clientId).search_supplier_byId( supplierId )
   end
-  
-  def partNr
+
+  def cpartNr
+    Part.find(PartRelMeta.find(relpartId).cpartId).partNr
+  end
+    
+  def spartNr
     Part.find(PartRelMeta.find(relpartId).spartId).partNr
   end
   

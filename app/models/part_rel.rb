@@ -56,12 +56,12 @@ class PartRel<CZ::BaseClass
   # ws get all parts that has been build relations
   # cid=>clientId
   # sid=> supplierId
-  def self.get_all_relationd_parts cid,sid,partRelType
+  def self.get_all_relation_parts cid,sid,partRelType
      key=generate_key( cid,sid,partRelType)
-     prelsetItems=$redis.hgetall(key) # part rel set key
-    if prelsetItems and prelsetItems.count>0
+     partKeys=$redis.hgetall(key) # part rel set key
+    if partKeys and partKeys.count>0
       parts=[]
-      prelsetItems.each do |k,v|
+      partKeys.each do |k,v|
        if part=Part.find(k)    
           parts<<part
        end

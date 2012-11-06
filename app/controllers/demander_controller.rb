@@ -92,7 +92,7 @@ class DemanderController<ApplicationController
       od=DemanderTemp.find(params[:uuid])
 
       if bf and sf and od
-        puts sf
+        
         nd= DemanderTemp.new(:key=>od.key,:cpartNr=>params[:partNr],:clientId=>clientId,:supplierNr=>params[:supplierNr],
         :filedate=>params[:filedate],:date=>(FormatHelper::demand_date_by_str_type(params[:filedate],params[:type])),
         :type=>params[:type],:amount=>params[:amount],:lineNo=>od.lineNo,:source=>od.source)
@@ -168,15 +168,10 @@ class DemanderController<ApplicationController
       endIndex=Time.parse(params[:endIndex]).to_i
       msg=ReturnMsg.new(:result=>false,:content=>'')
       if demander=Demander.find(demandId)
-        keys= DemandHistory.get_demander_keys(demander,startIndex,endIndex)
-        if keys.count>0
+        hs= DemandHistory.get_demander_hitories(demander,startIndex,endIndex)
+        if hs
           msg.result=true
-          msg.object=[]
-          keys.each do |k|
-            if dh=DemandHistory.find(k)
-            msg.object<<dh
-            end
-          end
+          msg.object=hs
         else
           msg.content='no history'
         end
@@ -236,7 +231,7 @@ class DemanderController<ApplicationController
                       demand.save
                       demand.save_to_send
                       demandH=DemandHistory.new(:key=>UUID.generate,:amount=>nd.amount,:rate=>nd.rate,:oldmount=>nd.oldamount,:demandKey=>demand.key)
-                      demandH.save
+                      demandH.save  
                       demand.add_to_history demandH.key
                     end
                   end

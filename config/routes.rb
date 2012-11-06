@@ -10,6 +10,7 @@ Demand::Application.routes.draw do
     post 'login' => :create
     get 'logout' => :destroy
     post 'activate' => :org_type_activate
+    get 'sessions/reload'=> :reload
   end
 
   resources :organisation_manager do
@@ -41,7 +42,7 @@ Demand::Application.routes.draw do
     collection do
      get :searcher
      get :redis_search
-     
+     post :get_parts_by_partnerNr
     end
   end
 

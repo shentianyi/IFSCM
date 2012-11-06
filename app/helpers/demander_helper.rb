@@ -75,9 +75,7 @@ module DemanderHelper
     else
     demand.cpartId=partId
     end
-    puts 'partid---------'
-    puts partId
-    puts 'partid---------'
+
     # vali supplier
     if client=Organisation.find_by_id(demand.clientId)
       if !supplierId=client.search_supplier_byNr(demand.supplierNr)
