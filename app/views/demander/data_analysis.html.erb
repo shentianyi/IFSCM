@@ -1,15 +1,18 @@
 <script>
-	$(function() {
-		$("#partNr_float").draggable();
-		$("#charting").draggable();
-	});
 function test(){
 	$.post("./data_chart",{},
 			  function(data){ $('#result_chart').html(data); },
 			  "html");
 }
 
-function test1(key){
+function chart_search( hash, page ){
+     if (page==null)   	page=0;
+	$.post("./data_analysis",{ partNr: hash["partNr"], options: hash, page: page },
+			  function(data){ $('#result').html(data); },
+			  "html");
+}
+
+function chart_history(key){
 	$.post("./demand_history",{demandId:key,startIndex:'2012/10/1',endIndex:'2012/12/31'},
 			  function(data){ $('#result_chart').html(data); },
 			  "html");
@@ -17,56 +20,12 @@ function test1(key){
 </script>
 
 <input type="button" value="test" onclick="test();" />
-<input type="button" value="test1" onclick="test1('demand:1');" />
 
-<div class="textsearchbox texts" id="partNr_float" >
-	<span class="searchcontenttype">零件号</span>
-	<input type="text" name="searchcontent" class="searchcontent" placeholder="请输入零件号" />
-	<input type="button" name="startsearch" class="startsearch" value="搜索" onclick="demand_search_with_type( {partNr:$(this).prev().val()} );"/>
+<div id='result_chart' style='clear: left'></div>
+<div id="partNr_float">
+	<span class="searchcontenttype" >零件号</span>
+	<input type="text" name="searchcontent" class="searchcontent" style="clear: left" placeholder="请输入零件号" />
+	<input type="button" name="startsearch" class="startsearch" value="搜索" onclick="chart_search( {partNr:$(this).prev().val()} );"/>
 	<input type="button" name="canclesearch" class="searchcancle" value="取消" />
 </div>
-<div id='result' class="tableview">
-	<table class="demandData">
-		<tr class="demandlineone">
-			<% if session[:orgOpeType]==OrgOperateType::Client %>
-				<th link="supplier_float" style="cursor: pointer" >供应商号</th>
-			<% else %>
-				<th link="client_float" style="cursor: pointer" >客户号</th>
-			<% end %>
-			<th link="partNr_float" style="cursor: pointer" >零件号</th>
-			<th link="date_float" style="cursor: pointer" >日期</th>
-			<th link="amount_float" style="cursor: pointer" >数量</th>
-			<th link="type_float" style="cursor: pointer" >预测类型</th>
-		</tr>
-		<tr class="divide" style="display: none">
-			<th class="nordvd"></th>
-			<th class="nordvd"></th>
-			<th class="nordvd"></th>
-			<th class="nordvd"></th>
-			<th class="nordvd"></th>
-			<th class="lastdvd"></th>
-		</tr>
-		<% @demands.each do |d|	%>
-		  <tr class="demandnorline hoverable">
-			<% if session[:orgOpeType]==OrgOperateType::Client %>
-				<th><%= d.supplierNr %></th>
-				<th><%= d.cpartNr%></th>
-			<% else %>
-				<th><%= d.clientNr %></th>
-				<th><%= d.spartNr%></th>
-			<% end %>
-			
-			<th><%= d.date%></th>
-			<th><%= d.amount%></th>
-			<th><%= d.type%></th>
-			<th>  <input type="button" value="test1" onclick="test1('<%= d.key%>');" />
-			</th>
-		  </tr>
-		<% end %>
-	</table>
-	<hr/>
-	There is(are) <%= @demands.size %> record(s):<br/>
-	<%=bri_pager options={:class=>"pagination",:pages=>@totalPages,:current=>@currentPage,:action=>'demand_search',:target=>@options}%>
-</div>
-
-<div id='result_chart' style='position: absolute;top:500px;'></div>
+<div id='result' class="tableview" style="clear: left"></div>

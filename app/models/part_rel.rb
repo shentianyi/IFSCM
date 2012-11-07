@@ -24,6 +24,27 @@ class PartRel<CZ::BaseClass
     end
     return nil
   end 
+  
+  def self.get_all_partrelId_by_partNr( csid, partNr, partRelType )
+    partKey = Part.find_partKey_by_orgId_partNr csid,partNr
+    return nil unless partKey
+    org = Organisation.find_by_id(csid)
+    total = []
+    if partRelType==PartRelType::Client
+        $redis.zrange( org.s_key, 0, -1, :withscores=>true ).each do |item|
+            key = generate_key( csid, item[1].to_i, partRelType )
+            mkey=$redis.hget key,partKey
+            total+=$redis.smembers(mkey) if $redis.exists mkey
+        end
+    else
+        $redis.zrange( org.c_key, 0, -1, :withscores=>true ).each do |item|
+            key = generate_key( item[1].to_i, csid, partRelType )
+            mkey=$redis.hget key,partKey
+            total+=$redis.smembers(mkey) if $redis.exists mkey
+        end
+    end
+    return total
+  end
  
   
   # def get single partid cs relation partid
