@@ -179,7 +179,7 @@ class DemanderController<ApplicationController
       respond_to do |format|
         format.html { render  :partial=>'chart_history', :locals=>{:data=>msg.object.collect{|p| [p.created_at.to_i, p.amount.to_i]} } }
         format.xml {render :xml=>JSON.parse(msg.to_json).to_xml(:root=>'demandHistory')}
-        format.json { render json: msg }
+        format.json { render json: {:msg=>msg, :chart=>msg.object.collect{|p| [p.created_at.to_i, p.amount.to_i]} } }
       end
     end
   end
@@ -314,7 +314,6 @@ class DemanderController<ApplicationController
   end
   
   def data_chart
-    render :partial=>'chart'
   end
 
 end
