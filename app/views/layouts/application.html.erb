@@ -12,13 +12,13 @@
 			<ul class="subs">
 				<li><a href="/welcome"><input type="button" name="home" class="iconhome bt" /></a></li>
 				<li><input type="button" name="back" class="iconback bt" /></li>
-				<% if @isClient %>
+				<% if session[:orgOpeType]==OrgOperateType::Client %>
 					<li><a href="../demander/demand_upload">上传需求</a></li>
 					 <li><a href="../demander">查看需求</a></li>
 					<li>供应商信息</li>
 					<li><a href="../demander/data_analysis">数据分析</a></li>
 					<li>零件入库</li>
-				<% else %>
+				<% elsif session[:orgOpeType]==OrgOperateType::Supplier %>
 					<li><a href="../demander">查看需求</a></li>
 					<li>客户信息</li>
 					<li><a href="../demander/data_analysis">数据分析</a></li>
@@ -32,7 +32,7 @@
 	<div class="lefticons" id="lefticons">
 		<div class="hm licon">
 			<a href=<%= organisation_manager_path(@cz_org.key)%>>
-			      <p  name="headicon" class="headicon"  />
+			      <p  name="headicon" class="headicon"  style=" cursor:pointer;" ></p>
 			</a>
 		</div>
 		<div class="cus licon">
@@ -52,10 +52,5 @@
 			<%= yield %>
 	  </div>
 </div>
-<script>
-     function dd(){
-          alert('dd');
-     }
-</script>
 </body>
 </html>

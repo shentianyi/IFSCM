@@ -1,7 +1,7 @@
 
 	<table class="demandData">
 		<tr class="demandlineone">
-			<% if @isClient %>
+			<% if session[:orgOpeType]==OrgOperateType::Client %>
 				<th link="supplier_float" style="cursor: pointer" onclick="pop(this);">供应商号</th>
 			<% else %>
 				<th link="client_float" style="cursor: pointer" onclick="pop(this);">客户号</th>
@@ -31,7 +31,7 @@
 	          end
 		%>
 		  <tr class="demandnorline hoverable">
-			<% if @isClient %>
+			<% if session[:orgOpeType]==OrgOperateType::Client %>
 				<th><%= d.supplierNr %></th>
 				<th><%= d.cpartNr%></th>
 			<% else %>
