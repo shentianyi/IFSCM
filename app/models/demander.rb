@@ -96,7 +96,7 @@ class Demander<CZ::BaseClass
       $redis.sadd( "#{Rns::C}:#{clientId}", key )
       $redis.sadd( "#{Rns::S}:#{supplierId}", key )
       $redis.sadd( "#{Rns::RP}:#{relpartId}", key )
-      $redis.zadd( Rns::Date, date.to_i, key )
+      $redis.zadd( Rns::Date, Time.parse(date).to_i, key )
       $redis.zadd( Rns::Amount, amount, key )
       $redis.sadd( "#{Rns::T}:#{type}", key )
   end

@@ -9,11 +9,6 @@ class ApplicationController < ActionController::Base
       redirect_to login_url, :notice => "请登录"
     end
     @cz_org = Organisation.find_by_id(session[:org_id])
-    if session[:orgOpeType]==OrgOperateType::Client
-      @isClient=true
-    elsif session[:orgOpeType]==OrgOperateType::Supplier
-      @isClient=false
-    end
   end
   
   # def org_initial

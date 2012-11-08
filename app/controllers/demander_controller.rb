@@ -158,7 +158,7 @@ class DemanderController<ApplicationController
   # ws demand history
   def demand_history
     if request.post?
-      demandId=params[:demandId].to_i
+      demandId=params[:demandId]
       startIndex=Time.parse(params[:startIndex]).to_i
       endIndex=Time.parse(params[:endIndex]).to_i
       msg=ReturnMsg.new(:result=>false,:content=>'')
@@ -172,9 +172,9 @@ class DemanderController<ApplicationController
         end
       end
       respond_to do |format|
-        format.html { render  :partial=>'chart_history', :locals=>{:data=>msg.object.collect{|p| [p.amount.to_i, p.created_at.to_i]} } }
+        format.html { render  :partial=>'chart_history', :locals=>{:data=>msg.object.collect{|p| [p.created_at.to_i, p.amount.to_i]} } }
         format.xml {render :xml=>JSON.parse(msg.to_json).to_xml(:root=>'demandHistory')}
-        format.json { render json: msg }
+        format.json { render json: {:msg=>msg, :chart=>msg.object.collect{|p| [p.created_at.to_i, p.amount.to_i]} } }
       end
     end
   end
@@ -250,33 +250,33 @@ class DemanderController<ApplicationController
   end
 
   def search
-
     c = params[:client]
     s = params[:supplier]
+    p = params[:partNr]
+    tstart = Time.parse(params[:start]).to_i if params[:start]
+    tend = Time.parse(params[:end]).to_i if params[:end]
 
-    if c && c.size>0
-    clientId = @cz_org.search_client_byNr( c )
-    elsif s && s.size>0
-    supplierId = @cz_org.search_supplier_byNr( s )
-    else
-      clientId=nil
-      supplierId=nil
-    end
     ######  判断类型 C or S ， 将session[:id]赋值给 id
-    if @isClient
-    clientId = @cz_org.id
+ 
+    if session[:orgOpeType]==OrgOperateType::Client
+      supplierId = @cz_org.search_supplier_byNr( s ) if s && s.size>0
+      clientId = @cz_org.id
+      partrelId = PartRel.get_all_partrelId_by_partNr( clientId, p, PartRelType::Client ) if p && p.size>0
     else
-    supplierId = @cz_org.id
+      clientId = @cz_org.search_client_byNr( c ) if c && c.size>0
+      supplierId = @cz_org.id
+      partrelId = PartRel.get_all_partrelId_by_partNr( supplierId, p, PartRelType::Supplier ) if p && p.size>0
     end
 
-    @list = Organisation.option_list
     @demands = []
+ 
     @demands, total = Demander.search( :clientId=>clientId, :supplierId=>supplierId,
     :rpartNr=>params[:partNr],
     :start=>params[:start], :end=>params[:end],
     :type=>params[:type],  :amount=>params[:amount],
     :page=>params[:page] )
     @totalPages=total/Demander::NumPer+(total%Demander::NumPer==0 ? 0:1)
+
     @currentPage=params[:page].to_i
     @options = params[:options]?params[:options]:{}
 
@@ -287,10 +287,30 @@ class DemanderController<ApplicationController
   end
 
   def data_analysis
+    if request.post?
+            p = params[:partNr]
+            ######  判断类型 C or S ， 将session[:id]赋值给 id
+            if session[:orgOpeType]==OrgOperateType::Client
+              clientId = @cz_org.id
+              partrelId = PartRel.get_all_partrelId_by_partNr( clientId, p, PartRelType::Client ) if p && p.size>0
+            else
+              supplierId = @cz_org.id
+              partrelId = PartRel.get_all_partrelId_by_partNr( supplierId, p, PartRelType::Supplier ) if p && p.size>0
+            end
+        
+            @demands = []
+            @demands, @total = Demander.search( :clientId=>clientId, :supplierId=>supplierId,
+                                                                                        :rpartNr=>partrelId,
+                                                                                        :page=>params[:page] )
+            @totalPages=@total/Demander::NumPer+(@total%Demander::NumPer==0 ? 0:1)
+            @currentPage=params[:page].to_i
+            @options = params[:options]?params[:options]:{}
+            render :partial=>"chart_table"
+    else
+    end 
   end
 
   def data_chart
-    render :partial=>'chart'
   end
 
   # ws : check unfinished batch file before page unload

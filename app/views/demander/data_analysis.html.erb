@@ -1,19 +1,31 @@
 <script>
-function test(){
-	$.post("./data_chart",{},
+function chart_search( hash, page ){
+     if (page==null)   	page=0;
+	$.post("./data_analysis",{ partNr: hash["partNr"], options: hash, page: page },
 			  function(data){ $('#result').html(data); },
 			  "html");
 }
 
-function test1(){
-	$.post("./demand_history",{},
-			  function(data){ $('#result').html(data); },
-			  "html");
+function test(){
+	$.plot($("#charting"), [ [[0, 0], [1, 1]] ]);
+}
+
+function chart_history(key){
+	$.post("./demand_history",{demandId:key,startIndex:'2012/10/1',endIndex:'2012/12/31'},
+			  function(data){  $.plot($("#charting"),  [ data.chart ]);  },
+			  "json");
 }
 </script>
 
-<input type="button" onclick="test();" />
-<input type="button" onclick="test1();" />
+<input type="button" value="test" onclick="test();" />
 
-<div id="result" class="tableview">
+<div id="charting" style="width:600px;height:300px">
+	<div style="position:absolute; top:200px; left:280px"><h1>CHARTING HISTORY</h1></div>
 </div>
+<div id="partNr_float">
+	<span class="searchcontenttype" >零件号</span>
+	<input type="text" name="searchcontent" class="searchcontent" style="clear: left" placeholder="请输入零件号" />
+	<input type="button" name="startsearch" class="startsearch" value="搜索" onclick="chart_search( {partNr:$(this).prev().val()} );"/>
+	<input type="button" name="canclesearch" class="searchcancle" value="取消" />
+</div>
+<div id='result' class="tableview" style="clear: left"></div>

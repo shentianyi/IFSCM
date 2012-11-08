@@ -31,7 +31,7 @@ Demand::Application.routes.draw do
       match :demand_history
       post :download
       post :send_demand
-      get :data_analysis
+      match :data_analysis
       post :data_chart
       post :check_staff_cache_file
       post :check_staff_unfinished_file
