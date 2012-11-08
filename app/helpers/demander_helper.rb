@@ -98,7 +98,7 @@ module DemanderHelper
           msg.content_key<<:partMutiFitOrgP
         else
           demand.spartId=parts[0].key
-          demand.relpartId=PartRel.get_partrelId_by_partKey(demand.clientId,demand.supplierId,demand.cpartId,PartRelType::Client)
+          demand.relpartId=PartRel.get_partRelMetaKey_by_partKey(demand.clientId,demand.supplierId,demand.cpartId,PartRelType::Client)
         end
       end
     end
@@ -168,14 +168,10 @@ module DemanderHelper
           zfilename=File.join($DETMP, UUID.generate+'.zip')
           Zip::ZipFile.open(zfilename, Zip::ZipFile::CREATE) do |z|
             sfKeys.each do |sk|
-              puts 'sk'
-               puts sk
-               puts 'sk--'
               if sf=RedisFile.find(sk)
                 spath=File.join($DETMP,sf.uuidName)
                 File.open(spath,'w+') do |f|
-                  f.puts $DECSVT.join($CSVSP)
-                  
+                    f.puts $DECSVT.join($CSVSP)
                   nds,ncount=get_file_demands sf.key,0,-1,'normal'
                   if ncount>0
                     nds.items.each do |nd|

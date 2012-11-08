@@ -16,7 +16,7 @@ development:
   pool: 5
   username: scmer
   password: scmer@#
-  host: 192.168.0.160
+  # host: 192.168.0.160
   socket: /var/run/mysqld/mysqld.sock
 
 # Warning: The database defined as "test" will be erased and

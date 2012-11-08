@@ -14,7 +14,8 @@ class Demander<CZ::BaseClass
   def self.get_key( id )
     Rns::De+":#{id}"
   end
-
+ 
+  # ws : add demand history
   def add_to_history history_key
     zset_key=DemandHistory.generate_zset_key @clientId,@supplierId,@relpartId,@type,@date
     $redis.zadd(zset_key,Time.now.to_i,history_key)

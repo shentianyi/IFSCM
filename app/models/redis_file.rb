@@ -2,7 +2,6 @@ require 'base_class'
 
 class RedisFile<CZ::BaseClass
   attr_accessor :key,:oriName,:itemCount,:errorCount, :normalItemKey,:errorItemKey,:repeatItemKey,:items,:uuidName,:finished
-  
   def add_item item
     @items=[] if !@items
     @items<<item
@@ -76,12 +75,49 @@ class RedisFile<CZ::BaseClass
   def get_items_count item_zset_key
     @itemCount=$redis.zcard item_zset_key
   end
-  
+
   # ws del items
   def del_items_link
     $redis.del @repeatItemKey
     $redis.del @errorItemKey
     $redis.del @normalItemKey
   end
-  
+
+  # ws : cache staff upload batch file key
+  def add_to_staff_zset staffId
+    set_key=RedisFile.generate_staff_zset_key staffId
+    $redis.zadd(set_key,Time.now.to_i,@key)
+  end
+
+  # ws : get staff cache batch key
+  def get_staff_batch_key staffId
+    set_key=generate_staff_set_key staffId
+    if (batchkey= $redis.zrevrange set_key,0,0).count>0
+    return  batchkey
+    end
+    return nil
+  end
+
+  # ws : check staff cache file
+  def self.check_staff_cache_file staffId
+    set_key=generate_staff_zset_key staffId
+    batchId=$redis.zrevrange set_key,0,0
+    if batchId.count>0
+    return batchId[0]
+    end
+    return nil
+  end
+
+  # ws : remove cache file from staff
+  def self.remove_staff_cache_file staffId,batchFileId
+    set_key=generate_staff_zset_key staffId
+    $redis.zrem set_key,batchFileId
+  end
+
+  private
+
+  def self.generate_staff_zset_key staffId
+    "staffId:#{staffId}:redisFile:cachesetkey"
+  end
+
 end

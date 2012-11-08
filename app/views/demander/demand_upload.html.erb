@@ -1,4 +1,7 @@
 <script language="javascript">
+ 
+     window.onload=chech_staff_cache_file();
+     
      function changetype(obj) {
           var tag = obj.firstChild.tagName;
           if( typeof (tag) != "undefined" && (tag == "INPUT" || tag == "TEXTAREA"))
@@ -45,6 +48,24 @@
                }
           }
      }
+      
+  // ws : check staff file cache in redis
+  function chech_staff_cache_file(){
+       $.ajax({
+            url:'../demander/check_staff_cache_file',
+            dataType:'json',
+            type:'post',
+            success:function(data){
+                if(data.result){
+                    if(confirm('你有未完成预测上传，是否加载')){
+                         alert('yes');
+                    }else{
+                         alert('no');
+                    }
+                }
+            }
+       });
+  } 
 </script>
 <div class="uploadline">
      <div id="upload-file-area">
@@ -162,5 +183,6 @@
           </div> 
      </div>
 </div>
+
 
 

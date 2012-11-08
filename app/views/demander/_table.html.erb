@@ -24,9 +24,9 @@
 	          thisLineWidth=lastLineWidth=nil
 	          if d.rate.to_i>=0
 		          thisLineWidth=100
-		          lastLineWidth= d.oldamount.to_i>0 ? 100/(1+item.rate.to_f/100) : 0
+		          lastLineWidth= d.oldamount.to_i>0 ? 100/(1+d.rate.to_f/100) : 0
 	          else
-		          thisLineWidth=100/(1-item.rate.to_f/100)
+		          thisLineWidth=100/(1-d.rate.to_f/100)
 		          lastLineWidth=d.oldamount.to_i>0 ? 100 : 0
 	          end
 		%>

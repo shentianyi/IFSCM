@@ -6,6 +6,7 @@ class DemanderController<ApplicationController
   before_filter  :authorize
 
   include DemanderHelper
+  include PageHelper
   # ws
   def demand_upload
     # to the view
@@ -35,9 +36,10 @@ class DemanderController<ApplicationController
           # validate and show result
           batch_file=DemanderHelper::generate_by_csv(hfiles,clientId)
           if batch_file
-          msg.result=true
-          msg.object=batch_file
-           Resque.enqueue(DemandUpfilesDeler,batch_file.key)
+            msg.result=true
+            msg.object=batch_file
+            batch_file.add_to_staff_zset session[:staff_id]
+            Resque.enqueue(DemandUpfilesDeler,batch_file.key)
           else
             msg.content='upload faild please retry'
           end
@@ -65,13 +67,10 @@ class DemanderController<ApplicationController
       if file
         demands=[]
         type=file.errorCount.to_i>0 ? 'error':'normal'
-        pageIndex=params[:pageIndex].to_i
-        pageSize=$DEPSIZE
-        startIndex=(pageIndex)*pageSize
-        endIndex=(pageIndex+1)*pageSize-1
-        demands,totalCount= DemanderHelper::get_file_demands fileId,startIndex,endIndex,type
-        @currentPage=pageIndex
-        @totalPages=totalCount/pageSize+(totalCount%pageSize==0?0:1)
+        @currentPage=pageIndex=params[:pageIndex].to_i
+        startIndex,endIndex=PageHelper::generate_page_index(pageIndex,$DEPSIZE)
+        demands,@totalCount= DemanderHelper::get_file_demands fileId,startIndex,endIndex,type
+        @totalPages=PageHelper::generate_page_count @totalCount,$DEPSIZE
         @finished=file.finished
       end
       respond_to do |format|
@@ -87,12 +86,10 @@ class DemanderController<ApplicationController
     if request.post?
       clientId=session[:org_id]
       msg=ReturnMsg.new(:result=>false,:content=>'')
-      bf=RedisFile.find(params[:batchId])
-      sf=RedisFile.find(params[:fileId])
-      od=DemanderTemp.find(params[:uuid])
+      bf,sf,od=RedisFile.find(params[:batchId]),RedisFile.find(params[:fileId]),DemanderTemp.find(params[:uuid])
 
       if bf and sf and od
-        
+
         nd= DemanderTemp.new(:key=>od.key,:cpartNr=>params[:partNr],:clientId=>clientId,:supplierNr=>params[:supplierNr],
         :filedate=>params[:filedate],:date=>(FormatHelper::demand_date_by_str_type(params[:filedate],params[:type])),
         :type=>params[:type],:amount=>params[:amount],:lineNo=>od.lineNo,:source=>od.source)
@@ -106,9 +103,7 @@ class DemanderController<ApplicationController
         nd.vali=vmsg.result
 
         if vmsg.result
-          nd.rate,nd.oldamount=DemandHistory.compare_rate(
-          nd.clientId,nd.supplierId,
-          nd.relpartId,nd.type,nd.date,nd.amount)
+          nd.rate,nd.oldamount=DemandHistory.compare_rate(nd.clientId,nd.supplierId,nd.relpartId,nd.type,nd.date,nd.amount)
           if sf.errorCount.to_i-1==0
             bf.update(:errorCount=> bf.errorCount.to_i-1)
           end
@@ -170,8 +165,8 @@ class DemanderController<ApplicationController
       if demander=Demander.find(demandId)
         hs= DemandHistory.get_demander_hitories(demander,startIndex,endIndex)
         if hs
-          msg.result=true
-          msg.object=hs
+        msg.result=true
+        msg.object=hs
         else
           msg.content='no history'
         end
@@ -198,8 +193,8 @@ class DemanderController<ApplicationController
   def index
   end
 
- # ori: ding: create
- # rewrite: ws
+  # ori: ding: create
+  # rewrite: ws
   def send_demand
     if request.post?
       msg=ReturnMsg.new(:result=>false,:content=>'')
@@ -223,19 +218,18 @@ class DemanderController<ApplicationController
                       :amount=>nd.amount,
                       :oldamount=>nd.oldamount,
                       :type=>nd.type,
-                       :rate=>nd.rate)
+                      :rate=>nd.rate)
                       demand.save
                       demand.save_to_send
                       demandH=DemandHistory.new(:key=>UUID.generate,:amount=>nd.amount,:rate=>nd.rate,:oldmount=>nd.oldamount,:demandKey=>demand.key)
-                      demandH.save  
                       demand.add_to_history demandH.key
+                      demandH.save
                     end
                   end
                 end
                 sf.update(:finished=>true)
               end
               bf.update(:finished=>true)
-             # Resque.enqueue(DemandUploadCanceler,bf.key)
               msg.result=true
               msg.content='发送成功'
             end
@@ -248,7 +242,7 @@ class DemanderController<ApplicationController
       else
         msg.content='服务错误，请重新上传文件'
       end
-         respond_to do |format|
+      respond_to do |format|
         format.xml {render :xml=>JSON.parse(msg.to_json).to_xml(:root=>'sendMsg')}
         format.json { render json: msg }
       end
@@ -270,18 +264,18 @@ class DemanderController<ApplicationController
     end
     ######  判断类型 C or S ， 将session[:id]赋值给 id
     if @isClient
-      clientId = @cz_org.id
+    clientId = @cz_org.id
     else
-      supplierId = @cz_org.id
+    supplierId = @cz_org.id
     end
 
     @list = Organisation.option_list
     @demands = []
     @demands, total = Demander.search( :clientId=>clientId, :supplierId=>supplierId,
-                                                                                :rpartNr=>params[:partNr],
-                                                                                :start=>params[:start], :end=>params[:end],
-                                                                                :type=>params[:type],  :amount=>params[:amount],
-                                                                                :page=>params[:page] )
+    :rpartNr=>params[:partNr],
+    :start=>params[:start], :end=>params[:end],
+    :type=>params[:type],  :amount=>params[:amount],
+    :page=>params[:page] )
     @totalPages=total/Demander::NumPer+(total%Demander::NumPer==0 ? 0:1)
     @currentPage=params[:page].to_i
     @options = params[:options]?params[:options]:{}
@@ -291,12 +285,47 @@ class DemanderController<ApplicationController
       format.json { render json: @demands }
     end
   end
-  
+
   def data_analysis
   end
-  
+
   def data_chart
     render :partial=>'chart'
+  end
+
+  # ws : check unfinished batch file before page unload
+  def check_staff_unfinished_file
+    if request.post?
+      batchId=params[:batchFileId]
+      result=false
+      if bf=RedisFile.find(batchId)
+        if bf.finished=='false'
+        result=true
+        end
+      end
+      render :json=>{:result=>result}
+    end
+  end
+
+  # ws : check cache file after page load
+  def check_staff_cache_file
+    if request.post?
+      msg=ReturnMsg.new(:result=>false)
+      if batchFileId=RedisFile.check_staff_cache_file(session[:staff_id])
+      msg.result=true
+      msg.object=batchFileId
+      end
+      render :json=>msg
+    end
+  end
+
+  # ws : clean staff cache file
+  def clean_staff_cache_file
+    if request.post?
+      batchId=params[:batchFileId]
+      RedisFile.remove_staff_cache_file session[:staff_id],batchId
+      Resque.enqueue(DemandUploadDataDiscarder,batchId)
+    end
   end
 
 end

@@ -69,6 +69,9 @@
           </tr>
           <%end%>
      </table>
+     <div>
+          <div>共 <%=@totalCount%> 条 </div>
+     </div>
      <!-- pager -->
      <div class="pagers">
           <%= bri_pager options={:class=>"pagination",:pages=>@totalPages,:current=>@currentPage,:action=>'get_upfile_demands',:target=>demands.key}%>

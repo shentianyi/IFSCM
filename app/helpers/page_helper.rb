@@ -31,6 +31,16 @@ module PageHelper
     page.concat('</div>').html_safe
   end
 
+  # ws : get startIndex & endIndex of the page
+  def self.generate_page_index index,size
+       return  index*size,(index+1)*size-1
+  end
+  
+  # ws : get total pages count
+  def self.generate_page_count total,size
+     total/size+(total%size==0?0:1)
+  end
+  
   private
 
   def page_concat page,pstart,pend,current,action,target=nil,last=nil
