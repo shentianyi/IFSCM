@@ -7,6 +7,7 @@ class DemanderController<ApplicationController
 
   include DemanderHelper
   include PageHelper
+  include FormatHelper
   # ws
   def demand_upload
     # to the view
@@ -166,6 +167,7 @@ class DemanderController<ApplicationController
       demandId=params[:demandId]
       startIndex=Time.parse(params[:startIndex]).to_i
       endIndex=Time.parse(params[:endIndex]).to_i
+      
       msg=ReturnMsg.new(:result=>false,:content=>'')
       if demander=Demander.find(demandId)
         hs= DemandHistory.get_demander_hitories(demander,startIndex,endIndex)
@@ -174,12 +176,16 @@ class DemanderController<ApplicationController
         msg.object=hs
         else
           msg.content='no history'
+          msg.object=[]
         end
       end
+      puts msg.object
       respond_to do |format|
-        format.html { render  :partial=>'chart_history', :locals=>{:data=>msg.object.collect{|p| [p.created_at.to_i, p.amount.to_i]} } }
         format.xml {render :xml=>JSON.parse(msg.to_json).to_xml(:root=>'demandHistory')}
-        format.json { render json: {:msg=>msg, :chart=>msg.object.collect{|p| [p.created_at.to_i, p.amount.to_i]} } }
+        format.json { render json: {:msg=>msg, 
+            :chart=>[[startIndex,0],nil]+msg.object.collect{|p| [p.created_at.to_i, p.amount.to_i] }+[nil,[endIndex,0]],
+            :x=> [[startIndex,FormatHelper::label_xaxis(startIndex)]]+msg.object.collect{|p| [p.created_at.to_i, FormatHelper::label_xaxis(p.created_at.to_i) ] }+[[endIndex,FormatHelper::label_xaxis(endIndex)]]
+            } }
       end
     end
   end
@@ -215,20 +221,33 @@ class DemanderController<ApplicationController
                   nds,ncount=DemanderHelper::get_file_demands sf.key,0,-1,'normal'
                   if ncount>0
                     nds.items.each do |nd|
-                      demand = Demander.new( :key=>Demander.gen_key,
-                      :clientId=>nd.clientId,
-                      :supplierId=>nd.supplierId,
-                      :relpartId=>nd.relpartId,
-                      :date=>nd.date,
-                      :amount=>nd.amount,
-                      :oldamount=>nd.oldamount,
-                      :type=>nd.type,
-                      :rate=>nd.rate)
-                      demand.save
-                      demand.save_to_send
-                      demandH=DemandHistory.new(:key=>UUID.generate,:amount=>nd.amount,:rate=>nd.rate,:oldmount=>nd.oldamount,:demandKey=>demand.key)
-                      demand.add_to_history demandH.key
-                      demandH.save
+                        if tempKey = DemandHistory.exists( nd.clientId,nd.supplierId,nd.relpartId,nd.type,nd.date )
+                          demand = Demander.find(tempKey)
+                          demand.update( :clientId=>nd.clientId,
+                                                            :supplierId=>nd.supplierId,
+                                                            :relpartId=>nd.relpartId,
+                                                            :date=>nd.date,
+                                                            :amount=>nd.amount,
+                                                            :oldamount=>nd.oldamount,
+                                                            :type=>nd.type,
+                                                            :rate=>nd.rate)
+                          demand.save_to_send_update
+                        else
+                          demand = Demander.new( :key=>Demander.gen_key,
+                          :clientId=>nd.clientId,
+                          :supplierId=>nd.supplierId,
+                          :relpartId=>nd.relpartId,
+                          :date=>nd.date,
+                          :amount=>nd.amount,
+                          :oldamount=>nd.oldamount,
+                          :type=>nd.type,
+                          :rate=>nd.rate)
+                          demand.save
+                          demand.save_to_send
+                        end
+                          demandH=DemandHistory.new(:key=>UUID.generate,:amount=>nd.amount,:rate=>nd.rate,:oldmount=>nd.oldamount,:demandKey=>demand.key)
+                          demand.add_to_history demandH.key
+                          demandH.save
                     end
                   end
                 end
@@ -277,12 +296,10 @@ class DemanderController<ApplicationController
     @demands = []
  
     @demands, total = Demander.search( :clientId=>clientId, :supplierId=>supplierId,
-    :rpartNr=>params[:partNr],
-    :start=>params[:start], :end=>params[:end],
-    :type=>params[:type],  :amount=>params[:amount],
-    :page=>params[:page] )
+                                                                                :rpartNr=>partrelId, :start=>tstart, :end=>tend,
+                                                                                :type=>params[:type],  :amount=>params[:amount],
+                                                                                :page=>params[:page] )
     @totalPages=total/Demander::NumPer+(total%Demander::NumPer==0 ? 0:1)
-
     @currentPage=params[:page].to_i
     @options = params[:options]?params[:options]:{}
 
