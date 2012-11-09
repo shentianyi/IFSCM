@@ -28,14 +28,18 @@ class PartRel<CZ::BaseClass
     total = []
     if partRelType==PartRelType::Client
         $redis.zrange( org.s_key, 0, -1, :withscores=>true ).each do |item|
-            key = generate_key( csid, item[1].to_i, partRelType )
-            mkey=$redis.hget key,partKey
+            key = generate_cs_partRel_hashkey( csid, item[1].to_i, partRelType )
+            next if $redis.hexists( key,partKey )==0
+            next unless pr = PartRel.find( $redis.hget key,partKey )
+            mkey=pr.partMetaSetKey
             total+=$redis.smembers(mkey) if $redis.exists mkey
         end
     else
         $redis.zrange( org.c_key, 0, -1, :withscores=>true ).each do |item|
-            key = generate_key( item[1].to_i, csid, partRelType )
-            mkey=$redis.hget key,partKey
+            key = generate_cs_partRel_hashkey( item[1].to_i, csid, partRelType )
+            next if $redis.hexists( key,partKey )==0
+            next unless pr = PartRel.find( $redis.hget key,partKey )
+            mkey=pr.partMetaSetKey
             total+=$redis.smembers(mkey) if $redis.exists mkey
         end
     end

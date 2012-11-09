@@ -17,6 +17,10 @@ module FormatHelper
     end
     return nil
   end
+  
+  def self.label_xaxis( sec )
+    Time.at(sec).strftime('%m/%d/%Y %H:%M')
+  end
 
    # valid if the date string is less than today
    def self.str_less_today str
@@ -48,6 +52,25 @@ module FormatHelper
      elsif type=='Y'
        return  "#{date.year.to_s}"
      end
+   end
+   return nil
+   end
+   
+   def self.demand_date_to_date date,type
+    if date
+       if type=='D'
+          return  Time.parse(date)
+       elsif type=='W'
+           yw = date.split('/')
+           date = Time.parse("#{yw.first}/1/1")+(60*60*24)*7*(yw.last.to_i-1)
+           date -= (60*60*24)*date.wday  if date.wday>0
+           date += (60*60*24)
+          return  date
+       elsif type=='M'
+           return  Time.parse(date)
+       elsif type=='Y'
+          return  Time.parse("#{date}/1/1")
+       end
    end
    return nil
    end

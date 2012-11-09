@@ -7,20 +7,53 @@ function chart_search( hash, page ){
 }
 
 function test(){
-	$.plot($("#charting"), [ [[0, 0], [1, 1]] ]);
+	$.plot($("#charting"), [ [[0, 0], [1, 1]] ], { xaxis:{
+		ticks: [0, [0.5,"dsf"] ]
+	} } );
 }
 
-function chart_history(key){
-	$.post("./demand_history",{demandId:key,startIndex:'2012/10/1',endIndex:'2012/12/31'},
-			  function(data){  $.plot($("#charting"),  [ data.chart ]);  },
+function chart_history(key, tstart, tend ){
+	if (key==="null") return false;
+	if (typeof tstart=="undefined")
+	{	var startline = new Date(new Date().valueOf() - 3*(24*60*60*1000) );
+		var endline = new Date();
+	}else
+	{	var startline = tstart;
+		var endline = new Date(new Date(tstart).valueOf() + 3*(24*60*60*1000) );
+	}
+	$.post("./demand_history",{demandId:key,startIndex:startline,endIndex:endline},
+			  function(data){  
+			  	$.plot($("#charting"),  [data.chart], {
+			  		xaxis:{
+			  			ticks:data.x
+			  		} 
+			  	});
+			  	$('img[prime]').attr('prime',key).attr('startline',data.x[0][1]);
+			  },
 			  "json");
 }
+
+$(function (){
+	$('img[alt=Acancel]').click(function (){
+		chart_history( $(this).attr('prime') );
+	});
+	$('img[alt=Aleft]').click(function (){
+		chart_history( $('img[prime]').attr('prime'), new Date(new Date($('img[prime]').attr('startline')).valueOf() - 1*(24*60*60*1000)) );
+	});
+	$('img[alt=Aright]').click(function (){
+		chart_history( $('img[prime]').attr('prime'), new Date(new Date($('img[prime]').attr('startline')).valueOf() + 1*(24*60*60*1000))  );
+	});
+})
 </script>
 
 <input type="button" value="test" onclick="test();" />
-
-<div id="charting" style="width:600px;height:300px">
+<div id="charting" style="width:600px;height:300px;">
 	<div style="position:absolute; top:200px; left:280px"><h1>CHARTING HISTORY</h1></div>
+</div>
+<div>
+	<img alt="Acancel" prime="null" startline="null" src="/assets/cancel.png" style="cursor: pointer"></img>
+	<img alt="Aleft" src="/assets/aleft.png" style="cursor: pointer"></img>
+	<img alt="Aright" src="/assets/aright.png" style="cursor: pointer"></img>
 </div>
 <div id="partNr_float">
 	<span class="searchcontenttype" >零件号</span>

@@ -31,6 +31,15 @@ class DemandHistory<CZ::BaseClass
   def self.generate_zset_key clientId,supplierId,relpartId,type,date
     "cId:#{clientId}:spId:#{supplierId}:relpartId:#{relpartId}:type:#{type}:date:#{date}"
   end
+  
+  def self.exists clientId,supplierId,relpartId,type,date
+    temp = generate_zset_key clientId,supplierId,relpartId,type,date
+    if $redis.exists temp
+      return DemandHistory.find( $redis.zrevrange(temp,0,0).first ).demandKey
+    else
+      return false
+    end
+  end
 
   private
 

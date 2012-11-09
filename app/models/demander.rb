@@ -6,6 +6,8 @@ class Demander<CZ::BaseClass
   attr_accessor :key,:clientId,:relpartId,:supplierId, :type,:amount,:oldamount,:date,:rate
   NumPer=$DEPSIZE
   
+  include FormatHelper
+  
   def self.gen_key
         Rns::De+":#{$redis.incr 'demand_index_incr'}"
   end
@@ -96,9 +98,15 @@ class Demander<CZ::BaseClass
       $redis.sadd( "#{Rns::C}:#{clientId}", key )
       $redis.sadd( "#{Rns::S}:#{supplierId}", key )
       $redis.sadd( "#{Rns::RP}:#{relpartId}", key )
-      $redis.zadd( Rns::Date, Time.parse(date).to_i, key )
+      d = FormatHelper::demand_date_to_date( date,type )
+      $redis.zadd( Rns::Date, d.to_i, key )
       $redis.zadd( Rns::Amount, amount, key )
       $redis.sadd( "#{Rns::T}:#{type}", key )
+  end
+  
+  def save_to_send_update
+    $redis.zrem( Rns::Amount, key )
+    $redis.zadd( Rns::Amount, amount, key )
   end
 
 
