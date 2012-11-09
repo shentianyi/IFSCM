@@ -3,8 +3,8 @@
 require 'csv'
 
 module InitDataCsvHelper
-  @@path='uploadfiles/initOri'
-  @@bakpath='uploadfiles/initBak'
+  @@path='initData/initOri'
+  @@bakpath='initData/initBak'
   # ws : init org from csv
   def self.initOrgByCSV fileName
     orgs=[]
