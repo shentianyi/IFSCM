@@ -13,17 +13,6 @@
 		margin-left: 30px;
 		padding-bottom: 50px;
 	}
-	.lefticon {
-		margin-top: 0px;
-		width: 15px;
-		float: left;
-		border-width: 1px;
-		border-left-width: 0px;
-		border-style: solid;
-		border-color: #dadada;
-		border-collapse: collapse;
-		border-style: solid;
-	}
 	.tableview {
 		float: left;
 	}
@@ -272,30 +261,8 @@
 		height: 5px;
 		background-color: #208041;
 	}
-	#this1 {
-		width: 100%;
-	}
-	#last1 {
-		width: 10%;
-	}
-	#this2 {
-		width: 20%;
-	}
-	#last2 {
-		width: 100%;
-	}
-	#this3 {
-		width: 70%;
-	}
-	#last3 {
-		width: 100%;
-	}
-	#this4 {
-		width: 100%;
-	}
-	#last4 {
-		width: 33%;
-	}
+	
+
 	.textsearchbox {
 		width: 300px;
 		border: 1px solid #dbdbdb;

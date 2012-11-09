@@ -3,7 +3,7 @@
 require 'csv'
 require 'zip/zip'
 require 'enum/part_rel_type'
-require "iconv"  
+require "iconv"
 
 module DemanderHelper
   # ws: generate files demands from csvs
@@ -156,57 +156,74 @@ module DemanderHelper
     return demands,totalCount
   end
 
+  # ws : get batch file info
+  def self.get_batch_file_info fileId,startIndex,endIndex
+    bf=RedisFile.find(fileId)
+    itemKeys,totalCount=bf.send "get_normal_item_keys".to_sym,startIndex,endIndex
+    bf.itemCount,bf.errorCount,bf.created_at=bf.itemCount.to_i,bf.errorCount.to_i,bf.created_at.to_i
+    if bf.itemCount>0
+      bf.items=[]
+      itemKeys.each do |k|
+        if d=RedisFile.find(k)
+        d.itemCount,d.errorCount=d.itemCount.to_i,d.errorCount.to_i
+        bf.items<<d
+        end
+      end
+    end
+    return bf,totalCount
+  end
+
   # ws : zip demand files
   def self.zip_demand_cvs batchId
     msg=ReturnMsg.new(:result=>false,:content=>'')
     path=nil
     if bf=RedisFile.find(batchId)
       # if bf.errorCount==0
-        sfKeys,scount=bf.get_normal_item_keys 0,-1
-        if scount>0
-          tmps=[]
-          zfilename=File.join($DETMP, UUID.generate+'.zip')
-          Zip::ZipFile.open(zfilename, Zip::ZipFile::CREATE) do |z|
-            sfKeys.each do |sk|
-              if sf=RedisFile.find(sk)
-                spath=File.join($DETMP,sf.uuidName)
-                File.open(spath,'w+') do |f|
-                    f.puts $DECSVT.join($CSVSP)
-                  nds,ncount=get_file_demands sf.key,0,-1,'normal'
-                  if ncount>0
-                    nds.items.each do |nd|
-                      f.puts [nd.cpartNr,nd.supplierNr,nd.filedate,nd.type,nd.amount].join($CSVSP)
-                    end
+      sfKeys,scount=bf.get_normal_item_keys 0,-1
+      if scount>0
+        tmps=[]
+        zfilename=File.join($DETMP, UUID.generate+'.zip')
+        Zip::ZipFile.open(zfilename, Zip::ZipFile::CREATE) do |z|
+          sfKeys.each do |sk|
+            if sf=RedisFile.find(sk)
+              spath=File.join($DETMP,sf.uuidName)
+              File.open(spath,'w+') do |f|
+                f.puts $DECSVT.join($CSVSP)
+                nds,ncount=get_file_demands sf.key,0,-1,'normal'
+                if ncount>0
+                  nds.items.each do |nd|
+                    f.puts [nd.cpartNr,nd.supplierNr,nd.filedate,nd.type,nd.amount].join($CSVSP)
                   end
-                   eds,ecount=get_file_demands sf.key,0,-1,'error'
-                  if ecount>0
-                    eds.items.each do |ed|
-                      f.puts [ed.cpartNr,ed.supplierNr,ed.filedate,ed.type,ed.amount].join($CSVSP)
-                    end
-                  end
-                  
                 end
-                tmps<<spath
-                  # z.add(Iconv.iconv("GBK//IGNORE", "UTF-8//IGNORE",sf.oriName),spath)
-                z.add(sf.oriName,spath)
+                eds,ecount=get_file_demands sf.key,0,-1,'error'
+                if ecount>0
+                  eds.items.each do |ed|
+                    f.puts [ed.cpartNr,ed.supplierNr,ed.filedate,ed.type,ed.amount].join($CSVSP)
+                  end
+                end
+
               end
+            tmps<<spath
+            # z.add(Iconv.iconv("GBK//IGNORE", "UTF-8//IGNORE",sf.oriName),spath)
+            z.add(sf.oriName,spath)
             end
           end
-          
-         if tmps.count>0
-           tmps.each do |t|
-                File.delete(t)
-           end
-         end
-         
-        msg.result=true
-        msg.content=zfilename
-        else
-          msg.content='批次上次中不存在任何文件'
         end
-      # else
-        # msg.content='仍存在错误文件，请全部修改后再下载'
-      # end
+
+        if tmps.count>0
+          tmps.each do |t|
+            File.delete(t)
+          end
+        end
+
+      msg.result=true
+      msg.content=zfilename
+      else
+        msg.content='批次上次中不存在任何文件'
+      end
+    # else
+    # msg.content='仍存在错误文件，请全部修改后再下载'
+    # end
     else
       msg.content='上传文件被取消，无法下载'
     end

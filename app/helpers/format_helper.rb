@@ -40,13 +40,13 @@ module FormatHelper
     date=str_to_date(date)
     if date
      if type=='D'
-     return  "#{date.year.to_s}/#{date.month.to_s}/#{date.day.to_s}"
+     return  "#{date.year}/#{date.month}/#{date.day}"
        elsif type=='W'
-         return  "#{date.year.to_s}/#{date.cweek.to_s}"
+         return  "#{date.year}/#{date.cweek}"
      elsif type=='M'
-       return  "#{date.year.to_s}/#{date.month.to_s}"
+       return  "#{date.year}/#{date.month}"
      elsif type=='Y'
-       return  "#{date.year.to_s}"
+       return  "#{date.year}"
      end
    end
    return nil

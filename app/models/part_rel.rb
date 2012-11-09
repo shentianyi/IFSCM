@@ -5,7 +5,7 @@ class PartRel<CZ::BaseClass
   
   # has many part rel metas
   def self.gen_key cid,sid,type
-    generate_key cid,sid,type
+    generate_cs_partRel_hashkey cid,sid,type
   end
 
   #ws get part relation id
@@ -48,10 +48,8 @@ class PartRel<CZ::BaseClass
   # if supplier, find client's parts ...
   def self.get_single_part_cs_parts clientId,supplierId,partKey,partRelType
     key=generate_cs_partRel_hashkey( clientId,supplierId,partRelType)
-    puts 'eky:'+key
     if  pr=PartRel.find($redis.hget key,partKey)
       prelset=$redis.smembers(pr.partMetaSetKey) # part rel set
-      puts '----------------:'+pr.partMetaSetKey
       if prelset and prelset.count>0
         parts=[]
         prelset.each do |metaKey| #part rel meta key
@@ -88,9 +86,9 @@ class PartRel<CZ::BaseClass
   end
 
   # ws : generate cs parts relationship
-  def self.generate_cs_part_relation cpart,spart
+  def self.generate_cs_part_relation cpart,spart,saleNo,purchaseNo
     # 1. gen part rel meta
-       partRelMeta=PartRelMeta.new(:key=>PartRelMeta.gen_key,:cpartId=>cpart.key,:spartId=>spart.key)
+       partRelMeta=PartRelMeta.new(:key=>PartRelMeta.gen_key,:cpartId=>cpart.key,:spartId=>spart.key,:saleNo=>saleNo,:purchaseNo=>purchaseNo)
        partRelMeta.save
        
      # 2. add part meta key to set
@@ -100,7 +98,7 @@ class PartRel<CZ::BaseClass
      $redis.sadd spartmeta_rel_set_key,partRelMeta.key
     
     # 3. gen part rel 
-    cpartRel=PartRel.new(:key=>UUID.generate,:cId=>cpart.orgId,:sId=>spart.orgId,:type=>PartRelType::Client,:partMetaSetKey=>cpartmeta_rel_set_key)
+     cpartRel=PartRel.new(:key=>UUID.generate,:cId=>cpart.orgId,:sId=>spart.orgId,:type=>PartRelType::Client,:partMetaSetKey=>cpartmeta_rel_set_key)
      cpartRel.save
      spartRel=PartRel.new(:key=>UUID.generate,:cId=>cpart.orgId,:sId=>spart.orgId,:type=>PartRelType::Supplier,:partMetaSetKey=>spartmeta_rel_set_key)
      spartRel.save

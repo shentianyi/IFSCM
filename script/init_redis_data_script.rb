@@ -86,9 +86,9 @@ class InitData
 # init Part
 end
 
-$redis.flushall
+# $redis.flushall
 
-InitData.initStaff
+# InitData.initStaff
 InitData.initDemandType
-InitData.initOrg
+# InitData.initOrg
 # InitData.initPart

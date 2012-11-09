@@ -1,7 +1,7 @@
-<script language="javascript">
  
-     window.onload=chech_staff_cache_file();
-     
+<script language="javascript">
+     window.onload = check_staff_cache_file();
+     $(document).ready(upload_demand_files);
      function changetype(obj) {
           var tag = obj.firstChild.tagName;
           if( typeof (tag) != "undefined" && (tag == "INPUT" || tag == "TEXTAREA"))
@@ -37,10 +37,10 @@
                          // not change the text type
                          if(o[i].cells[j].className == 'no-type-change')
                               continue;
-                          // the cell has specific onclick event
-                          if(o[i].cells[j].className=='no-auto-click-bind')
-                            continue;
-                            
+                         // the cell has specific onclick event
+                         if(o[i].cells[j].className == 'no-auto-click-bind')
+                              continue;
+
                          o[i].cells[j].ondblclick = function() {
                               changetype(this);
                          }
@@ -48,24 +48,6 @@
                }
           }
      }
-      
-  // ws : check staff file cache in redis
-  function chech_staff_cache_file(){
-       $.ajax({
-            url:'../demander/check_staff_cache_file',
-            dataType:'json',
-            type:'post',
-            success:function(data){
-                if(data.result){
-                    if(confirm('你有未完成预测上传，是否加载')){
-                         alert('yes');
-                    }else{
-                         alert('no');
-                    }
-                }
-            }
-       });
-  } 
 </script>
 <div class="uploadline">
      <div id="upload-file-area">
@@ -170,19 +152,25 @@
      </div>
      <div class="botbts" style="display: none;">
           <div class="btsave botbtn">
-               <p>保存到草稿</p>
+               <p>
+                    保存到草稿
+               </p>
           </div>
           <div class="btdownload botbtn"  onclick="download_demand();">
-                 <p>下载</p>
+               <p>
+                    下载
+               </p>
           </div>
           <div class="btcancel botbtn" onclick="cancel_demand_upload();" id="cancelDemandUpBtn">
-               <p>取消</p>
+               <p>
+                    取消
+               </p>
           </div>
           <div class="btsend botbtn" onclick="send_demand_batchFile(this);">
-               <p>发送</p>
-          </div> 
+               <p>
+                    发送
+               </p>
+          </div>
      </div>
 </div>
-
-
 
