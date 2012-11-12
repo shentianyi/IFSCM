@@ -1,0 +1,36 @@
+<script>
+function cs_search( hash, page){
+	 if (page==null)
+	 	page=0;
+	$.post("./search",{ csNr: hash["csNr"], options: hash, page: page },
+			  function(data){ $('#cslist').html(data); },
+			  "html");
+};
+
+$(function() {
+      window.hash = {
+        minChars: 1,
+        delay: 50,
+        width: 350,
+        scroll: false,
+        // formatItem: function(data, i, total) {
+          // return data.name;
+        // }
+      };
+      $('#orgSearchBox').autocomplete({source: "/organisation_manager/redis_search", appendTo: "#searchline"}, window.hash);
+      
+      $('#orgSearchBut').click(function(){
+      	cs_search( {csNr:$('#orgSearchBox').val()} );
+      });
+      cs_search({});
+});
+</script>
+<br/>
+		<div id="searchline">
+			<input type="text" id='orgSearchBox' name="floats" class="searchsupp" placeholder="搜索筛选条件" />
+			<input type="button" id='orgSearchBut' name="logosearchv" class="logosearchv btn" value="搜索" />
+		</div>
+<hr/>
+<br/>
+
+<div id="cslist" class="supplierlist"></div>

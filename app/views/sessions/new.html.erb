@@ -1,87 +1,102 @@
-<style type="text/css">
-.labs{
-	font-size:20px;
-	color:#4e4e58;
-	width: 100px;
-	height:25px;
-	line-height: 25px;
-	text-align:right;
-	margin-right:20px;
-	float:left;
-	margin-top:5px;
-}
-.submitbt{
-	height: 40px;
-     line-height:40px;
-    
-}
-.depot_form{
-	margin-left:50px;
-	margin-top:20px;
-	width:600px;
+	<div id="header">
+		<a href=""></a>
+	</div>
+	<div id="centerme">
+
+
+
+		<div id="main">
+
+			<div id="signin">
+				<div id="signError">
+					<p>请填写正确的邮箱地址和密码</p>
+				</div>
+
+				<input type="text" name="email" id="jid_email"
+					class="txtInput emailInput signupSubmit" placeholder="用户名" />
+				<input type="password" name="psd" id="jid_psd"
+					class="txtInput psdInput signupSubmit" placeholder="密码" /> <input
+					id="jid_submit" type="submit" name="submit_button" class="done"
+					value="登录" /> <!--<input id="jid_showReg" type="button"
+					name="regist_button" class="signUpbtn" value="注册
+					" />-->
+			</div>
+
+
+		</div>
+
+		<div id="jid_overlay" class="overlay"></div>
+
+	<!--	<div id="activate">
+			<p id="actimess">您的邮箱已经收到激活链接请点击链接激活账号，若尚未收到或者激活链接过期，请点击按钮重新获取链接</p>
+			<a class="closeac"><img id="jid_actClose"
+				src="common/img/close-bt.png" /></a> <input type="submit"
+				id="jid_actSubmit" name="submit_act" class="activsub" value="重新获取" />
+		</div>
+
+		<div id="resendSucess">
+			<p id="resendmess">激活邮件重新发送成功</p>
+		</div>
+
+		<div id="signup">
+			<p id="tit">注册</p>
+			<a class="close"><img id="jid_regClose"
+				src="common/img/cbt.png" /></a>
+
+			<div id="jid_errSummary">
+				<p>请完整填写下列项</p>
+			</div>
+
+			<div id="upline">
+				<input type="text" name="email" id="jid_reg_email"
+					class="txtInput emailInput regSub toValid" placeholder="注册邮箱"
+					toValid='[{"type":"required","params":{"errorStr":"请填写邮件地址"}},{"type":"mail","params":{"errorStr":"邮箱地址有误"}},{"type":"exist","params":{"existType":"username","errorStr":"邮箱地址已经被注册"}}]' />
+				<div class="uperror">邮箱地址有误</div>
+			</div>
+
+
+
+			<div id="upline">
+				<input type="password" name="psd" id="jid_reg_psd"
+					class="txtInput psdInput regSub toValid" placeholder="密码"
+					toValid='[{"type":"required","params":{"errorStr":"请填写密码"}},{"type":"minLength","params":{"errorStr":"密码必须六位以上"}}]' />
+				<div class="uperror">请输入密码</div>
+			</div>
+
+			<div id="upline">
+				<input type="password" name="psdcheck" id="jid_reg_psdcheck"
+					class="txtInput psdCheck toValid" placeholder="确认密码"
+					toValid='[{"type":"equalto","params":{"errorStr":"确认密码有误", "selectors":{"toCompare":"#jid_reg_psd"}}}]' />
+				<div class="uperror">确认密码有误</div>
+			</div>
+
+			<div id="upline">
+				<input type="text" name="realname" id="realname"
+					class="txtInput realName regSub toValid" placeholder="请填写真实姓名"
+					toValid='[{"type":"required","params":{"errorStr":"请填写姓名"}}]' />
+				<div class="uperror">请输入姓名</div>
+			</div>
+
+
+
+			<div id="upline">
+				<input type="text" name="verify" id="verify"
+					class="verify regSub toValid" placeholder="    验证码"
+					toValid='[{"type":"required","params":{"errorStr":"请填写验证码"}}]' /> <img
+					src="../user/captcha" id="veripic"
+					onclick="this.src='../user/captcha?r='+Math.random();"
+					title="看不清楚?点图片可以换一个" />
+				<div class="uperror">验证码输入有误</div>
+			</div>
+			<input type="submit" id="jid_regSubmit" name="submit_button"
+				class="sign_up" value="注册" />
+		</div>
+
+
+-->
+
+
+	</div>
+	<div class="footer">
 	
-}
-#notice{
-	font-size:24px;
-	color:red;
-	margin-left:50px;
-}
-.oneline{
-	line-height:30px;
-	height:30px;
-	margin-top:10px;
-}
-.subt{
-	border-style:none;
-	background-color:#008dc2;
-border-radius:5px;
-border-color:#008dc2;
-border-width:1px;
-     height: 30px;
-     font-size:20px;
-     color:#ffffff;
-     line-height:40px;
-     width: 80px;
-     margin-top:5px;
-	margin-left:245px;
-}
-fieldset{
-	width:400px;
-	margin-left:150px;
-	font-size:20px;
-	color:#4e4e58;
-}
-.inputs{
-	width:200px;
-	height:20px;
-	line-height:20px;
-	float:left;
-}
-</style>
-<p id="notice">
-	<%= notice %>
-</p>
-
-<div class="depot_form">
-	<%= form_tag :action=>'create' do %>
-	<fieldset>
-		<legend>
-			请登录：
-		</legend>
-
-		<div class="oneline">
-			<div class="labs">员工号:</div>
-			<input name="staffNr" type="text" class="inputs"/>
-			
-		</div>
-		<div class="oneline">
-			<div class="labs">密码:</div>
-			<input name="password" type="password" class="inputs">
-			
-		</div>
-		<div class="submitbt">
-         <input type="submit" value="登录" class="subt" />
-		</div>
-	</fieldset>
-	<% end %>
-</div>
+	</div>

@@ -1,11 +1,10 @@
 <script type="text/javascript">
      $(function() {
-          $("#partSearchTxt").autocomplete("/part/redis_search",{
-               dataType:'json'
-          });
+          $("#partSearchTxt").autocomplete({ source:"/part/redis_search", appendTo: "#part_redis_search" });
      }); 
 </script>
 
-零件号：
-<input type="text" id="partSearchTxt" name="partSearchTxt">
-
+<div id='part_redis_search'>
+	零件号：
+	<input type="text" id="partSearchTxt" name="partSearchTxt">
+</div>

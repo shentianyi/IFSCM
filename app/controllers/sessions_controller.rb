@@ -12,9 +12,9 @@ class SessionsController < ApplicationController
       session[:staff_id] = staff.id
       session[:org_id] = staff.orgId
       #   session[:orgOpeType]=OrgOperateType::Client
-      redirect_to :controller=>'welman',action: 'index'
+      render :json=>{ :status=>1 }
     else
-      redirect_to login_url, :notice => "用户名或密码错误"
+      render :json=>{ :status=>0 }
     end
 
   end

@@ -179,7 +179,6 @@ class DemanderController<ApplicationController
           msg.object=[]
         end
       end
-      puts msg.object
       respond_to do |format|
         format.xml {render :xml=>JSON.parse(msg.to_json).to_xml(:root=>'demandHistory')}
         format.json { render json: {:msg=>msg, 
@@ -295,11 +294,11 @@ class DemanderController<ApplicationController
 
     @demands = []
  
-    @demands, total = Demander.search( :clientId=>clientId, :supplierId=>supplierId,
+    @demands, @total = Demander.search( :clientId=>clientId, :supplierId=>supplierId,
                                                                                 :rpartNr=>partrelId, :start=>tstart, :end=>tend,
                                                                                 :type=>params[:type],  :amount=>params[:amount],
                                                                                 :page=>params[:page] )
-    @totalPages=total/Demander::NumPer+(total%Demander::NumPer==0 ? 0:1)
+    @totalPages=@total/Demander::NumPer+(@total%Demander::NumPer==0 ? 0:1)
     @currentPage=params[:page].to_i
     @options = params[:options]?params[:options]:{}
 

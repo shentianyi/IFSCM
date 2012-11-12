@@ -13,11 +13,12 @@ Demand::Application.routes.draw do
     get 'sessions/reload'=> :reload
   end
 
-  resources :organisation_manager do
-    collection do
-      get :search
-      post :add_supplier
-    end
+  controller :organisation_manager do
+    get 'organisation_manager' => :index
+    match 'organisation_manager/search' => :search
+    get 'organisation_manager/redis_search' => :redis_search
+    post 'organisation_manager/add_supplier' => :add_supplier
+    post 'organisation_manager/add_client' => :add_client
   end
 
   resources :demander do
