@@ -1,33 +1,30 @@
-<!DOCTYPE html>
-<html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-  <title>Demand</title>
-  <%= stylesheet_link_tag    "application", :media => "all" %>
-  <%= javascript_include_tag "application" %>
-  <%= csrf_meta_tags %>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>Intelligent Factory</title>
+
+
+<script src="/assets/jquery-1.8.2.min.js"></script>
+<script src="/assets/jquery.placeholder.min.js"></script>
+<script src = "/assets/jquery-ui-1.9.1.custom.min.js"></script>
+<script src="/assets/signup.js"></script>
+
+<script type="text/javascript">
+
+	$(document).ready(init);
+		
+	function init(){
+		brix.signupUtil.bindEvents();
+		brix.enablePlaceholder('input[placeholder]');
+		//brix.signupUtil.bindValidateInputsEvent();
+	};
+	
+
+</script>
+<link rel="stylesheet" href="/assets/signsimple.css" type="text/css" />
 </head>
 <body>
-	<div class="subicons">
-		<div class="fixedtop">
-			<ul class="subs">
-				<li><input type="button" name="home" class="iconhome bt" /></li>
-			</ul>
-			<p class="greeting">早上好！</p>
-		</div>
-	</div>
-	
-	<div class="lefticons" id="lefticons">
-		<div class="hm licon">
-			<a> <p  name="headicon" class="headicon"  />
-			</a>
-		</div>
-	</div>
-	
-<div class="content">
-	  <div class="wrapcontent">
 			<%= yield %>
-	  </div>
-</div>
-
 </body>
 </html>

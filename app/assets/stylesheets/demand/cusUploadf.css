@@ -1,0 +1,340 @@
+@charset "UTF-8";
+/* CSS Document */
+
+/*small screen*/
+@media screen and (max-width: 800px) {
+
+}
+
+/*big screen*/
+@media screen and (min-width:800px) {
+.wrapcontent{
+	width:900px;
+	float:left;
+	margin-left:30px;
+}
+
+	.lefticon {
+		margin-top: 0px;
+		width: 15px;
+		float: left;
+		border-width: 1px;
+		border-left-width: 0px;
+		border-style: solid;
+		border-color: #dadada;
+		border-collapse: collapse;
+		border-style: solid;
+	}
+
+	.uploadline {
+		margin-top: 30px;
+		margin-bottom: 50px;
+		margin-left: 220px;
+		width: 800px;
+	}
+	.btupload {
+		background-color: #1297cf;
+		width: 76px;
+		height: 34px;
+		border-width: 0px;
+		font-size: 18px;
+		color: #ffffff;
+	}
+	.btupload:hover {
+		background-color: #0e80b0;
+	}
+	.uploadfile{
+          height: 30px;
+          width: 300px;
+          margin: 0px;
+          padding-left: 5px;
+          font-size: 18px;
+          color: #9d9d9d;
+          margin: 0px
+	}
+	input.uploadfile {
+		border-color: #DBDBDB;
+		border-style: solid;
+		border-width: 1px;
+		height: 30px;
+		width: 300px;
+		margin: 0px;
+		padding-left: 5px;
+		font-size: 14px;
+		line-height: 14px;
+		color: #9d9d9d;
+		float: left;
+		margin: 0px
+	}
+	.uploadfile:active,.uploadfile:focus {
+		border-color: #b1b1b1;
+		color: #7c7c7c;
+	}
+	.linef {
+		float: left;
+		display: block;
+		width: 900px;
+	}
+	.tableview {
+		float: left;
+	}
+	.upData {
+		float: left;
+		margin: auto;
+		border-collapse: collapse;
+	}
+	.lineone {
+		border-bottom: 1px solid #a8a8a8;
+	}
+	.divide {
+		height: 3px;
+	}
+	.nordvd {
+		border-right: 5px solid #ffffff;
+	}
+	.lastdvd {
+		border-left: 5px solid #ffffff;
+	}
+	.lineone th {
+		color: #7c7c7c;
+		padding-bottom: 0.3em;
+		padding-left: 1.5em;
+		padding-right: 1.5em;
+		padding-top: 0.3em;
+		text-align: center;
+		font-size: 0.9em;
+		font-family: Arial;
+		font-weight: normal;
+		line-height: 1.5em;
+	}
+	.filetag {
+		border-color: #ffffff;
+	}
+	.indication {
+		float: left;
+		background-color: #dbdbdb;
+		color: #9d9d9d;
+		font-size: 14px;
+		border-radius: 3px;
+		padding-left: 1.5em;
+		padding-right: 1.5em;
+		padding-top: 0.3em;
+		padding-bottom: 0.3em;
+		width: 120px;
+	}
+
+	.norline th {
+		color: #9d9d9d;
+		padding-bottom: 0.3em;
+		padding-left: 1em;
+		padding-right: 1em;
+		margin-left: 0.3em;
+		margin-right: 0.3em;
+		padding-top: 0.3em;
+		text-align: center;
+		font-weight: normal;
+		font-size: 0.9em;
+		padding-right: 1em;
+		margin-left: 0.3em;
+		margin-right: 0.3em;
+		padding-top: 0.3em;
+		text-align: center;
+		font-weight: normal;
+		font-size: 0.9em;
+		border-bottom: 1px dashed #a8a8a8;
+	}
+	.botbts {
+		width: 430px;
+		margin-left: 330px;
+		height: 120px;
+		position: fixed;
+		bottom: 0px;
+		margin-top: 20px;
+		text-align: center;
+		background-color: #efefef;
+	}
+	.botbtn {
+		float: left;
+		width: 85px;
+		height: 85px;
+		border-width: 1px;
+		border-style: solid;
+		border-color: transparent;
+		margin: 20px 10px 10px 10px;
+		background-color: #efefef;
+	}
+	.botbtn:hover {
+		background-color: #dbdbdb;
+		border-color: #c2c2c2;
+		border-radius: 3px;
+		border-style: solid;
+		border-width: 1px;
+	}
+	.botbtn p {
+		font-size: 14px;
+		margin-top: 60px;
+		color: #696d72;
+	}
+	.btsave {
+		background-image: url(save.png);
+		background-repeat: no-repeat;
+		background-position: center 8px;
+	}
+	.btdownload {
+		background-image: url(download.png);
+		background-repeat: no-repeat;
+		background-position: center 8px;
+	}
+	.btcancel {
+		background-image: url(cancel.png);
+		background-repeat: no-repeat;
+		background-position: center 8px;
+	}
+	.btsend {
+		background-image: url(send.png);
+		background-repeat: no-repeat;
+		background-position: center 8px;
+	}
+	.listoffiles {
+		position: fixed;
+		top: 70px;
+		right: 10px;
+		width: 250px;
+		background-color: #ffffff;
+		border: 1px solid #dbdbdb;
+		border-radius: 5px;
+		height: auto;
+		padding: 3px;
+	}
+	.file {
+		float: left;
+		height: 20px;
+		padding: 3px 0px 3px 0px;
+		line-height: 20px;
+		width: 230px;
+		margin: 0px 5px 0px 5px;
+		border-bottom: 1px dashed #dbdbdb;
+	}
+	.noshowfile {
+		text-decoration: line-through;
+	}
+	.filename {
+		color: #696d72;
+		font-size: 14px;
+		padding: 0px;
+		margin: 0px 5px 0px 5px;
+		float: left;
+	}
+	.filestatus {
+		color: #696d72;
+		font-size: 14px;
+		padding: 0px;
+		margin: 0px;
+		float: left;
+	}
+	.filenum {
+		font-size: 14px;
+		background-color: #dbdbdb;
+		color: #7c7c7c;
+		border: 1px solid #dbdbdb;
+		border-radius: 3px;
+		float: left;
+		width: 15px;
+		height: 15px;
+		line-height: 15px;
+		text-align: center;
+		margin-top: 2px;
+	}
+	.filerr {
+		color: red;
+	}
+	.currentview {
+		text-decoration: blink;
+	}
+	.abstractline {
+		width: 720px;
+		height: 50px;
+		line-height: 50px;
+		border: 1px solid #dbdbdb;
+		border-radius:5px;
+		float: left;
+		padding: 3px 3px 3px 20px;
+		margin-bottom: 20px;
+	}
+	.abstractline p {
+		font-size: 14px;
+		float: left;
+		margin-top: 0px;
+		margin-bottom: 0px;
+		padding: 0px;
+	}
+	.abstractline img {
+		float: left;
+		margin-right:10px;
+	}
+	.sepstructure {
+		margin-right: 150px;
+	}
+	.fnumbers {
+		font-size: 12px;
+		float: left;
+		width: 120px;
+		text-align: left;
+	}
+	.forcastcompare {
+		width: 250px;
+	}
+	.lineforcast {
+		height: 15px;
+		line-height: 15px;
+		float: left;
+		width: 250px;
+	}
+	.percentage {
+		width: 220px;
+		float: left;
+		text-align: right;
+		font-size: 12px;
+	}
+	.forcastbaseline img {
+		float: left;
+	}
+	.forcastbaseline {
+		width: 120px;
+		border: 1px solid #dbdbdb;
+		margin-top:5px;
+		height: 5px;
+		float: left;
+	}
+	.partline {
+		float: left;
+		height: 5px;
+		background-color: #208041;
+	}
+
+	
+	#this1 {
+		width: 100%;
+	}
+	#last1 {
+		width: 10%;
+	}
+	#this2 {
+		width: 20%;
+	}
+	#last2 {
+		width: 100%;
+	}
+	#this3 {
+		width: 70%;
+	}
+	#last3 {
+		width: 100%;
+	}
+	#this4 {
+		width: 100%;
+	}
+	#last4 {
+		width: 33%;
+	}
+}

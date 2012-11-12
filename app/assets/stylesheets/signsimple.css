@@ -1,0 +1,364 @@
+@charset "UTF-8";
+/* CSS Document */
+input.txtInput {
+	background: #fff;
+	background-repeat: no-repeat;
+	background-position: 2px center;
+	border: 1px solid #c5c5c5;
+	padding: 0px 2px 2px 26px;
+	height: 30px;
+	width: 200px;
+	color: black;
+	font-size: 14px;
+	margin-bottom: 15px;
+	display: block;
+}
+
+input:-moz-placeholder {
+	color: #c5c5c5;
+}
+
+input.emailInput {
+	background-image: url(signupRes/logEmail.png);
+	background-position: 5px;
+}
+
+input.psdInput {
+	background-image: url(signupRes/logpsd.png);
+	background-position: 7px;
+}
+
+body {
+	background-color: #ffffff; 
+	margin: 0px;
+	text-align: center;
+}
+
+#header {
+	margin: 0px;
+	height: 60px;
+	width: 100%;
+	background-image: url(signupRes/hs.png);
+	background-repeat: no-repeat;
+	background-color: #1297cf;
+}
+
+#centerme {
+	margin-left: auto;
+	margin-right: auto;
+	height: 400px;
+	overflow: hidden;
+	width: 70%;
+	min-width: 800px;
+	background-image: url(signupRes/rbg.png);
+	background-repeat: no-repeat;
+	background-position: right center;
+}
+
+#success {
+	background-image: url(signupRes/success.png);
+	background-repeat: no-repeat;
+	position: relative;
+	z-index: 90;
+	left: 330px;
+	top: 115px;
+	width: 140px;
+	height: 55px;
+	display: none;
+}
+
+#signin {
+	float: left;
+	width: 300px;
+	height: 200px;
+	background-color: #efefef;
+	position: relative;
+	top: 80px;
+	left: 80px;
+	padding: 30px 0 0 50px;
+	text-align: left;
+}
+
+#signin p {
+	font-size: 36px;
+	color: #67abd3;
+	font-family: "Heiti TC Medium";
+	margin: 0px;
+}
+
+input.signUpbtn {
+	border-width: 0px;
+	border-style: none;
+	font-family: "Heiti TC Medium";
+	background-repeat: no-repeat;
+	background-color: #dbdbdb;
+	height: 32px;
+	width: 76px;
+	float: left;
+	margin-left: 75px;
+	margin-top: 10px;
+	font-size: 20px;
+	color: #ffffff;
+padding-top:5px;}
+
+input.signUpbtn:hover {
+	background-color: #b1b1b1;
+}
+
+input.done {
+	border-width: 0px;
+	background-color: #1297cf;
+	font-family: "Heiti TC Medium";
+	height: 32px;
+	width: 76px;
+	margin-left: 0px;
+	margin-top: 10px;
+	color: #ffffff;
+	font-size: 20px;
+	float: left;
+	padding-top:5px;
+}
+
+input.done:hover {
+	background-color: #0e80b0;
+}
+
+#signError p {
+	font-size: 10px;
+	color: #f84c50;
+	font-family: "Heiti TC Medium";
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
+
+#signError {
+	visibility: hidden;
+}
+
+#jid_errSummary p {
+	font-size: 10px;
+	color: #f84c50;
+	font-family: "Heiti TC Medium";
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
+
+#jid_errSummary {
+	display: none;
+}
+
+#upline input.txtInput {
+	float: left;
+	background: #fff;
+	background-repeat: no-repeat;
+	border: 1px solid #c5c5c5;
+	padding: 0px 2px 2px 30px;
+	height: 30px;
+	width: 200px;
+	color: black;
+	font-size: 14px;
+	display: inline;
+	margin-bottom: 15px;
+}
+
+#upline input:-moz-placeholder {
+	color: #c5c5c5;
+}
+
+#upline input.emailInput {
+	background-image: url(signupRes/logEmail.png);
+	background-position: 5px;
+}
+
+#upline input.psdInput {
+	background-image: url(signupRes/logpsd.png);
+	background-position: 7px;
+}
+
+#upline input.psdCheck {
+	background-image: url(signupRes/psdcheck.png);
+	background-position: 6px;
+}
+
+#upline input.realName {
+	background-image: url(signupRes/SignName.png);
+	background-position: 6px;
+}
+
+#upline input.company {
+	background-image: url(signupRes/company.png);
+	background-position: 2px;
+}
+
+#upline input.department {
+	background-image: url(signupRes/department.png);
+	background-position: 5px;
+}
+
+#upline input.verify {
+	background-position: 5px;
+	float: left;
+	background: #fff;
+	background-repeat: no-repeat;
+	border: 1px solid #c5c5c5;
+	padding: 0px 2px 2px 0px;
+	height: 30px;
+	width: 100px;
+	color: #c5c5c5;
+	font-size: 14px;
+	display: inline;
+	margin-bottom: 15px;
+	margin-right: 20px;
+}
+
+#activate {
+	display:none;
+	position: absolute;
+	left: 40%;
+	top: 30%;
+	height: 150px;
+	width: 280px;
+	background-color: #ffffff;
+    color:#1297cf;
+	z-index: 99;
+}
+.footer{
+	height:200px;
+	width:100%;
+	background-repeat:repeat-x;
+	background-position:bottom;
+	background-image:url(signupRes/footer.png);
+}
+#resendSucess {
+	display: none;
+	position: absolute;
+	left: 40%;
+	top: 30%;
+	height: 60px;
+	width: 200px;
+	background-color: #ffffff;
+	z-index: 99;
+	color:#67abd3;
+}
+
+#actimess {
+	text-align: left;
+	padding: 20px 20px 20px 20px;
+	width: 240px;
+	margin: 5px 5px 5px 5px;
+	font-size: 14px;
+	color: #67abd3;
+	font-family: "Heiti Tc Medium";
+}
+
+.closeac img {
+	height: 15px;
+	width: 15px;
+	top: -95px;
+	left: 230px;
+	position: relative;
+}
+
+input.activsub {
+	border-width: 1px;
+	border-style: solid;
+	background-color: #67abd3;
+	border-color: #67abd3;
+	height: 20px;
+	width: 80px;
+	font-size: 14px;
+	text-align: center;
+	color: #FFF;
+	line-height: 14px;
+	margin-left:140px;
+}
+
+input.activsub:hover {
+	background-color: #1297cf;
+	border-color: #1297cf;
+}
+
+#signup {
+	float: left;
+	width: 350px;
+	height: 430px;
+	background-color: #ffffff;
+	border-radius: 5px;
+	position: absolute;
+	border-style: solid;
+	border-width: 1px;
+	border-color: #d7dcdd;
+	padding: 0px 0 0 70px;
+	text-align: left;
+	left: 35%;
+	top: 20%;
+	z-index: 1000;
+	display: none;
+}
+
+#tit {
+	font-size: 36px;
+	color: #3f5363;
+	font-family: "Heiti TC Medium";
+	margin-bottom: 0px;
+	padding: 0px
+}
+
+input.sign_up {
+	border-width: 0px;
+	border-style: none;
+	background-color: #1297cf;
+	font-family: "Heiti TC Medium";
+	height: 32px;
+	width: 76px;
+	margin-left: 160px;
+	margin-top: 0px;
+	color: #ffffff;
+	font-size: 24px;
+}
+
+input.sign_up:hover {
+	background-color: #0e80b0;
+}
+
+.close img {
+	height: auto;
+	width: auto;
+	position: relative;
+	top: -70px;
+	left: 320px;
+}
+
+.uperror {
+	font-size: 10px;
+	color: #f84c50;
+	font-family: "Heiti TC Medium";
+	display: inline;
+	float: left;
+	visibility: hidden;
+	padding: 10px 0 0 10px;
+}
+
+#upline {
+	margin-bottom: 15px;
+}
+
+#veripic {
+	float: left;
+	display: inline;
+	width: 100px;
+	height: 30px;
+	margin-right: 10px;
+}
+
+.overlay {
+	display: none;
+	background-color: #eaedec;
+	position: fixed;
+	left: 0px;
+	height: 100%;
+	width: 100%;
+	top: 0px;
+	z-index: 99;
+	opacity: 0.8;
+}

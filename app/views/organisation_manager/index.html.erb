@@ -1,45 +1,33 @@
+
+<p style="color: red"><%= notice%></p>
 <br/>
-<%= form_tag :controller=>"organisation_manager", :action=>"create" do  %>
+<h1><%= @cz_org.name %></h1>
+<%= form_tag :controller=>"organisation_manager", :action=>"add_supplier" do  %>
+	<div>
+		<label>Supplier List:</label>
+		<%= select_tag :orgId,  options_for_select(@list),  prompt: "All" %>
+	</div>
     <div>
-    <%= label_tag :id %>
-    <%= text_field_tag :id, nil, :placeholder => "example: 1234567890" %>
+	    <%= label_tag :name, "Local Name" %>
+	    <%= text_field_tag :name, nil, :placeholder => "example: Leoni" %>
     </div>
-    <div>
-    <%= label_tag :name %>
-    <%= text_field_tag :name, nil, :placeholder => "example: Leoni" %>
-    </div>
-    <div>
-    <%= label_tag :address %>
-    <%= text_field_tag :address, nil, :placeholder => "example: West Nanjing Road" %>
-    </div>
-    <div>
-    <%= label_tag :tel %>
-    <%= text_field_tag :tel, nil, :placeholder => "example: 53423233" %>
-    </div>
-    <div>
-    <%= label_tag :website %>
-    <%= text_field_tag :website, nil, :placeholder => "example: www.cz.cn" %>
-    </div>
-    <%= submit_tag "Create" %>
+    <%= submit_tag "Add Supplier" %>
 <% end %>
 
 <hr/>
-<%= @orgs.size %><br/>
-<ul class="projects">
-<% @orgs.each do |o| %>
-  <li>
-  	<h2>TYPE:<%= o.class%></h2>
-    <div class="info">
-    <%= o.id%>
-    <%= o.key%>
-   	Name:<%= o.name%>
-   	Address:<%= o.address%>
-   	Tel:<%= o.tel%>
-   	Website:<%= o.website%>
-    <%= link_to "Show", organisation_manager_path(o.key)%>
+<%= form_tag :controller=>"organisation_manager", :action=>"add_client" do  %>
+	<div>
+		<label>Supplier List:</label>
+		<%= select_tag :orgId,  options_for_select(@list),  prompt: "All" %>
+	</div>
+    <div>
+	    <%= label_tag :name, "Local Name" %>
+	    <%= text_field_tag :name, nil, :placeholder => "example: Leoni" %>
     </div>
-  </li>
+    <%= submit_tag "Add Client" %>
 <% end %>
-</ul>
+
+<hr/>
+
 
 

@@ -9,8 +9,12 @@
  * compiled file, but it's generally better to create a new file per style scope.
  *
  * 
- * 
- *=require masterpage
- *= require_self
- *= require_tree .
+ * = require masterpage
+ * = require bootstrap.min
+ * = require_self
+ * = require_directory ./demand
+ * = require_directory ./jquery.file.upload
 */
+
+
+.ui-helper-hidden-accessible { display: none }

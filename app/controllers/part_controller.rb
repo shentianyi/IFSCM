@@ -8,17 +8,19 @@ class PartController<ApplicationController
 
   # ws part redis search
   def redis_search
-    org_id=session[:org_id]
-    params[:q].gsub!(/'/,'')
+    org_id=@cz_org.id
+    params[:term].gsub!(/'/,'')
     parts=[]
-    @search = Redis::Search.complete("Part", params[:q],:conditions=>{:orgId=>org_id})
+    @search = Redis::Search.complete("Part", params[:term],:conditions=>{:orgId=>org_id})
+    puts @search
     @search.collect do |item|
-    # puts item
-      parts<<(Part.new(:key=>item['key'],:orgId=>item['orgId'],:partNr=>item['partNr'],:created_at=>Time.at(item['created_at'])))
+      parts<<item['partNr']
+      # parts<<(Part.new(:key=>item['key'],:orgId=>item['orgId'],:partNr=>item['partNr'],:created_at=>Time.at(item['created_at'])))
     end
     respond_to do |format|
       format.xml {render :xml=>JSON.parse(parts.to_json).to_xml(:root=>'parts')}
       format.json { render json: parts }
+      format.text { render :text=> parts }
     end
   end
 

@@ -3,74 +3,78 @@ class OrganisationManagerController < ApplicationController
   before_filter  :authorize
   
   def index
-
-    @orgs = []
-    $redis.keys( Rns::Org+":*" ).each do |k|
-        org = Organisation.find( k )
-        @orgs << org
-    end
-
-    respond_to do |format|
-      format.html # index.html.erb
-      format.json { render json: @orgs }
-    end
-  end
-  
-  def create
-    key = Organisation.get_key( params[:id] )
-    if $redis.exists( key )
-    else
-      organisation = Organisation.new( :key=>key, 
-                                                        :name=>params[:name],
-                                                        :address=>params[:address],
-                                                        :tel=>params[:tel],
-                                                        :website=>params[:website] )
-      organisation.save
-    end
-    
-    redirect_to organisation_manager_index_path
-  end
-  
-  def show
     @list = Organisation.option_list
-    if @org = Organisation.find( params[:id] )
-      @orgs = @org.list( @org.s_key )
+  end
+  
+  def search
+    if request.post?
+        cs = params[:csNr]
+        @organs = []
+        if session[:orgOpeType]==OrgOperateType::Client
+              if cs && cs.size>0
+                id = @cz_org.search_supplier_byNr( cs )
+                @organs<<[cs,Organisation.find_by_id(id)] if id.to_i!=0
+              else
+                @organs = @cz_org.list( @cz_org.s_key )
+              end
+        else
+              if cs && cs.size>0
+                id = @cz_org.search_client_byNr( cs )
+                @organs<<[cs,Organisation.find_by_id(id)] if id.to_i!=0
+              else
+                @organs = @cz_org.list( @cz_org.c_key )
+              end
+        end
+        @total = @organs.size
+        s = params[:page].to_i*Demander::NumPer
+        e = params[:page].to_i*Demander::NumPer+Demander::NumPer-1
+        @orgs = @organs[s..e]
+        puts @orgs
+        @totalPages=@total/Demander::NumPer+(@total%Demander::NumPer==0 ? 0:1)
+        @currentPage=params[:page].to_i
+        @options = params[:options]?params[:options]:{}
+        
+        render :partial=>'searchlist'
     else
-      @org = Organisation.new
-      @orgs = []
     end
+
   end
   
   def add_supplier
-    org = Organisation.find( params[:key] )
-    org.add_supplier( params[:orgId], params[:name] )
-    Supplier.new( s_key:org.s_key, supplierNr:params[:name] ).save_index
-    
-    redirect_to organisation_manager_path( org.key )
+    if params[:orgId] && params[:name] && params[:orgId].size>0  && params[:name].size>0
+      @cz_org.add_supplier( params[:orgId], params[:name] )
+    else
+      flash[:notice]="Can't be blank !"
+    end
+    redirect_to organisation_manager_path
   end
   
   def add_client
-    org = Organisation.find( params[:key] )
-    org.add_customer( params[:orgId], params[:name] )
-    Client.new( c_key:org.c_key, clientNr:params[:name] ).save_index
-    
-    redirect_to organisation_manager_path( org.key )
+    if params[:orgId] && params[:name] && params[:orgId].size>0  && params[:name].size>0
+      @cz_org.add_client( params[:orgId], params[:name] )
+    else
+      flash[:notice]="Can't be blank !"
+    end
+    redirect_to organisation_manager_path
   end
   
   #################  for Fuzzy Search
-  def search
-    if params[:q].blank?
+  def redis_search
+    if params[:term].blank?
       render :text => ""
       return
     end
-    params[:q].gsub!(/'/,'')
-    # @search = Redis::Search.complete("Supplier", params[:q], :conditions=>{:s_key=>"1002:#{Rns::S}"} )
-    @search = Redis::Search.complete("Supplier", params[:q])
+    params[:term].gsub!(/'/,'')
+    if session[:orgOpeType]==OrgOperateType::Client
+      @search = Redis::Search.complete("OrgRel", params[:term], :conditions=>{:cs_key=>@cz_org.s_key} )
+    else
+      @search = Redis::Search.complete("OrgRel", params[:term], :conditions=>{:cs_key=>@cz_org.c_key} )
+    end
     puts @search
     lines = @search.collect do |item|
-      "#{item['title']}#!##{item['id']}#!##{item['name']}#!##{item['name']}#!##{item['name']}"
+      item['title']
     end
-    render :text => lines.join("\n")
+    render :text => lines
   end
   
 end
