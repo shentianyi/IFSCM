@@ -124,22 +124,22 @@
 		color: #696d72;
 	}
 	.btsave {
-		background-image: url(save.png);
+		background-image: url(../save.png);
 		background-repeat: no-repeat;
 		background-position: center 8px;
 	}
 	.btdownload {
-		background-image: url(download.png);
+		background-image: url(../download.png);
 		background-repeat: no-repeat;
 		background-position: center 8px;
 	}
 	.btcancel {
-		background-image: url(cancel.png);
+		background-image: url(../cancel.png);
 		background-repeat: no-repeat;
 		background-position: center 8px;
 	}
 	.btsend {
-		background-image: url(send.png);
+		background-image: url(../send.png);
 		background-repeat: no-repeat;
 		background-position: center 8px;
 	}

@@ -191,8 +191,8 @@ brix.signupUtil.bindEvents = function(){
 							case 0:
 								$(nameMapping.signError + "> p").text("请输入正确的用户名和密码");
 							$(nameMapping.signError).attr("style","visibility:visible");
-							// $(nameMapping.signBody)
-								// .effect("shake", brix.configs.effect["shake"].options,brix.configs.effect["shake"].speed);
+							$(nameMapping.signBody)
+								.effect("shake", brix.configs.effect["shake"].options,brix.configs.effect["shake"].speed);
 							break;
 							
 							case 1:

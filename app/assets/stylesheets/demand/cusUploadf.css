@@ -176,7 +176,7 @@
 		color: #696d72;
 	}
 	.btsave {
-		background-image: url(save.png);
+		background-image:  url(../save.png);
 		background-repeat: no-repeat;
 		background-position: center 8px;
 	}
