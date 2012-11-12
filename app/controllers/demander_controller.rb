@@ -193,7 +193,7 @@ class DemanderController<ApplicationController
   # download up demand files as zip
   def download
     if request.post?
-      msg=DemanderHelper::zip_demand_cvs params[:batchFileId]
+      msg=DemanderHelper::zip_demand_cvs params[:batchFileId], request.user_agent
       if msg.result
         send_file msg.content,:type => 'application/zip', :filename => "#{UUID.generate}.zip"
         File.delete(msg.content)

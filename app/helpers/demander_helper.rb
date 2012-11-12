@@ -1,5 +1,5 @@
 #coding:utf-8
-#encoding=UTF-8
+#encoding=utf-8
 require 'csv'
 require 'zip/zip'
 require 'enum/part_rel_type'
@@ -174,7 +174,7 @@ module DemanderHelper
   end
 
   # ws : zip demand files
-  def self.zip_demand_cvs batchId
+  def self.zip_demand_cvs batchId, user_agent
     msg=ReturnMsg.new(:result=>false,:content=>'')
     path=nil
     if bf=RedisFile.find(batchId)
@@ -183,29 +183,27 @@ module DemanderHelper
       if scount>0
         tmps=[]
         zfilename=File.join($DETMP, UUID.generate+'.zip')
+        csv_encode=FormatHelper::csv_write_encode user_agent
         Zip::ZipFile.open(zfilename, Zip::ZipFile::CREATE) do |z|
           sfKeys.each do |sk|
             if sf=RedisFile.find(sk)
               spath=File.join($DETMP,sf.uuidName)
-              File.open(spath,'w+') do |f|
+              File.open(spath,"wb:#{csv_encode}") do |f|
                 f.puts $DECSVT.join($CSVSP)
-                nds,ncount=get_file_demands sf.key,0,-1,'normal'
-                if ncount>0
-                  nds.items.each do |nd|
-                    f.puts [nd.cpartNr,nd.supplierNr,nd.filedate,nd.type,nd.amount].join($CSVSP)
+                mt=['normal','error']
+                mt.each do |m|
+                  nds,ncount=get_file_demands sf.key,0,-1,m
+                  if ncount>0
+                    nds.items.each do |nd|
+                      f.puts [nd.cpartNr,nd.supplierNr,nd.filedate,nd.type,nd.amount].join($CSVSP)
+                    end
                   end
                 end
-                eds,ecount=get_file_demands sf.key,0,-1,'error'
-                if ecount>0
-                  eds.items.each do |ed|
-                    f.puts [ed.cpartNr,ed.supplierNr,ed.filedate,ed.type,ed.amount].join($CSVSP)
-                  end
-                end
-
               end
-            tmps<<spath
-            # z.add(Iconv.iconv("GBK//IGNORE", "UTF-8//IGNORE",sf.oriName),spath)
-            z.add(sf.oriName,spath)
+              tmps<<spath 
+                #z.add(Iconv.iconv( 'GBK//IGNORE','utf-8//IGNORE',sf.oriName).to_s,spath)
+            #   z.add(sf.oriName.decode('gbk'),spath)
+              z.add(sf.oriName,spath)
             end
           end
         end
