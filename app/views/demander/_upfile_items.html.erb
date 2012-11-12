@@ -15,16 +15,16 @@
      </p>
 </div>
 <div class="listoffiles">
-    <form action='../demander/download' method="post" id="download_demand_form">
-      <input type="hidden" value="<%=batch.key%>" id="batchFileId" name="batchFileId"/>
+     <form action='../demander/download' method="post" id="download_demand_form">
+          <input type="hidden" value="<%= batch.key%>" id="batchFileId" name="batchFileId"/>
      </form>
-     <input type="hidden" value="<%=batch.finished%>" id="batchFileFinished" />
+     <input type="hidden" value="<%= batch.finished%>" id="batchFileFinished" />
      <% i=0
      batch.items.each do |item|
      i+=1
      title,cssclass= item.errorCount>0 ? "查看错误需求": "查看需求"
      %>
-     <div class='file' style="cursor:pointer" onclick="get_upfile_demands(this.id,0);" id=<%=item.key%>>
+     <div class='file' style="cursor:pointer" onclick="get_upfile_demands(this.id,0);" id=<%= item.key%>>
           <span class="filenum currentview"><%= i%></span>
           <span class="filename"><%= item.oriName%></span>
           <% if item.errorCount>0%>
@@ -39,5 +39,5 @@
      <%end%>
 </div>
 <div id="demands">
-     
+
 </div>

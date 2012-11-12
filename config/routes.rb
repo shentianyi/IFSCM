@@ -37,6 +37,7 @@ Demand::Application.routes.draw do
       post :check_staff_cache_file
       post :check_staff_unfinished_file
       post :clean_staff_cache_file
+      post :get_cache_file_info
     end
   end
 #    

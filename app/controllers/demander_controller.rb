@@ -42,10 +42,10 @@ class DemanderController<ApplicationController
             batch_file.add_to_staff_zset session[:staff_id]
             Resque.enqueue(DemandUpfilesDeler,batch_file.key)
           else
-            msg.content='upload faild please retry'
+            msg.content='上传失败，请重试'
           end
         else
-          msg.content='no files'
+          msg.content='未选择文件'
         end
       rescue Exception => e
         msg.content=e.message+'//'+ e.backtrace.inspect
@@ -143,9 +143,14 @@ class DemanderController<ApplicationController
     if request.post?
       msg=ReturnMsg.new(:result=>false,:content=>'')
       if batchFile=RedisFile.find(params[:batchId])
+        if batchFile.finished=='false'
+        RedisFile.remove_staff_cache_file session[:staff_id],batchFile.key
         Resque.enqueue(DemandUploadCanceler,batchFile.key)
         msg.result=true
         msg.content='取消成功'
+        else
+          msg.content='已经发送成功，不可取消'
+        end
       else
         msg.content='上传已经取消'
       end
@@ -248,6 +253,7 @@ class DemanderController<ApplicationController
                 sf.update(:finished=>true)
               end
               bf.update(:finished=>true)
+              RedisFile.remove_staff_cache_file session[:staff_id],bf.key
               msg.result=true
               msg.content='发送成功'
             end
@@ -335,8 +341,10 @@ class DemanderController<ApplicationController
       batchId=params[:batchFileId]
       result=false
       if bf=RedisFile.find(batchId)
+        puts 'check key:'+batchId
+        puts 'fin:'+bf.finished
         if bf.finished=='false'
-        result=true
+          result=true
         end
       end
       render :json=>{:result=>result}
@@ -361,6 +369,23 @@ class DemanderController<ApplicationController
       batchId=params[:batchFileId]
       RedisFile.remove_staff_cache_file session[:staff_id],batchId
       Resque.enqueue(DemandUploadDataDiscarder,batchId)
+      render :json=>{:msg=>'clean staff cache file'}
+    end
+  end
+  
+  # ws : get cache file info 
+  def get_cache_file_info
+    if request.post?
+         msg=ReturnMsg.new(:result=>false)
+         if bf=DemanderHelper::get_batch_file_info(params[:batchFileId],0,-1)[0]
+           msg.result=true
+           msg.object=bf
+         end
+        respond_to do |format|
+        format.xml {render :xml=>JSON.parse(msg.to_json).to_xml(:root=>'filesInfo')}
+        format.json { render json: msg }
+        format.html {render partial:'upfile_items',:locals=>{:msg=>msg}}
+      end
     end
   end
 

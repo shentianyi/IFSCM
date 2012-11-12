@@ -1,7 +1,7 @@
 require 'base_class'
 class Organisation<CZ::BaseClass
   ## Hash Key Like "organisation:1234567890"  ,    id must be numeric
-  attr_accessor :name, :description, :address, :tel, :website
+  attr_accessor :name, :description, :address, :tel, :website,:abbr,:contact,:email
   attr_reader :key
   
   def self.gen_id

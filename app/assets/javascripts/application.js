@@ -12,62 +12,12 @@
 //
 //= require jquery-1.8.2.min
 //= require jquery.ui/jquery-ui-1.9.1.custom.min
+//= require bootstrap.min
 
 //= require jquery.file.upload/tmpl.min
-//= require jquery.file.upload/load-image.min
-//= require jquery.ui/jquery.iframe-transport
 
 //= require jquery.file.upload/jquery.fileupload
-//= require jquery.file.upload/bootstrap.min
+
 
 //= require_tree .
 
-function org_type_activate(e){
-	if ( $(e).parent().hasClass('sup') )
-		$.post("../activate",{type:'supplier'},
-					  function(data){ $('ul.subs').html(data); },
-					  "html");
-	else if ( $(e).parent().hasClass('cus') )
-		$.post("../activate",{type:'client'},
-					  function(data){ $('ul.subs').html(data); },
-					  "html");
-
-}
-
-
-// (function() {
-// 
-  // window.App = {
-    // completeProjectLine: function(data) {
-      // var html, watchs;
-      // html = "";
-      // watchs = "";
-      // if (data[3] !== "") {
-        // watchs = "<abbr>(" + data[3] + " Watchers)</abbr>";
-      // }
-      // html += "<div class='info'><a href=\'http://localhost:3000/organisation_manager/organisation:" + data[1] + "\'>" + data[0] + "</a>" + watchs + "<br />" + data[4] + "</div>";
-      // return html;
-    // },
-    // completeProjects: function(el) {
-      // var hash;
-      // hash = {
-        // minChars: 1,
-        // delay: 50,
-        // width: 350,
-        // scroll: false,
-        // formatItem: function(data, i, total) {
-          // return App.completeProjectLine(data);
-        // }
-      // };
-      // return $(el).autocomplete("/organisation_manager/search", hash).result(function(e, data, formatted) {
-        // location.href = "" + data[1];
-        // return false;
-      // });
-    // }
-  // };
-// 
-  // $(document).ready(function() {
-    // return App.completeProjects(".searchbox input.query");
-  // });
-// 
-// }).call(this);

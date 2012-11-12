@@ -25,6 +25,101 @@ function window_redirect(url, timeout) {
      }, timeout);
 }
 
+// ws : demand upload file
+function upload_demand_files() {
+     $(function() {'use strict';
+          // Initialize the jQuery File Upload widget:
+          $('#demandupload').fileupload({
+               dataType : 'html',
+               beforeSend : function(xhr) {
+                    xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'));
+               },
+               success : function(data) {
+                    do_after_fileinfo_load(data);
+               },
+               error : function() {
+
+               },
+               done : function(e, data) {
+                    // data.context.text('Upload finished.');
+               }
+          });
+
+          // settings:
+          $('#demandupload').fileupload('option', {
+               singleFileUploads : false,
+               maxFileSize : 50000000,
+               acceptFileTypes : /(\.|\/)(csv)$/i
+          });
+     });
+
+}
+
+// ws : check staff file cache in redis
+function check_staff_cache_file() {
+     $.ajax({
+          url : '../demander/check_staff_cache_file',
+          dataType : 'json',
+          type : 'post',
+          success : function(data) {
+               if(data.result) {
+                    if(confirm('你有未完成预测上传，是否加载')) {
+                         $.ajax({
+                              url : '../demander/get_cache_file_info',
+                              dataType : 'html',
+                              type : 'post',
+                              data : {
+                                   'batchFileId' : data.object
+                              },
+                              success : function(result) {
+                                   do_after_fileinfo_load(result);
+                              }
+                         });
+                    } else {
+                         $.ajax({
+                              url : '../demander/clean_staff_cache_file',
+                              type : 'post',
+                              data : {
+                                   'batchFileId' : data.object
+                              }
+                         });
+                    }
+               }
+          }
+     });
+}
+
+// ws : do after upfile info load
+function do_after_fileinfo_load(data) {
+      $('#upresult').html(data);
+     // document.getElementById('upresult').innerHTML = data;
+     if($('#batchFileId').val() != null) {
+          $('#upload-file-area').hide();
+          $('.botbts').show();
+          /*
+           $(window).bind('beforeunload', function() {
+           check_staff_unfinished_file(function(data) {
+           if(data.result) {
+           var msg = '你有未发送/取消的预测，是否离开？';
+           if(/Firefox[\/\s](\d+)/.test(navigator.userAgent)) {
+           if(confirm(msg)) {
+           history.go();
+           } else {
+           window.setTimeout(function() {
+           window.stop();
+           }, 0);
+           }
+           } else {
+           return msg;
+           }
+           }
+           });
+           alert('dddd');
+           });
+           */
+     }
+}
+
 // ws: get uploaded file demands
 // field=>single file uuid ; pageIndex=> for page show
 function get_upfile_demands(fileId, pageIndex) {
@@ -208,6 +303,20 @@ function send_demand_batchFile(ele) {
                } else {
                     alert(data.content);
                }
+          }
+     });
+}
+
+function check_staff_unfinished_file(handler) {
+     $.ajax({
+          url : '../demander/check_staff_unfinished_file',
+          type : 'post',
+          dataType : 'json',
+          data : {
+               'batchFileId' : $('#batchFileId').val()
+          },
+          success : function(data) {
+               handler(data);
           }
      });
 }
