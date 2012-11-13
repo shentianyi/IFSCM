@@ -1,4 +1,6 @@
- 
+<link href="../assets/jquery.ui.dialog.css" rel="stylesheet" />
+<link href="../assets/jquery.ui.theme.css" rel="stylesheet" />
+<link href="../assets/jquery.ui.core.css" rel="stylesheet" />
 <script language="javascript">
      window.onload = check_staff_cache_file();
      $(document).ready(upload_demand_files);
@@ -152,7 +154,9 @@
      </div>
      <div id="handingMsg" class="abstractline" style="display: none;">
           <img src="/assets/loading.gif" />
-          <p>上传成功，正在处理数据...</p>
+          <p>
+               上传成功，正在处理数据...
+          </p>
      </div>
      <div class="botbts" style="display: none;">
           <div class="btsave botbtn">
@@ -173,6 +177,10 @@
           <div class="btsend botbtn" onclick="send_demand_batchFile(this);">
                <p>
                     发送
+               </p>
+          </div>
+          <div id="dialog-modal" title="" style="display: none;">
+               <p><img src="/assets/loading.gif" />正在发送中...
                </p>
           </div>
      </div>

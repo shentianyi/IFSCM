@@ -289,6 +289,17 @@ function download_demand(ele) {
 
 // ws: send demand
 function send_demand_batchFile(ele) {
+     var dialog = $("#dialog-modal").dialog({
+          modal : true,
+          autoOpen : false,
+          closeOnEscape : false,
+           resizable: false,
+          open : function(event, ui) {
+               $(this).parent().children().children('.ui-dialog-titlebar-close').hide();
+          }
+     });
+
+     $(dialog).dialog("open");
      $.ajax({
           url : '../demander/send_demand',
           data : {
@@ -297,6 +308,7 @@ function send_demand_batchFile(ele) {
           dataType : 'json',
           type : 'post',
           success : function(data) {
+               $(dialog).dialog("destroy");
                if(data.result) {
                     $(ele).unbind('click').removeAttr('onclick').bind('click', function() {
                          alert('预测已经发送成功，不可重复发送');
