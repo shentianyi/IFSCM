@@ -18,7 +18,8 @@ module FormatHelper
   end
 
   def self.label_xaxis( sec )
-    Time.at(sec).strftime('%m/%d/%Y %H:%M')
+    return '' unless sec.class==Bignum
+    Time.at(sec).strftime('%m/%d/%Y')
   end
 
   # valid if the date string is less than today

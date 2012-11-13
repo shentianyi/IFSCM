@@ -113,8 +113,8 @@ class Demander<CZ::BaseClass
   
 private
   def self.union_params( column, param )
-      return false unless param
-      if param.size>0 && param.is_a?(String)
+      return false unless param && param.size>0
+      if param.is_a?(String)
           key = "#{column}:#{param}"
       elsif param.is_a?(Array)
           key = column
