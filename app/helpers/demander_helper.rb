@@ -96,7 +96,6 @@ module DemanderHelper
         msg.result=false
         msg.content_key<<:spNrNotEx
       else
-        puts 'supplierId:'+supplierId
       demand.supplierId=supplierId
       end
     end

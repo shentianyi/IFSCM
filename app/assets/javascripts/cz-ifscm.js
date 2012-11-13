@@ -151,21 +151,33 @@ function correct_demand_error(ele) {
      update_demand(demand, function(data) {
           if(data != null) {
                if(data.result) {
-                    if(data.object.vali) {
-                         var msgDiv = demand.find('.demand-msg-div');
-                         msgDiv.html("已正确");
+                    var de = data.object;
+                    var sfileInfo = $('.listoffiles').find('#' + de.sk);
+                    var sfileErrorCountSpan = sfileInfo.find('#file-error-count-info-span');
+                    if(de.sc == 0) {
+                         sfileErrorCountSpan.attr('class', 'filestatus noshowfile');
+                         sfileErrorCountSpan.text('没有错误');
+                         get_upfile_demands(de.sk, 0);
                     } else {
-                         var msgs = jQuery.parseJSON(data.object.msg);
-                         if(msgs != null) {
+                         sfileErrorCountSpan.attr('class', 'filestatus filerr');
+                         sfileErrorCountSpan.text('有' + de.sc + '处错误');
+                         if(de.vali) {
                               var msgDiv = demand.find('.demand-msg-div');
-                              msgDiv.html("");
-                              for(var i = 0; i < msgs.length; i++) {
-                                   var span = $('<span/>').text(msgs[i] + '/');
-                                   msgDiv.append(span);
+                              msgDiv.html("已正确");
+                              $('#'+de.key).hide();
+                         } else {
+                              var msgs = jQuery.parseJSON(de.msg);
+                              if(msgs != null) {
+                                   var msgDiv = demand.find('.demand-msg-div');
+                                   msgDiv.html("");
+                                   for(var i = 0; i < msgs.length; i++) {
+                                        var span = $('<span/>').text(msgs[i] + '/');
+                                        msgDiv.append(span);
+                                   }
                               }
                          }
+                         demand.find("#date").text(data.object.date);
                     }
-                    demand.find("#date").text(data.object.date);
                } else {
                     alert(data.content);
                }
@@ -201,7 +213,7 @@ function reset_demand_amount(obj) {
                                    var de = data.object;
                                    if(de.vali) {
                                         demand.find('#this_demand_amount').text(de.amount);
-                                        demand.find('.percentage').text(Math.abs(Math.round(de.rate)) + '%');
+                                        demand.find('.percentage').text(Math.abs(de.rate.toFixed(2)) + '%');
                                         // gen amount bar & reset img
                                         var rate = parseFloat(de.rate);
                                         if(rate >= 0) {
@@ -217,6 +229,16 @@ function reset_demand_amount(obj) {
                                              demand.find('.percentageImg').attr('src', '/assets/arrdown.png');
                                         }
                                         //.....
+                                        // reset file error num info
+                                        // var sfileInfo=$('.listoffiles').find('#'+de.sk);
+                                        // var sfileErrorCountSpan=sfileInfo.find('#file-error-count-info-span');
+                                        // if(de.sc==0){
+                                        // sfileErrorCountSpan.attr('class','filestatus noshowfile');
+                                        // sfileErrorCountSpan.text('没有错误');
+                                        // }else{
+                                        // sfileErrorCountSpan.attr('class','filestatus filerr');
+                                        // sfileErrorCountSpan.text('有'+de.sc+'处错误');
+                                        // }
                                    } else {
                                         alert(jQuery.parseJSON(de.msg)[0]);
                                    }
@@ -293,7 +315,7 @@ function send_demand_batchFile(ele) {
           modal : true,
           autoOpen : false,
           closeOnEscape : false,
-           resizable: false,
+          resizable : false,
           open : function(event, ui) {
                $(this).parent().children().children('.ui-dialog-titlebar-close').hide();
           }

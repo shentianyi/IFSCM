@@ -27,9 +27,9 @@
           <span class="filenum currentview"><%= i+=1%></span>
           <span class="filename"><%= item.oriName%></span>
           <% if item.errorCount>0%>
-          <span class="filestatus filerr">有<%= item.errorCount%>处错误</span>
+          <span class="filestatus filerr" id="file-error-count-info-span">有<%= item.errorCount%>处错误</span>
           <%else%>
-          <span class="filestatus noshowfile">没有错误</span>
+          <span class="filestatus noshowfile"  id="file-error-count-info-span">没有错误</span>
           <%end%>
      </div>
      <%end%>
