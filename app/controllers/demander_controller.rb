@@ -105,16 +105,20 @@ class DemanderController<ApplicationController
 
         if vmsg.result
           nd.rate,nd.oldamount=DemandHistory.compare_rate(nd.clientId,nd.supplierId,nd.relpartId,nd.type,nd.date,nd.amount)
-          if sf.errorCount.to_i-1==0
-            bf.update(:errorCount=> bf.errorCount.to_i-1)
+          if od.vali=='false'
+            if sf.errorCount.to_i==1
+              bf.update(:errorCount=> bf.errorCount.to_i-1)
+            end
+            sf.update(:errorCount=> sf.errorCount.to_i-1) 
           end
-          sf.update(:errorCount=> sf.errorCount.to_i-1) if sf.errorCount.to_i>0
         else
-          if sf.errorCount.to_i==0
-            bf.update(:errorCount=> bf.errorCount.to_i+1)
+          if od.vali=='true'
+            if sf.errorCount.to_i==0
+              bf.update(:errorCount=> bf.errorCount.to_i+1)
+            end
+            sf.update(:errorCount=> sf.errorCount.to_i+1)
+          nd.msg=vmsg.contents.to_json
           end
-          sf.update(:errorCount=> sf.errorCount.to_i+1)
-        nd.msg=vmsg.contents.to_json
         end
 
         nd.cover
@@ -144,10 +148,10 @@ class DemanderController<ApplicationController
       msg=ReturnMsg.new(:result=>false,:content=>'')
       if batchFile=RedisFile.find(params[:batchId])
         if batchFile.finished=='false'
-        RedisFile.remove_staff_cache_file session[:staff_id],batchFile.key
-        Resque.enqueue(DemandUploadCanceler,batchFile.key)
-        msg.result=true
-        msg.content='取消成功'
+          RedisFile.remove_staff_cache_file session[:staff_id],batchFile.key
+          Resque.enqueue(DemandUploadCanceler,batchFile.key)
+          msg.result=true
+          msg.content='取消成功'
         else
           msg.content='已经发送成功，不可取消'
         end
@@ -167,7 +171,7 @@ class DemanderController<ApplicationController
       demandId=params[:demandId]
       startIndex=Time.parse(params[:startIndex]).to_i
       endIndex=Time.parse(params[:endIndex]).to_i
-      
+
       msg=ReturnMsg.new(:result=>false,:content=>'')
       if demander=Demander.find(demandId)
         hs= DemandHistory.get_demander_hitories(demander,startIndex,endIndex)
@@ -181,7 +185,7 @@ class DemanderController<ApplicationController
       end
       respond_to do |format|
         format.xml {render :xml=>JSON.parse(msg.to_json).to_xml(:root=>'demandHistory')}
-        format.json { render json: {:msg=>msg, 
+        format.json { render json: {:msg=>msg,
             :chart=>[[startIndex,0],nil]+msg.object.collect{|p| [p.created_at.to_i, p.amount.to_i] }+[nil,[endIndex,0]],
             :x=> [[startIndex,FormatHelper::label_xaxis(startIndex)]]+msg.object.collect{|p| [p.created_at.to_i, FormatHelper::label_xaxis(p.created_at.to_i) ] }+[[endIndex,FormatHelper::label_xaxis(endIndex)]]
             } }
@@ -220,33 +224,33 @@ class DemanderController<ApplicationController
                   nds,ncount=DemanderHelper::get_file_demands sf.key,0,-1,'normal'
                   if ncount>0
                     nds.items.each do |nd|
-                        if tempKey = DemandHistory.exists( nd.clientId,nd.supplierId,nd.relpartId,nd.type,nd.date )
-                          demand = Demander.find(tempKey)
-                          demand.update( :clientId=>nd.clientId,
-                                                            :supplierId=>nd.supplierId,
-                                                            :relpartId=>nd.relpartId,
-                                                            :date=>nd.date,
-                                                            :amount=>nd.amount,
-                                                            :oldamount=>nd.oldamount,
-                                                            :type=>nd.type,
-                                                            :rate=>nd.rate)
-                          demand.save_to_send_update
-                        else
-                          demand = Demander.new( :key=>Demander.gen_key,
-                          :clientId=>nd.clientId,
-                          :supplierId=>nd.supplierId,
-                          :relpartId=>nd.relpartId,
-                          :date=>nd.date,
-                          :amount=>nd.amount,
-                          :oldamount=>nd.oldamount,
-                          :type=>nd.type,
-                          :rate=>nd.rate)
-                          demand.save
-                          demand.save_to_send
-                        end
-                          demandH=DemandHistory.new(:key=>UUID.generate,:amount=>nd.amount,:rate=>nd.rate,:oldmount=>nd.oldamount,:demandKey=>demand.key)
-                          demand.add_to_history demandH.key
-                          demandH.save
+                      if tempKey = DemandHistory.exists( nd.clientId,nd.supplierId,nd.relpartId,nd.type,nd.date )
+                        demand = Demander.find(tempKey)
+                        demand.update( :clientId=>nd.clientId,
+                        :supplierId=>nd.supplierId,
+                        :relpartId=>nd.relpartId,
+                        :date=>nd.date,
+                        :amount=>nd.amount,
+                        :oldamount=>nd.oldamount,
+                        :type=>nd.type,
+                        :rate=>nd.rate)
+                      demand.save_to_send_update
+                      else
+                        demand = Demander.new( :key=>Demander.gen_key,
+                        :clientId=>nd.clientId,
+                        :supplierId=>nd.supplierId,
+                        :relpartId=>nd.relpartId,
+                        :date=>nd.date,
+                        :amount=>nd.amount,
+                        :oldamount=>nd.oldamount,
+                        :type=>nd.type,
+                        :rate=>nd.rate)
+                      demand.save
+                      demand.save_to_send
+                      end
+                      demandH=DemandHistory.new(:key=>UUID.generate,:amount=>nd.amount,:rate=>nd.rate,:oldmount=>nd.oldamount,:demandKey=>demand.key)
+                      demand.add_to_history demandH.key
+                      demandH.save
                     end
                   end
                 end
@@ -281,7 +285,7 @@ class DemanderController<ApplicationController
     tend = Time.parse(params[:end]).to_i if params[:end]
 
     ######  判断类型 C or S ， 将session[:id]赋值给 id
- 
+
     if session[:orgOpeType]==OrgOperateType::Client
       supplierId = @cz_org.search_supplier_byNr( s ) if s && s.size>0
       clientId = @cz_org.id
@@ -293,11 +297,11 @@ class DemanderController<ApplicationController
     end
 
     @demands = []
- 
+
     @demands, @total = Demander.search( :clientId=>clientId, :supplierId=>supplierId,
-                                                                                :rpartNr=>partrelId, :start=>tstart, :end=>tend,
-                                                                                :type=>params[:type],  :amount=>params[:amount],
-                                                                                :page=>params[:page] )
+    :rpartNr=>partrelId, :start=>tstart, :end=>tend,
+    :type=>params[:type],  :amount=>params[:amount],
+    :page=>params[:page] )
     @totalPages=@total/Demander::NumPer+(@total%Demander::NumPer==0 ? 0:1)
     @currentPage=params[:page].to_i
     @options = params[:options]?params[:options]:{}
@@ -310,26 +314,26 @@ class DemanderController<ApplicationController
 
   def data_analysis
     if request.post?
-            p = params[:partNr]
-            ######  判断类型 C or S ， 将session[:id]赋值给 id
-            if session[:orgOpeType]==OrgOperateType::Client
-              clientId = @cz_org.id
-              partrelId = PartRel.get_all_partrelId_by_partNr( clientId, p, PartRelType::Client ) if p && p.size>0
-            else
-              supplierId = @cz_org.id
-              partrelId = PartRel.get_all_partrelId_by_partNr( supplierId, p, PartRelType::Supplier ) if p && p.size>0
-            end
-        
-            @demands = []
-            @demands, @total = Demander.search( :clientId=>clientId, :supplierId=>supplierId,
-                                                                                        :rpartNr=>partrelId,
-                                                                                        :page=>params[:page] )
-            @totalPages=@total/Demander::NumPer+(@total%Demander::NumPer==0 ? 0:1)
-            @currentPage=params[:page].to_i
-            @options = params[:options]?params[:options]:{}
-            render :partial=>"chart_table"
+      p = params[:partNr]
+      ######  判断类型 C or S ， 将session[:id]赋值给 id
+      if session[:orgOpeType]==OrgOperateType::Client
+        clientId = @cz_org.id
+        partrelId = PartRel.get_all_partrelId_by_partNr( clientId, p, PartRelType::Client ) if p && p.size>0
+      else
+        supplierId = @cz_org.id
+        partrelId = PartRel.get_all_partrelId_by_partNr( supplierId, p, PartRelType::Supplier ) if p && p.size>0
+      end
+
+      @demands = []
+      @demands, @total = Demander.search( :clientId=>clientId, :supplierId=>supplierId,
+      :rpartNr=>partrelId,
+      :page=>params[:page] )
+      @totalPages=@total/Demander::NumPer+(@total%Demander::NumPer==0 ? 0:1)
+      @currentPage=params[:page].to_i
+      @options = params[:options]?params[:options]:{}
+      render :partial=>"chart_table"
     else
-    end 
+    end
   end
 
   def data_chart
@@ -344,7 +348,7 @@ class DemanderController<ApplicationController
         puts 'check key:'+batchId
         puts 'fin:'+bf.finished
         if bf.finished=='false'
-          result=true
+        result=true
         end
       end
       render :json=>{:result=>result}
@@ -372,16 +376,16 @@ class DemanderController<ApplicationController
       render :json=>{:msg=>'clean staff cache file'}
     end
   end
-  
-  # ws : get cache file info 
+
+  # ws : get cache file info
   def get_cache_file_info
     if request.post?
-         msg=ReturnMsg.new(:result=>false)
-         if bf=DemanderHelper::get_batch_file_info(params[:batchFileId],0,-1)[0]
-           msg.result=true
-           msg.object=bf
-         end
-        respond_to do |format|
+      msg=ReturnMsg.new(:result=>false)
+      if bf=DemanderHelper::get_batch_file_info(params[:batchFileId],0,-1)[0]
+      msg.result=true
+      msg.object=bf
+      end
+      respond_to do |format|
         format.xml {render :xml=>JSON.parse(msg.to_json).to_xml(:root=>'filesInfo')}
         format.json { render json: msg }
         format.html {render partial:'upfile_items',:locals=>{:msg=>msg}}
