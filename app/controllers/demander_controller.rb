@@ -328,7 +328,6 @@ class DemanderController<ApplicationController
 
   def data_analysis
     if request.post?
-<<<<<<< HEAD
             p = params[:partNr]
             ######  判断类型 C or S ， 将session[:id]赋值给 id
             if session[:orgOpeType]==OrgOperateType::Client
@@ -338,7 +337,6 @@ class DemanderController<ApplicationController
               supplierId = @cz_org.id
               partrelId = PartRel.get_all_partrelId_by_partNr( supplierId, p, PartRelType::Supplier ) if p && p.size>0
             end
-        puts partrelId.class
             @demands = []
             @demands, @total = Demander.search( :clientId=>clientId, :supplierId=>supplierId,
                                                                                         :rpartNr=>partrelId,
@@ -347,26 +345,6 @@ class DemanderController<ApplicationController
             @currentPage=params[:page].to_i
             @options = params[:options]?params[:options]:{}
             render :partial=>"chart_table"
-=======
-      p = params[:partNr]
-      ######  判断类型 C or S ， 将session[:id]赋值给 id
-      if session[:orgOpeType]==OrgOperateType::Client
-        clientId = @cz_org.id
-        partrelId = PartRel.get_all_partrelId_by_partNr( clientId, p, PartRelType::Client ) if p && p.size>0
-      else
-        supplierId = @cz_org.id
-        partrelId = PartRel.get_all_partrelId_by_partNr( supplierId, p, PartRelType::Supplier ) if p && p.size>0
-      end
-
-      @demands = []
-      @demands, @total = Demander.search( :clientId=>clientId, :supplierId=>supplierId,
-      :rpartNr=>partrelId,
-      :page=>params[:page] )
-      @totalPages=@total/Demander::NumPer+(@total%Demander::NumPer==0 ? 0:1)
-      @currentPage=params[:page].to_i
-      @options = params[:options]?params[:options]:{}
-      render :partial=>"chart_table"
->>>>>>> 05eed35751b7cd73c7e316c913bb4e1d24e6928d
     else
     end
   end
