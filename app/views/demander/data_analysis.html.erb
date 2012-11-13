@@ -23,12 +23,25 @@ function chart_history(key, tstart, tend ){
 	}
 	$.post("./demand_history",{demandId:key,startIndex:startline,endIndex:endline},
 			  function(data){  
-			  	$.plot($("#charting"),  [
-			  		{ data:data.chart, lines: {show: true}, points: {show: true} }
+			  	var charting = $('#charting');
+			  	$.plot($(charting),  [
+			  		{ data:data.chart, lines: {show: true, fill: true}, points: {show: true} }
 			  	], {
-			  		xaxis:{ ticks:data.x },
-			  		yaxis:{ min:0, max:data.ymax } 
+			  		xaxis:{ min:data.xmin, max:data.xmax, ticks:data.x },
+			  		yaxis:{ min:0, max:data.ymax },
+					grid: {
+						borderWidth: 1,
+						minBorderMargin: 20,
+						labelMargin: 10,
+						backgroundColor: {	colors: ["#fff", "#e4f4f4"] 	},
+						hoverable: true,
+						mouseActiveRadius: 50,
+						margin: {	top: 8,	bottom: 20,		left: 20	}
+					}
 			  	});
+			  	var yaxisLabel = $("<div>").text("History of the Demand").appendTo(charting);
+			  	yaxisLabel.css("position","absolute").css('top','50%').css('left','-25px')
+			  				.css("-moz-transform", 'rotate(-90deg)').css('-moz-transform-origin','0px 0px').css("margin-top", yaxisLabel.width() / 2 - 20);
 			  	$('img[prime]').attr('prime',key).attr('startline',data.x[0][1]);
 			  },
 			  "json");
@@ -50,7 +63,7 @@ $(function (){
 </script>
 
 <input type="button" value="test" onclick="test();" />
-<div id="charting" style="width:600px;height:300px;">
+<div id="charting" style="width:600px;height:300px;margin-left: 30px">
 	<div style="position:absolute; top:200px; left:280px"><h1>CHARTING HISTORY</h1></div>
 </div>
 <div>
