@@ -49,7 +49,7 @@
                <th class='no-type-change'>
                <div class="forcastcompare">
                     <div class="lineforcast">
-                         <span class="percentage"> <%= item.rate.to_i.abs %>% </span>
+                         <span class="percentage"> <%= item.rate.to_f.round(2).abs %>% </span>
                          <img src="/assets/<%= (item.rate.to_i>=0 ? 'arrup' : 'arrdown')%>.png" class='percentageImg' />
                     </div>
                     <div class="lineforcast">
