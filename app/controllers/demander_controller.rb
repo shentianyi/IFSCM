@@ -189,6 +189,7 @@ class DemanderController<ApplicationController
       endIndex=Time.parse(params[:endIndex]).to_i
       
       chart = [[startIndex,0],nil,[endIndex,0]]
+      ymax = 100
       msg=ReturnMsg.new(:result=>false,:content=>'')
       if demander=Demander.find(demandId)
         hs= DemandHistory.get_demander_hitories(demander,startIndex,endIndex)
@@ -197,6 +198,8 @@ class DemanderController<ApplicationController
           msg.object=hs
           if right=DemandHistory.get_demander_hitories(demander,endIndex,Time.now.to_i)
             rchart = [[endIndex,right.first.amount.to_i]]
+          elsif Time.now.to_i<endIndex
+            rchart = [[Time.now.to_i,hs.last.amount.to_i],nil,[endIndex,0]]
           else
             rchart = [[endIndex,hs.last.amount.to_i]]
           end
@@ -210,15 +213,16 @@ class DemanderController<ApplicationController
           msg.content='no history'
           msg.object=[]
         end
+        ymax = (demander.amount.to_i+demander.oldamount.to_i)/2*1.618
       end
       x = chart.compact.collect{|p| [p[0], FormatHelper::label_xaxis(p[0]) ] }
-      puts x.class
       
       respond_to do |format|
         format.xml {render :xml=>JSON.parse(msg.to_json).to_xml(:root=>'demandHistory')}
         format.json { render json: {:msg=>msg, 
             :chart=>chart,
-            :x=>x
+            :x=>x,
+            :ymax=>ymax
             } }
       end
     end

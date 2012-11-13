@@ -26,7 +26,8 @@ function chart_history(key, tstart, tend ){
 			  	$.plot($("#charting"),  [
 			  		{ data:data.chart, lines: {show: true}, points: {show: true} }
 			  	], {
-			  		xaxis:{ ticks:data.x } 
+			  		xaxis:{ ticks:data.x },
+			  		yaxis:{ min:0, max:data.ymax } 
 			  	});
 			  	$('img[prime]').attr('prime',key).attr('startline',data.x[0][1]);
 			  },
