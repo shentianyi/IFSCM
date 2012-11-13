@@ -53,7 +53,7 @@ module FormatHelper
         return  "#{date.year}"
       end
     end
-    return nil
+    return ""
   end
 
   def self.demand_date_to_date date,type
