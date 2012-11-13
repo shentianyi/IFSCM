@@ -18,7 +18,6 @@ module FormatHelper
   end
 
   def self.label_xaxis( sec )
-    return '' unless sec.class==Bignum
     Time.at(sec).strftime('%m/%d/%Y')
   end
 

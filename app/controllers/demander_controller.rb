@@ -207,6 +207,7 @@ class DemanderController<ApplicationController
         end
       end
       x = chart.compact.collect{|p| [p[0], FormatHelper::label_xaxis(p[0]) ] }
+      puts x.class
       
       respond_to do |format|
         format.xml {render :xml=>JSON.parse(msg.to_json).to_xml(:root=>'demandHistory')}
