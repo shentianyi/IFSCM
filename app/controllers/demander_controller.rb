@@ -171,23 +171,37 @@ class DemanderController<ApplicationController
       demandId=params[:demandId]
       startIndex=Time.parse(params[:startIndex]).to_i
       endIndex=Time.parse(params[:endIndex]).to_i
-
+      
+      chart = [[startIndex,0],nil,[endIndex,0]]
       msg=ReturnMsg.new(:result=>false,:content=>'')
       if demander=Demander.find(demandId)
         hs= DemandHistory.get_demander_hitories(demander,startIndex,endIndex)
         if hs
-        msg.result=true
-        msg.object=hs
+          msg.result=true
+          msg.object=hs
+          if right=DemandHistory.get_demander_hitories(demander,endIndex,Time.now.to_i)
+            rchart = [[endIndex,right.first.amount.to_i]]
+          else
+            rchart = [[endIndex,hs.last.amount.to_i]]
+          end
+          if left=DemandHistory.get_demander_hitories(demander,-(1/0.0),startIndex)
+            lchart = [[startIndex,left.last.amount.to_i]]
+          else
+            lchart = [[startIndex,0],nil]
+          end
+          chart = lchart+msg.object.collect{|p| [p.created_at.to_i, p.amount.to_i] }+rchart
         else
           msg.content='no history'
           msg.object=[]
         end
       end
+      x = chart.compact.collect{|p| [p[0], FormatHelper::label_xaxis(p[0]) ] }
+      
       respond_to do |format|
         format.xml {render :xml=>JSON.parse(msg.to_json).to_xml(:root=>'demandHistory')}
-        format.json { render json: {:msg=>msg,
-            :chart=>[[startIndex,0],nil]+msg.object.collect{|p| [p.created_at.to_i, p.amount.to_i] }+[nil,[endIndex,0]],
-            :x=> [[startIndex,FormatHelper::label_xaxis(startIndex)]]+msg.object.collect{|p| [p.created_at.to_i, FormatHelper::label_xaxis(p.created_at.to_i) ] }+[[endIndex,FormatHelper::label_xaxis(endIndex)]]
+        format.json { render json: {:msg=>msg, 
+            :chart=>chart,
+            :x=>x
             } }
       end
     end
@@ -314,6 +328,26 @@ class DemanderController<ApplicationController
 
   def data_analysis
     if request.post?
+<<<<<<< HEAD
+            p = params[:partNr]
+            ######  判断类型 C or S ， 将session[:id]赋值给 id
+            if session[:orgOpeType]==OrgOperateType::Client
+              clientId = @cz_org.id
+              partrelId = PartRel.get_all_partrelId_by_partNr( clientId, p, PartRelType::Client ) if p && p.size>0
+            else
+              supplierId = @cz_org.id
+              partrelId = PartRel.get_all_partrelId_by_partNr( supplierId, p, PartRelType::Supplier ) if p && p.size>0
+            end
+        puts partrelId.class
+            @demands = []
+            @demands, @total = Demander.search( :clientId=>clientId, :supplierId=>supplierId,
+                                                                                        :rpartNr=>partrelId,
+                                                                                        :page=>params[:page] )
+            @totalPages=@total/Demander::NumPer+(@total%Demander::NumPer==0 ? 0:1)
+            @currentPage=params[:page].to_i
+            @options = params[:options]?params[:options]:{}
+            render :partial=>"chart_table"
+=======
       p = params[:partNr]
       ######  判断类型 C or S ， 将session[:id]赋值给 id
       if session[:orgOpeType]==OrgOperateType::Client
@@ -332,6 +366,7 @@ class DemanderController<ApplicationController
       @currentPage=params[:page].to_i
       @options = params[:options]?params[:options]:{}
       render :partial=>"chart_table"
+>>>>>>> 05eed35751b7cd73c7e316c913bb4e1d24e6928d
     else
     end
   end
