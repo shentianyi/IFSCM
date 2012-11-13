@@ -20,30 +20,18 @@ class DemanderController<ApplicationController
       files=params[:files]
       begin
         msg=ReturnMsg.new(:result=>false,:content=>'')
-        path=$DECSVP
         hfiles=[]
         if files.count>0
-          uuid=UUID.new
           files.each do |f|
-            uuidName=uuid.generate
-            hf={:oriName=>f.original_filename,:uuidName=>uuidName,:path=>path}
-            dcsv=FileData.new(:data=>f,:type=>FileDataType::CSVDemand,:oriName=>f.original_filename,:uuidName=>uuidName,:path=>path)
+            dcsv=FileData.new(:data=>f,:type=>FileDataType::CSVDemand,:oriName=>f.original_filename,:uuidName=>UUID.generate,:path=>$DECSVP)
             dcsv.saveFile
-            hf[:pathName]=dcsv.pathName
-            hfiles<<hf
+            hfiles<<dcsv
           end
-          # clietId should be from session
-          clientId=session[:org_id]
-          # validate and show result
-          batch_file=DemanderHelper::generate_by_csv(hfiles,clientId)
-          if batch_file
+          batchIndex=DemanderHelper::generate_batchFile_index(hfiles)
             msg.result=true
-            msg.object=batch_file
-            batch_file.add_to_staff_zset session[:staff_id]
-            Resque.enqueue(DemandUpfilesDeler,batch_file.key)
-          else
-            msg.content='上传失败，请重试'
-          end
+            msg.object=batchIndex
+          
+            #Resque.enqueue(DemandUpfilesDeler,batch_file.key)
         else
           msg.content='未选择文件'
         end
@@ -51,6 +39,25 @@ class DemanderController<ApplicationController
         msg.content=e.message+'//'+ e.backtrace.inspect
       end
       respond_to do |format|
+        format.xml {render :xml=>JSON.parse(msg.to_json).to_xml(:root=>'filesInfo')}
+        format.json { render json: msg }
+        format.html {render partial:'upfile_unhandle_items',:locals=>{:msg=>msg}}
+      end
+    end
+  end
+  
+  # ws handle batch file
+  def handle_batch
+    if request.post?
+      batchFileId=params[:batchFileId]
+      msg=DemanderHelper::handle_batchFile_from_csv(batchFileId,session[:org_id])
+      if !msg.result
+        Resque.enqueue(DemandUploadCanceler,batchFileId)
+      else
+          msg.object.add_to_staff_zset session[:staff_id]
+        Resque.enqueue(DemandUpfilesDeler,batchFileId)
+      end
+        respond_to do |format|
         format.xml {render :xml=>JSON.parse(msg.to_json).to_xml(:root=>'filesInfo')}
         format.json { render json: msg }
         format.html {render partial:'upfile_items',:locals=>{:msg=>msg}}
@@ -71,6 +78,11 @@ class DemanderController<ApplicationController
         @currentPage=pageIndex=params[:pageIndex].to_i
         startIndex,endIndex=PageHelper::generate_page_index(pageIndex,$DEPSIZE)
         demands,@totalCount= DemanderHelper::get_file_demands fileId,startIndex,endIndex,type
+        if demands.items.nil? # for error
+              @currentPage=pageIndex=params[:pageIndex].to_i-1
+              startIndex,endIndex=PageHelper::generate_page_index(pageIndex,$DEPSIZE)
+             demands,@totalCount= DemanderHelper::get_file_demands fileId,startIndex,endIndex,type
+        end
         @totalPages=PageHelper::generate_page_count @totalCount,$DEPSIZE
         @finished=file.finished
       end
@@ -95,8 +107,7 @@ class DemanderController<ApplicationController
         :filedate=>params[:filedate],:date=>(FormatHelper::demand_date_by_str_type(params[:filedate],params[:type])),
         :type=>params[:type],:amount=>params[:amount],:lineNo=>od.lineNo,:source=>od.source)
 
-        okey=od.gen_md5_repeat_key
-        nkey=nd.gen_md5_repeat_key
+        okey, nkey=od.gen_md5_repeat_key,nd.gen_md5_repeat_key
         if okey!=nkey
         bf.del_repeat_item(od.gen_md5_repeat_key,od.key)
         end
@@ -104,7 +115,7 @@ class DemanderController<ApplicationController
         nd.vali=vmsg.result
 
         if vmsg.result
-          nd.rate,nd.oldamount=DemandHistory.compare_rate(nd.clientId,nd.supplierId,nd.relpartId,nd.type,nd.date,nd.amount)
+          nd.rate,nd.oldamount=DemandHistory.compare_rate(nd)
           if od.vali=='false'
             if sf.errorCount.to_i==1
               bf.update(:errorCount=> bf.errorCount.to_i-1)
@@ -117,8 +128,8 @@ class DemanderController<ApplicationController
               bf.update(:errorCount=> bf.errorCount.to_i+1)
             end
             sf.update(:errorCount=> sf.errorCount.to_i+1)
-          nd.msg=vmsg.contents.to_json
           end
+            nd.msg=vmsg.contents.to_json
         end
 
         nd.cover

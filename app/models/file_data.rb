@@ -3,15 +3,7 @@ require 'base_class'
 class FileData<CZ::BaseClass
 
   attr_accessor :type,:oriName,:size,:path,:pathName,:data,:extention,:uuidName
-  
-  def initialize args={}
-    if args.count>0
-      args.each do |k,v|
-        instance_variable_set "@#{k}",v
-      end
-    end
-  end
-  
+
   def saveFile
     @extention=File.extname(@oriName).downcase
     @pathName=@uuidName+@extention

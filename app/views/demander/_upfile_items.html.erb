@@ -11,7 +11,7 @@
           ，其中<%= batch.errorCount%>个有错误
      </p>
      <p>
-          上传时间：<%= Time.at(batch.created_at)%>
+          上传时间：<%= Time.at(batch.created_at.to_i)%>
      </p>
 </div>
 <div class="listoffiles">
@@ -21,11 +21,10 @@
      <input type="hidden" value="<%= batch.finished%>" id="batchFileFinished" />
      <% i=0
      batch.items.each do |item|
-     i+=1
      title,cssclass= item.errorCount>0 ? "查看错误需求": "查看需求"
      %>
      <div class='file' style="cursor:pointer" onclick="get_upfile_demands(this.id,0);" id=<%= item.key%>>
-          <span class="filenum currentview"><%= i%></span>
+          <span class="filenum currentview"><%= i+=1%></span>
           <span class="filename"><%= item.oriName%></span>
           <% if item.errorCount>0%>
           <span class="filestatus filerr">有<%= item.errorCount%>处错误</span>
@@ -34,8 +33,13 @@
           <%end%>
      </div>
      <%end%>
+     <script>
+          $('.botbts').show();
+     </script>
      <%else%>
-     <%= msg.content%>
+     <div class="abstractblock">
+          <%= msg.content%>
+     </div>
      <%end%>
 </div>
 <div id="demands">

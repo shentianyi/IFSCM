@@ -6,60 +6,74 @@ require 'enum/part_rel_type'
 require "iconv"
 
 module DemanderHelper
-  # ws: generate files demands from csvs
-  def self.generate_by_csv(files,clientId)
-    begin
-      uuid=UUID.new
-      # in batchFile normalKey=>file set, repeat Key=>repeat hash
-      batchFile=RedisFile.new(:key=>uuid.generate,:itemCount=>0,:errorCount=>0,:normalItemKey=>uuid.generate,:repeatItemKey=>uuid.generate,:finished=>false)
-      items=[]
-      files.each do |f|
-        sfile=RedisFile.new(:key=>f[:uuidName],:oriName=>f[:oriName],:uuidName=>f[:pathName],
-        :itemCount=>0,:errorCount=>0,:normalItemKey=>uuid.generate,:errorItemKey=>uuid.generate,:finished=>false)
-        # csv header---
-        CSV.foreach(File.join(f[:path],f[:pathName]),:headers=>true,:col_sep=>$CSVSP) do |row|
-        sfile.itemCount+=1
-          demand= DemanderTemp.new(:key=>uuid.generate,:cpartNr=>row[0],:clientId=>clientId,:supplierNr=>row[1],
-          :filedate=>row[2],:type=>row[3],:amount=>row[4],:lineNo=>sfile.itemCount,:source=>f[:oriName],:oldamount=>0)
-          demand.date=FormatHelper::demand_date_by_str_type demand.filedate,demand.type
+  # ws : generate batch file index
+  def self.generate_batchFile_index(files)
+    batchFile=RedisFile.new(:key=>UUID.generate,:itemCount=>0,:errorCount=>0,:normalItemKey=>UUID.generate,:repeatItemKey=>UUID.generate,:finished=>false)
+    items=[]
+    files.each do |f|
+      sfile=RedisFile.new(:key=>f.uuidName,:oriName=>f.oriName,:uuidName=>f.pathName,
+      :itemCount=>0,:errorCount=>0,:normalItemKey=>UUID.generate,:errorItemKey=>UUID.generate,:finished=>false)
+      sfile.save
+      items<<sfile
+      batchFile.add_normal_item sfile.errorCount,sfile.key
+      batchFile.itemCount+=1
+    end
+    batchFile.save
+    batchFile.items=items
+    return batchFile
+  end
+
+  # ws: handle batchFile from csv
+  def self.handle_batchFile_from_csv(batchFileKey,clientId)
+    returnMsg=ReturnMsg.new(:result=>false,:content=>'')
+    batchFile=RedisFile.find(batchFileKey)
+    batchFile.errorCount=0
+    singleFileKeys=batchFile.get_normal_item_keys(0,-1)[0]
+    items=[]
+    singleFileKeys.each do |sfkey|
+      sfile=RedisFile.find(sfkey)
+      sfile.itemCount=sfile.errorCount=0
+
+      CSV.foreach(File.join($DECSVP,sfile.uuidName),:headers=>true,:col_sep=>$CSVSP) do |row|
+        if row.count>4
+          sfile.itemCount+=1
+          demand= DemanderTemp.new(:key=>UUID.generate,:cpartNr=>row[0],:clientId=>clientId,:supplierNr=>row[1],
+          :filedate=>row[2],:type=>row[3],:amount=>row[4],:lineNo=>sfile.itemCount,:source=>sfile.oriName,:oldamount=>0)
+          demand.date=FormatHelper::demand_date_by_str_type(demand.filedate,demand.type)
 
           # validate demand field
           msg=demand_field_validate(demand,batchFile)
-
           demand.vali=msg.result
           if msg.result
-            demand.rate,demand.oldamount=DemandHistory.compare_rate(
-          demand.clientId,demand.supplierId,
-          demand.relpartId,demand.type,demand.date,demand.amount)
+            demand.rate,demand.oldamount=DemandHistory.compare_rate(demand)
           else
           demand.msg=msg.contents.to_json
           end
           demand.save
 
-          sfile.errorCount+= 1 if !msg.result
           if msg.result
           sfile.add_normal_item demand.rate.to_i.abs,demand.key
           else
           sfile.add_error_item demand.lineNo,demand.key
+          sfile.errorCount+= 1
           end
+        else
+          returnMsg.content="文件:#{sfile.oriName},行号:#{sfile.itemCount+1},少于5列,请重新修改上传！"
+        return returnMsg
         end
-        # csv --end
-        sfile.save
-        batchFile.add_normal_item sfile.errorCount,sfile.key # order the files by error items count
-        items<<sfile
-        batchFile.errorCount+=1 if sfile.errorCount>0
-        batchFile.itemCount+=1
       end
-      batchFile.save
-      batchFile.items=items if items.count>0
-      return batchFile
-    rescue Exception=>e
-      puts '-------------exception msg---------------------'
-      puts e.message
-      puts e.backtrace.inspect.split(',')
-    # should move all file infos from redis
+      # csv --end
+      sfile.cover
+      batchFile.remove_normal_item sfile.key
+      batchFile.add_normal_item sfile.errorCount,sfile.key # order the files by error items count
+      items<<sfile
+      batchFile.errorCount+=1 if sfile.errorCount>0
     end
-    return nil
+    batchFile.cover
+    batchFile.items=items if items.count>0
+    returnMsg.object=batchFile
+    returnMsg.result=true
+    return returnMsg
   end
 
   # ws: valid single demand
@@ -132,7 +146,7 @@ module DemanderHelper
       baseDemand=DemanderTemp.find(key)
       if baseDemand and baseDemand.key!=demand.key
         msg.result=false
-        msg.add_content("existsFile:#{baseDemand.source},line#{baseDemand.lineNo}")
+        msg.add_content("重复文件:#{baseDemand.source},行号:#{baseDemand.lineNo}")
       end
     else
     batchFile.add_repeat_item(repeat_key,demand.key)
@@ -200,10 +214,10 @@ module DemanderHelper
                   end
                 end
               end
-              tmps<<spath 
-                #z.add(Iconv.iconv( 'GBK//IGNORE','utf-8//IGNORE',sf.oriName).to_s,spath)
+            tmps<<spath
+            #z.add(Iconv.iconv( 'GBK//IGNORE','utf-8//IGNORE',sf.oriName).to_s,spath)
             #   z.add(sf.oriName.decode('gbk'),spath)
-              z.add(sf.oriName,spath)
+            z.add(sf.oriName,spath)
             end
           end
         end

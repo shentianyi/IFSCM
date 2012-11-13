@@ -1,0 +1,43 @@
+<%if msg.result%>
+<% batch=msg.object%>
+<div class="abstractline">
+     <p>
+          上传文件：
+     </p>
+     <p>
+          共<%= batch.itemCount%>个
+     </p>
+     <p>
+          &nbsp;&nbsp;&nbsp; 上传时间：<%= Time.at(batch.created_at)%>
+     </p>
+</div>
+<div class="abstractblock">
+     <% i=0
+     batch.items.each do |item|
+     %>
+     <span class="filenum currentview"><%= i+=1%></span>
+     <span class="filename"><%= item.oriName%></span>
+     <br>
+     <%end%>
+</div>
+<script>
+     $(document).ready(function() {
+          $.ajax({
+               url : '../demander/handle_batch',
+               data : {
+                    'batchFileId' : "<%= batch.key%>"
+               },
+               dataType : 'html',
+               type : 'post',
+               success : function(data) {
+                    $('#upresult').html(data);
+                    $('#handingMsg').hide();
+               }
+          });
+     }); 
+</script>
+<%else%>
+<p>
+     <%= msg.content%>
+</p>
+<%end%>

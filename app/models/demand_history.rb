@@ -23,9 +23,9 @@ class DemandHistory<CZ::BaseClass
     $redis.zrevrange(key,0,0)
   end
 
-  def self.compare_rate(clientId,supplierId,relpartId,type,date,amount)
-    ckey=generate_zset_key clientId,supplierId,relpartId,type,date
-    return generate_rate amount,ckey
+  def self.compare_rate(d)
+    ckey=generate_zset_key d.clientId,d.supplierId,d.relpartId,d.type,d.date
+    return generate_rate d.amount,ckey
   end
 
   def self.generate_zset_key clientId,supplierId,relpartId,type,date

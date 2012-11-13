@@ -35,7 +35,7 @@ function upload_demand_files() {
                     xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'));
                },
                success : function(data) {
-                    do_after_fileinfo_load(data);
+                    do_after_fileupload(data);
                },
                error : function() {
 
@@ -89,35 +89,42 @@ function check_staff_cache_file() {
      });
 }
 
+// ws : do after files are uploaded
+function do_after_fileupload(data) {
+     $('#upresult').html(data);
+     $('#upload-file-area').hide();
+     $('#handingMsg').show();
+}
+
 // ws : do after upfile info load
 function do_after_fileinfo_load(data) {
-      $('#upresult').html(data);
+     $('#upresult').html(data);
      // document.getElementById('upresult').innerHTML = data;
-     if($('#batchFileId').val() != null) {
-          $('#upload-file-area').hide();
-          $('.botbts').show();
-          /*
-           $(window).bind('beforeunload', function() {
-           check_staff_unfinished_file(function(data) {
-           if(data.result) {
-           var msg = '你有未发送/取消的预测，是否离开？';
-           if(/Firefox[\/\s](\d+)/.test(navigator.userAgent)) {
-           if(confirm(msg)) {
-           history.go();
-           } else {
-           window.setTimeout(function() {
-           window.stop();
-           }, 0);
-           }
-           } else {
-           return msg;
-           }
-           }
-           });
-           alert('dddd');
-           });
-           */
+     // if($('#batchFileId').val() != null) {
+     $('#upload-file-area').hide();
+     $('.botbts').show();
+     /*
+     $(window).bind('beforeunload', function() {
+     check_staff_unfinished_file(function(data) {
+     if(data.result) {
+     var msg = '你有未发送/取消的预测，是否离开？';
+     if(/Firefox[\/\s](\d+)/.test(navigator.userAgent)) {
+     if(confirm(msg)) {
+     history.go();
+     } else {
+     window.setTimeout(function() {
+     window.stop();
+     }, 0);
      }
+     } else {
+     return msg;
+     }
+     }
+     });
+     alert('dddd');
+     });
+     */
+     // }
 }
 
 // ws: get uploaded file demands
