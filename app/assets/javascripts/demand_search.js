@@ -5,7 +5,7 @@ function get_kestrel(){
 			  	for (t in data){
 			  		if (data[t]>0)
 			  			$('<span class="notifyNewForcast"></span>').text(data[t]).appendTo($('div[demand='+t+']'))
-			  				.click(function(){  demand_search({kestrel:'kestrel',type:$(this).parent().attr('demand')});  });
+			  				.dblclick(function(){  demand_search({kestrel:'kestrel',type:$(this).parent().attr('demand')});  });
 			  	}
 			  },
 			  "json");

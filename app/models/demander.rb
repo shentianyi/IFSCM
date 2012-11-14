@@ -93,6 +93,8 @@ class Demander<CZ::BaseClass
     when DemanderType::Week     then  20
     when DemanderType::Month   then  30
     when DemanderType::Year        then  40
+    when ''
+      $redis.zrange( kesKey, 0, -1).each{|item| demands << Demander.find( item )} and return demands
     end
     $redis.zrangebyscore( kesKey, score, score ).each do |item|
       demands << Demander.find( item )
