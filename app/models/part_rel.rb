@@ -21,9 +21,9 @@ class PartRel<CZ::BaseClass
   end
  
   
-  def self.get_all_partrelId_by_partNr( csid, partNr, partRelType )
+  def self.get_all_partRelMetaKey_by_partNr( csid, partNr, partRelType )
     partKey = Part.find_partKey_by_orgId_partNr csid,partNr
-    return nil unless partKey
+    return [] unless partKey
     org = Organisation.find_by_id(csid)
     total = []
     if partRelType==PartRelType::Client
