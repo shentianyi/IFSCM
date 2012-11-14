@@ -32,6 +32,7 @@ Demand::Application.routes.draw do
       match :demand_history
       post :download
       post :send_demand
+      post :kestrel_newer
       match :data_analysis
       post :data_chart
       post :check_staff_cache_file

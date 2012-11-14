@@ -214,11 +214,14 @@ class DemanderController<ApplicationController
           msg.content='no history'
           msg.object=[]
         end
-        ymax = (demander.amount.to_i+demander.oldamount.to_i)/2*1.618
+        ymax = (demander.amount.to_i+(demander.oldamount.to_i==0?demander.amount.to_i : demander.oldamount.to_i))/2*1.618
       end
       xaxis = []
       5.times.each{|e| xaxis<<(startIndex+e.day.to_i) }
       x = xaxis.collect{|p| [p, FormatHelper::label_xaxis(p) ] }
+      puts demander.oldamount.to_i
+      puts demander.amount.to_i
+      puts ymax
       
       respond_to do |format|
         format.xml {render :xml=>JSON.parse(msg.to_json).to_xml(:root=>'demandHistory')}
@@ -266,27 +269,18 @@ class DemanderController<ApplicationController
                     nds.items.each do |nd|
                       if tempKey = DemandHistory.exists( nd.clientId,nd.supplierId,nd.relpartId,nd.type,nd.date )
                         demand = Demander.find(tempKey)
-                        demand.update( :clientId=>nd.clientId,
-                        :supplierId=>nd.supplierId,
-                        :relpartId=>nd.relpartId,
-                        :date=>nd.date,
-                        :amount=>nd.amount,
-                        :oldamount=>nd.oldamount,
-                        :type=>nd.type,
-                        :rate=>nd.rate)
-                      demand.save_to_send_update
+                        demand.update( :clientId=>nd.clientId, :supplierId=>nd.supplierId, :relpartId=>nd.relpartId, :type=>nd.type, :date=>nd.date,
+                        :amount=>nd.amount, :oldamount=>nd.oldamount, :rate=>nd.rate)
+                        demand.save_to_send_update
                       else
                         demand = Demander.new( :key=>Demander.gen_key,
-                        :clientId=>nd.clientId,
-                        :supplierId=>nd.supplierId,
-                        :relpartId=>nd.relpartId,
-                        :date=>nd.date,
-                        :amount=>nd.amount,
-                        :oldamount=>nd.oldamount,
-                        :type=>nd.type,
-                        :rate=>nd.rate)
-                      demand.save
-                      demand.save_to_send
+                        :clientId=>nd.clientId, :supplierId=>nd.supplierId, :relpartId=>nd.relpartId, :type=>nd.type, :date=>nd.date,
+                        :amount=>nd.amount, :oldamount=>nd.oldamount, :rate=>nd.rate)
+                        demand.save
+                        demand.save_to_send
+                      end
+                      if nd.rate.to_i != 0 or nd.oldamount==0
+                        Demander.send_kestrel(demand.supplierId, demand.key, demand.type)
                       end
                       demandH=DemandHistory.new(:key=>UUID.generate,:amount=>nd.amount,:rate=>nd.rate,:oldmount=>nd.oldamount,:demandKey=>demand.key)
                       demand.add_to_history demandH.key
@@ -316,33 +310,45 @@ class DemanderController<ApplicationController
       end
     end
   end
+  
+  def kestrel_newer
+    dType={ ''=>0 }
+    ['D','W','M','Y'].each{|e| dType[e]=Demander.get_kestrel(@cz_org.id, e).size  and dType['']+=dType[e] }
+    render :json=>dType.to_json
+  end
 
   def search
-    c = params[:client]
-    s = params[:supplier]
-    p = params[:partNr]
-    tstart = Time.parse(params[:start]).to_i if params[:start]
-    tend = Time.parse(params[:end]).to_i if params[:end]
-
-    ######  判断类型 C or S ， 将session[:id]赋值给 id
-
-    if session[:orgOpeType]==OrgOperateType::Client
-      supplierId = @cz_org.search_supplier_byNr( s ) if s && s.size>0
-      clientId = @cz_org.id
-      partRelMetaKey = PartRel.get_all_partRelMetaKey_by_partNr( clientId, p, PartRelType::Client ) if p && p.size>0
+    if params[:kestrel] && params[:kestrel]==Rns::Kes
+          @demands = Demander.get_kestrel( @cz_org.id, params[:type] )
+          @total = @demands.size
+          s = params[:page].to_i*Demander::NumPer
+          e = params[:page].to_i*Demander::NumPer+Demander::NumPer-1
+          @demands = @demands[s..e]
     else
-      clientId = @cz_org.search_client_byNr( c ) if c && c.size>0
-      supplierId = @cz_org.id
-      partRelMetaKey = PartRel.get_all_partRelMetaKey_by_partNr( supplierId, p, PartRelType::Supplier ) if p && p.size>0
+            c = params[:client]
+            s = params[:supplier]
+            p = params[:partNr]
+            tstart = Time.parse(params[:start]).to_i if params[:start]
+            tend = Time.parse(params[:end]).to_i if params[:end]
+        
+            ######  判断类型 C or S ， 将session[:id]赋值给 id
+        
+            if session[:orgOpeType]==OrgOperateType::Client
+              supplierId = @cz_org.search_supplier_byNr( s ) if s && s.size>0
+              clientId = @cz_org.id
+              partRelMetaKey = PartRel.get_all_partRelMetaKey_by_partNr( clientId, p, PartRelType::Client ) if p && p.size>0
+            else
+              clientId = @cz_org.search_client_byNr( c ) if c && c.size>0
+              supplierId = @cz_org.id
+              partRelMetaKey = PartRel.get_all_partRelMetaKey_by_partNr( supplierId, p, PartRelType::Supplier ) if p && p.size>0
+            end
+            partRelMetaKey = 'none' if partRelMetaKey && partRelMetaKey.size==0
+            @demands = []
+            @demands, @total = Demander.search( :clientId=>clientId, :supplierId=>supplierId,
+            :rpartNr=>partRelMetaKey, :start=>tstart, :end=>tend,
+            :type=>params[:type],  :amount=>params[:amount],
+            :page=>params[:page] )
     end
-    partRelMetaKey = 'none' if partRelMetaKey && partRelMetaKey.size==0
-
-    @demands = []
-
-    @demands, @total = Demander.search( :clientId=>clientId, :supplierId=>supplierId,
-    :rpartNr=>partRelMetaKey, :start=>tstart, :end=>tend,
-    :type=>params[:type],  :amount=>params[:amount],
-    :page=>params[:page] )
     @totalPages=@total/Demander::NumPer+(@total%Demander::NumPer==0 ? 0:1)
     @currentPage=params[:page].to_i
     @options = params[:options]?params[:options]:{}

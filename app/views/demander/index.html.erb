@@ -1,13 +1,8 @@
 <script src="/assets/demand_search.js" type="text/javascript"></script>
-<script language="javascript">
+<script type="text/javascript">
 	$(function() {
-		$("#client_float").draggable();
-		$("#supplier_float").draggable();
-		$("#partNr_float").draggable();
-		$("#date_float").draggable();
-		$("#amount_float").draggable();
-		$("#type_float").draggable();
-		$("#rate_float").draggable();
+		$('.textsearchbox').draggable();
+		$('.forcasttype').css('cursor', 'pointer').click(function(){demand_search_activate( this );});
 		$('#client_float > input.searchcontent').autocomplete({source: "/organisation_manager/redis_search", appendTo: "#client_float"} );
 		$('#supplier_float > input.searchcontent').autocomplete({source: "/organisation_manager/redis_search", appendTo: "#supplier_float"} );
 		$("#partNr_float > input.searchcontent").autocomplete({ source:"/part/redis_search", appendTo: "#partNr_float" });
@@ -16,6 +11,7 @@
 		$('#supplier_float > input.startsearch').click(function(){ demand_search_with_type( {supplier:$('#supplier_float > input[placeholder]').val()} );    });
 		$('#partNr_float > input.startsearch').click(function(){ demand_search_with_type( {partNr:$('#partNr_float > input[placeholder]').val()} );    });
 		$('#type_float > input.searchforcasttype').click(function(){ forcasttype_reverse(this); });
+		get_kestrel();
 		demand_search( {} );
 	});
 </script>
@@ -68,27 +64,30 @@
 			<input type="button" name="startsearch"	class="startsearch" value="搜索" onclick="demand_search_option(this);"/>
 			<input type="button"	name="canclesearch" class="searchcancle" value="取消" onclick="pop_cancel(this);" />
 		</div>
-<div class="forcasttypes">
-	<div class="forcasttype typeactive" demand="" onclick="demand_search_activate( this );">
+<div class="forcasttypes" >
+	<div class="forcasttype typeactive" demand="" >
 		显示全部
 	</div>
-	<div class="forcasttype" demand="D" onclick="demand_search_activate( this );">
+	<div class="forcasttype" demand="D" >
 		D-天预测
 	</div>
-	<div class="forcasttype" demand="W" onclick="demand_search_activate( this );">
+	<div class="forcasttype" demand="W" >
 		W-周预测
 	</div>
-	<div class="forcasttype" demand="M" onclick="demand_search_activate( this );">
+	<div class="forcasttype" demand="M" >
 		M-月预测
 	</div>
-	<div class="forcasttype" demand="Y" onclick="demand_search_activate( this );">
+	<div class="forcasttype" demand="Y" >
 		Y-年预测
 	</div>
-	<div class="forcasttype" demand="O" onclick="demand_search_activate( this );">
+	<div class="forcasttype" demand="O" >
 		O-订单
 	</div>
-	<div class="forcasttype forcastright" demand="T" onclick="demand_search_activate( this );">
+	<div class="forcasttype forcastright" demand="T" >
 		T-提货计划
+	</div>
+	<div class="notifyNewForcast" id="kestrel" style="color:black; background-color:rgb(234, 237, 236) ">
+		确认查收
 	</div>
 </div>
 <div id="result" class="tableview">

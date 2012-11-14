@@ -1,6 +1,7 @@
 #coding:utf-8
 require 'digest/md5'
 require 'base_class'
+require 'enum/demander_type'
 
 class Demander<CZ::BaseClass
   attr_accessor :key,:clientId,:relpartId,:supplierId, :type,:amount,:oldamount,:date,:rate
@@ -73,6 +74,31 @@ class Demander<CZ::BaseClass
       return demands, total
   end
 
+  def self.send_kestrel( sId, demandKey, demandType )
+    kesKey = gen_kestrel(sId)
+    score = case demandType
+    when DemanderType::Day        then  10
+    when DemanderType::Week     then  20
+    when DemanderType::Month   then  30
+    when DemanderType::Year        then  40
+    end
+    $redis.zadd( kesKey, score, demandKey)
+  end
+  
+  def self.get_kestrel( orgId, demandType )
+    kesKey = gen_kestrel(orgId)
+    demands = []
+    score = case demandType
+    when DemanderType::Day        then  10
+    when DemanderType::Week     then  20
+    when DemanderType::Month   then  30
+    when DemanderType::Year        then  40
+    end
+    $redis.zrangebyscore( kesKey, score, score ).each do |item|
+      demands << Demander.find( item )
+    end
+    return demands
+  end
   
   def id
     key.delete "#{Rns::De}:"
@@ -126,5 +152,9 @@ private
       else
           return false
       end
+  end
+  
+  def self.gen_kestrel( sId )
+    "#{sId}:#{Rns::De}:#{Rns::Kes}"
   end
 end

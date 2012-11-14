@@ -232,6 +232,20 @@
 	}
 	.notifyNewForcast {
 		margin-left: 5px;
+		background-color: rgb(248, 148, 6);
+		padding-right: 9px;
+		padding-left: 9px;
+		border-radius: 9px 9px 9px 9px;
+		display: inline-block;
+		padding: 2px 4px;
+		font-size: 11.844px;
+		font-weight: bold;
+		line-height: 14px;
+		color: rgb(255, 255, 255);
+		text-shadow: 0pt -1px 0pt rgba(0, 0, 0, 0.25);
+		white-space: nowrap;
+		vertical-align: baseline;
+		cursor: pointer;
 	}
 	.sepstructure {
 		margin-right: 150px;

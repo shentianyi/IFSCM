@@ -10,5 +10,7 @@ class Rns
   Date = "date"
   Amount = "amount"
   
+  Kes = "kestrel"
+  
   
 end

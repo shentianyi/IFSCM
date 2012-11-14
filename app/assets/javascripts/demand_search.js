@@ -1,4 +1,16 @@
 
+function get_kestrel(){
+	$.post("../demander/kestrel_newer",{ },
+			  function(data){ 
+			  	for (t in data){
+			  		if (data[t]>0)
+			  			$('<span class="notifyNewForcast"></span>').text(data[t]).appendTo($('div[demand='+t+']'))
+			  				.click(function(){  demand_search({kestrel:'kestrel',type:$(this).parent().attr('demand')});  });
+			  	}
+			  },
+			  "json");
+}
+
 function demand_search( hash, page ){
 	
      if (page==null)
@@ -8,6 +20,7 @@ function demand_search( hash, page ){
           url : '../demander/search',
           type : "POST",
           data : {
+          	   kestrel: hash.kestrel,
                client: hash["client"],
                supplier: hash["supplier"],
                partNr: hash["partNr"],
