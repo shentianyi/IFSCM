@@ -154,17 +154,16 @@ function correct_demand_error(ele) {
                     var de = data.object;
                     var sfileInfo = $('.listoffiles').find('#' + de.sk);
                     var sfileErrorCountSpan = sfileInfo.find('#file-error-count-info-span');
+                    $('#batch-file-error-count-info-span').text(de.bc);
                     if(de.sc == 0) {
-                         sfileErrorCountSpan.attr('class', 'filestatus noshowfile');
-                         sfileErrorCountSpan.text('没有错误');
+                         sfileErrorCountSpan.attr('class', 'filestatus noshowfile').text('没有错误');
                          get_upfile_demands(de.sk, 0);
                     } else {
-                         sfileErrorCountSpan.attr('class', 'filestatus filerr');
-                         sfileErrorCountSpan.text('有' + de.sc + '处错误');
+                         sfileErrorCountSpan.attr('class', 'filestatus filerr').text('有' + de.sc + '处错误');
                          if(de.vali) {
-                              var msgDiv = demand.find('.demand-msg-div');
-                              msgDiv.html("已正确");
-                              $('#'+de.key).hide();
+                             // var msgDiv = demand.find('.demand-msg-div');
+                              // msgDiv.html("已正确");                 
+                              $('#' + de.key).hide();
                          } else {
                               var msgs = jQuery.parseJSON(de.msg);
                               if(msgs != null) {
@@ -216,17 +215,21 @@ function reset_demand_amount(obj) {
                                         demand.find('.percentage').text(Math.abs(de.rate.toFixed(2)) + '%');
                                         // gen amount bar & reset img
                                         var rate = parseFloat(de.rate);
-                                        if(rate >= 0) {
+                                        if(rate > 0) {
                                              demand.find('#thisLineWidthDiv').css('width', '100%');
                                              if(parseInt(de.oldamount) > 0)
                                                   demand.find('#lastLineWidthDiv').css('width', '' + (100 / (1 + rate / 100)) + '%');
                                              else
                                                   demand.find('#lastLineWidthDiv').css('width', '0%');
                                              demand.find('.percentageImg').attr('src', '/assets/arrup.png');
-                                        } else {
-                                             demand.find('#thisLineWidthDiv').css('width', '' + (100 / (1 - rate / 100)) + '%');
+                                        } else if(rate < 0) {
+                                             demand.find('#thisLineWidthDiv').css('width', '' + (100 + rate ) + '%');
                                              demand.find('#lastLineWidthDiv').css('width', '100%');
                                              demand.find('.percentageImg').attr('src', '/assets/arrdown.png');
+                                        } else {
+                                             demand.find('#thisLineWidthDiv').css('width', '100%');
+                                             demand.find('#lastLineWidthDiv').css('width', '100%');
+                                             demand.find('.percentageImg').attr('src', '/assets/equal.png');
                                         }
                                         //.....
                                         // reset file error num info

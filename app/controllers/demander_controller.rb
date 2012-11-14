@@ -144,9 +144,9 @@ class DemanderController<ApplicationController
       msg.result=true
       
       nd.instance_variable_set :@sk,sf.key
-      # nd.instance_variable_set '@bk',bf.key
+      nd.instance_variable_set :@bk,bf.key
       nd.instance_variable_set :@sc,sf.errorCount
-      # nd.instance_varialbe_set '@bc',bf.errorCount
+      nd.instance_variable_set :@bc,bf.errorCount
       msg.object=nd
       else
         msg.content='batchFileId or singleFileId or dmeandId not exists'

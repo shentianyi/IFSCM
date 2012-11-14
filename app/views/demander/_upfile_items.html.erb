@@ -8,7 +8,9 @@
           共<%= batch.itemCount%>个
      </p>
      <p class="sepstructure filerr">
-          ，其中<%= batch.errorCount%>个有错误
+          ，其中
+           <span  id="batch-file-error-count-info-span"><%= batch.errorCount%></span> 
+          个有错误
      </p>
      <p>
           上传时间：<%= Time.at(batch.created_at.to_i)%>
@@ -21,7 +23,7 @@
      <input type="hidden" value="<%= batch.finished%>" id="batchFileFinished" />
      <% i=0
      batch.items.each do |item|
-     title,cssclass= item.errorCount>0 ? "查看错误需求": "查看需求"
+   #  title,cssclass= item.errorCount>0 ? "查看错误需求": "查看需求"
      %>
      <div class='file' style="cursor:pointer" onclick="get_upfile_demands(this.id,0);" id=<%= item.key%>>
           <span class="filenum currentview"><%= i+=1%></span>

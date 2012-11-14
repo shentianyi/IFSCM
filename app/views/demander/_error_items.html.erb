@@ -26,10 +26,9 @@
 		</tr>
 		<% i=0
 		demands.items.each do |item|
-		i+=1
 		%>
 		<tr class="norline" id="<%= item.key%>">
-			<th class="no-type-change"><%= i%></th>
+			<th class="no-type-change"><%= i+=1%></th>
 			<th id="supplierNr"><%= item.supplierNr%></th>
 			<th id="partNr"><%= item.cpartNr%></th>
 			<th id="filedate"><%= item.filedate%></th>
