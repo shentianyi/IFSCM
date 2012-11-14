@@ -1,317 +1,343 @@
 @charset "UTF-8";
 /* CSS Document */
 body {
-	background-color: #ffffff;
-	margin: 0px;
-	padding: 0px;
-	font-family: "Helvetica Neue", "Hiragino Sans GB", "Segoe UI",
-		"Microsoft Yahei", "微软雅黑", Tahoma, Arial, STHeiti, sans-serif;
+     background-color: #ffffff;
+     margin: 0px;
+     padding: 0px;
+     font-family: "Helvetica Neue", "Hiragino Sans GB", "Segoe UI", "Microsoft Yahei", "微软雅黑", Tahoma, Arial, STHeiti, sans-serif;
 }
 
 /*different media*/
 @media screen and (max-width: 800px) {
-	.subicons {
-		position: fixed;
-		padding-left: 60px;
-		top: 0px;
-		background-color: #eaedec;
-		color: #9d9d9d;
-		font-size: 12px;
-		width: 100%;
-		height: 40px;
-	}
-	ul.subs {
-		float: left;
-		margin-top: 0px;
-		margin-bottom: 0px;
-		padding-left: 5px;
-		height: 40px;
-		line-height: 30px;
-		list-style: none;
-		margin-top: 0px;
-	}
-	.subs li {
-		font-size: 14px;
-		padding-left: 5px;
-		padding-right: 5px;
-		display: block;
-		float: left;
-		height: 40px;
-		line-height: 40px;
-		display: block
-	}
-	.subs li:hover {
-		background-color: #dbdbdb;
-	}
-	.lefticons {
-		position: fixed;
-		width: 58px;
-		height: 1200px;
-		float: left;
-		margin-left: 0px;
-		margin-top: 0px;
-		background-color: #1297cf;
-		color: #1297cf;
-		border-right-width: 1px;
-		border-right-style: solid;
-		border-right-color: #0e80b0;
-		border-left-width: 1px;
-		border-left-style: solid;
-		border-left-color: #0e80b0;
-		margin-left: 0px;
-		z-index: 99;
-	}
-	.licon {
-		margin-top: 0px;
-		border-bottom-width: 1px;
-		border-bottom-style: solid;
-		border-bottom-color: #0e80b0;
-		border-left-width: 0px;
-		border-top-width: 0px;
-		border-top-style: none;
-		width: 58px;
-		height: 60px;
-		padding-bottom: 0px;
-		background-color: #1297cf;
-	}
-	.licon:hover {
-		background-color: #0e80b0;
-	}
-	.headicon {
-		background-image: url(headiconxs.png);
-		background-repeat: no-repeat;
-		background-color: transparent;
-		background-position: center;
-		border-width: 0px;
-		width: 60px;
-		height: 60px;
-		width: 60px;
-		border-width: 0px;
-	}
-	.customericon {
-		background-image: url(customerxs.png);
-		background-repeat: no-repeat;
-		background-color: transparent;
-		background-position: center;
-		border-width: 0px;
-		width: 60px;
-		height: 60px;
-	}
-	.customericon:hover {
-		background-image: url(customerpxs.png);
-	}
-	.suppliericon {
-		background-image: url(supplierxs.png);
-		background-repeat: no-repeat;
-		background-color: transparent;
-		background-position: center;
-		border-width: 0px;
-		width: 60px;
-		height: 60px;
-	}
-	.suppliericon:hover {
-		background-image: url(supplierpxs.png);
-	}
-	.fixedtop {
-		width: 800px;
-		height: 40px;
-	}
-	.greeting {
-		padding-left: 10px;
-		padding-top: 12px;
-		font-size: 14px;
-		margin: 0px;
-		display: block;
-		float: left;
-		color: #89c501;
-	}
-	.content {
-		float: left;
-		padding-top: 45px;
-		padding-left: 70px;
-	}
-	input.bt {
-		width: 30px;
-		height: 30px;
-		background-color: transparent;
-		background-repeat: no-repeat;
-		border-width: 0px;
-		float: left;
-		margin-top: 10px;
-	}
-	input.iconhome {
-		background-image: url(homeicon.png);
-	}
-	input.iconback {
-		background-image: url(backicon.png);
-	}
-	input.gbtn {
-		width: 76px;
-		height: 32px;
-		border-width: 0px;
-		background-color: transparent;
-		background-image: url(btnbg.png);
-		background-repeat: no-repeat;
-		font-size: 14px;
-		color: #ffffff;
-	}
-	input.gbtn:hover {
-		background-image: url(btnhov.png);
-	}
+     .subicons {
+          position: fixed;
+          padding-left: 60px;
+          top: 0px;
+          background-color: #eaedec;
+          color: #9d9d9d;
+          font-size: 12px;
+          width: 100%;
+          height: 40px;
+     }
+     ul.subs {
+          float: left;
+          margin-top: 0px;
+          margin-bottom: 0px;
+          padding-left: 5px;
+          height: 40px;
+          line-height: 30px;
+          list-style: none;
+          margin-top: 0px;
+     }
+     .subs li {
+          font-size: 14px;
+          padding-left: 5px;
+          padding-right: 5px;
+          display: block;
+          float: left;
+          height: 40px;
+          line-height: 40px;
+          display: block
+     }
+     .subs li:hover {
+          background-color: #dbdbdb;
+     }
+     .lefticons {
+          position: fixed;
+          width: 58px;
+          height: 1200px;
+          float: left;
+          margin-left: 0px;
+          margin-top: 0px;
+          background-color: #1297cf;
+          color: #1297cf;
+          border-right-width: 1px;
+          border-right-style: solid;
+          border-right-color: #0e80b0;
+          border-left-width: 1px;
+          border-left-style: solid;
+          border-left-color: #0e80b0;
+          margin-left: 0px;
+          z-index: 99;
+     }
+     .licon {
+          margin-top: 0px;
+          border-bottom-width: 1px;
+          border-bottom-style: solid;
+          border-bottom-color: #0e80b0;
+          border-left-width: 0px;
+          border-top-width: 0px;
+          border-top-style: none;
+          width: 58px;
+          height: 60px;
+          padding-bottom: 0px;
+          background-color: #1297cf;
+     }
+     .licon:hover {
+          background-color: #0e80b0;
+     }
+     .headicon {
+          background-image: url(headiconxs.png);
+          background-repeat: no-repeat;
+          background-color: transparent;
+          background-position: center;
+          border-width: 0px;
+          width: 60px;
+          height: 60px;
+          width: 60px;
+          border-width: 0px;
+     }
+     .customericon {
+          background-image: url(customerxs.png);
+          background-repeat: no-repeat;
+          background-color: transparent;
+          background-position: center;
+          border-width: 0px;
+          width: 60px;
+          height: 60px;
+     }
+     .customericon:hover {
+          background-image: url(customerpxs.png);
+     }
+     .suppliericon {
+          background-image: url(supplierxs.png);
+          background-repeat: no-repeat;
+          background-color: transparent;
+          background-position: center;
+          border-width: 0px;
+          width: 60px;
+          height: 60px;
+     }
+     .suppliericon:hover {
+          background-image: url(supplierpxs.png);
+     }
+     .fixedtop {
+          width: 800px;
+          height: 40px;
+     }
+     .greeting {
+          padding-left: 10px;
+          padding-top: 12px;
+          font-size: 14px;
+          margin: 0px;
+          display: block;
+          float: left;
+          color: #89c501;
+     }
+     .content {
+          float: left;
+          padding-top: 45px;
+          padding-left: 70px;
+     }
+     input.bt {
+          width: 30px;
+          height: 30px;
+          background-color: transparent;
+          background-repeat: no-repeat;
+          border-width: 0px;
+          float: left;
+          margin-top: 10px;
+     }
+     input.iconhome {
+          background-image: url(homeicon.png);
+     }
+     input.iconback {
+          background-image: url(backicon.png);
+     }
+     input.gbtn {
+          width: 76px;
+          height: 32px;
+          border-width: 0px;
+          background-color: transparent;
+          background-image: url(btnbg.png);
+          background-repeat: no-repeat;
+          font-size: 14px;
+          color: #ffffff;
+     }
+     input.gbtn:hover {
+          background-image: url(btnhov.png);
+     }
 }
 
 /*Another version*/
-@media screen and (min-width:800px) {
-	.headicon {
-		background-image: url(headicon.png);
-		background-repeat: no-repeat;
-		background-color: transparent;
-		background-position: center;
-		border-width: 0px;
-		width: 120px;
-		height: 120px;
-		width: 120px;
-		border-width: 0px;
-	}
-	.customericon {
-		background-image: url(customer.png);
-		background-repeat: no-repeat;
-		background-color: transparent;
-		background-position: center;
-		border-width: 0px;
-		width: 120px;
-		height: 120px;
-	}
-	.customericon:hover {
-		background-image: url(customerp.png);
-	}
-	.suppliericon {
-		background-image: url(supplier.png);
-		background-repeat: no-repeat;
-		background-color: transparent;
-		background-position: center;
-		border-width: 0px;
-		width: 120px;
-		height: 120px;
-	}
-	.suppliericon:hover {
-		background-image: url(supplierp.png);
-	}
-	.lefticons {
-		position: fixed;
-		width: 118px;
-		height: 1200px;
-		float: left;
-		margin-left: 0px;
-		margin-top: 0px;
-		background-color: #1297cf;
-		color: #1297cf;
-		border-right-width: 1px;
-		border-right-style: solid;
-		border-right-color: #0e80b0;
-		border-left-width: 1px;
-		border-left-style: solid;
-		border-left-color: #0e80b0;
-		margin-left: 0px;
-		z-index: 99;
-	}
-	.licon {
-		margin-top: 0px;
-		border-width: 1px;
-		border-style: solid;
-		border-color: #0e80b0;
-		border-left-width: 0px;
-		border-top-width: 0px;
-		width: 118px;
-		height: 120px;
-		padding-bottom: 0px;
-		background-color: #1297cf;
-	}
-	.licon:hover {
-		background-color: #0e80b0;
-	}
-	.sup {
-		border-top-width: 0px;
-	}
-	.fixedtop {
-		width: 1024px;
-		height: 40px;
-	}
-	.greeting {
-		padding-right: 10px;
-		padding-top: 12px;
-		margin: 0px;
-		display: block;
-		float: right;
-		color: #89c501;
-	}
-	.content {
-		float: left;
-		padding-top: 45px;
-		padding-left: 150px;
-	}
-	input.bt {
-		width: 30px;
-		height: 30px;
-		background-color: transparent;
-		background-repeat: no-repeat;
-		border-width: 0px;
-		float: left;
-		margin-top: 10px;
-	}
-	input.iconhome {
-		background-image: url(homeicon.png);
-	}
-	input.iconback {
-		background-image: url(backicon.png);
-	}
-	input.gbtn {
-		width: 76px;
-		height: 32px;
-		border-width: 0px;
-		background-color: transparent;
-		background-image: url(btnbg.png);
-		background-repeat: no-repeat;
-		font-size: 14px;
-		color: #ffffff;
-	}
-	input.gbtn:hover {
-		background-image: url(btnhov.png);
-	}
-	.subicons {
-		position: fixed;
-		padding-left: 120px;
-		top: 0px;
-		background-color: #eaedec;
-		color: #9d9d9d;
-		font-size: 14px;
-		font-size: 14px;
-		width: 100%;
-		height: 40px;
-	}
-	ul.subs {
-		float: left;
-		margin-top: 0px;
-		margin-bottom: 0px;
-		padding-left: 5px;
-		height: 40px;
-		line-height: 30px;
-		list-style: none;
-		margin-top: 0px;
-	}
-	.subs li {
-		font-size: 14px;
-		padding-left: 10px;
-		padding-right: 10px;
-		display: block;
-		float: left;
-		height: 40px;
-		line-height: 40px;
-		display: block
-	}
-	.subs li:hover {
-		background-color: #dbdbdb;
-	}
-	
-	
+@media screen and (min-width: 800px) {
+     .headicon {
+          background-image: url(headicon.png);
+          background-repeat: no-repeat;
+          background-color: transparent;
+          background-position: center;
+          border-width: 0px;
+          width: 120px;
+          height: 120px;
+          width: 120px;
+          border-width: 0px;
+     }
+     .customericon {
+          background-image: url(customer.png);
+          background-repeat: no-repeat;
+          background-color: transparent;
+          background-position: center;
+          border-width: 0px;
+          width: 120px;
+          height: 120px;
+     }
+     .customericon:hover {
+          background-image: url(customerp.png);
+     }
+     .suppliericon {
+          background-image: url(supplier.png);
+          background-repeat: no-repeat;
+          background-color: transparent;
+          background-position: center;
+          border-width: 0px;
+          width: 120px;
+          height: 120px;
+     }
+     .suppliericon:hover {
+          background-image: url(supplierp.png);
+     }
+     .lefticons {
+          position: fixed;
+          width: 118px;
+          height: 1200px;
+          float: left;
+          margin-left: 0px;
+          margin-top: 0px;
+          background-color: #1297cf;
+          color: #1297cf;
+          border-right-width: 1px;
+          border-right-style: solid;
+          border-right-color: #0e80b0;
+          border-left-width: 1px;
+          border-left-style: solid;
+          border-left-color: #0e80b0;
+          margin-left: 0px;
+          z-index: 99;
+     }
+     .licon {
+          margin-top: 0px;
+          border-width: 1px;
+          border-style: solid;
+          border-color: #0e80b0;
+          border-left-width: 0px;
+          border-top-width: 0px;
+          width: 118px;
+          height: 120px;
+          padding-bottom: 0px;
+          background-color: #1297cf;
+     }
+     .licon:hover {
+          background-color: #0e80b0;
+     }
+     .sup {
+          border-top-width: 0px;
+     }
+     .fixedtop {
+          width: 1024px;
+          height: 40px;
+     }
+     .greeting {
+          padding-right: 10px;
+          padding-top: 12px;
+          margin: 0px;
+          display: block;
+          float: right;
+          color: #89c501;
+     }
+     .content {
+          float: left;
+          padding-top: 45px;
+          padding-left: 150px;
+     }
+     input.bt {
+          width: 30px;
+          height: 30px;
+          background-color: transparent;
+          background-repeat: no-repeat;
+          border-width: 0px;
+          float: left;
+          margin-top: 10px;
+     }
+     input.iconhome {
+          background-image: url(homeicon.png);
+     }
+     input.iconback {
+          background-image: url(backicon.png);
+     }
+     input.gbtn {
+          width: 76px;
+          height: 32px;
+          border-width: 0px;
+          background-color: transparent;
+          background-image: url(btnbg.png);
+          background-repeat: no-repeat;
+          font-size: 14px;
+          color: #ffffff;
+     }
+     input.gbtn:hover {
+          background-image: url(btnhov.png);
+     }
+     .subicons {
+          position: fixed;
+          padding-left: 120px;
+          top: 0px;
+          background-color: #eaedec;
+          color: #9d9d9d;
+          font-size: 14px;
+          font-size: 14px;
+          width: 100%;
+          height: 40px;
+     }
+     ul.subs {
+          float: left;
+          margin-top: 0px;
+          margin-bottom: 0px;
+          padding-left: 5px;
+          height: 40px;
+          line-height: 30px;
+          list-style: none;
+          margin-top: 0px;
+     }
+     .subs li {
+          font-size: 14px;
+          padding-left: 10px;
+          padding-right: 10px;
+          display: block;
+          float: left;
+          height: 40px;
+          line-height: 40px;
+          display: block
+     }
+     .subs li:hover {
+          background-color: #dbdbdb;
+     }
+     #dialog-overlay {
+          display: none;
+          background: #aaaaaa/*{bgColorOverlay}*/50%/*{bgOverlayXPos}*/50%/*{bgOverlayYPos}*/repeat-x/*{bgOverlayRepeat}*/;
+          opacity: .3;
+          filter: Alpha(Opacity=30)/*{opacityOverlay}*/;
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+     }
+
+     #handle-dialog-modal {
+          position: absolute;
+          top: 40%;
+          left: 40%;
+          width: 300px;
+          overflow: hidden;
+          display: none;
+          z-index: 1;
+     }
+     #handle-dialog-modal .handle-dialog-modal-content {
+          background: #ffffff;
+          height: 150px;
+     }
+     #handle-dialog-modal .handle-dialog-modal-content p {
+          padding: 40px 0px 0px 60px;
+     }
+
 }
