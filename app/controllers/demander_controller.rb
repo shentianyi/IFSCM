@@ -329,17 +329,18 @@ class DemanderController<ApplicationController
     if session[:orgOpeType]==OrgOperateType::Client
       supplierId = @cz_org.search_supplier_byNr( s ) if s && s.size>0
       clientId = @cz_org.id
-      partrelId = PartRel.get_all_partrelId_by_partNr( clientId, p, PartRelType::Client ) if p && p.size>0
+      partRelMetaKey = PartRel.get_all_partRelMetaKey_by_partNr( clientId, p, PartRelType::Client ) if p && p.size>0
     else
       clientId = @cz_org.search_client_byNr( c ) if c && c.size>0
       supplierId = @cz_org.id
-      partrelId = PartRel.get_all_partrelId_by_partNr( supplierId, p, PartRelType::Supplier ) if p && p.size>0
+      partRelMetaKey = PartRel.get_all_partRelMetaKey_by_partNr( supplierId, p, PartRelType::Supplier ) if p && p.size>0
     end
+    partRelMetaKey = 'none' if partRelMetaKey && partRelMetaKey.size==0
 
     @demands = []
 
     @demands, @total = Demander.search( :clientId=>clientId, :supplierId=>supplierId,
-    :rpartNr=>partrelId, :start=>tstart, :end=>tend,
+    :rpartNr=>partRelMetaKey, :start=>tstart, :end=>tend,
     :type=>params[:type],  :amount=>params[:amount],
     :page=>params[:page] )
     @totalPages=@total/Demander::NumPer+(@total%Demander::NumPer==0 ? 0:1)
@@ -358,14 +359,15 @@ class DemanderController<ApplicationController
             ######  判断类型 C or S ， 将session[:id]赋值给 id
             if session[:orgOpeType]==OrgOperateType::Client
               clientId = @cz_org.id
-              partrelId = PartRel.get_all_partrelId_by_partNr( clientId, p, PartRelType::Client ) if p && p.size>0
+              partRelMetaKey = PartRel.get_all_partRelMetaKey_by_partNr( clientId, p, PartRelType::Client ) if p && p.size>0
             else
               supplierId = @cz_org.id
-              partrelId = PartRel.get_all_partrelId_by_partNr( supplierId, p, PartRelType::Supplier ) if p && p.size>0
+              partRelMetaKey = PartRel.get_all_partRelMetaKey_by_partNr( supplierId, p, PartRelType::Supplier ) if p && p.size>0
             end
+            partRelMetaKey = 'none' if partRelMetaKey && partRelMetaKey.size==0
             @demands = []
             @demands, @total = Demander.search( :clientId=>clientId, :supplierId=>supplierId,
-                                                                                        :rpartNr=>partrelId,
+                                                                                        :rpartNr=>partRelMetaKey,
                                                                                         :page=>params[:page] )
             @totalPages=@total/Demander::NumPer+(@total%Demander::NumPer==0 ? 0:1)
             @currentPage=params[:page].to_i
