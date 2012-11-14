@@ -18,32 +18,61 @@ function window_redirect(url, timeout) {
 
 // ws : demand upload file
 function upload_demand_files() {
-     $(function() {'use strict';
-          // Initialize the jQuery File Upload widget:
+     $(function() {
+          var vali = true;
+          var canceled = false;
           $('#demandupload').fileupload({
+               singleFileUploads : false,
+               acceptFileTypes : /(\.|\/)(csv)$/i,
                dataType : 'html',
+               change : function(e, data) {
+                    canceled = false;
+                    vali = true;
+                    $('#file-upload-info-list').show();
+                    $('#upload-file-preview').html('');
+                    var i = 0;
+                    var reg = /(\.|\/)(csv)$/i;
+                    $.each(data.files, function(index, file) {
+                         i++;
+                         var msg = "";
+                         if(!reg.test(file.name)) {
+                              msg = '格式错误，只允许csv文件';
+                              vali = false;
+                         }
+                         $('#upload-file-preview').append("<tr><td class='filenum-td'><span class='filenum-list'>" + i 
+                           + "</span></td><td class='filename-td'>" + file.name + "</td><td class='filebyte-td'>" + file.size
+                            + " Byte</td><td class='filemsg-td'>" + msg + "</td></tr>");
+                    });
+               },
+               add : function(e, data) {
+                    $("#cancel-button").click(function() {
+                         canceled = true;
+                                      $('#file-upload-info-list').hide();
+                         $('#upload-file-preview').html('');
+                    });
+
+                    $("#upload-button").click(function() {
+                         if(vali && !canceled) {
+                              data.submit();
+                         }
+                    });
+               },
                beforeSend : function(xhr) {
                     xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'));
                },
                success : function(data) {
                     do_after_fileupload(data);
                },
-               error : function() {
-
-               },
                done : function(e, data) {
                     // data.context.text('Upload finished.');
+               },
+               fail : function(e, data) {
+                    $.each(data.files, function(index, file) {
+                         alert(file.name);
+                    });
                }
           });
-
-          // settings:
-          $('#demandupload').fileupload('option', {
-               singleFileUploads : false,
-               maxFileSize : 50000000,
-               acceptFileTypes : /(\.|\/)(csv)$/i
-          });
      });
-
 }
 
 // ws : check staff file cache in redis
@@ -152,8 +181,8 @@ function correct_demand_error(ele) {
                     } else {
                          sfileErrorCountSpan.attr('class', 'filestatus filerr').text('有' + de.sc + '处错误');
                          if(de.vali) {
-                             // var msgDiv = demand.find('.demand-msg-div');
-                              // msgDiv.html("已正确");                 
+                              // var msgDiv = demand.find('.demand-msg-div');
+                              // msgDiv.html("已正确");
                               $('#' + de.key).hide();
                          } else {
                               var msgs = jQuery.parseJSON(de.msg);
@@ -294,20 +323,10 @@ function download_demand(ele) {
 
 // ws: send demand
 function send_demand_batchFile(ele) {
-     // var dialog = $("#dialog-modal").dialog({
-          // modal : true,
-          // autoOpen : false,
-          // closeOnEscape : false,
-          // resizable : false,
-          // open : function(event, ui) {
-               // $(this).parent().children().children('.ui-dialog-titlebar-close').hide();
-          // }
-     // });
-// 
-var overlay=document.getElementById('handle-dialog-modal');
-overlay.style.display='block';
-var dialog=document.getElementById('dialog-overlay');
-dialog.style.display='block';
+     var overlay = document.getElementById('handle-dialog-modal');
+     overlay.style.display = 'block';
+     var dialog = document.getElementById('dialog-overlay');
+     dialog.style.display = 'block';
 
      $.ajax({
           url : '../demander/send_demand',
@@ -317,8 +336,8 @@ dialog.style.display='block';
           dataType : 'json',
           type : 'post',
           success : function(data) {
-           dialog.style.display='none';
-           overlay.style.display='none';
+               dialog.style.display = 'none';
+               overlay.style.display = 'none';
                if(data.result) {
                     $(ele).unbind('click').removeAttr('onclick').bind('click', function() {
                          alert('预测已经发送成功，不可重复发送');
@@ -336,6 +355,7 @@ dialog.style.display='block';
      });
 }
 
+// ws:check sfaff unfinished file
 function check_staff_unfinished_file(handler) {
      $.ajax({
           url : '../demander/check_staff_unfinished_file',
@@ -350,3 +370,49 @@ function check_staff_unfinished_file(handler) {
      });
 }
 
+function changetype(obj) {
+     var tag = obj.firstChild.tagName;
+     if( typeof (tag) != "undefined" && (tag == "INPUT" || tag == "TEXTAREA"))
+          return;
+     var val = obj.innerHTML;
+     var txt = document.createElement("INPUT");
+     txt.value = val;
+     txt.style.background = "#FFC";
+     txt.style.width = obj.offsetWidth + "px";
+     obj.innerHTML = "";
+     obj.appendChild(txt);
+     txt.focus();
+     txt.onblur = function(e) {
+          if(txt.value.length == 0)
+               txt.value = val;
+          obj.innerHTML = txt.value;
+          return false;
+     }
+     return false;
+}
+
+function clicked(className) {
+     var o, i, j;
+     var allPageTags = document.getElementsByTagName('table');
+     if(allPageTags != null) {
+          for( i = 0; i < allPageTags.length; i++) {
+               if(allPageTags[i].className == "upData") {
+                    o = allPageTags[i].rows;
+               }
+          }
+          for( i = 1; i < o.length; i++) {
+               for( j = 0; j < o[i].cells.length - 1; j++) {
+                    // not change the text type
+                    if(o[i].cells[j].className == 'no-type-change')
+                         continue;
+                    // the cell has specific onclick event
+                    if(o[i].cells[j].className == 'no-auto-click-bind')
+                         continue;
+
+                    o[i].cells[j].ondblclick = function() {
+                         changetype(this);
+                    }
+               }
+          }
+     }
+}

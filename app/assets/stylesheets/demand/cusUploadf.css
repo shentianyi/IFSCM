@@ -319,30 +319,79 @@
 		height: 5px;
 		background-color: #208041;
 	}
-
 	
-	#this1 {
-		width: 100%;
-	}
-	#last1 {
-		width: 10%;
-	}
-	#this2 {
-		width: 20%;
-	}
-	#last2 {
-		width: 100%;
-	}
-	#this3 {
-		width: 70%;
-	}
-	#last3 {
-		width: 100%;
-	}
-	#this4 {
-		width: 100%;
-	}
-	#last4 {
-		width: 33%;
-	}
+/* upload demand	buttons*/
+    #demandupload {
+          opacity: 0;
+          filter: alpha(opacity=0);
+          cursor: pointer;
+          display: block;
+          height: 40px;
+          position: absolute;
+          width: 320px;
+          font-size: 30px;
+          left: -170px;
+          top: -8px;
+     }
+     @-moz-document url-prefix() {
+     #demandupload {
+          left: -355px;
+          width: 190px;
+     }
+     }
+     .add-file-button {
+          position: relative;
+          float: left;
+          overflow: hidden;
+          cursor: pointer;
+          text-align: center;
+          font: -webkit-small-control;
+          -webkit-box-align: center;
+          margin-right:3px;
+          font-size: 18px;
+                width: 100px;
+     }
+        .add-file-button:hover{
+             background-color: #0E80B0;
+          }
+          .add-file-button .title{cursor:pointer;
+               display: inline-block;
+               line-height: 38px;
+          }
+
+          .upload-controls-blocks .btupload{
+               cursor:pointer;
+               width: 100px;
+               height:38px;
+          }
+          #file-upload-info-list{
+               margin-top: 3px;
+               padding:3px;
+               font-size: 16px;
+               color: #696D72;
+          }
+          #file-upload-info-list .filenum-td{
+               width: 20px;
+               height: 20px;
+          }
+          #file-upload-info-list .filenum-list{
+background-color: #DBDBDB;
+color: #7C7C7C;
+border: 2px solid #DBDBDB;
+border-radius: 3px;
+width: 20px;
+height: 15px;
+line-height: 15px;
+text-align: center;
+          }
+          #file-upload-info-list .filename-td{
+               min-width: 80px;
+          }
+          #file-upload-info-list .filebyte-td{
+               min-width: 40px;
+               text-align: center;
+          }
+             #file-upload-info-list .filemsg-td{
+                  color: red;
+          }
 }

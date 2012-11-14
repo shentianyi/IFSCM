@@ -30,7 +30,6 @@ class DemanderController<ApplicationController
           batchIndex=DemanderHelper::generate_batchFile_index(hfiles)
             msg.result=true
             msg.object=batchIndex
-          
             #Resque.enqueue(DemandUpfilesDeler,batch_file.key)
         else
           msg.content='未选择文件'
