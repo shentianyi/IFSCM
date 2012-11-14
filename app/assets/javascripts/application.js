@@ -12,12 +12,3 @@
 //
 //= require jquery-1.8.2.min
 //= require jquery.ui/jquery-ui-1.9.1.custom.min
-//= require bootstrap.min
-
-//= require jquery.file.upload/tmpl.min
-
-//= require jquery.file.upload/jquery.fileupload
-
-
-//= require_tree .
-
