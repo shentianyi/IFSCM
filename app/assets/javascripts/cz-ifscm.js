@@ -1,12 +1,3 @@
-$("document").ready(function() {
-     $(".botbts").css({
-          "opacity" : .8
-     });
-     $(".listoffiles").css({
-          "opacity" : .8
-     });
-});
-
 // ws: Negative judgement
 function notNegaNum(value) {
      if(!isNaN(value)) {
@@ -231,17 +222,6 @@ function reset_demand_amount(obj) {
                                              demand.find('#lastLineWidthDiv').css('width', '100%');
                                              demand.find('.percentageImg').attr('src', '/assets/equal.png');
                                         }
-                                        //.....
-                                        // reset file error num info
-                                        // var sfileInfo=$('.listoffiles').find('#'+de.sk);
-                                        // var sfileErrorCountSpan=sfileInfo.find('#file-error-count-info-span');
-                                        // if(de.sc==0){
-                                        // sfileErrorCountSpan.attr('class','filestatus noshowfile');
-                                        // sfileErrorCountSpan.text('没有错误');
-                                        // }else{
-                                        // sfileErrorCountSpan.attr('class','filestatus filerr');
-                                        // sfileErrorCountSpan.text('有'+de.sc+'处错误');
-                                        // }
                                    } else {
                                         alert(jQuery.parseJSON(de.msg)[0]);
                                    }
@@ -314,17 +294,21 @@ function download_demand(ele) {
 
 // ws: send demand
 function send_demand_batchFile(ele) {
-     var dialog = $("#dialog-modal").dialog({
-          modal : true,
-          autoOpen : false,
-          closeOnEscape : false,
-          resizable : false,
-          open : function(event, ui) {
-               $(this).parent().children().children('.ui-dialog-titlebar-close').hide();
-          }
-     });
+     // var dialog = $("#dialog-modal").dialog({
+          // modal : true,
+          // autoOpen : false,
+          // closeOnEscape : false,
+          // resizable : false,
+          // open : function(event, ui) {
+               // $(this).parent().children().children('.ui-dialog-titlebar-close').hide();
+          // }
+     // });
+// 
+var overlay=document.getElementById('handle-dialog-modal');
+overlay.style.display='block';
+var dialog=document.getElementById('dialog-overlay');
+dialog.style.display='block';
 
-     $(dialog).dialog("open");
      $.ajax({
           url : '../demander/send_demand',
           data : {
@@ -333,7 +317,8 @@ function send_demand_batchFile(ele) {
           dataType : 'json',
           type : 'post',
           success : function(data) {
-               $(dialog).dialog("destroy");
+           dialog.style.display='none';
+           overlay.style.display='none';
                if(data.result) {
                     $(ele).unbind('click').removeAttr('onclick').bind('click', function() {
                          alert('预测已经发送成功，不可重复发送');
