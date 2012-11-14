@@ -240,15 +240,15 @@ function reset_demand_amount(obj) {
                                              // demand.find('#lastLineWidthDiv').css('width', '' + (100 / (1 + rate / 100)) + '%');
                                              // else
                                              // demand.find('#lastLineWidthDiv').css('width', '0%');
-                                             demand.find('#lastLineWidthDiv').css('width', parseInt(oldamount) > 0 ? (100 / (1 + rate / 100)) + '%' : '0%');
+                                             demand.find('#lastLineWidthDiv').css('width', parseInt(de.oldamount) > 0 ? ''+(100 / (1 + rate / 100)) + '%' : '0%');
                                              demand.find('.percentageImg').attr('src', '/assets/arrup.png');
                                         } else if(rate < 0) {
                                              demand.find('#thisLineWidthDiv').css('width', '' + (100 + rate ) + '%');
-                                             demand.find('#lastLineWidthDiv').css('width', parseInt(oldamount) > 0 ? '100%' : '0%');
+                                             demand.find('#lastLineWidthDiv').css('width',  '100%');
                                              demand.find('.percentageImg').attr('src', '/assets/arrdown.png');
                                         } else {
                                              demand.find('#thisLineWidthDiv').css('width', '100%');
-                                             demand.find('#lastLineWidthDiv').css('width', parseInt(oldamount) > 0 ? '100%' : '0%');
+                                             demand.find('#lastLineWidthDiv').css('width', parseInt(de.oldamount) > 0 ? '100%' : '0%');
                                              demand.find('.percentageImg').attr('src', '/assets/equal.png');
                                         }
                                    } else {
