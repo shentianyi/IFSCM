@@ -1,69 +1,69 @@
 <% if demands%>
 <%if demands.items.count>0%>
 <div class="tableview" id='tableview'>
-	<table class="upData" id="<%= demands.key%>">
-		<tr class="lineone">
-			<th>&nbsp;</th>
-			<th>供应商号</th>
-			<th>零件号</th>
-			<th>文件日期</th>
-			<th>要货日期</th>
-			<th>数量</th>
-			<th>预测类型</th>
-			<th>错误提示</th>
-			<th>&nbsp;</th>
-		</tr>
-		<tr class="divide" style="display: none">
-			<th class="nordvd">&nbsp;</th>
-			<th class="nordvd"></th>
-			<th class="nordvd"></th>
-			<th class="nordvd"></th>
-			<th class="nordvd"></th>
-			<th class="nordvd"></th>
-			<th class="nordvd"></th>
-			<th class="lastdvd"></th>
-			<th>&nbsp;</th>
-		</tr>
-		<% i=0
-		demands.items.each do |item|
-		%>
-		<tr class="norline" id="<%= item.key%>">
-			<th class="no-type-change"><%= i+=1%></th>
-			<th id="supplierNr"><%= item.supplierNr%></th>
-			<th id="partNr"><%= item.cpartNr%></th>
-			<th id="filedate"><%= item.filedate%></th>
-			<th class="no-type-change" id="date"><%= item.date%></th>
-			<th id="amount"><%= item.amount%></th>
-			<th id="type"><%= item.type%></th>
-			<th class='no-type-change'>
-			<div style="text-align:left;" class="demand-msg-div">
-				<% msg=JSON.parse(item.msg)%>
-				<%msg.each do |m|%>
-				<span><%= m%>/</span>
-				<%end%>
-			</div></th>
-			<th>
-			  <img  src="/assets/iconedith.png" style="height: 20px;height: 20px;" title="修改"  onclick="correct_demand_error(this);"/>
-			</th>
-		</tr>
-		<%end%>
-	</table>
-	    <div>
-          <div>共 <%=@totalCount%> 条 </div>
+     <table class="upData" id="<%= demands.key%>">
+          <tr class="lineone">
+               <th>&nbsp;</th>
+               <th>供应商号</th>
+               <th>零件号</th>
+               <th>文件日期</th>
+               <th>要货日期</th>
+               <th>数量</th>
+               <th>预测类型</th>
+               <th>错误提示</th>
+               <th>&nbsp;</th>
+          </tr>
+          <tr class="divide" style="display: none">
+               <th class="nordvd">&nbsp;</th>
+               <th class="nordvd"></th>
+               <th class="nordvd"></th>
+               <th class="nordvd"></th>
+               <th class="nordvd"></th>
+               <th class="nordvd"></th>
+               <th class="nordvd"></th>
+               <th class="lastdvd"></th>
+               <th>&nbsp;</th>
+          </tr>
+          <% i=0
+          demands.items.each do |item|
+          %>
+          <tr class="norline" id="<%= item.key%>">
+               <th class="no-type-change"><%= i+=1%></th>
+               <th id="supplierNr"><%= item.supplierNr%></th>
+               <th id="partNr"><%= item.cpartNr%></th>
+               <th id="filedate"><%= item.filedate%></th>
+               <th class="no-type-change" id="date"><%= item.date%></th>
+               <th id="amount"><%= item.amount%></th>
+               <th id="type"><%= item.type%></th>
+               <th class='no-type-change'>
+               <div style="text-align:left;" class="demand-msg-div">
+                    <% msg=JSON.parse(item.msg)%>
+                    <%msg.each do |m|%>
+                    <span><%= m%>/</span>
+                    <%end%>
+               </div></th>
+               <th><img  src="/assets/iconedith.png" style="height: 20px;height: 20px;" title="修改"  onclick="correct_demand_error(this);"/></th>
+          </tr>
+          <%end%>
+     </table>
+     <div>
+          <div style="color: #9D9D9D;">
+               共 <%= @totalCount%> 条
+          </div>
      </div>
-	    <!-- pager -->
+     <!-- pager -->
      <div class="pagers">
-     <%=bri_pager options={:class=>"pagination",:pages=>@totalPages,:current=>@currentPage,:action=>'get_upfile_demands',:target=>demands.key}%>
+          <%= bri_pager options={:class=>"pagination",:pages=>@totalPages,:current=>@currentPage,:action=>'get_upfile_demands',:target=>demands.key}%>
      </div>
 </div>
 <%else%>
 <p>
-	文件中无预测
+     文件中无预测
 </p>>
 <%end%>
 <%else%>
- <p>
-      文件内容获取错误
- </p>
+<p>
+     文件内容获取错误
+</p>
 <%end%>
 

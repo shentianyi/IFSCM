@@ -311,7 +311,12 @@ body {
      .subs li:hover {
           background-color: #dbdbdb;
      }
-     
+     .subs img{
+       vertical-align: middle;
+     }
+     .subs a{
+          color: rgb(0,136,204);
+     }
 /*     dialog--css*/
      #dialog-overlay {
           display: none;
