@@ -33,12 +33,11 @@
           elsif item.rate.to_i<0
           img='arrdown'
           thisLineWidth=(100+item.rate.to_f)
-          lastLineWidth=item.oldamount.to_i>0 ? 100 : 0
+          lastLineWidth=100
           else
           img='equal'
           thisLineWidth=100
-          lastLineWidth=100
-              lastLineWidth=item.oldamount.to_i>0 ? 100 : 0
+          lastLineWidth=item.oldamount.to_i>0 ? 100 : 0
           end
           %>
           <tr class="norline" id="<%= item.key%>">

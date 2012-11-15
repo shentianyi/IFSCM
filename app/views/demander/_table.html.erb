@@ -22,12 +22,19 @@
 		</tr>
 		<% @demands.each do |d|
 	          thisLineWidth=lastLineWidth=nil
-	          if d.rate.to_i>=0
-		          thisLineWidth=100
-		          lastLineWidth= d.oldamount.to_i>0 ? 100/(1+d.rate.to_f/100) : 0
+	          img=nil
+	          if d.rate.to_i>0
+	          img='arrup'
+	          thisLineWidth=100
+	          lastLineWidth=100/(1+d.rate.to_f/100)
+	          elsif d.rate.to_i<0
+	          img='arrdown'
+	          thisLineWidth=(100+d.rate.to_f)
+	          lastLineWidth=100
 	          else
-		          thisLineWidth=100/(1-d.rate.to_f/100)
-		          lastLineWidth=d.oldamount.to_i>0 ? 100 : 0
+	          img='equal'
+	          thisLineWidth=100
+	          lastLineWidth=d.oldamount.to_i>0 ? 100 : 0
 	          end
 		%>
 		  <tr class="demandnorline hoverable">
@@ -45,8 +52,13 @@
 			<th>  
 	               <div class="forcastcompare">
 	                    <div class="lineforcast">
-	                         <span class="percentage"> <%= d.rate.to_i.abs %>% </span>
-	                         <img src="/assets/<%= (d.rate.to_i>=0 ? 'arrup' : 'arrdown')%>.png" class='percentageImg' />
+	                    	<% if d.oldamount.to_i==0 %>
+	                    	<span class="percentage">  new  </span>
+	                         <img src="/assets/dotchecked.png" class='percentageImg' />
+	                         <% else %>
+	                         <span class="percentage"> <%= d.rate.to_f.round(2).abs %>% </span>
+	                         <img src="/assets/<%= img%>.png" class='percentageImg' />
+	                         <% end %>
 	                    </div>
 	                    <div class="lineforcast">
 	                         <span class="fnumbers">本次预测：<span id="this_demand_amount"><%= d.amount %></span></span>
