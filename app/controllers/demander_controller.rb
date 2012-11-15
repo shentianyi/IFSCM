@@ -214,6 +214,7 @@ class DemanderController<ApplicationController
           msg.object=[]
         end
         ymax = (demander.amount.to_i+(demander.oldamount.to_i==0?demander.amount.to_i : demander.oldamount.to_i))/2*1.618
+        partNr = session[:orgOpeType]==OrgOperateType::Client ? demander.cpartNr : demander.spartNr
       end
       xaxis = []
       5.times.each{|e| xaxis<<(startIndex+e.day.to_i) }
@@ -221,10 +222,12 @@ class DemanderController<ApplicationController
       puts demander.oldamount.to_i
       puts demander.amount.to_i
       puts ymax
+      puts chart
       
       respond_to do |format|
         format.xml {render :xml=>JSON.parse(msg.to_json).to_xml(:root=>'demandHistory')}
         format.json { render json: {:msg=>msg, 
+            :partNr=>partNr,
             :chart=>chart,
             :x=>x,
             :xmin=>startIndex,
@@ -311,9 +314,13 @@ class DemanderController<ApplicationController
   end
   
   def kestrel_newer
-    dType={ ''=>0 }
-    ['D','W','M','Y'].each{|e| dType[e]=Demander.get_kestrel(@cz_org.id, e).size  and dType['']+=dType[e] }
-    render :json=>dType.to_json
+    if params[:type]
+        render :json=>Demander.clear_kestrel(@cz_org.id, params[:type])
+    else
+        dType={ ''=>0 }
+        ['D','W','M','Y'].each{|e| dType[e]=Demander.get_kestrel(@cz_org.id, e).size  and dType['']+=dType[e] }
+        render :json=>dType.to_json
+    end
   end
 
   def search
