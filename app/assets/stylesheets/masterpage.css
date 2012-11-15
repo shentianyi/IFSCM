@@ -315,7 +315,8 @@ body {
        vertical-align: middle;
      }
      .subs a{
-          color: rgb(0,136,204);
+           text-decoration: none;
+          color: #9D9D9D;
      }
 /*     dialog--css*/
      #dialog-overlay {

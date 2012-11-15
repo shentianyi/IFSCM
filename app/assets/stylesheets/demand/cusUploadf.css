@@ -29,8 +29,10 @@
 	.uploadline {
 		margin-top: 30px;
 		margin-bottom: 50px;
-		margin-left: 220px;
-		width: 800px;
+
+               /*		margin-left: 220px;*/
+
+/*		width: 800px;*/
 	}
 	.btupload {
 		background-color: #1297cf;
@@ -393,5 +395,14 @@ text-align: center;
           }
              #file-upload-info-list .filemsg-td{
                   color: red;
+          }
+          .correct-img-span{
+               height: 20px;
+               height: 20px; 
+               background-image: url(/assets/iconedit.png);
+               display: block;
+          }
+            .correct-img-span:hover{
+               background-image: url(/assets/iconedith.png);
           }
 }
