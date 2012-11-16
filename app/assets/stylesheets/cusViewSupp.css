@@ -79,16 +79,12 @@
 		color: #4a248a;
 	}
 	.suppname {
-		margin: 10px 10px 0px 10px;
+		margin: 3px 10px 0px 10px;
 		font-size: 18px;
 	}
 	.address {
-		margin: 10px 300px 0px 10px;
-		width: 80px;
-		text-align: left;
-		float: left;
-		font-size: 18px;
-		float: left;
+          margin: 3px 10px 0px 10px;
+          font-size: 13px;
 	}
 	.products {
 		float: left;

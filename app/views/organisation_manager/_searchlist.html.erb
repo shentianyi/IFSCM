@@ -1,14 +1,16 @@
 	<%= @total %>
 	
 	<% @orgs.each do |o| %>
-	<div id="info1" class="supplierinfo">
+	<div  class="supplierinfo">
 		<a href="#"> <img alt='no pic' src="/assets/companylogo1.png" width=70 height=70 /></a> 
 		<a class="namestyle" href="#">
 			<p class="suppname"><%= o[1].name%></p>
-			<p class="address"><%= o[1].address%></p>
-		</a><a href="#" class="normalstyle"><p class="products">公司网址：<%= o[1].website%></p></a>
-		<a class="normalstyle" href="#"><p class="contacts">联系人：沈天一
-				(<%= o[1].tel%>) tianyi.shen@cz-tek.com</p></a>
+		</a>
+	<br/>
+	    <a href="#" class="normalstyle"><p class="address">公司地址：<%= o[1].address%></p></a>
+		<a href="#" class="normalstyle"><p class="products">公司网址：<%= o[1].website%></p></a>
+		<a class="normalstyle" href="#"><p class="contacts">联系人：<%= o[1].contact%>
+				(<%= o[1].tel%>) <%= o[1].email%></p></a>
 		<div class="hovbtns" id="hovbtn1" style="display: none">
 			<input type="button" name="sendmail" class="sendmail hovbt"
 				value="" /> <input type="button" name="skype"

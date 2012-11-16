@@ -11,7 +11,7 @@ module InitDataCsvHelper
     CSV.foreach(File.join(@@path,fileName+'.csv'),:headers=>true,:col_sep=>$CSVSP) do |row|
       puts "----- init org : #{row["Name"]}----------------------------"
       org=Organisation.new(:key=>Organisation.get_key(Organisation.gen_id),:name=>row["Name"],:description=>row["Description"],
-      :address=>row["Address"], :tel=>row["Tel"], :website=>row["Website"],:abbr=>row["Abbr"],:contact=>["Contact"],:email=>row["Email"])
+      :address=>row["Address"], :tel=>row["Tel"], :website=>row["Website"],:abbr=>row["Abbr"],:contact=>row["Contact"],:email=>row["Email"])
       org.save
       orgs<<org
     end

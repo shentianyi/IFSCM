@@ -215,7 +215,7 @@ body {
           z-index: 99;
      }
      .licon {
-          margin-top: 0px;
+          margin-top: -16px;
           border-width: 1px;
           border-style: solid;
           border-color: #0e80b0;
