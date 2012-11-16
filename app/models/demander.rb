@@ -102,6 +102,19 @@ class Demander<CZ::BaseClass
     return demands
   end
   
+  def self.clear_kestrel( orgId, demandType )
+    kesKey = gen_kestrel(orgId)
+    score = case demandType
+    when DemanderType::Day        then  10
+    when DemanderType::Week     then  20
+    when DemanderType::Month   then  30
+    when DemanderType::Year        then  40
+    when ''
+      return $redis.zremrangebyrank( kesKey, 0, -1)
+    end
+    return $redis.zremrangebyscore( kesKey, score, score )
+  end
+  
   def id
     key.delete "#{Rns::De}:"
   end
