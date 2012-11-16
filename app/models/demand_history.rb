@@ -22,6 +22,11 @@ class DemandHistory<CZ::BaseClass
   def self.get_last_item_key key
     $redis.zrevrange(key,0,0)
   end
+  
+  def self.get_two_ends(demander)
+    key=generate_zset_key demander.clientId,demander.supplierId,demander.relpartId,demander.type,demander.date
+    return find($redis.zrange(key,0,0).first), find($redis.zrevrange(key,0,0).first)
+  end
 
   def self.compare_rate(d)
     ckey=generate_zset_key d.clientId,d.supplierId,d.relpartId,d.type,d.date

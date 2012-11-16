@@ -184,12 +184,17 @@ class DemanderController<ApplicationController
   def demand_history
     if request.post?
       demandId=params[:demandId]
-      startIndex=Time.parse(params[:startIndex]).to_i
-      endIndex=Time.parse(params[:endIndex]).to_i
+      nt = Time.parse(params[:endIndex])
+      if nt.hour+nt.min+nt.sec>0 
+        endIndex=Time.local(nt.year, nt.mon, nt.day).to_i
+        startIndex=endIndex - 3.day.to_i
+      else
+        startIndex=Time.parse(params[:startIndex]).to_i
+        endIndex=Time.parse(params[:endIndex]).to_i
+      end
       
       # chart = [[startIndex,0],nil,[endIndex,0]]
       chart = []
-      ymax = 100
       msg=ReturnMsg.new(:result=>false,:content=>'')
       if demander=Demander.find(demandId)
         hs= DemandHistory.get_demander_hitories(demander,startIndex,endIndex)
@@ -213,26 +218,26 @@ class DemanderController<ApplicationController
           msg.content='no history'
           msg.object=[]
         end
-        ymax = (demander.amount.to_i+(demander.oldamount.to_i==0?demander.amount.to_i : demander.oldamount.to_i))/2*1.618
+        lrmost = [] 
+        scope = []
+        DemandHistory.get_two_ends(demander).each {|e| lrmost<<Time.at(e.created_at.to_i) }
+        scope<<Time.local(lrmost[0].year, lrmost[0].mon, lrmost[0].day).to_i if lrmost[0].hour+lrmost[0].min+lrmost[0].sec>0
+        scope<<Time.local(lrmost[1].year, lrmost[1].mon, lrmost[1].day).to_i-2.day.to_i if lrmost[1].hour+lrmost[1].min+lrmost[1].sec>0
         partNr = session[:orgOpeType]==OrgOperateType::Client ? demander.cpartNr : demander.spartNr
       end
       xaxis = []
       5.times.each{|e| xaxis<<(startIndex+e.day.to_i) }
       x = xaxis.collect{|p| [p, FormatHelper::label_xaxis(p) ] }
-      puts demander.oldamount.to_i
-      puts demander.amount.to_i
-      puts ymax
-      puts chart
       
       respond_to do |format|
         format.xml {render :xml=>JSON.parse(msg.to_json).to_xml(:root=>'demandHistory')}
         format.json { render json: {:msg=>msg, 
             :partNr=>partNr,
+            :scope=>scope.collect{|p| FormatHelper::label_xaxis(p) },
             :chart=>chart,
             :x=>x,
             :xmin=>startIndex,
-            :xmax=>endIndex,
-            :ymax=>ymax
+            :xmax=>endIndex
             } }
       end
     end
@@ -281,7 +286,7 @@ class DemanderController<ApplicationController
                         demand.save
                         demand.save_to_send
                       end
-                      if nd.rate.to_i != 0 or nd.oldamount==0
+                      if nd.rate.to_i != 0 or nd.oldamount.to_i==0
                         Demander.send_kestrel(demand.supplierId, demand.key, demand.type)
                       end
                       demandH=DemandHistory.new(:key=>UUID.generate,:amount=>nd.amount,:rate=>nd.rate,:oldmount=>nd.oldamount,:demandKey=>demand.key)
@@ -330,6 +335,11 @@ class DemanderController<ApplicationController
           s = params[:page].to_i*Demander::NumPer
           e = params[:page].to_i*Demander::NumPer+Demander::NumPer-1
           @demands = @demands[s..e]
+          total=@total-@demands.size
+          @demands.each{|d|Demander.clear_kestrel( @cz_org.id,d.key) }
+    @totalPages=total/Demander::NumPer+(total%Demander::NumPer==0 ? 0:1)
+    @currentPage=-1
+    @options = params[:options]?params[:options]:{}
     else
             c = params[:client]
             s = params[:supplier]
@@ -354,10 +364,13 @@ class DemanderController<ApplicationController
             :rpartNr=>partRelMetaKey, :start=>tstart, :end=>tend,
             :type=>params[:type],  :amount=>params[:amount],
             :page=>params[:page] )
-    end
     @totalPages=@total/Demander::NumPer+(@total%Demander::NumPer==0 ? 0:1)
     @currentPage=params[:page].to_i
     @options = params[:options]?params[:options]:{}
+    end
+    # @totalPages=@total/Demander::NumPer+(@total%Demander::NumPer==0 ? 0:1)
+    # @currentPage=params[:page].to_i
+    # @options = params[:options]?params[:options]:{}
 
     respond_to do |format|
       format.html {render :partial=>"table" }

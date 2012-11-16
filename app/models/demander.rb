@@ -77,10 +77,10 @@ class Demander<CZ::BaseClass
   def self.send_kestrel( sId, demandKey, demandType )
     kesKey = gen_kestrel(sId)
     score = case demandType
-    when DemanderType::Day        then  10
-    when DemanderType::Week     then  20
-    when DemanderType::Month   then  30
-    when DemanderType::Year        then  40
+    when 'D'   then  DemanderType::Day
+    when 'W'   then  DemanderType::Week
+    when 'M'   then  DemanderType::Month
+    when 'Y'   then  DemanderType::Year
     end
     $redis.zadd( kesKey, score, demandKey)
   end
@@ -89,10 +89,10 @@ class Demander<CZ::BaseClass
     kesKey = gen_kestrel(orgId)
     demands = []
     score = case demandType
-    when DemanderType::Day        then  10
-    when DemanderType::Week     then  20
-    when DemanderType::Month   then  30
-    when DemanderType::Year        then  40
+    when 'D'   then  DemanderType::Day
+    when 'W'   then  DemanderType::Week
+    when 'M'   then  DemanderType::Month
+    when 'Y'   then  DemanderType::Year
     when ''
       $redis.zrange( kesKey, 0, -1).each{|item| demands << Demander.find( item )} and return demands
     end
@@ -102,17 +102,9 @@ class Demander<CZ::BaseClass
     return demands
   end
   
-  def self.clear_kestrel( orgId, demandType )
+  def self.clear_kestrel( orgId, demandKey )
     kesKey = gen_kestrel(orgId)
-    score = case demandType
-    when DemanderType::Day        then  10
-    when DemanderType::Week     then  20
-    when DemanderType::Month   then  30
-    when DemanderType::Year        then  40
-    when ''
-      return $redis.zremrangebyrank( kesKey, 0, -1)
-    end
-    return $redis.zremrangebyscore( kesKey, score, score )
+    return $redis.zrem( kesKey, demandKey )
   end
   
   def id

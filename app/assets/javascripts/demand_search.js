@@ -29,7 +29,6 @@ function get_kestrel(){
 			  			$('<span class="notifyNewForcast"></span>').text(data[t]).appendTo($('div[demand='+t+']'))
 			  				.click(function(e){  
 			  					demand_search({kestrel:'kestrel',type:$(this).parent().attr('demand')});
-			  					clear_kestrel( $(this).parent().attr('demand') );
 			  					$(this).remove();
 			  					e.stopPropagation();
 			  				});
@@ -38,10 +37,10 @@ function get_kestrel(){
 			  "json");
 }
 
-function clear_kestrel(t){
-	$.post("../demander/kestrel_newer",{ type:t },
-		function(data){},"json");
-}
+// function clear_kestrel(){
+	// $.post("../demander/kestrel_newer",{ type:"delete" },
+		// function(data){},"json");
+// }                                                                若改为“确认查收”则可启用
 
 ///////////////////////////////////////////////////////////////////        basic      search	   API
 function demand_search( hash, page ){
@@ -105,8 +104,7 @@ function showTooltip(x, y, contents) {
 function chart_history(key, tstart, tend ){
 	if (key==="null") return false;
 	if (typeof tstart=="undefined")
-	{	var startline = new Date(new Date().valueOf() - 3*(24*60*60*1000) );
-		var endline = new Date();
+	{	var endline = new Date(new Date().valueOf() + 1*(24*60*60*1000) );
 	}else
 	{	var startline = tstart;
 		var endline = new Date(new Date(tstart).valueOf() + 3*(24*60*60*1000) );
@@ -115,24 +113,24 @@ function chart_history(key, tstart, tend ){
 	$.post("../demander/demand_history",{demandId:key,startIndex:startline,endIndex:endline},
 			  function(data){  
 			  	var charting = $('#charting');
-			  	if ( $('.chartactive').attr("name")=="line" )  source={ data:data.chart, lines: {show: true}, points: {show: true} };
-			  	else source={ data:data.chart, lines: {show: true, steps: true, fill: true}, points: {show: true} };
+			  	if ( $('.chartactive').attr("name")=="line" )  source={ data:data.chart, lines: {show: true}, points: {show: true}, color: '#71c73e' };
+			  	else source={ data:data.chart, lines: {show: true, steps: true, fill: true}, points: {show: true, fillColor: '#77b7c5'}, color: '#77b7c5' };
 			  	$.plot(charting,  [
 			  		source
 			  	], {
-			  		xaxis:{ min:data.xmin, max:data.xmax, ticks:data.x },
-			  		yaxis:{ min:0, max:data.ymax },
+			  		xaxis:{ min:data.xmin, max:data.xmax, ticks:data.x, tickColor: 'transparent', },
+			  		yaxis:{ min:0 },
 					grid: {
-						borderWidth: 1,
+						borderColor: 'transparent',
 						minBorderMargin: 20,
 						labelMargin: 10,
+						color: '#646464',
 						backgroundColor: {	colors: ["#fff", "#e4f4f4"] 	},
 						hoverable: true,
-						mouseActiveRadius: 50,
-						margin: {	top: 8,	bottom: 20,		left: 20	}
+						mouseActiveRadius: 20,
 					}
 			  	});
-			  	var yaxisLabel = $("<div>").text("parts "+data.partNr).appendTo(charting);
+			  	var yaxisLabel = $("<div>").text("零件： "+data.partNr).appendTo(charting);
 			  	yaxisLabel.css("position","absolute").css('top','-10%').css('width','600px')
 			  				.css("text-align", 'center');
 			  	var previousPoint = null;
@@ -143,7 +141,7 @@ function chart_history(key, tstart, tend ){
 				            $('#tooltip').remove();
 				            var x = item.datapoint[0], y = item.datapoint[1];
 				            var d = new Date(x*1000);
-				            showTooltip( item.pageX, item.pageY, 'amount: ' + y + ' , time: ' + (d.getMonth()+1)+'/'+d.getDate()+' '+d.getHours()+':'+d.getMinutes() );
+				            showTooltip( item.pageX, item.pageY, '数量： ' + y + ' , 时间： ' + (d.getMonth()+1)+'/'+d.getDate()+' '+d.getHours()+':'+d.getMinutes() );
 				        }
 				    } else {
 				        $('#tooltip').remove();
@@ -151,6 +149,8 @@ function chart_history(key, tstart, tend ){
 				    }
 				});
 			  	$('div.centerchart').attr('prime',key).attr('startline',data.x[0][1]);
+			  	$('div.previousdate').attr('startline',data.scope[0]);
+			  	$('div.laterdate').attr('startline',data.scope[1]);
 			  },
 			  "json");
 }
@@ -175,9 +175,10 @@ $(function() {
 	$('#partNr_float > input.startsearch').click(function(){ demand_search_with_type( {partNr:$('#partNr_float > input[placeholder]').val()} );    });
 	$('#type_float > input.searchforcasttype').click(function(){ forcasttype_reverse(this); });
 	
-	$('div.previousdate').click(function (){	chart_history( $('div.centerchart').attr('prime'), new Date(new Date($('div.centerchart').attr('startline')).valueOf() - 1*(24*60*60*1000)) );		});
+	$('div.previousdate').click(function (){	chart_history( $('div.centerchart').attr('prime'), new Date(new Date($('div.centerchart').attr('startline')).valueOf() - 1*(24*60*60*1000)) );		})
+											.dblclick(function (){	chart_history( $('div.centerchart').attr('prime'),new Date($('div.previousdate').attr('startline'))  );		});
 	$('div.laterdate').click(function (){	chart_history( $('div.centerchart').attr('prime'), new Date(new Date($('div.centerchart').attr('startline')).valueOf() + 1*(24*60*60*1000))  );		})
-									.dblclick(function (){	chart_history( $('div.centerchart').attr('prime')  );		});
+									.dblclick(function (){	chart_history( $('div.centerchart').attr('prime'),new Date($('div.laterdate').attr('startline'))  );		});
 	$('.charttypebt').click(function(){  active_chart_type(this);  });
 	
 	get_kestrel();

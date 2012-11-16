@@ -3,8 +3,8 @@ require_relative 'enum'
 
 class DemanderType
   include Enum
-  DemanderType.define :Day,'D',"day"
-  DemanderType.define :Week,'W',"week"
-  DemanderType.define :Month,'M',"month"
-  DemanderType.define :Year,'Y',"year"
+  DemanderType.define :Day,10,"day"
+  DemanderType.define :Week,20,"week"
+  DemanderType.define :Month,30,"month"
+  DemanderType.define :Year,40,"year"
 end
