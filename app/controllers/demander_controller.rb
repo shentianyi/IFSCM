@@ -197,18 +197,18 @@ class DemanderController<ApplicationController
           msg.result=true
           msg.object=hs
           if right=DemandHistory.get_demander_hitories(demander,endIndex,Time.now.to_i)
-            rchart = [[endIndex,right.first.amount.to_num]]
+            rchart = [[endIndex,right.first.amount.to_s.to_num]]
           elsif Time.now.to_i<endIndex
-            rchart = [[Time.now.to_i,hs.last.amount.to_num]]
+            rchart = [[Time.now.to_i,hs.last.amount.to_s.to_num]]
           else
-            rchart = [[endIndex,hs.last.amount.to_num]]
+            rchart = [[endIndex,hs.last.amount.to_s.to_num]]
           end
           if left=DemandHistory.get_demander_hitories(demander,-(1/0.0),startIndex)
-            lchart = [[startIndex,left.last.amount.to_num]]
+            lchart = [[startIndex,left.last.amount.to_s.to_num]]
           else
             lchart = []
           end
-          chart = lchart+msg.object.collect{|p| [p.created_at.to_i, p.amount.to_num] }+rchart
+          chart = lchart+msg.object.collect{|p| [p.created_at.to_i, p.amount.to_s.to_num] }+rchart
         else
           msg.content='no history'
           msg.object=[]
