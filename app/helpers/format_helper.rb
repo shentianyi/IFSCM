@@ -38,6 +38,20 @@ module FormatHelper
     return true
   end
 
+  # valid if string is float and less than 0
+  def self.str_is_notfloat_less_zero str
+    if str.to_f.to_s==str
+    return str.to_f<0
+    end
+    return true
+  end
+  
+  
+  # valid if string is Number and less than 0
+  def self.str_is_notNum_less_zero str
+   return !(/^[\d]+(\.[\d]+){0,1}$/ ===str)
+  end
+  
   # demand date by date string and type
   def self.demand_date_by_str_type date,type
     date=str_to_date(date)
@@ -106,4 +120,15 @@ module FormatHelper
     end
   end
 
+ # ws
+ def self.get_number num,t=nil
+   return nil if num==''
+    return num if !t.nil?
+   if num.is_a?(String)
+     return num.to_f if num.include?('.')
+     return num.to_i 
+   end
+   return num
+ end
+ 
 end

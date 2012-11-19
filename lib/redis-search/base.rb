@@ -132,6 +132,12 @@ class Redis
            # end
             true
           end
+          
+           set_callback :buildRSIndex,:after do
+            self.redis_search_index_create
+            true
+          end
+          
         )
       end
     end

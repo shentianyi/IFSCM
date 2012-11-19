@@ -51,7 +51,7 @@ module PageHelper
       so={}
       
       if i!=current
-        if target.class.name.downcase=='string'
+        if target.is_a?(String)
           so[:onclick]="return "+action+"('"+target+"',"+i.to_s+")"
         else
           so[:onclick]="return "+action+"(#{target.to_json},"+i.to_s+")"

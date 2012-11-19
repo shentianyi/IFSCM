@@ -129,12 +129,11 @@ module DemanderHelper
     end
 
     # vali amount
-    if FormatHelper::str_is_notint_less_zero(demand.amount)
-      puts 'amount:'+demand.amount
+    if FormatHelper::str_is_notNum_less_zero(demand.amount false)
       msg.result=false
-      msg.content_key<<:pAmountIsIntOrLessZero
+      msg.content_key<<:pAmountIsNotNumOrLessZero
     else
-    demand.amount=demand.amount.to_i
+    demand.amount=demand.amount
     end
 
     #valid repeat

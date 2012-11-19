@@ -21,21 +21,27 @@
 			<th class="lastdvd"></th>
 		</tr>
 		<% @demands.each do |d|
-	          thisLineWidth=lastLineWidth=nil
-	          img=nil
-	          if d.rate.to_i>0
-	          img='arrup'
-	          thisLineWidth=100
-	          lastLineWidth=100/(1+d.rate.to_f/100)
-	          elsif d.rate.to_i<0
-	          img='arrdown'
-	          thisLineWidth=(100+d.rate.to_f)
-	          lastLineWidth=100
-	          else
-	          img='equal'
-	          thisLineWidth=100
-	          lastLineWidth=d.oldamount.to_i>0 ? 100 : 0
-	          end
+	   thisLineWidth=lastLineWidth=nil
+          img=nil
+          if d.oldamount.nil?
+          img='dotchecked'
+          thisLineWidth=100
+          lastLineWidth=0
+          else
+          if d.rate.to_i>0
+          img='arrup'
+          thisLineWidth=100
+          lastLineWidth= d.oldamount>0 ? 100/(1+d.rate.to_f/100) : 0
+          elsif d.rate.to_i<0
+          img='arrdown'
+          thisLineWidth=(100+d.rate.to_f)
+          lastLineWidth=100
+          else
+          img='equal'
+          thisLineWidth=100
+          lastLineWidth=d.oldamount>0 ? 100 : 0
+          end
+          end
 		%>
 		  <tr class="demandnorline hoverable">
 			<% if session[:orgOpeType]==OrgOperateType::Client %>
@@ -51,15 +57,14 @@
 			<th><%= d.type%></th>
 			<th>  
 	               <div class="forcastcompare">
-	                    <div class="lineforcast">
-	                    	<% if d.oldamount.to_i==0 %>
-	                    	<span class="percentage">  new  </span>
-	                         <img src="/assets/dotchecked.png" class='percentageImg' />
-	                         <% else %>
-	                         <span class="percentage"> <%= d.rate.to_f.round(2).abs %>% </span>
-	                         <img src="/assets/<%= img%>.png" class='percentageImg' />
-	                         <% end %>
-	                    </div>
+	                     <div class="lineforcast">
+                         <% if d.oldamount.nil?%>
+                         <span class="percentage"> new </span>
+                         <% else %>
+                         <span class="percentage"> <%= d.rate.to_f.round(2).abs %>% </span>
+                         <% end %>
+                         <img src="/assets/<%= img%>.png" class='percentageImg' />
+                    </div>
 	                    <div class="lineforcast">
 	                         <span class="fnumbers">本次预测：<span id="this_demand_amount"><%= d.amount %></span></span>
 	                         <div class="forcastbaseline">

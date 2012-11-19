@@ -1,7 +1,7 @@
 // ws: Negative judgement
 function notNegaNum(value) {
      if(!isNaN(value)) {
-          var nreg = /^\d+$/;
+          var nreg = /^([0-9]\d*|\d+\.\d+)$/;
           return nreg.test(value);
      }
      return false;
@@ -230,26 +230,24 @@ function reset_demand_amount(obj) {
                                    var de = data.object;
                                    if(de.vali) {
                                         demand.find('#this_demand_amount').text(de.amount);
-                                        demand.find('.percentage').text(Math.abs(de.rate.toFixed(2)) + '%');
                                         // gen amount bar & reset img
                                         var rate = parseFloat(de.rate);
-                                        // var width;
-                                        if(rate > 0) {
-                                             demand.find('#thisLineWidthDiv').css('width', '100%');
-                                             // if(parseInt(de.oldamount) > 0)
-                                             // demand.find('#lastLineWidthDiv').css('width', '' + (100 / (1 + rate / 100)) + '%');
-                                             // else
-                                             // demand.find('#lastLineWidthDiv').css('width', '0%');
-                                             demand.find('#lastLineWidthDiv').css('width', parseInt(de.oldamount) > 0 ? ''+(100 / (1 + rate / 100)) + '%' : '0%');
-                                             demand.find('.percentageImg').attr('src', '/assets/arrup.png');
-                                        } else if(rate < 0) {
-                                             demand.find('#thisLineWidthDiv').css('width', '' + (100 + rate ) + '%');
-                                             demand.find('#lastLineWidthDiv').css('width',  '100%');
-                                             demand.find('.percentageImg').attr('src', '/assets/arrdown.png');
-                                        } else {
-                                             demand.find('#thisLineWidthDiv').css('width', '100%');
-                                             demand.find('#lastLineWidthDiv').css('width', parseInt(de.oldamount) > 0 ? '100%' : '0%');
-                                             demand.find('.percentageImg').attr('src', '/assets/equal.png');
+                                        // var width;          
+                                        if(de.oldamount !=null) {
+                                             demand.find('.percentage').text(Math.abs(de.rate.toFixed(2)) + '%');
+                                             if(rate > 0) {
+                                                  demand.find('#thisLineWidthDiv').css('width', '100%');
+                                                  demand.find('#lastLineWidthDiv').css('width', parseInt(de.oldamount) > 0 ? '' + (100 / (1 + rate / 100)) + '%' : '0%');
+                                                  demand.find('.percentageImg').attr('src', '/assets/arrup.png');
+                                             } else if(rate < 0) {
+                                                  demand.find('#thisLineWidthDiv').css('width', '' + (100 + rate ) + '%');
+                                                  demand.find('#lastLineWidthDiv').css('width', '100%');
+                                                  demand.find('.percentageImg').attr('src', '/assets/arrdown.png');
+                                             } else {
+                                                  demand.find('#thisLineWidthDiv').css('width', '100%');
+                                                  demand.find('#lastLineWidthDiv').css('width', parseInt(de.oldamount) > 0 ? '100%' : '0%');
+                                                  demand.find('.percentageImg').attr('src', '/assets/equal.png');
+                                             }
                                         }
                                    } else {
                                         alert(jQuery.parseJSON(de.msg)[0]);
@@ -262,7 +260,7 @@ function reset_demand_amount(obj) {
                          }
                     });
                } else {
-                    alert('请填入非负整数预测量！');
+                    alert('请填入非负数预测量！');
                }
           }
      }

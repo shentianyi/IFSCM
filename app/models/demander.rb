@@ -150,7 +150,14 @@ class Demander<CZ::BaseClass
     $redis.zadd( Rns::Amount, amount, key )
   end
 
-
+ def amount t=nil
+  return FormatHelper::get_number @amount,t
+ end
+  
+ def oldamount t=nil
+   return FormatHelper::get_number @oldamount,t
+ end
+  
   
 private
   def self.union_params( column, param )

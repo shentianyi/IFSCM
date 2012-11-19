@@ -26,10 +26,15 @@
           demands.items.each do |item|
           thisLineWidth=lastLineWidth=nil
           img=nil
+          if item.oldamount.nil?
+          img='dotchecked'
+          thisLineWidth=100
+          lastLineWidth=0
+          else
           if item.rate.to_i>0
           img='arrup'
           thisLineWidth=100
-          lastLineWidth= item.oldamount.to_i>0 ? 100/(1+item.rate.to_f/100) : 0
+          lastLineWidth= item.oldamount>0 ? 100/(1+item.rate.to_f/100) : 0
           elsif item.rate.to_i<0
           img='arrdown'
           thisLineWidth=(100+item.rate.to_f)
@@ -37,7 +42,8 @@
           else
           img='equal'
           thisLineWidth=100
-          lastLineWidth=item.oldamount.to_i>0 ? 100 : 0
+          lastLineWidth=item.oldamount>0 ? 100 : 0
+          end
           end
           %>
           <tr class="norline" id="<%= item.key%>">
@@ -55,7 +61,11 @@
                <th class='no-type-change'>
                <div class="forcastcompare">
                     <div class="lineforcast">
+                         <% if item.oldamount.nil?%>
+                         <span class="percentage"> 首次预测 </span>
+                         <% else %>
                          <span class="percentage"> <%= item.rate.to_f.round(2).abs %>% </span>
+                         <% end %>
                          <img src="/assets/<%= img%>.png" class='percentageImg' />
                     </div>
                     <div class="lineforcast">
