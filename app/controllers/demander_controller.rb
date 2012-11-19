@@ -147,6 +147,7 @@ class DemanderController<ApplicationController
       respond_to do |format|
         format.xml {render :xml=>JSON.parse(msg.to_json).to_xml(:root=>'validInfo')}
         format.json { render json: msg }
+      
       end
     end
   end

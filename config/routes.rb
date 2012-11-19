@@ -42,16 +42,13 @@ Demand::Application.routes.draw do
       post :handle_batch
     end
   end
-#    
-   # controller :demander do
-     # post 'create'=>:create
-   # end
-#    
+
   resources :part do
     collection do
      get :searcher
      get :redis_search
      post :get_parts_by_partnerNr
+     post :get_all_partRels_by_cusId
     end
   end
 

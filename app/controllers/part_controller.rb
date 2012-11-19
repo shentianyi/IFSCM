@@ -1,7 +1,8 @@
 class PartController<ApplicationController
   
   before_filter  :authorize
-  
+    include PageHelper
+    
   def searcher
 
   end
@@ -46,4 +47,21 @@ class PartController<ApplicationController
       format.html { render partial:'_relationd_parts',:locals=>{:parts=>parts}}
     end
   end
+  
+  # ws get parts by condtions
+  def get_parts_by_condtions
+    
+  end
+  # ws gell all part rels
+  # def get_all_partRels_by_cusId
+    # if request.post?
+      # cusId=params[:customerId]
+      # @currentPage=pageIndex=params[:pageIndex].to_i
+        # startIndex,endIndex=PageHelper::generate_page_index(pageIndex,$DEPSIZE)
+        # demands,@totalCount= DemanderHelper::get_file_demands fileId,startIndex,endIndex,type
+#         
+    # end
+  # end
+  
+  
 end

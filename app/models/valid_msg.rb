@@ -10,7 +10,7 @@ class ValidMsg<BaseMsg
             :partMutiFitOrgP=>'零件对应多个供应商零件',
             :fcDateErr=>'日期小于今日或格式错误',
             :fcTypeNotEx=>'预测类型不存在',
-            :pAmountIsIntOrLessZero=>'数量应大于0',
+            :pAmountIsNotNumOrLessZero=>'数量应大于0',
             :fcRepeat=>'预测重复'}
             
   def contents
