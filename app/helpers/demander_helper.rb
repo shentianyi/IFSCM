@@ -2,7 +2,6 @@
 #encoding=utf-8
 require 'csv'
 require 'zip/zip'
-require 'enum/part_rel_type'
 require "iconv"
 
 module DemanderHelper

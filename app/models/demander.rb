@@ -1,13 +1,10 @@
 #coding:utf-8
 require 'digest/md5'
 require 'base_class'
-require 'enum/demander_type'
 
 class Demander<CZ::BaseClass
   attr_accessor :key,:clientId,:relpartId,:supplierId, :type,:amount,:oldamount,:date,:rate
   NumPer=$DEPSIZE
-  
-  include FormatHelper
   
   def self.gen_key
         Rns::De+":#{$redis.incr 'demand_index_incr'}"

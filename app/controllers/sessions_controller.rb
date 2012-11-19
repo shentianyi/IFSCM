@@ -1,6 +1,4 @@
 #coding:utf-8
-require 'enum/org_operate_type'
-
 class SessionsController < ApplicationController
 
   layout "login"
