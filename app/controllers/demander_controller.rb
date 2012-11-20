@@ -318,23 +318,18 @@ class DemanderController<ApplicationController
         render :json=>Demander.clear_kestrel(@cz_org.id, params[:type])
     else
         dType={ ''=>0 }
-        ['D','W','M','Y'].each{|e| dType[e]=Demander.get_kestrel(@cz_org.id, e).size  and dType['']+=dType[e] }
+        ['D','W','M','Y'].each{|e| dType[e]=Demander.get_kestrel(@cz_org.id, e, 0).last  and dType['']+=dType[e] }
         render :json=>dType.to_json
     end
   end
 
   def search
     if params[:kestrel] && params[:kestrel]==Rns::Kes
-          @demands = Demander.get_kestrel( @cz_org.id, params[:type] )
-          @total = @demands.size
-          s = params[:page].to_i*Demander::NumPer
-          e = params[:page].to_i*Demander::NumPer+Demander::NumPer-1
-          @demands = @demands[s..e]
+          @demands, @total = Demander.get_kestrel( @cz_org.id, params[:type], params[:page] )
           total=@total-@demands.size
-          @demands.each{|d|Demander.clear_kestrel( @cz_org.id,d.key) }
-    @totalPages=total/Demander::NumPer+(total%Demander::NumPer==0 ? 0:1)
-    @currentPage=-1
-    @options = params[:options]?params[:options]:{}
+          @totalPages=total/Demander::NumPer+(total%Demander::NumPer==0 ? 0:1)
+          @currentPage=-1
+          @options = params[:options]?params[:options]:{}
     else
             c = params[:client]
             s = params[:supplier]
@@ -359,9 +354,9 @@ class DemanderController<ApplicationController
             :rpartNr=>partRelMetaKey, :start=>tstart, :end=>tend,
             :type=>params[:type],  :amount=>params[:amount],
             :page=>params[:page] )
-    @totalPages=@total/Demander::NumPer+(@total%Demander::NumPer==0 ? 0:1)
-    @currentPage=params[:page].to_i
-    @options = params[:options]?params[:options]:{}
+            @totalPages=@total/Demander::NumPer+(@total%Demander::NumPer==0 ? 0:1)
+            @currentPage=params[:page].to_i
+            @options = params[:options]?params[:options]:{}
     end
     # @totalPages=@total/Demander::NumPer+(@total%Demander::NumPer==0 ? 0:1)
     # @currentPage=params[:page].to_i

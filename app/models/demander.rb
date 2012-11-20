@@ -59,8 +59,8 @@ class Demander<CZ::BaseClass
             demands << Demander.find( item )
           end
       else
-          start = (hash[:start]&&hash[:start].size>0) ? hash[:start].to_i : -(1/0.0)
-          timeend = (hash[:end]&&hash[:end].size>0) ? hash[:end].to_i : (1/0.0)
+          start = (hash[:start]&&hash[:start].size>0) ? hash[:start].to_i : -$Infin
+          timeend = (hash[:end]&&hash[:end].size>0) ? hash[:end].to_i : $Infin
           total = $redis.zcount( resultKey, start, timeend )
           $redis.zrangebyscore( resultKey, start, timeend, :withscores=>false, :limit=>[(hash[:page].to_i)*NumPer, NumPer] ).each do |item|
             demands << Demander.find( item )
@@ -82,7 +82,7 @@ class Demander<CZ::BaseClass
     $redis.zadd( kesKey, score, demandKey)
   end
   
-  def self.get_kestrel( orgId, demandType )
+  def self.get_kestrel( orgId, demandType, page )
     kesKey = gen_kestrel(orgId)
     demands = []
     score = case demandType
@@ -91,12 +91,19 @@ class Demander<CZ::BaseClass
     when 'M'   then  DemanderType::Month
     when 'Y'   then  DemanderType::Year
     when ''
-      $redis.zrange( kesKey, 0, -1).each{|item| demands << Demander.find( item )} and return demands
+      total = $redis.zcard( kesKey )
+      $redis.zrange( kesKey, page.to_i*NumPer, (page.to_i+1)*NumPer-1 ).each do |item|
+        demands << Demander.find( item )
+        $redis.zrem( kesKey, item )
+      end
+      return demands, total
     end
-    $redis.zrangebyscore( kesKey, score, score ).each do |item|
+    total = $redis.zcount( kesKey, score, score )
+    $redis.zrangebyscore( kesKey, score, score, :limit=>[(page.to_i)*NumPer, NumPer] ).each do |item|
       demands << Demander.find( item )
+      $redis.zrem( kesKey, item )
     end
-    return demands
+    return demands, total
   end
   
   def self.clear_kestrel( orgId, demandKey )
