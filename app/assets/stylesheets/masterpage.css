@@ -8,7 +8,7 @@ body {
 }
 
 /*different media*/
-@media screen and (max-width: 800px) {
+/*@media screen and (max-width: 800px) {
      .subicons {
           position: fixed;
           padding-left: 60px;
@@ -157,10 +157,15 @@ body {
      input.gbtn:hover {
           background-image: url(btnhov.png);
      }
-}
+}*/
 
 /*Another version*/
-@media screen and (min-width: 800px) {
+	.wrapcontent {
+		width: 1000px;
+		float: left;
+		margin-left: 30px;
+		padding-bottom: 50px;
+	}
      .headicon {
           background-image: url(headicon.png);
           background-repeat: no-repeat;
@@ -422,7 +427,87 @@ body {
   -moz-border-radius-topright: 4px;
   -moz-border-radius-bottomright: 4px;
 }
+/**************************************************      home      */
+.welcomecontent{
+	width:auto;
+	min-width:1100px;
+	float:left;
+	margin-left:-60px;
+	margin-top:15px;
+}
+h3{
+	font-size: 32px;
+	color:#999999;
+	font-weight: bold;
+	float: left;
+	width:100%;
+	margin-left: 50px;
+}
+.features{
+	float:left;
+	width:500px;
+	margin-top: 30px;
+}
+
+.feature{
+	 padding:3px;
+	 margin-left: 50px;
+	 font-size: 16px;
+	 color: #666666;
+
+}
+.featurespic{
+	background-image: url(welcome/featurebg.png);
+	width:380px;
+	height:230px;
+	background-position: center top;
+	float: left;
+
+}
+.faturescontent{
+	margin-top: 30px;
+	width:150%;
+	border-top: 1px solid #dddddd;
+	float: left;
+	height:250px;
+	background-color: #efefef;
+	padding-left: 100px;
+
+}
+div #f3{
+	background-image: url(welcome/f3.png);
+}
+.featureshow{
+	width:200px;
+	height:160px;
+	background-repeat: no-repeat;
+}
+.feature-detail{
+	width:300px;
+	height:240px;
+	float: left;
+	padding-top: 30px;
+	margin-left: 20px;
+	margin-right:20px;
+}
+.feature-detail p{
+	font-size: 16px;
+	color: #666666;
+	padding:3px;
+	margin-top: 10px;
+	margin-bottom: 0px;
+	margin-left: 50px;
+
+}
+div #f1{
+	background-image: url(welcome/f1.png);
+}
+
+div #f2{
+	background-image: url(welcome/f2.png);
+}
 /**************************************************      redis search      */
+.ui-helper-hidden-accessible { display: none }
 .ui-autocomplete {
 	position: absolute;
 	text-align:left;
@@ -443,5 +528,4 @@ body {
 	  color: #999;
 	  line-height: 16px;
 	  overflow: hidden;
-}
 }
