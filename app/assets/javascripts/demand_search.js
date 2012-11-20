@@ -30,6 +30,7 @@ function get_kestrel(){
 			  				.click(function(e){  
 			  					demand_search({kestrel:'kestrel',type:$(this).parent().attr('demand')});
 			  					$(this).remove();
+			  					$('#kestrel').show();
 			  					e.stopPropagation();
 			  				});
 			  	}
@@ -37,10 +38,13 @@ function get_kestrel(){
 			  "json");
 }
 
-// function clear_kestrel(){
-	// $.post("../demander/kestrel_newer",{ type:"delete" },
-		// function(data){},"json");
-// }                                                                若改为“确认查收”则可启用
+function clear_kestrel(e){
+	$.post("../demander/kestrel_newer",{ type:"delete" },
+		function(data){alert("已无新消息");},"json");
+	$(e).hide();
+	$('span.notifyNewForcast').remove();
+	demand_search({kestrel:"kestrel",type:""});
+}
 
 ///////////////////////////////////////////////////////////////////        basic      search	   API
 function demand_search( hash, page ){
@@ -181,6 +185,7 @@ $(function() {
 									.dblclick(function (){	chart_history( $('div.centerchart').attr('prime'),new Date($('div.laterdate').attr('startline'))  );		});
 	$('.charttypebt').click(function(){  active_chart_type(this);  });
 	
+	$('#kestrel').click(function(){clear_kestrel(this);});
 	get_kestrel();
 	demand_search( {} );
 });

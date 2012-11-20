@@ -113,10 +113,9 @@
 	.hovbt:hover {
 		background-color: #0e80b0;
 	}
-}
 
 /*different media*/
-@media screen and (max-width: 800px) {
+/*@media screen and (max-width: 800px) {
 	#searchline {
 		width: 700px;
 		margin-top: 20px;
@@ -230,3 +229,4 @@
 	.hovbt:hover {
 		background-color: #0e80b0;
 	}
+}*/

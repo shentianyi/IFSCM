@@ -106,9 +106,9 @@ class Demander<CZ::BaseClass
     return demands, total
   end
   
-  def self.clear_kestrel( orgId, demandKey )
+  def self.clear_kestrel( orgId )
     kesKey = gen_kestrel(orgId)
-    return $redis.zrem( kesKey, demandKey )
+    return $redis.del( kesKey )
   end
   
   def id

@@ -281,7 +281,7 @@ class DemanderController<ApplicationController
                         demand.save
                         demand.save_to_send
                       end
-                      if nd.rate.to_i != 0 or nd.oldamount.to_i==0
+                      if nd.rate.to_i != 0 or nd.oldamount.nil?
                         Demander.send_kestrel(demand.supplierId, demand.key, demand.type)
                       end
                       demandH=DemandHistory.new(:key=>UUID.generate,:amount=>nd.amount,:rate=>nd.rate,:oldmount=>nd.oldamount,:demandKey=>demand.key)
@@ -315,7 +315,7 @@ class DemanderController<ApplicationController
   
   def kestrel_newer
     if params[:type]
-        render :json=>Demander.clear_kestrel(@cz_org.id, params[:type])
+        render :json=>Demander.clear_kestrel(@cz_org.id)
     else
         dType={ ''=>0 }
         ['D','W','M','Y'].each{|e| dType[e]=Demander.get_kestrel(@cz_org.id, e, 0).last  and dType['']+=dType[e] }
