@@ -1,0 +1,21 @@
+<%if prms.count>0%>
+<table>
+     <tr>
+          <td>key</td>
+          <td>client part key</td>
+          <td>supplier part key</td>
+          <td>sale No</td>
+          <td>purchase No</td>
+     </tr>
+     <%prms.each do |p|%>
+     <tr>
+          <td><%=p.key%></td>
+          <td><%=p.cpartId%></td>
+          <td><%=p.spartId%></td>
+          <td><%=p.saleNo%></td>
+          <td><%=p.purchaseNo%></td>
+     </tr>
+     <%end%>
+</table>
+total count: <%=@totalCount%> ||  total pages: <%=@totalPages%>
+<%end%>

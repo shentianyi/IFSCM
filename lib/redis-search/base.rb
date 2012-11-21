@@ -11,7 +11,7 @@ class Redis
       #   prefix_index_enable   Is use prefix index search
       #   ext_fields    What kind fields do you need inlucde to search indexes
       #   score_field   Give a score for search sort, need Integer value, default is `created_at`
-       # eg.
+      # eg.
       # include Redis::Search
       # redis_search_index(:title_field => :proNr,
       # :alias_field => :alias,
@@ -132,12 +132,20 @@ class Redis
            # end
             true
           end
-          
+
            set_callback :buildRSIndex,:after do
             self.redis_search_index_create
             true
           end
-          
+
+           set_callback :cleanRSIndex,:before do
+             titles = []
+            titles = redis_search_alias_value("#{alias_field}")
+            titles << self.#{title_field}
+            redis_search_index_delete(titles)
+            true
+          end
+
         )
       end
     end

@@ -26,6 +26,15 @@ class Part<CZ::BaseClass
     hash_key=generate_org_part_set_key orgId
     $redis.hget hash_key,partNr
   end
+  
+  def self.find_all_parts_by_orgId orgId
+     hash_key=generate_org_part_set_key orgId
+     parts=[]
+     $redis.hgetall(hash_key).each do |k,v|
+       parts<<Part.find(v)
+     end
+     return parts.count>0 ? parts : nil
+  end
 
   def add_to_org orgId
     hash_key=Part.generate_org_part_set_key orgId

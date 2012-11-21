@@ -1,8 +1,7 @@
 class PartController<ApplicationController
-  
+
   before_filter  :authorize
-    include PageHelper
-    
+  include PageHelper
   def searcher
 
   end
@@ -10,13 +9,11 @@ class PartController<ApplicationController
   # ws part redis search
   def redis_search
     org_id=@cz_org.id
-    params[:term].gsub!(/'/,'')
     parts=[]
-    @search = Redis::Search.complete("Part", params[:term],:conditions=>{:orgId=>org_id})
-    puts @search
+    @search = Redis::Search.complete("Part",params[:term],:conditions=>{:orgId=>org_id})
+    #   puts @search
     @search.collect do |item|
       parts<<item['partNr']
-      # parts<<(Part.new(:key=>item['key'],:orgId=>item['orgId'],:partNr=>item['partNr'],:created_at=>Time.at(item['created_at'])))
     end
     respond_to do |format|
       format.xml {render :xml=>JSON.parse(parts.to_json).to_xml(:root=>'parts')}
@@ -44,24 +41,34 @@ class PartController<ApplicationController
     respond_to do |format|
       format.xml {render :xml=>JSON.parse(demands.to_json).to_xml(:root=>'parts')}
       format.json { render json: parts }
-      format.html { render partial:'_relationd_parts',:locals=>{:parts=>parts}}
+      format.html { render partial:'relationd_parts',:locals=>{:parts=>parts}}
     end
   end
-  
-  # ws get parts by condtions
-  def get_parts_by_condtions
-    
+
+  # ws get parts by condtions in page
+  def get_part_rel_meta_inpage
+    @currentPage=pageIndex=params[:pageIndex].to_i
+    startIndex=pageIndex*$DEPSIZE
+    prms,@totalCount=PartRelMetaHelper::redis_search_by_conditions(params[:q],:conditions=>{:orgIds=>session[:org_id]},:startIndex=>startIndex,:take=>$DEPSIZE)
+    @totalPages=PageHelper::generate_page_count @totalCount,$DEPSIZE
+
+    respond_to do |format|
+      format.xml {render :xml=>JSON.parse(demands.to_json).to_xml(:root=>'prms')}
+      format.json { render json: prms }
+      format.html { render partial:'part_rel_metas',:locals=>{:prms=>prms}}
+    end
+
   end
-  # ws gell all part rels
-  # def get_all_partRels_by_cusId
-    # if request.post?
-      # cusId=params[:customerId]
-      # @currentPage=pageIndex=params[:pageIndex].to_i
-        # startIndex,endIndex=PageHelper::generate_page_index(pageIndex,$DEPSIZE)
-        # demands,@totalCount= DemanderHelper::get_file_demands fileId,startIndex,endIndex,type
-#         
-    # end
-  # end
-  
-  
+
+# ws gell all part rels
+# def get_all_partRels_by_cusId
+# if request.post?
+# cusId=params[:customerId]
+# @currentPage=pageIndex=params[:pageIndex].to_i
+# startIndex,endIndex=PageHelper::generate_page_index(pageIndex,$DEPSIZE)
+# demands,@totalCount= DemanderHelper::get_file_demands fileId,startIndex,endIndex,type
+#
+# end
+# end
+
 end

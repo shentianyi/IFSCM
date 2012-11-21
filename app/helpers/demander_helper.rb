@@ -85,10 +85,10 @@ module DemanderHelper
     if !partId=Part.find_partKey_by_orgId_partNr(demand.clientId,demand.cpartNr)
       msg.result=false
       msg.content_key<<:pnrNotEx
-         # File.open(File.join('initData/lackData','LackPart.csv'),'a') do |f|
-           # f.puts demand.cpartNr
-           # puts demand.cpartNr
-         # end
+    # File.open(File.join('initData/lackData','LackPart.csv'),'a') do |f|
+    # f.puts demand.cpartNr
+    # puts demand.cpartNr
+    # end
     else
     demand.cpartId=partId
     end
@@ -114,7 +114,7 @@ module DemanderHelper
           msg.content_key<<:partMutiFitOrgP
         else
           demand.spartId=parts[0].key
-          demand.relpartId=PartRel.get_partRelMetaKey_by_partKey(demand.clientId,demand.supplierId,demand.cpartId,PartRelType::Client)
+          demand.relpartId=PartRel.get_partRelMeta_by_partKey(demand.clientId,demand.supplierId,demand.cpartId,PartRelType::Client).key
         end
       end
     end
@@ -241,5 +241,28 @@ module DemanderHelper
       msg.content='上传文件被取消，无法下载'
     end
     return msg
+  end
+
+  # ws : generate bar
+  def self.generate_demand_bar demand
+    img= thisLineWidth=lastLineWidth=nil
+    if demand.oldamount.nil?
+      img='dotchecked'
+      thisLineWidth=demand.amount>0 ? 100 : 0
+      lastLineWidth=0
+    elsif demand.rate.to_i>0
+      img='arrup'
+      thisLineWidth=100
+      lastLineWidth= demand.oldamount>0 ? 100/(1+demand.rate.to_f/100) : 0
+    elsif demand.rate.to_i<0
+      img='arrdown'
+      thisLineWidth=(100+demand.rate.to_f)
+    lastLineWidth=100
+    else
+      img='equal'
+      thisLineWidth=demand.amount>0 ? 100 : 0
+      lastLineWidth=demand.oldamount>0 ? 100 : 0
+    end
+    return img,thisLineWidth,lastLineWidth
   end
 end

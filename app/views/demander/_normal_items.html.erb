@@ -24,27 +24,7 @@
           </tr>
           <% i=0
           demands.items.each do |item|
-          thisLineWidth=lastLineWidth=nil
-          img=nil
-          if item.oldamount.nil?
-          img='dotchecked'
-          thisLineWidth=100
-          lastLineWidth=0
-          else
-          if item.rate.to_i>0
-          img='arrup'
-          thisLineWidth=100
-          lastLineWidth= item.oldamount>0 ? 100/(1+item.rate.to_f/100) : 0
-          elsif item.rate.to_i<0
-          img='arrdown'
-          thisLineWidth=(100+item.rate.to_f)
-          lastLineWidth=100
-          else
-          img='equal'
-          thisLineWidth=item.amount>0 ? 100 : 0
-          lastLineWidth=item.oldamount>0 ? 100 : 0
-          end
-          end
+         img,thisLineWidth,lastLineWidth=DemanderHelper::generate_demand_bar(item)
           %>
           <tr class="norline" id="<%= item.key%>">
                <th class="no-type-change"><%= i+=1%></th>

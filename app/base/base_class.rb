@@ -9,6 +9,8 @@ module CZ
     define_callbacks :destory
     define_callbacks :save
     define_callbacks :buildRSIndex
+    define_callbacks :cleanRSIndex
+    
     def initialize args={}
       if args.count>0
         args.each do |k,v|
@@ -62,9 +64,14 @@ module CZ
       return false
     end
 
-   # for build Redis Serach Index 
+   # for build Redis Search Index 
    def buildRSIndex
      run_callbacks :buildRSIndex
+   end
+   
+   # for clean Redis Search Index
+   def cleanRSIndex
+     run_callbacks :cleanRSIndex
    end
    
   end
