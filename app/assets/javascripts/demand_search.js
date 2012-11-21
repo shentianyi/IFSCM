@@ -2,7 +2,10 @@
 ///////////////////////////////////////////////////////////////////     UI
 function pop(e){
 	var id = e.attributes['link'].nodeValue;
-	$('#'+id).show();
+	$('#'+id).css({
+        top: $(e).offset().top+$(e).height(),
+        left: $(e).offset().left+$(e).width()
+    }).show().find("input").get(0).focus();
 }
 
 function pop_cancel(e){
@@ -166,9 +169,9 @@ function active_chart_type(e){
 }
 ///////////////////////////////////////////////////////////////////         DOM  on   ready
 $(function() {
-	$('.textsearchbox').draggable();
+	$('.textsearchbox').draggable().blur(function(){  $(this).hide();  });
 	$('.chartview').draggable();
-	$('.searchcancle').click(function(){ pop_cancel(this); });
+	// $('.searchcancle').click(function(){ pop_cancel(this); });
 	
 	$('.forcasttype').css('cursor', 'pointer').click(function(){demand_search_activate( this );});
 	$('#client_float > input.searchcontent').autocomplete({source: "/organisation_manager/redis_search", appendTo: "#client_float"} );

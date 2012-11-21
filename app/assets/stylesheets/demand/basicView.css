@@ -158,11 +158,10 @@
 		background-color: #208041;
 	}
 	.textsearchbox {
-		width: 300px;
+		width: 252px;
 		border: 1px solid #dbdbdb;
 		font-size: 14px;
 		position:fixed;
-		left:300px;top:200px;
 		background-color:#ffffff;
 	}
 	.texts {
@@ -175,7 +174,7 @@
 		float: left;
 		font-size: 14px;
 		color: #000000;
-		width: 294px;
+		width: 246px;
 		border-bottom: 1px solid #dbdbdb;
 		background-color: #eaedec;
 		padding: 3px;
@@ -190,13 +189,13 @@
 		float: left;
 	}
 	.startsearch {
-		float: left;
+		float: right;
 		height: 24px;
 		background-color: #1297cf;
 		color: #ffffff;
 		border-style: none;
 		font-size: 14px;
-		margin: 9px 0px 5px 0px;
+		margin: 9px 8px 5px 0px;
 	}
 	.startsearch:hover {
 		background-color: #0e80b0;
@@ -238,7 +237,6 @@
 		width:850px;
 		height:450px;
 		position:fixed;
-		left:300px;top:200px;
 	}
 	.adjustbt{
 		float:left;
