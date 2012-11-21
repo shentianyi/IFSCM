@@ -58,7 +58,7 @@ module InitDataCsvHelper
       end
 
       if !PartRel.get_single_part_cs_parts c.id,s.id,cp.key,PartRelType::Client
-        PartRel.generate_cs_part_relation cp,sp,row["SaleNo"],row["PurchaseNo"]
+        PartRel.generate_cs_part_relation cp,sp,row["SaleNo"]||"",row["PurchaseNo"]||""
       end
     end
   end

@@ -1,0 +1,89 @@
+
+
+Wed Nov 21 10:28:25 2012
+Command line: TestDisk
+
+TestDisk 6.13, Data Recovery Utility, November 2011
+Christophe GRENIER <grenier@cgsecurity.org>
+http://www.cgsecurity.org
+OS: Linux, kernel 3.2.0-33-generic-pae (#52-Ubuntu SMP Thu Oct 18 16:39:21 UTC 2012) i686
+Compiler: GCC 4.6
+Compilation date: 2012-02-05T07:16:54
+ext2fs lib: 1.42, ntfs lib: 10:0:0, reiserfs lib: none, ewf lib: none
+/dev/sda: LBA, LBA48, DCO support
+/dev/sda: size       976773168 sectors
+/dev/sda: user_max   976773168 sectors
+/dev/sda: dco        976773168 sectors
+Warning: can't get size for Disk /dev/mapper/control - 0 B - CHS 1 1 1, sector size=512
+Hard disk list
+Disk /dev/sda - 500 GB / 465 GiB - CHS 60801 255 63, sector size=512 - ST3500413AS, S/N:S2A36GZJ, FW:HP64
+
+Partition table type (auto): Intel
+Disk /dev/sda - 500 GB / 465 GiB - ST3500413AS
+Partition table type: Intel
+
+Analyse Disk /dev/sda - 500 GB / 465 GiB - CHS 60801 255 63
+Geometry from i386 MBR: head=255 sector=63
+NTFS at 0/32/33
+NTFS at 12/223/20
+NTFS at 16182/114/61
+Current partition structure:
+ 1 * HPFS - NTFS              0  32 33    12 223 19     204800
+ 2 P HPFS - NTFS             12 223 20 16182 114 60  259764224
+ 3 P HPFS - NTFS          16182 114 61 28930 168 38  204800000
+ 4 E extended             28930 201  6 60801  47 46  511997954
+ 5 L Linux                28930 201  8 60175 193 50  501950464
+   X extended             60175 193 51 60801  47 46   10047488
+ 6 L Linux Swap           60175 226 20 60801  47 46   10045440
+Computes LBA from CHS for Disk /dev/sda - 500 GB / 465 GiB - CHS 60802 255 63
+Allow partial last cylinder : Yes
+search_vista_part: 1
+
+search_part()
+Disk /dev/sda - 500 GB / 465 GiB - CHS 60802 255 63
+NTFS at 0/32/33
+filesystem size           204800
+sectors_per_cluster       8
+mft_lcn                   8533
+mftmirr_lcn               2
+clusters_per_mft_record   -10
+clusters_per_index_record 1
+     HPFS - NTFS              0  32 33    12 223 19     204800
+     NTFS, 104 MB / 100 MiB
+NTFS at 12/223/20
+filesystem size           259764224
+sectors_per_cluster       8
+mft_lcn                   786432
+mftmirr_lcn               2
+clusters_per_mft_record   -10
+clusters_per_index_record 1
+     HPFS - NTFS             12 223 20 16182 114 60  259764224
+     NTFS, 132 GB / 123 GiB
+NTFS at 16182/114/61
+filesystem size           204800000
+sectors_per_cluster       8
+mft_lcn                   786432
+mftmirr_lcn               2
+clusters_per_mft_record   -10
+clusters_per_index_record 1
+     HPFS - NTFS          16182 114 61 28930 168 38  204800000
+     NTFS, 104 GB / 97 GiB
+
+recover_EXT2: s_block_group_nr=0/1937, s_mnt_count=0/4294967295, s_blocks_per_group=32768, s_inodes_per_group=8192
+recover_EXT2: s_blocksize=4096
+recover_EXT2: s_blocks_count 63476562
+recover_EXT2: part_size 507812496
+     Linux                28930 168 39 60540 134 26  507812496
+     EXT4 Large file Sparse superblock, 259 GB / 242 GiB
+Search for partition aborted
+
+Results
+     HPFS - NTFS              0  32 33    12 223 19     204800
+     NTFS, 104 MB / 100 MiB
+     HPFS - NTFS             12 223 20 16182 114 60  259764224
+     NTFS, 132 GB / 123 GiB
+     HPFS - NTFS          16182 114 61 28930 168 38  204800000
+     NTFS, 104 GB / 97 GiB
+     Linux                28930 168 39 60540 134 26  507812496
+     EXT4 Large file Sparse superblock, 259 GB / 242 GiB
+SIGHUP detected! TestDisk has been killed.
