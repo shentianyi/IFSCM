@@ -2,30 +2,11 @@
 /* CSS Document */
 
 /*small screen*/
-@media screen and (max-width: 800px) {
+/*@media screen and (max-width: 800px) {
 
-}
+}*/
 
 /*big screen*/
-@media screen and (min-width:800px) {
-.wrapcontent{
-	width:900px;
-	float:left;
-	margin-left:30px;
-}
-
-	.lefticon {
-		margin-top: 0px;
-		width: 15px;
-		float: left;
-		border-width: 1px;
-		border-left-width: 0px;
-		border-style: solid;
-		border-color: #dadada;
-		border-collapse: collapse;
-		border-style: solid;
-	}
-
 	.uploadline {
 		margin-top: 30px;
 		margin-bottom: 50px;
@@ -77,14 +58,6 @@
 		display: block;
 		width: 900px;
 	}
-	.tableview {
-		float: left;
-	}
-	.upData {
-		float: left;
-		margin: auto;
-		border-collapse: collapse;
-	}
 	.lineone {
 		border-bottom: 1px solid #a8a8a8;
 	}
@@ -123,27 +96,6 @@
 		padding-top: 0.3em;
 		padding-bottom: 0.3em;
 		width: 120px;
-	}
-
-	.norline th {
-		color: #9d9d9d;
-		padding-bottom: 0.3em;
-		padding-left: 1em;
-		padding-right: 1em;
-		margin-left: 0.3em;
-		margin-right: 0.3em;
-		padding-top: 0.3em;
-		text-align: center;
-		font-weight: normal;
-		font-size: 0.9em;
-		padding-right: 1em;
-		margin-left: 0.3em;
-		margin-right: 0.3em;
-		padding-top: 0.3em;
-		text-align: center;
-		font-weight: normal;
-		font-size: 0.9em;
-		border-bottom: 1px dashed #a8a8a8;
 	}
 	.botbts {
 		width: 430px;
@@ -199,9 +151,10 @@
 	}
 	.listoffiles {
 		position: fixed;
+		float: left;
+		margin-left: 800px;
 		top: 70px;
 		right: 10px;
-		width: 250px;
 		background-color: #ffffff;
 		border: 1px solid #dbdbdb;
 		border-radius: 5px;
@@ -210,10 +163,8 @@
 	}
 	.file {
 		float: left;
-		height: 20px;
 		padding: 3px 0px 3px 0px;
 		line-height: 20px;
-		width: 230px;
 		margin: 0px 5px 0px 5px;
 		border-bottom: 1px dashed #dbdbdb;
 	}
@@ -282,46 +233,6 @@
 		float: left;
 		margin-right:10px;
 	}
-	.sepstructure {
-		margin-right: 150px;
-	}
-	.fnumbers {
-		font-size: 12px;
-		float: left;
-		width: 120px;
-		text-align: left;
-	}
-	.forcastcompare {
-		width: 250px;
-	}
-	.lineforcast {
-		height: 15px;
-		line-height: 15px;
-		float: left;
-		width: 250px;
-	}
-	.percentage {
-		width: 220px;
-		float: left;
-		text-align: right;
-		font-size: 12px;
-	}
-	.forcastbaseline img {
-		float: left;
-	}
-	.forcastbaseline {
-		width: 120px;
-		border: 1px solid #dbdbdb;
-		margin-top:5px;
-		height: 5px;
-		float: left;
-	}
-	.partline {
-		float: left;
-		height: 5px;
-		background-color: #208041;
-	}
-	
 /* upload demand	buttons*/
     #demandupload {
           opacity: 0;
@@ -405,4 +316,3 @@ text-align: center;
             .correct-img-span:hover{
                background-image: url(/assets/iconedith.png);
           }
-}

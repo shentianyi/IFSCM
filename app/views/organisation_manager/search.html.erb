@@ -1,28 +1,13 @@
-<link href="/assets/cusViewSupp.css"  rel="stylesheet" type="text/css"/>
+<link href="/assets/orgViewSearch.css"  rel="stylesheet" type="text/css"/>
 <script type="text/javascript">
 function cs_search( hash, page){
-	 if (page==null)
-	 	page=0;
+	 if (page==null)	page=0;
 	$.post("./search",{ csNr: hash["csNr"], options: hash, page: page },
-			  function(data){ $('#cslist').html(data); },
-			  "html");
+			  function(data){ $('#cslist').html(data); }, "html");
 };
-
 $(function() {
-      window.hash = {
-        minChars: 1,
-        delay: 50,
-        width: 350,
-        scroll: false,
-        // formatItem: function(data, i, total) {
-          // return data.name;
-        // }
-      };
-      $('#orgSearchBox').autocomplete({source: "/organisation_manager/redis_search", appendTo: "#searchline"}, window.hash);
-      
-      $('#orgSearchBut').click(function(){
-      	cs_search( {csNr:$('#orgSearchBox').val()} );
-      });
+      $('#orgSearchBox').autocomplete({source: "/organisation_manager/redis_search", appendTo: "#searchline"});
+      $('#orgSearchBut').click(function(){	cs_search( {csNr:$('#orgSearchBox').val()} );  });
       cs_search({});
 });
 </script>

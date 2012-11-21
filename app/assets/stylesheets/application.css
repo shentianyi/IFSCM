@@ -11,8 +11,5 @@
  * 
  * = require masterpage
  * = require_self
- * = require demand/supViewOrder
+ * = require demand/basicView
 */
-
-
-.ui-helper-hidden-accessible { display: none }

@@ -2,7 +2,6 @@
 /* CSS Document */
 
 /*Another version*/
-@media screen and (min-width:800px) {
 	#searchline {
 		width: 1000px;
 		margin-top: 20px;
@@ -38,7 +37,7 @@
 		border-top-color: #dbdbdb;
 	}
 	.supplierinfo {
-		heiht: 80px;
+		height: 80px;
 		width: 1000px;
 		float: left;
 		display: block;
@@ -114,10 +113,9 @@
 	.hovbt:hover {
 		background-color: #0e80b0;
 	}
-}
 
 /*different media*/
-@media screen and (max-width: 800px) {
+/*@media screen and (max-width: 800px) {
 	#searchline {
 		width: 700px;
 		margin-top: 20px;
@@ -231,4 +229,4 @@
 	.hovbt:hover {
 		background-color: #0e80b0;
 	}
-}
+}*/

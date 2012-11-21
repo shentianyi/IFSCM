@@ -13,7 +13,6 @@ input.txtInput {
 	margin-bottom: 15px;
 	display: block;
 }
-
 input:-moz-placeholder {
 	color: #c5c5c5;
 }

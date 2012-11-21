@@ -1,6 +1,6 @@
 
-	<table class="demandData">
-		<tr class="demandlineone">
+	<table class="upData">
+		<tr class="lineone">
 			<% if session[:orgOpeType]==OrgOperateType::Client %>
 				<th link="supplier_float" style="cursor: pointer" >供应商号</th>
 			<% else %>
@@ -17,7 +17,7 @@
 			<th class="nordvd"></th>
 		</tr>
 		<% @demands.each do |d|	%>
-		  <tr class="demandnorline hoverable">
+		  <tr class="norline hoverable">
 			<% if session[:orgOpeType]==OrgOperateType::Client %>
 				<th><%= d.supplierNr %></th>
 				<th><%= d.cpartNr%></th>
