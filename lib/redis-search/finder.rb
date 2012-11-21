@@ -53,10 +53,18 @@ class Redis
           start+=(steplen+1)
         end
       end
-
+      
+      # for in page it needs exact results
+      if options[:startIndex] and options[:take]
+        if prefix_matchs.count==0
+          return nil,0
+        end
+      end
+    
       # 组合 words 的特别 key 名
       words = []
       words = prefix_matchs.uniq.collect { |w| Search.mk_sets_key(type,w) }
+      puts "words:#{words}"
       # 组合特别 key ,但这里不会像 query 那样放入 words， 因为在 complete 里面 words 是用 union 取的，condition_keys 和 words 应该取交集
       condition_keys = []
       if !conditions.blank?
@@ -95,12 +103,12 @@ class Redis
       puts options
       if options[:startIndex] and options[:take]
         ids = Redis::Search.config.redis.sort(temp_store_key,:limit => [options[:startIndex],options[:take]],:by => Search.mk_score_key(type,"*"),:order => "desc")
-        puts ids
         return   hmget(type,ids) , Redis::Search.config.redis.scard(temp_store_key)
       else
         ids = Redis::Search.config.redis.sort(temp_store_key,:limit => [0,limit],:by => Search.mk_score_key(type,"*"),:order => "desc")
         return  hmget(type,ids)
       end
+      
     end
 
     # Search items, this will split words by Libmmseg

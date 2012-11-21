@@ -34,10 +34,10 @@ module DemanderHelper
       sfile.itemCount=sfile.errorCount=0
 
       CSV.foreach(File.join($DECSVP,sfile.uuidName),:headers=>true,:col_sep=>$CSVSP) do |row|
-        if row.count>4
+        if row["PartNr"] and row["Supplier"] and row["Date"] and row["Type"] and row["Amount"]
           sfile.itemCount+=1
-          demand= DemanderTemp.new(:key=>UUID.generate,:cpartNr=>row[0],:clientId=>clientId,:supplierNr=>row[1],
-          :filedate=>row[2],:type=>row[3],:amount=>row[4],:lineNo=>sfile.itemCount,:source=>sfile.oriName,:oldamount=>0)
+          demand= DemanderTemp.new(:key=>UUID.generate,:cpartNr=>row["PartNr"],:clientId=>clientId,:supplierNr=>row["Supplier"],
+          :filedate=>row["Date"],:type=>row["Type"],:amount=>row["Amount"],:lineNo=>sfile.itemCount,:source=>sfile.oriName,:oldamount=>0)
           demand.date=FormatHelper::demand_date_by_str_type(demand.filedate,demand.type)
 
           # validate demand field
@@ -57,7 +57,7 @@ module DemanderHelper
           sfile.errorCount+= 1
           end
         else
-          returnMsg.content="文件:#{sfile.oriName},行号:#{sfile.itemCount+1},少于5列,请重新修改上传！"
+          returnMsg.content="文件:#{sfile.oriName},行号:#{sfile.itemCount+1},缺少列值或文件标题错误,请重新修改上传！"
         return returnMsg
         end
       end

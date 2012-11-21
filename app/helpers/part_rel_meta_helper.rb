@@ -5,8 +5,10 @@ module PartRelMetaHelper
     prms=[]
     puts "q:#{q}"
     result,total= Redis::Search.complete("PartRelMeta",q,options)
-    result.collect do |r|
-      prms<<PartRelMeta.new(r)
+    if result
+      result.collect do |r|
+        prms<<PartRelMeta.new(r)
+      end
     end
     return prms,total if options[:startIndex]
     return prms
