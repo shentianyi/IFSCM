@@ -21,27 +21,7 @@
 			<th class="lastdvd"></th>
 		</tr>
 		<% @demands.each do |d|
-	   thisLineWidth=lastLineWidth=nil
-          img=nil
-          if d.oldamount.nil?
-          img='dotchecked'
-          thisLineWidth=100
-          lastLineWidth=0
-          else
-          if d.rate.to_i>0
-          img='arrup'
-          thisLineWidth=100
-          lastLineWidth= d.oldamount>0 ? 100/(1+d.rate.to_f/100) : 0
-          elsif d.rate.to_i<0
-          img='arrdown'
-          thisLineWidth=(100+d.rate.to_f)
-          lastLineWidth=100
-          else
-          img='equal'
-          thisLineWidth=d.amount>0 ? 100 : 0
-          lastLineWidth=d.oldamount>0 ? 100 : 0
-          end
-          end
+	      img,thisLineWidth,lastLineWidth=DemanderHelper::generate_demand_bar(d)
 		%>
 		  <tr class="norline hoverable">
 			<% if session[:orgOpeType]==OrgOperateType::Client %>

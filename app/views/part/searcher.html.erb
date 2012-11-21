@@ -2,9 +2,32 @@
      $(function() {
           $("#partSearchTxt").autocomplete({ source:"/part/redis_search", appendTo: "#part_redis_search" });
      }); 
+     function get_part_rel_meta(){
+           $.ajax({
+          url : '../part/get_part_rel_meta_inpage',
+          data : {
+               'q' : $('#partRelMetaTxt').val(),
+               'pageIndex' :$('#pageIndex').val()
+          },
+          dataType : 'html',
+          type : 'post',
+          success : function(data) {
+               $('#part-rel-meta-result').html(data);
+          }
+     });
+     }
 </script>
-
+<h2>ATUO COMPLETE</h2>
 <div id='part_redis_search'>
 	零件号：
 	<input type="text" id="partSearchTxt" name="partSearchTxt">
+</div>
+<h2>PART REL META IN PAGE</h2>
+<div>
+     <input type="input" id="partRelMetaTxt" />
+          <input type="input" id="pageIndex" />
+     <input type="button" value="Get In Page" onclick="get_part_rel_meta();"/>
+     <div id="part-rel-meta-result">
+          
+     </div>
 </div>

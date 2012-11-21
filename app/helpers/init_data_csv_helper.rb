@@ -15,7 +15,7 @@ module InitDataCsvHelper
       org.save
       orgs<<org
     end
-    writeBak fileName,orgs
+    #writeBak fileName,orgs
     return orgs
   end
 

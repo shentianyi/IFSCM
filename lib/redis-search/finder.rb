@@ -31,18 +31,26 @@ class Redis
       key = Search.mk_complete_key(type)
 
       if start = Redis::Search.config.redis.zrank(key,prefix)
-        max_range = start+(rangelen*limit)-1
-        range = Redis::Search.config.redis.zrange(key,start,max_range)
-        if range
+        steplen = rangelen*limit
+        totalcount=Redis::Search.config.redis.zcard(key)
+        puts "totalcount:#{totalcount}"
+        steps=totalcount/steplen+(totalcount%steplen==0 ? 0 : 1)
+        puts "steps:#{steps}"
+        for i in 0...steps
+          range = Redis::Search.config.redis.zrange(key,start, start+steplen)
+          break if !range or range.length == 0
           range.each {|entry|
             minlen = [entry.length,prefix.length].min
             if entry[0...minlen] != prefix[0...minlen]
+            count = prefix_matchs.count
             break
             end
-            if entry[-1..-1] == "*"
+            if entry[-1..-1] == "*" and prefix_matchs.length != count
             prefix_matchs << entry[0...-1]
             end
           }
+          puts "step no.#{i}"
+          start+=(steplen+1)
         end
       end
 
@@ -55,6 +63,7 @@ class Redis
         conditions = conditions[0] if conditions.is_a?(Array)
         conditions.keys.each do |c|
           condition_keys << Search.mk_condition_key(type,c,conditions[c])
+          puts condition_keys
         end
       end
 
@@ -82,12 +91,16 @@ class Redis
         end
       end
 
-      ids = Redis::Search.config.redis.sort(temp_store_key,
-      :limit => [0,limit],
-      :by => Search.mk_score_key(type,"*"),
-      :order => "desc")
-      return [] if ids.blank?
-      hmget(type,ids)
+      puts "total:#{ Redis::Search.config.redis.scard(temp_store_key)}"
+      puts options
+      if options[:startIndex] and options[:take]
+        ids = Redis::Search.config.redis.sort(temp_store_key,:limit => [options[:startIndex],options[:take]],:by => Search.mk_score_key(type,"*"),:order => "desc")
+        puts ids
+        return   hmget(type,ids) , Redis::Search.config.redis.scard(temp_store_key)
+      else
+        ids = Redis::Search.config.redis.sort(temp_store_key,:limit => [0,limit],:by => Search.mk_score_key(type,"*"),:order => "desc")
+        return  hmget(type,ids)
+      end
     end
 
     # Search items, this will split words by Libmmseg

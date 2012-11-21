@@ -9,12 +9,12 @@ class PartRel<CZ::BaseClass
   end
 
   #ws get part relation id
-  def self.get_partRelMetaKey_by_partKey cid,sid,partKey,partRelType
+  def self.get_partRelMeta_by_partKey cid,sid,partKey,partRelType
     key=generate_cs_partRel_hashkey cid,sid,partRelType
     if pr=PartRel.find($redis.hget key,partKey)
       ms=$redis.smembers(pr.partMetaSetKey)
       if ms.count>0
-        return PartRelMeta.find(ms[0]).key
+        return PartRelMeta.find(ms[0])
       end
     end
     return nil 
@@ -93,7 +93,7 @@ class PartRel<CZ::BaseClass
   def self.generate_cs_part_relation cpart,spart,saleNo,purchaseNo
     # 1. gen part rel meta
        partRelMeta=PartRelMeta.new(:key=>PartRelMeta.gen_key,:cpartId=>cpart.key,:spartId=>spart.key,:saleNo=>saleNo,:purchaseNo=>purchaseNo)
-       partRelMeta.save
+      partRelMeta.save
        
      # 2. add part meta key to set
      cpartmeta_rel_set_key=  generate_cs_partRel_meta_set_key cpart.orgId,spart.orgId,cpart.key
@@ -120,6 +120,8 @@ class PartRel<CZ::BaseClass
      spartRel_set_key=generate_org_partRel_zset_key spart.orgId,spart.key
      $redis.zadd spartRel_set_key,PartRelType::Supplier,spartRel.key
      
+     
+
   end
 
   private

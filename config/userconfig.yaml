@@ -11,7 +11,7 @@ page:
  :demand_page_size: 10
 
 title:
- :demand_csv_title: ["零件号","Supplier","Date","Type","Amount"]
+ :demand_csv_title: ["PartNr","Supplier","Date","Type","Amount"]
  
 resque:
  :resquedb: 0
