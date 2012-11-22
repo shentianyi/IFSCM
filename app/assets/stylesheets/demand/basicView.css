@@ -9,6 +9,7 @@
 	.tableview {
 		float: left;
 		clear: left;
+		color: #9d9d9d;
 	}
 	.upData {
 		float: left;
@@ -38,21 +39,6 @@
 		font-family: Arial;
 		font-weight: normal;
 		line-height: 1.5em;
-	}
-	.filetag {
-		border-color: #ffffff;
-	}
-	.indication {
-		float: left;
-		background-color: #dbdbdb;
-		color: #9d9d9d;
-		font-size: 14px;
-		border-radius: 3px;
-		padding-left: 1.5em;
-		padding-right: 1.5em;
-		padding-top: 0.3em;
-		padding-bottom: 0.3em;
-		width: 120px;
 	}
 	.norline th {
 		color: #9d9d9d;
@@ -157,6 +143,9 @@
 		float: left;
 		height: 5px;
 		background-color: #208041;
+	}
+	.census {
+		font-size: 0.9em;
 	}
 	.chartsign {
 		height: 20px;

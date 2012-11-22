@@ -33,5 +33,5 @@
 		<% end %>
 	</table>
 	<hr/>
-	There is(are) <%= @total %> record(s):<br/>
+	<div class="census">共 <%= @total %> 条</div>
 	<%=bri_pager options={:class=>"pagination",:pages=>@totalPages,:current=>@currentPage,:action=>'chart_search',:target=>@options}%>
