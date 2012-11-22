@@ -27,7 +27,7 @@ function upload_demand_files() {
                dataType : 'html',
                change : function(e, data) {
                     canceled = false;
-                    vali = true;
+                    vali = true;  
                     $('#file-upload-info-list').show();
                     $('#upload-file-preview').html('');
                     var i = 0;
@@ -47,11 +47,15 @@ function upload_demand_files() {
                          canceled = true;
                          $('#file-upload-info-list').hide();
                          $('#upload-file-preview').html('');
+                         location.reload();
+                         // data={}
                     });
 
                     $("#upload-button").click(function() {
+                                 // alert(JSON.stringify(data)+'');
+                                 
                          if(vali && !canceled) {
-                              data.submit();
+                          data.submit();
                          }
                     });
                },
@@ -63,11 +67,6 @@ function upload_demand_files() {
                },
                done : function(e, data) {
                     // data.context.text('Upload finished.');
-               },
-               fail : function(e, data) {
-                    $.each(data.files, function(index, file) {
-                         alert(file.name);
-                    });
                }
           });
      });
