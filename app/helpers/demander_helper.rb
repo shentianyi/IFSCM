@@ -95,7 +95,7 @@ module DemanderHelper
 
     # vali supplier
     if client=Organisation.find_by_id(demand.clientId)
-      if !supplierId=client.search_supplier_byNr(demand.supplierNr)
+      if !supplierId=client.find_supplier_byNr(demand.supplierNr)
         msg.result=false
         msg.content_key<<:spNrNotEx
       else
@@ -142,8 +142,6 @@ module DemanderHelper
     #valid repeat
     repeat_key= demand.gen_md5_repeat_key
     if key=batchFile.get_repeat_item(repeat_key)
-      puts 'repeat_key:'+repeat_key
-      puts 'key:'+key
       baseDemand=DemanderTemp.find(key)
       if baseDemand and baseDemand.key!=demand.key
         msg.result=false

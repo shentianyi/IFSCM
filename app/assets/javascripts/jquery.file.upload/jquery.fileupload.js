@@ -922,11 +922,11 @@
                     form: $(e.target.form)
                 };
             this._getFileInputFiles(data.fileInput).always(function (files) {
-                data.files = files;
-                if (that.options.replaceFileInput) {
+                data.files = files; 
+                if (that.options.replaceFileInput) { 
                     that._replaceFileInput(data.fileInput);
                 }
-                if (that._trigger('change', e, data) !== false) {
+                if (that._trigger('change', e, data) !== false) { 
                     that._onAdd(e, data);
                 }
             });

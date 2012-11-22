@@ -49,6 +49,12 @@ class Organisation<CZ::BaseClass
     $redis.zscore( key, supplierNr ).to_i.to_s
   end
   
+    def find_supplier_byNr( supplierNr )
+    key = s_key
+     supplierId= $redis.zscore( key, supplierNr )
+     return supplierId.nil? ? nil : supplierId.to_i
+  end
+  
   def search_supplier_byId( supplierId )
     key = s_key
     arr = $redis.zrangebyscore( key, supplierId, supplierId, :withscores=>false )
@@ -76,6 +82,12 @@ class Organisation<CZ::BaseClass
     $redis.zscore( key, clientNr ).to_i.to_s
   end
   
+      def find_client_byNr( clientNr )
+    key = s_key
+     clientId= $redis.zscore( key, clientNr )
+     return client.nil? ? nil : clientId.to_i
+  end
+  
   def search_client_byId( clientId )
     key = c_key
     arr = $redis.zrangebyscore( key, clientId, clientId, :withscores=>false )
@@ -92,9 +104,9 @@ class Organisation<CZ::BaseClass
   def get_parterId_by_parterNr orgOpeType,partnerNr
     orgId=nil
     if orgOpeType==OrgOperateType::Client
-       orgId=search_supplier_byNr(partnerNr)
+       orgId=find_supplier_byNr(partnerNr)
     elsif orgOpeType==OrgOperateType::Supplier
-       orgId=search_client_byNr(partnerNr)
+       orgId=find_client_byNr(partnerNr)
     end
     return orgId
   end

@@ -18,7 +18,7 @@ function window_redirect(url, timeout) {
 
 // ws : demand upload file
 function upload_demand_files() {
-     $(function() {
+    $(function() {
           var vali = true;
           var canceled = false;
           $('#demandupload').fileupload({
@@ -47,8 +47,13 @@ function upload_demand_files() {
                          canceled = true;
                          $('#file-upload-info-list').hide();
                          $('#upload-file-preview').html('');
+                         $('#demandupload').fileupload('destroy');
+                         // $.each(data.files,function(k,v){
+                              // alert(k);
+                              // alert(v);
+                         // });
                          location.reload();
-                         // data={}
+                         // data.files=[];?
                     });
 
                     $("#upload-button").click(function() {
