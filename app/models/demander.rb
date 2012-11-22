@@ -47,11 +47,14 @@ class Demander<CZ::BaseClass
       demands = []
       amount = hash[:amount]
       if amount&&amount.size>0
-          if amount.size==2
+          if amount.size==1
+            start = amountend = amount
+          elsif amount.size==2 && amount.last.size==0
+            start = amount.first
+            amountend = $Infin
+          elsif amount.size==2
             start = amount.first
             amountend = amount.last
-          elsif amount.size==1
-            start = amountend = amount
           end
           $redis.zinterstore( resultKey, [resultKey, Rns::Amount], :weights=>[0,1] )
           total = $redis.zcount( resultKey, start, amountend )
@@ -162,7 +165,7 @@ private
           key = "#{column}:#{param}"
       elsif param.is_a?(Array)
           key = column
-          param.each do |c|
+          param.uniq.each do |c|
             c.insert( 0, "#{column}:" )
           end
           $redis.zunionstore( key, param )

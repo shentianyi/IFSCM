@@ -46,7 +46,11 @@ class Organisation<CZ::BaseClass
   
   def search_supplier_byNr( supplierNr )
     key = s_key
-    $redis.zscore( key, supplierNr ).to_i.to_s
+    if supplierNr.is_a?(String)
+      $redis.zscore( key, supplierNr ).to_i.to_s
+    elsif supplierNr.is_a?(Array)
+      supplierNr.collect{|temp|$redis.zscore( key, temp ).to_i.to_s }
+    end
   end
   
     def find_supplier_byNr( supplierNr )
@@ -79,7 +83,11 @@ class Organisation<CZ::BaseClass
   
   def search_client_byNr( clientNr )
     key = c_key
-    $redis.zscore( key, clientNr ).to_i.to_s
+    if clientNr.is_a?(String)
+      $redis.zscore( key, clientNr ).to_i.to_s
+    elsif clientNr.is_a?(Array)
+      clientNr.collect{|temp|$redis.zscore( key, temp ).to_i.to_s }
+    end
   end
   
       def find_client_byNr( clientNr )
