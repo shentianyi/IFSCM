@@ -6,8 +6,8 @@
 			</div>
 			<div class="centerchart" prime="null" startline="null">
 					<div class="closebt" onclick="chartview_cancel();"></div>
-					<div class="charttypebt chartactive" name="line" style="left:10%">Line</div>
-					<div class="charttypebt" name="step" style="left:16%">Step</div>
+					<div class="charttypebt charttypelinea chartactive" name="line" style="left:10%"></div>
+					<div class="charttypebt charttypestepb" name="step" style="left:16%"></div>
 					<div id="charting" style="margin:auto; top:20%; width:600px;height:300px"></div>
 			</div>
 			<div class="adjustbt laterdate" startline="null">
@@ -32,13 +32,13 @@
 			<span class="searchcontenttype ">日期</span>
 			<input type="text" name="searchcontent" class="searchcontent" placeholder="请选择开始时间" />
 			<input type="text" name="searchcontent" class="searchcontent" placeholder="请选择结束时间" />
-			<input type="button" name="startsearch"	class="startsearch" value="搜索" onclick="demand_search_with_type( {start:$(this).prev().prev().val(), end:$(this).prev().val()} );"/>
+			<input type="button" name="startsearch"	class="startsearch" value="搜索" />
 		</div>
 		<div class="textsearchbox ranges" id="amount_float" style="display: none">
 			<span class="searchcontenttype ">数量</span>
 			<input type="text" name="searchcontent" class="searchcontent" placeholder="请输入起始数字" />
 			<input type="text" name="searchcontent" class="searchcontent" placeholder="请选择截止数字" />
-			<input type="button" name="startsearch"	class="startsearch" value="搜索" onclick="demand_search_with_type( {amount:[$(this).prev().prev().val(), $(this).prev().val()]} );"/>
+			<input type="button" name="startsearch"	class="startsearch" value="搜索" />
 		</div>
 		<div class="textsearchbox texts" id="type_float" style="display: none">
 			<span class="searchcontenttype ">预测类型</span>
@@ -54,6 +54,7 @@
 			<input	type="text" name="searchcontent" class="searchcontent"	placeholder="请选择截止百分比" />
 			<input type="button" name="startsearch"	class="startsearch" value="搜索"/>
 		</div>
+
 <div class="forcasttypes" >
 	<div class="forcasttype typeactive" demand="" >
 		显示全部
@@ -80,6 +81,13 @@
      	确认查收
     </div>
 </div>
-<div id="result" class="tableview">
-</div>
+
+<div class="search_label" id="label_client" name="client">客户：</div>
+<div class="search_label" id="label_supplier" name="supplier">供应商：</div>
+<div class="search_label" id="label_partNr" name="partNr">零件号：</div>
+<div class="search_label" id="label_time" name="time">日期：</div>
+<div class="search_label" id="label_amount" name="amount">数量：</div>
+<div class="search_label" id="label_type" name="type">类型：</div>
+
+<div id="result" class="tableview"></div>
 

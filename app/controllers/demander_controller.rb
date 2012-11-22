@@ -334,8 +334,8 @@ class DemanderController<ApplicationController
             c = params[:client]
             s = params[:supplier]
             p = params[:partNr]
-            tstart = Time.parse(params[:start]).to_i if params[:start]
-            tend = Time.parse(params[:end]).to_i if params[:end]
+            tstart = Time.parse(params[:start]).to_i if params[:start] && params[:start].size>0
+            tend = Time.parse(params[:end]).to_i if params[:end] && params[:end].size>0
         
             ######  判断类型 C or S ， 将session[:id]赋值给 id
         

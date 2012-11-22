@@ -22,26 +22,36 @@ class PartRel<CZ::BaseClass
  
   
   def self.get_all_partRelMetaKey_by_partNr( csid, partNr, partRelType )
-    partKey = Part.find_partKey_by_orgId_partNr csid,partNr
-    return [] unless partKey
+    if partNr.is_a?(String)
+      partKey = [Part.find_partKey_by_orgId_partNr( csid,partNr )]
+    elsif partNr.is_a?(Array)
+      partKey = partNr.collect{|temp|Part.find_partKey_by_orgId_partNr( csid,temp ) }
+    end
+    partKey=partKey.compact
+    return [] unless partKey.size>0
     org = Organisation.find_by_id(csid)
     total = []
+    
     if partRelType==PartRelType::Client
+      for k in partKey
         $redis.zrange( org.s_key, 0, -1, :withscores=>true ).each do |item|
             key = generate_cs_partRel_hashkey( csid, item[1].to_i, partRelType )
-            next if $redis.hexists( key,partKey )==0
-            next unless pr = PartRel.find( $redis.hget key,partKey )
+            next if $redis.hexists( key,k )==0
+            next unless pr = PartRel.find( $redis.hget key,k )
             mkey=pr.partMetaSetKey
             total+=$redis.smembers(mkey) if $redis.exists mkey
         end
+      end
     else
+      for k in partKey
         $redis.zrange( org.c_key, 0, -1, :withscores=>true ).each do |item|
             key = generate_cs_partRel_hashkey( item[1].to_i, csid, partRelType )
-            next if $redis.hexists( key,partKey )==0
-            next unless pr = PartRel.find( $redis.hget key,partKey )
+            next if $redis.hexists( key,k )==0
+            next unless pr = PartRel.find( $redis.hget key,k )
             mkey=pr.partMetaSetKey
             total+=$redis.smembers(mkey) if $redis.exists mkey
         end
+      end
     end
     return total
   end

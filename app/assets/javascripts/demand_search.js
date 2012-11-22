@@ -15,14 +15,6 @@ function pop_cancel(e){
 function chartview_cancel(){
 	$('.chartview').hide();
 }
-
-function forcasttype_reverse(e){
-	if ( $(e).hasClass('activetype') )
-		$(e).removeClass('activetype');
-	else
-		$(e).addClass('activetype');
-}
-
 ///////////////////////////////////////////////////////////////////      msg  queue          for new demand
 function get_kestrel(){
 	$.post("../demander/kestrel_newer",{ },
@@ -72,33 +64,100 @@ function demand_search( hash, page ){
           },
           dataType : "html",
           success : function(data) {
-               $("#result").html("");
-               if(data != null && data.length > 0) {
-                    $("#result").html(data);
-               }
+          		$("#result").html(data);
           }
      });
 }
 
 ///////////////////////////////////////////////////////////////////	        ext     search
+function demand_search_stimulate(){
+	var label = {
+               // client: [],
+               // supplier: [],
+               // partNr: [],
+               // // start: hash["start"],
+               // // end: hash["end"],
+               // type: [],
+               // amount: []
+   	}
+   	var v;
+	$('.search_label').children().each(function(){
+		v=$(this).text();
+		if ($(this).parent().attr('name')=="time"){
+			v=v.split('~');
+			label.start=v[0].trim();
+			label.end=v[1].trim(); 
+		}else if ($(this).parent().attr('name')=="amount")
+			label.amount=v.split('~');
+		else if (typeof label[$(this).parent().attr('name')]=="undefined")
+			label[$(this).parent().attr('name')]=[v];
+		else
+			label[$(this).parent().attr('name')].push(v);
+	})
+	$('.forcasttype[demand=""]').removeClass('typeactive');
+	demand_search(label);
+}
+
+function demand_search_label_add(hash){
+  	for (t in hash)
+  		if (hash[t].length>0 && typeof hash[t]=="string"){
+	  		$('#label_'+t).children().each(function(){
+	  			if ($(this).text()==hash[t])  $(this).remove();
+	  		});
+  			$('<span class="notifyNewForcast"></span>').text(hash[t]).appendTo($('#label_'+t)).click(function(){
+  				var temp={};
+  				temp[$(this).parent().attr('name')]=$(this).text()
+  				demand_search_label_delete( temp );
+  			});
+  			$('#label_'+t).show();
+  		} 
+  		else if (hash[t].length>0)
+  		{
+  			if ($('#label_'+t).children().size()>0)  $('#label_'+t).children().remove();
+  			hash[t]=hash[t][0]+"~"+hash[t][1];
+  			$('<span class="notifyNewForcast"></span>').text(hash[t]).appendTo($('#label_'+t)).click(function(){
+  				var temp={};
+  				temp[$(this).parent().attr('name')]=$(this).text()
+  				demand_search_label_delete( temp );
+  			});
+  			$('#label_'+t).show();
+  		}
+  	demand_search_stimulate();
+}
+
+function demand_search_label_delete(hash){
+	for (t in hash)
+  		if (hash[t].length>0){
+	  		$('#label_'+t).children().each(function(){
+	  			if ($(this).text()==hash[t])  $(this).remove();
+	  		})
+	  		if ($('#label_'+t).children().size()==0)  $('#label_'+t).hide();
+  		}
+	demand_search_stimulate();
+}
+
 function demand_search_activate(e){
+	$(e).toggleClass('typeactive');
+	if ( $(e).hasClass('typeactive') )
+		demand_search_label_add( {type:$(e).attr('demand')} );
+	else
+		demand_search_label_delete( {type:$(e).attr('demand')} );
+}
+
+function demand_search_all(e){
+	$('.search_label').children().remove().end().hide();
 	$('.forcasttype').removeClass('typeactive');
 	$(e).addClass('typeactive');
-	demand_search( {type:$(e).attr('demand')} );
+	demand_search({});
 }
 
-function demand_search_with_type( hash ){
-	hash['type'] =$('.typeactive').attr('demand');
-	demand_search( hash );
-}
-
-function demand_search_multi_types(){
-	arr = [];
-	$('.activetype').each(function(){
-		arr.push( $(this).val() );
-	});
-	demand_search( { type:arr } );
-}
+// function demand_search_multi_types(){
+	// arr = [];
+	// $('.activetype').each(function(){
+		// arr.push( $(this).val() );
+	// });
+	// demand_search( { type:arr } );
+// }
 
 ///////////////////////////////////////////////////////////////////         charting
 function showTooltip(x, y, contents) {
@@ -163,24 +222,32 @@ function chart_history(key, tstart, tend ){
 }
 
 function active_chart_type(e){
-	$('.charttypebt').removeClass('chartactive');
-	$(e).addClass('chartactive');
+	$('.charttypebt').toggleClass('chartactive');
+	$('.charttypebt[name="line"]').toggleClass('charttypelineb');
+	$('.charttypebt[name="line"]').toggleClass('charttypelinea');
+	$('.charttypebt[name="step"]').toggleClass('charttypestepb');
+	$('.charttypebt[name="step"]').toggleClass('charttypestepa');
 	chart_history(  $('div.centerchart').attr('prime'), new Date($('div.centerchart').attr('startline'))  );
 }
 ///////////////////////////////////////////////////////////////////         DOM  on   ready
 $(function() {
-	$('.textsearchbox').draggable().blur(function(){  $(this).hide();  });
+	$('.textsearchbox').keypress(function(event){  if (event.which == 13) $(this).find('input.startsearch').click()  })
+										// .mouseleave(function(){  $(this).hide();  });
+										.hover(function(){  $(this).children().unbind('blur');  }, function(){  $(this).children().blur(function(){pop_cancel(this)});  });
+	// $('.textsearchbox.texts').find('input[placeholder]').blur(function(){  pop_cancel(this);  });
 	$('.chartview').draggable();
-	// $('.searchcancle').click(function(){ pop_cancel(this); });
 	
-	$('.forcasttype').css('cursor', 'pointer').click(function(){demand_search_activate( this );});
+	$('.forcasttype[demand=""]').click(function(){  demand_search_all(this);  });
+	$('.forcasttype').css('cursor', 'pointer').not('[demand=""]').click(function(){demand_search_activate( this );});
 	$('#client_float > input.searchcontent').autocomplete({source: "/organisation_manager/redis_search", appendTo: "#client_float"} );
 	$('#supplier_float > input.searchcontent').autocomplete({source: "/organisation_manager/redis_search", appendTo: "#supplier_float"} );
 	$("#partNr_float > input.searchcontent").autocomplete({ source:"/part/redis_search", appendTo: "#partNr_float" });
-	$('#client_float > input.startsearch').click(function(){ demand_search_with_type( {client:$('#client_float > input[placeholder]').val()} );    });
-	$('#supplier_float > input.startsearch').click(function(){ demand_search_with_type( {supplier:$('#supplier_float > input[placeholder]').val()} );    });
-	$('#partNr_float > input.startsearch').click(function(){ demand_search_with_type( {partNr:$('#partNr_float > input[placeholder]').val()} );    });
-	$('#type_float > input.searchforcasttype').click(function(){ forcasttype_reverse(this); });
+	$('#client_float > input.startsearch').click(function(){ demand_search_label_add( {client:$('#client_float > input[placeholder]').val()} );    });
+	$('#supplier_float > input.startsearch').click(function(){ demand_search_label_add( {supplier:$('#supplier_float > input[placeholder]').val()} );    });
+	$('#partNr_float > input.startsearch').click(function(){ demand_search_label_add( {partNr:$('#partNr_float > input[placeholder]').val()} );    });
+	$('#date_float > input.startsearch').click(function(){ demand_search_label_add( {time:[$(this).prev().prev().val(), $(this).prev().val()]} );    });
+	$('#amount_float > input.startsearch').click(function(){ demand_search_label_add( {amount:[$(this).prev().prev().val(), $(this).prev().val()]} );    });
+	// $('#type_float > input.searchforcasttype').click(function(){ $(this).toggleClass('activetype'); });
 	
 	$('div.previousdate').click(function (){	chart_history( $('div.centerchart').attr('prime'), new Date(new Date($('div.centerchart').attr('startline')).valueOf() - 1*(24*60*60*1000)) );		})
 											.dblclick(function (){	chart_history( $('div.centerchart').attr('prime'),new Date($('div.previousdate').attr('startline'))  );		});

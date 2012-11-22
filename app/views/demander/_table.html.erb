@@ -9,8 +9,8 @@
 			<th link="partNr_float" style="cursor: pointer" onclick="pop(this);">零件号</th>
 			<th link="date_float" style="cursor: pointer" onclick="pop(this);">日期</th>
 			<th link="amount_float" style="cursor: pointer" onclick="pop(this);">数量</th>
-			<th link="type_float" style="cursor: pointer" onclick="pop(this);">预测类型</th>
-			<th link="rate_float" style="cursor: pointer" onclick="pop(this);">变动量</th>
+			<th link="type_float">预测类型</th>
+			<th link="rate_float">变动量</th>
 		</tr>
 		<tr class="divide" style="display: none">
 			<th class="nordvd"></th>
@@ -60,7 +60,7 @@
 	                    </div>
 	               </div>
 			</th>
-			<th>  <input type="button" value="Chart" onclick="chart_history('<%= d.key%>');" />
+			<th>  <input type="button" class="chartsign" onclick="chart_history('<%= d.key%>');" />   </th>
 		  </tr>
 		<% end %>
 	</table>

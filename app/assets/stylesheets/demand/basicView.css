@@ -8,6 +8,7 @@
 /*big screen*/
 	.tableview {
 		float: left;
+		clear: left;
 	}
 	.upData {
 		float: left;
@@ -157,6 +158,18 @@
 		height: 5px;
 		background-color: #208041;
 	}
+	.chartsign {
+		height: 20px;
+		width: 30px;
+		background-image:url(../unfold.png);
+		background-repeat: no-repeat;
+		background-position: center;
+	}
+/*********************************************************************	 Search  Box  */
+	.search_label {
+		clear: left;
+		display: none;
+	}
 	.textsearchbox {
 		width: 252px;
 		border: 1px solid #dbdbdb;
@@ -264,17 +277,27 @@
 	}
 	.charttypebt {
 		position: absolute;
+		width: 33px;
+		height: 18px;
 		top: 3%;
 		padding: 6px;
-		background-color: #1297cf;
 		color: #ffffff;
 		border-radius: 5px;
 	}
 	.charttypebt:hover {
 		background-color: #0e80b0;
 	}
-	.chartactive {
-		background-image:url(../btnchov.png);
+	.charttypelineb {
+		background-image:url(../chartbutton1b.png);
+	}
+	.charttypestepb {
+		background-image:url(../chartbutton2b.png);
+	}
+	.charttypelinea {
+		background-image:url(../chartbutton1a.png);
+	}
+	.charttypestepa {
+		background-image:url(../chartbutton2a.png);
 	}
 	.closebt {
 		float: right;
