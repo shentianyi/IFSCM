@@ -47,6 +47,7 @@
             // The drop target element(s), by the default the complete document.
             // Set to null to disable drag & drop support:
             dropZone: $(document),
+            pfiles:null,
             // The paste target element(s), by the default the complete document.
             // Set to null to disable paste support:
             pasteZone: $(document),
@@ -728,7 +729,7 @@
                 paramNameSet,
                 paramNameSlice,
                 fileSet,
-                i;
+                i;           
             if (!(options.singleFileUploads || limit) ||
                     !this._isXHRUpload(options)) {
                 fileSet = [data.files];
@@ -748,6 +749,8 @@
                 paramNameSet = paramName;
             }
             data.originalFiles = data.files;
+//             ws for pevious files
+             that.pfiles=new Array();
             $.each(fileSet || data.files, function (index, element) {
                 var newData = $.extend({}, data);
                 newData.files = fileSet ? element : [element];
@@ -758,6 +761,7 @@
                         that._onSend(e, this);
                     return this.jqXHR;
                 };
+                that.pfiles.push(newData);
                 return (result = that._trigger('add', e, newData));
             });
             return result;
@@ -880,7 +884,7 @@
             if (entries && entries.length) {
                 return this._handleFileTreeEntries(entries);
             }
-            files = $.makeArray(fileInput.prop('files'));
+            files = $.makeArray(fileInput.prop('files')); 
             if (!files.length) {
                 value = fileInput.prop('value');
                 if (!value) {
@@ -896,7 +900,7 @@
                     file.name = file.fileName;
                     file.size = file.fileSize;
                 });
-            }
+            } 
             return $.Deferred().resolve(files).promise();
         },
 

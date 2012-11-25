@@ -51,7 +51,6 @@ Demand::Application.routes.draw do
      post :get_all_partRels_by_cusId
      match :get_part_rel_meta_inpage
     end
-  end
-
+  end 
   mount Resque::Server.new, :at=>"/admin/resque"
 end

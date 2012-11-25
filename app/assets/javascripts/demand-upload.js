@@ -18,16 +18,42 @@ function window_redirect(url, timeout) {
 
 // ws : demand upload file
 function upload_demand_files() {
-    $(function() {
+     $(function($) {'use strict';
+          $.widget('blueimp.fileupload', $.blueimp.fileupload, {
+               _onChange : function(e) {
+                    this._cancelHandler()
+                    this._super(e);
+               },
+               _initEventHandlers : function() {
+                    this._super();
+                    this._on($('#cancel-button'), {
+                         click : this.cancel
+                    });
+               },
+               cancel : function(e) {
+                    $('#file-upload-info-list').hide();
+                    $('#upload-file-preview').html('');
+                    this._cancelHandler()
+               },
+               _cancelHandler : function(e) {
+                    if(this.pfiles != null) {
+                         $.each(this.pfiles, function(index, element) {
+                              element.submit = null;
+                         });
+                         this.pfiles = null;
+                    }
+               }
+          });
+     });
+
+     $(function() {
           var vali = true;
-          var canceled = false;
           $('#demandupload').fileupload({
                singleFileUploads : false,
                acceptFileTypes : /(\.|\/)(csv)$/i,
                dataType : 'html',
                change : function(e, data) {
-                    canceled = false;
-                    vali = true;  
+                    vali = true;
                     $('#file-upload-info-list').show();
                     $('#upload-file-preview').html('');
                     var i = 0;
@@ -43,24 +69,11 @@ function upload_demand_files() {
                     });
                },
                add : function(e, data) {
-                    $("#cancel-button").click(function() {
-                         canceled = true;
-                         $('#file-upload-info-list').hide();
-                         $('#upload-file-preview').html('');
-                         $('#demandupload').fileupload('destroy');
-                         // $.each(data.files,function(k,v){
-                              // alert(k);
-                              // alert(v);
-                         // });
-                         location.reload();
-                         // data.files=[];?
-                    });
-
                     $("#upload-button").click(function() {
-                                 // alert(JSON.stringify(data)+'');
-                                 
-                         if(vali && !canceled) {
-                          data.submit();
+                         if(vali) {
+                              if(data.submit != null) {
+                                   data.submit();
+                              }
                          }
                     });
                },
@@ -236,8 +249,8 @@ function reset_demand_amount(obj) {
                                         demand.find('#this_demand_amount').text(de.amount);
                                         // gen amount bar & reset img
                                         var rate = parseFloat(de.rate);
-                                        // var width;          
-                                        if(de.oldamount !=null) {
+                                        // var width;
+                                        if(de.oldamount != null) {
                                              demand.find('.percentage').text(Math.abs(de.rate.toFixed(2)) + '%');
                                              if(rate > 0) {
                                                   demand.find('#thisLineWidthDiv').css('width', '100%');
