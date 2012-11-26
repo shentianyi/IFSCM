@@ -181,8 +181,11 @@ class DemanderController<ApplicationController
       demandId=params[:demandId]
       nt = Time.parse(params[:endIndex])
       if nt.hour+nt.min+nt.sec>0 
-        endIndex=Time.local(nt.year, nt.mon, nt.day).to_i
-        startIndex=endIndex - 3.day.to_i
+        if demander=Demander.find(demandId)
+          nt = Time.at(DemandHistory.get_two_ends(demander).last.created_at.to_i)
+          endIndex=Time.local(nt.year, nt.mon, nt.day).to_i + 1.day.to_i
+          startIndex=endIndex - 3.day.to_i
+         end
       else
         startIndex=Time.parse(params[:startIndex]).to_i
         endIndex=Time.parse(params[:endIndex]).to_i
@@ -197,14 +200,16 @@ class DemanderController<ApplicationController
           msg.result=true
           msg.object=hs
           if right=DemandHistory.get_demander_hitories(demander,endIndex,Time.now.to_i)
-            rchart = [[endIndex,right.first.amount.to_s.to_num]]
-          elsif Time.now.to_i<endIndex
-            rchart = [[Time.now.to_i,hs.last.amount.to_s.to_num]]
+            rchart = [[endIndex+1,right.first.amount.to_s.to_num]]
+          # elsif Time.now.to_i<endIndex
+            # rchart = [[Time.now.to_i,hs.last.amount.to_s.to_num]]
+          # else
+            # rchart = [[endIndex,hs.last.amount.to_s.to_num]]
           else
-            rchart = [[endIndex,hs.last.amount.to_s.to_num]]
+            rchart = []
           end
           if left=DemandHistory.get_demander_hitories(demander,-(1/0.0),startIndex)
-            lchart = [[startIndex,left.last.amount.to_s.to_num]]
+            lchart = [[startIndex+1,left.last.amount.to_s.to_num]]
           else
             lchart = []
           end
