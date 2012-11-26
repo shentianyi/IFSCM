@@ -200,7 +200,7 @@ class DemanderController<ApplicationController
           msg.result=true
           msg.object=hs
           if right=DemandHistory.get_demander_hitories(demander,endIndex,Time.now.to_i)
-            rchart = [[endIndex+1,right.first.amount.to_s.to_num]]
+            rchart = [[right.first.created_at.to_i, right.first.amount.to_s.to_num]]
           # elsif Time.now.to_i<endIndex
             # rchart = [[Time.now.to_i,hs.last.amount.to_s.to_num]]
           # else
@@ -209,7 +209,7 @@ class DemanderController<ApplicationController
             rchart = []
           end
           if left=DemandHistory.get_demander_hitories(demander,-(1/0.0),startIndex)
-            lchart = [[startIndex+1,left.last.amount.to_s.to_num]]
+            lchart = [[left.last.created_at.to_i, left.last.amount.to_s.to_num]]
           else
             lchart = []
           end
