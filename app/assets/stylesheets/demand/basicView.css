@@ -163,7 +163,7 @@
 		width: 252px;
 		border: 1px solid #dbdbdb;
 		font-size: 14px;
-		position:fixed;
+		position:absolute;
 		background-color:#ffffff;
 	}
 	.texts {
