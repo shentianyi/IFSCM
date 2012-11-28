@@ -175,7 +175,11 @@ function chart_history(key, tstart, tend ){
 	{	var startline = tstart;
 		var endline = new Date(new Date(tstart).valueOf() + 3*(24*60*60*1000) );
 	}
-	$('.chartview').show();
+	var cview = $('.chartview');
+	cview.show().css({
+		top: ($(window).height()-cview.height())/2,
+		left: ($(window).width()-cview.width())/2
+	});
 	$.post("../demander/demand_history",{demandId:key,startIndex:startline,endIndex:endline},
 			  function(data){  
 			  	var charting = $('#charting');
