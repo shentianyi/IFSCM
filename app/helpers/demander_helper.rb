@@ -34,7 +34,6 @@ module DemanderHelper
       sfile.itemCount=sfile.errorCount=0
 
       CSV.foreach(File.join($DECSVP,sfile.uuidName),:headers=>true,:col_sep=>$CSVSP) do |row|
-        puts row["PartNr"]
         if row["PartNr"] and row["Supplier"] and row["Date"] and row["Type"] and row["Amount"]
           sfile.itemCount+=1
           demand= DemanderTemp.new(:key=>UUID.generate,:cpartNr=>row["PartNr"],:clientId=>clientId,:supplierNr=>row["Supplier"],
@@ -63,16 +62,21 @@ module DemanderHelper
         end
       end
       # csv --end
+      if sfile.itemCount==0
+         returnMsg.result=false
+         returnMsg.content="文件:#{sfile.oriName},不存在预测"
+         break
+      end
       sfile.cover
       batchFile.remove_normal_item sfile.key
       batchFile.add_normal_item sfile.errorCount,sfile.key # order the files by error items count
       items<<sfile
       batchFile.errorCount+=1 if sfile.errorCount>0
+      returnMsg.result=true
     end
     batchFile.cover
     batchFile.items=items if items.count>0
     returnMsg.object=batchFile
-    returnMsg.result=true
     rescue Exception=>e
       returnMsg.content='文件格式错误,请重新上传'
     end
