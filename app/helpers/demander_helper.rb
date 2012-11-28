@@ -1,5 +1,4 @@
-#coding:utf-8
-#encoding=utf-8
+#coding:utf-8 
 require 'csv'
 require 'zip/zip'
 require "iconv"
@@ -24,6 +23,7 @@ module DemanderHelper
 
   # ws: handle batchFile from csv
   def self.handle_batchFile_from_csv(batchFileKey,clientId)
+    begin
     returnMsg=ReturnMsg.new(:result=>false,:content=>'')
     batchFile=RedisFile.find(batchFileKey)
     batchFile.errorCount=0
@@ -34,6 +34,7 @@ module DemanderHelper
       sfile.itemCount=sfile.errorCount=0
 
       CSV.foreach(File.join($DECSVP,sfile.uuidName),:headers=>true,:col_sep=>$CSVSP) do |row|
+        puts row["PartNr"]
         if row["PartNr"] and row["Supplier"] and row["Date"] and row["Type"] and row["Amount"]
           sfile.itemCount+=1
           demand= DemanderTemp.new(:key=>UUID.generate,:cpartNr=>row["PartNr"],:clientId=>clientId,:supplierNr=>row["Supplier"],
@@ -72,6 +73,9 @@ module DemanderHelper
     batchFile.items=items if items.count>0
     returnMsg.object=batchFile
     returnMsg.result=true
+    rescue Exception=>e
+      returnMsg.content='文件格式错误,请重新上传'
+    end
     return returnMsg
   end
 
