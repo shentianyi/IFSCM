@@ -195,29 +195,28 @@ class DemanderController<ApplicationController
       chart = []
       msg=ReturnMsg.new(:result=>false,:content=>'')
       if demander=Demander.find(demandId)
-        hs= DemandHistory.get_demander_hitories(demander,startIndex,endIndex)
-        if hs
+        if hs = DemandHistory.get_demander_hitories(demander,startIndex,endIndex)
           msg.result=true
           msg.object=hs
-          if right=DemandHistory.get_demander_hitories(demander,endIndex,Time.now.to_i)
-            rchart = [[right.first.created_at.to_i, right.first.amount.to_s.to_num]]
-          # elsif Time.now.to_i<endIndex
-            # rchart = [[Time.now.to_i,hs.last.amount.to_s.to_num]]
-          # else
-            # rchart = [[endIndex,hs.last.amount.to_s.to_num]]
-          else
-            rchart = []
-          end
-          if left=DemandHistory.get_demander_hitories(demander,-(1/0.0),startIndex)
-            lchart = [[left.last.created_at.to_i, left.last.amount.to_s.to_num]]
-          else
-            lchart = []
-          end
-          chart = lchart+msg.object.collect{|p| [p.created_at.to_i, p.amount.to_s.to_num] }+rchart
         else
           msg.content='no history'
           msg.object=[]
         end
+        if right=DemandHistory.get_demander_hitories(demander,endIndex,Time.now.to_i)
+          rchart = [[right.first.created_at.to_i, right.first.amount.to_s.to_num]]
+        # elsif Time.now.to_i<endIndex
+          # rchart = [[Time.now.to_i,hs.last.amount.to_s.to_num]]
+        # else
+          # rchart = [[endIndex,hs.last.amount.to_s.to_num]]
+        else
+          rchart = []
+        end
+        if left=DemandHistory.get_demander_hitories(demander,-(1/0.0),startIndex)
+          lchart = [[left.last.created_at.to_i, left.last.amount.to_s.to_num]]
+        else
+          lchart = []
+        end
+        chart = lchart+msg.object.collect{|p| [p.created_at.to_i, p.amount.to_s.to_num] }+rchart
         lrmost = [] 
         scope = []
         DemandHistory.get_two_ends(demander).each {|e| lrmost<<Time.at(e.created_at.to_i) }
