@@ -21,7 +21,7 @@ function upload_demand_files() {
      $(function($) {'use strict';
           $.widget('blueimp.fileupload', $.blueimp.fileupload, {
                _onChange : function(e) {
-                    this._cancelHandler()
+                    this._cancelHandler();
                     this._super(e);
                },
                _initEventHandlers : function() {
@@ -33,7 +33,7 @@ function upload_demand_files() {
                cancel : function(e) {
                     $('#file-upload-info-list').hide();
                     $('#upload-file-preview').html('');
-                    this._cancelHandler()
+                    this._cancelHandler();
                },
                _cancelHandler : function(e) {
                     if(this.pfiles != null) {

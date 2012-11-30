@@ -1,5 +1,4 @@
-#coding:utf-8
-#encoding=utf-8
+#coding:utf-8 
 require 'csv'
 require 'zip/zip'
 require "iconv"
@@ -24,6 +23,7 @@ module DemanderHelper
 
   # ws: handle batchFile from csv
   def self.handle_batchFile_from_csv(batchFileKey,clientId)
+    begin
     returnMsg=ReturnMsg.new(:result=>false,:content=>'')
     batchFile=RedisFile.find(batchFileKey)
     batchFile.errorCount=0
@@ -62,16 +62,24 @@ module DemanderHelper
         end
       end
       # csv --end
+      if sfile.itemCount==0
+         returnMsg.result=false
+         returnMsg.content="文件:#{sfile.oriName},不存在预测"
+         break
+      end
       sfile.cover
       batchFile.remove_normal_item sfile.key
       batchFile.add_normal_item sfile.errorCount,sfile.key # order the files by error items count
       items<<sfile
       batchFile.errorCount+=1 if sfile.errorCount>0
+      returnMsg.result=true
     end
     batchFile.cover
     batchFile.items=items if items.count>0
     returnMsg.object=batchFile
-    returnMsg.result=true
+    rescue Exception=>e
+      returnMsg.content='文件格式错误,请重新上传'
+    end
     return returnMsg
   end
 
