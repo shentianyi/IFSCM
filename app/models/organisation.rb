@@ -41,7 +41,7 @@ class Organisation<CZ::BaseClass
   def add_supplier( supplierId, supplierNr )
     key = s_key
     $redis.zadd( key, supplierId, supplierNr )
-    OrgRel.new( cs_key: key, orgrelNr: supplierNr ).save_index
+     OrgRel.new( cs_key: key, orgrelNr: supplierNr ).save_index
   end
   
   def search_supplier_byNr( supplierNr )

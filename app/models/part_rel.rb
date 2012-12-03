@@ -130,8 +130,6 @@ class PartRel<CZ::BaseClass
      spartRel_set_key=generate_org_partRel_zset_key spart.orgId,spart.key
      $redis.zadd spartRel_set_key,PartRelType::Supplier,spartRel.key
      
-     
-
   end
 
   private
