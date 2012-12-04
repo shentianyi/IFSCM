@@ -2,11 +2,14 @@ require "redis"
 require "redis-namespace"
 require "redis-search"
 # don't forget change namespace
-redisBase = Redis.new(:host => "127.0.0.1",:port => "6379")
+$redis = Redis.new(:host => "127.0.0.1",:port => "6379")
+# ## global redis
+ # redisBase=Redis.current
+redisBase=$redis
 
-## global redis
-$redis=redisBase
-
+# redis resque
+Resque.redis=redisBase
+Dir["#{Rails.root}/app/jobs/*.rb"].each { |file| require file }
 
 # redis search db 3
 # We suggest you use a special db in Redis, when you need to clear all data, you can use flushdb command to clear them.
