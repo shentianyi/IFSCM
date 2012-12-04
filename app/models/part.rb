@@ -21,14 +21,18 @@ class Part<CZ::BaseClass
     [self.partNr]
   end
   # -------------------------------------------------
-
+ 
+  def self.find_by_partNr orgId,partNr
+    Part.find(Part.find_partKey_by_orgId_partNr(orgId,partNr))
+  end
+  
   def self.find_partKey_by_orgId_partNr orgId,partNr
-    hash_key=generate_org_part_set_key orgId
+    hash_key=generate_org_part_hash_key orgId
     $redis.hget hash_key,partNr
   end
   
   def self.find_all_parts_by_orgId orgId
-     hash_key=generate_org_part_set_key orgId
+     hash_key=generate_org_part_hash_key orgId
      parts=[]
      $redis.hgetall(hash_key).each do |k,v|
        parts<<Part.find(v)
@@ -37,13 +41,13 @@ class Part<CZ::BaseClass
   end
 
   def add_to_org orgId
-    hash_key=Part.generate_org_part_set_key orgId
+    hash_key=Part.generate_org_part_hash_key orgId
     $redis.hset hash_key,@partNr,@key
   end
 
   private
 
-  def self.generate_org_part_set_key orgId
+  def self.generate_org_part_hash_key orgId
     "orgId:#{orgId}:parts"
   end
   
