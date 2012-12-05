@@ -2,5 +2,5 @@
 require 'base_class'
 
 class DeliveryItem<CZ::BaseClass
-  attr_accessor :key,:partRelMetaKey
+  attr_accessor :key
 end
