@@ -1,6 +1,6 @@
 #coding:utf-8
 require 'base_class'
 
-class DeliveryNote<CZ::BaseClass
+class DeliveryPackage<DeliveryBase
 
 end

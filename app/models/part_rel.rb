@@ -9,12 +9,16 @@ class PartRel<CZ::BaseClass
   end
 
   #ws get part relation id
-  def self.get_partRelMeta_by_partKey cid,sid,partKey,partRelType
-    key=generate_cs_partRel_hashkey cid,sid,partRelType
+  def self.get_partRelMetas_by_partKey cid,sid,partKey,partRelType
+    key=generate_cs_partRel_hashkey(cid,sid,partRelType)
     if pr=PartRel.find($redis.hget key,partKey)
       ms=$redis.smembers(pr.partMetaSetKey)
       if ms.count>0
-        return PartRelMeta.find(ms[0])
+        metas=[]
+        ms.each do |m|
+         metas<< PartRelMeta.find(m)
+        end
+        return metas
       end
     end
     return nil 
@@ -79,71 +83,90 @@ class PartRel<CZ::BaseClass
     end
     return nil
   end
-
-  # ws get all parts that has been build relations
-  # cid=>clientId
-  # sid=> supplierId
-  def self.get_all_relation_parts cid,sid,partRelType
-    key=generate_cs_partRel_hashkey( cid,sid,partRelType)
-    partKeys=$redis.hgetall(key) # part rel set key
-    if partKeys and partKeys.count>0
-      parts=[]
-      partKeys.each do |k,v|
-        if part=Part.find(k)
-        parts<<part
-        end
-      end
-      return parts.count>0 ? parts : nil
-    else
-      return nil
-    end
-  end
-
+ 
   # ws : generate cs parts relationship
-  def self.generate_cs_part_relation cpart,spart,saleNo,purchaseNo
-    # 1. gen part rel meta
-       partRelMeta=PartRelMeta.new(:key=>PartRelMeta.gen_key,:cpartId=>cpart.key,:spartId=>spart.key,:saleNo=>saleNo,:purchaseNo=>purchaseNo)
-      partRelMeta.save
-       
-     # 2. add part meta key to set
-     cpartmeta_rel_set_key=  generate_cs_partRel_meta_set_key cpart.orgId,spart.orgId,cpart.key
-     $redis.sadd cpartmeta_rel_set_key,partRelMeta.key
-      spartmeta_rel_set_key=  generate_cs_partRel_meta_set_key cpart.orgId,spart.orgId,spart.key
-     $redis.sadd spartmeta_rel_set_key,partRelMeta.key
-    
-    # 3. gen part rel 
-     cpartRel=PartRel.new(:key=>UUID.generate,:cId=>cpart.orgId,:sId=>spart.orgId,:type=>PartRelType::Client,:partMetaSetKey=>cpartmeta_rel_set_key)
-     cpartRel.save
-     spartRel=PartRel.new(:key=>UUID.generate,:cId=>cpart.orgId,:sId=>spart.orgId,:type=>PartRelType::Supplier,:partMetaSetKey=>spartmeta_rel_set_key)
-     spartRel.save
-     
-     # 4. add part rel key to cs_part_rel_hash
-     cpartRel_hash_key=generate_cs_partRel_hashkey cpart.orgId,spart.orgId,PartRelType::Client
-     $redis.hset cpartRel_hash_key,cpart.key,cpartRel.key
-     
-     cpartRel_hash_key=generate_cs_partRel_hashkey cpart.orgId,spart.orgId,PartRelType::Supplier
-     $redis.hset cpartRel_hash_key,spart.key,spartRel.key 
-     
-     # 5. add part rel key to org_part_rel sorted set
-     cpartRel_set_key=generate_org_partRel_zset_key cpart.orgId,cpart.key
-     $redis.zadd cpartRel_set_key,PartRelType::Client,cpartRel.key
-     spartRel_set_key=generate_org_partRel_zset_key spart.orgId,spart.key
-     $redis.zadd spartRel_set_key,PartRelType::Supplier,spartRel.key
-     
-  end
-
-  private
+  # def self.generate_cs_part_relation cpart,spart,saleNo,purchaseNo
+#     
+    # # 1. gen part rel meta
+      # partRelMeta=PartRelMeta.new(:key=>PartRelMeta.gen_key,:cpartId=>cpart.key,:spartId=>spart.key,:saleNo=>saleNo,:purchaseNo=>purchaseNo)
+      # partRelMeta.save
+#        
+     # # # 2. add part meta key to set
+     # # cpartmeta_rel_set_key=  generate_cs_partRel_meta_set_key cpart.orgId,spart.orgId,cpart.key
+     # # $redis.sadd cpartmeta_rel_set_key,partRelMeta.key
+      # # spartmeta_rel_set_key=  generate_cs_partRel_meta_set_key cpart.orgId,spart.orgId,spart.key
+     # # $redis.sadd spartmeta_rel_set_key,partRelMeta.key
+     # partRelMeta.add_to_org_relmeta_zset cpart.orgId,spart.orgId,cpart.key
+     # partRelMeta.add_to_org_relmeta_zset cpart.orgId,spart.orgId,spart.key
+    # # 3. gen part rel
+     # cpartRel=PartRel.new(:key=>UUID.generate,:cId=>cpart.orgId,:sId=>spart.orgId,:type=>PartRelType::Client,:partMetaSetKey=>cpartmeta_rel_set_key)
+     # cpartRel.save
+     # spartRel=PartRel.new(:key=>UUID.generate,:cId=>cpart.orgId,:sId=>spart.orgId,:type=>PartRelType::Supplier,:partMetaSetKey=>spartmeta_rel_set_key)
+     # spartRel.save
+#      
+     # # 4. add part rel key to cs_part_rel_hash
+     # cpartRel_hash_key=generate_cs_partRel_hashkey cpart.orgId,spart.orgId,PartRelType::Client
+     # $redis.hset cpartRel_hash_key,cpart.key,cpartRel.key
+#      
+     # spartRel_hash_key=generate_cs_partRel_hashkey cpart.orgId,spart.orgId,PartRelType::Supplier
+     # $redis.hset spartRel_hash_key,spart.key,spartRel.key 
+#      
+     # # 5. add part rel key to org_part_rel sorted set
+     # cpartRel_set_key=generate_org_partRel_zset_key cpart.orgId,cpart.key
+     # $redis.zadd cpartRel_set_key,PartRelType::Client,cpartRel.key
+     # spartRel_set_key=generate_org_partRel_zset_key spart.orgId,spart.key
+     # $redis.zadd spartRel_set_key,PartRelType::Supplier,spartRel.key
+#      
+  # end
   
+  # ws
+  # [功能：] 获取PartRel实例
+  # 参数：
+  # - int : clientId
+  # - int : supplierId
+  # - string : partKey
+  # - PartRelType : partRelType
+  # 返回值：
+  # - PartRel : PartRel 实例 
+  def self.get_cs_partRel clientId,supplierId,partKey,partRelType
+    key=generate_cs_partRel_hashkey(clientId,supplierId,partRelType)
+    return PartRel.find($redis.hget(key,partKey))
+ end
+ 
+  # ws
+  # [功能：] 将PartRel加入到 Org-Part-Rel ZSet 
+  # 参数：
+  # - int : orgId
+  # - string : partKey
+  # - PartRelType : partRelType
+  # 返回值：
+  # - 无
+  def add_to_org_part_zset orgId,partKey,partRelType
+    zset_key=PartRel.generate_org_partRel_zset_key orgId,partKey
+    $redis.zadd zset_key,partRelType,self.key
+  end
+  
+  # ws
+  # [功能：] 将PartRel加入到 Org-Part-CS Hash
+  # 参数：
+  # - string : partKey
+  # - PartRelType : partRelType
+  # 返回值：
+  # - 无
+  def add_to_org_cs_part_hash partKey,partRelType
+    hash_key=PartRel.generate_cs_partRel_hashkey self.cId,self.sId,partRelType
+    $redis.hset hash_key,partKey,self.key
+  end
+  
+  
+
+  private 
   def self.generate_cs_partRel_hashkey cid,sid,partRelType
     "clientId:#{cid}:supplierId:#{sid}:#{PartRelType.get_by_value(partRelType)}:relhash"
-  end
-
-  def self.generate_cs_partRel_meta_set_key cid,sid,partKey
-    "clientId:#{cid}:supplierId:#{sid}:#{partKey}:metaset"
   end
 
   def self.generate_org_partRel_zset_key orgId,partKey
     "org:#{orgId}:partKey:#{partKey}:relzset"
   end
-
+  
 end

@@ -113,7 +113,7 @@ module DemanderHelper
 
     # vali part relation
     if partId and supplierId
-      if !parts=PartRel.get_single_part_cs_parts(demand.clientId,supplierId,partId,PartRelType::Client)
+      if !parts=PartRel.get_partRelMetas_by_partKey(demand.clientId,supplierId,partId,PartRelType::Client)
         msg.result=false
         msg.content_key<<:partNotFitOrgP
       else
@@ -121,8 +121,8 @@ module DemanderHelper
           msg.result=false
           msg.content_key<<:partMutiFitOrgP
         else
-          demand.spartId=parts[0].key
-          demand.relpartId=PartRel.get_partRelMeta_by_partKey(demand.clientId,demand.supplierId,demand.cpartId,PartRelType::Client).key
+          demand.spartId=parts[0].spartId
+          demand.relpartId=parts[0].key
         end
       end
     end

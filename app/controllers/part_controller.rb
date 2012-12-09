@@ -31,11 +31,11 @@ class PartController<ApplicationController
 
     if org=Organisation.find_by_id(org_id)
       if  partnerId=org.get_parterId_by_parterNr(orgOpeType,partnerNr)
-        if orgOpeType==OrgOperateType::Client
-          parts=Part.get_all_relation_parts(org_id,partnerId,PartRelType::Client)
-        elsif
-        parts=Part.get_all_relation_parts(partnerId,org_id,PartRelType::Supplier)
-        end
+        # if orgOpeType==OrgOperateType::Client
+          # #parts=Part.get_all_relation_parts(org_id,partnerId,PartRelType::Client)
+        # elsif
+        # #parts=Part.get_all_relation_parts(partnerId,org_id,PartRelType::Supplier)
+        # end
       end
     end
     respond_to do |format|
@@ -59,16 +59,5 @@ class PartController<ApplicationController
     end
 
   end
-
-# ws gell all part rels
-# def get_all_partRels_by_cusId
-# if request.post?
-# cusId=params[:customerId]
-# @currentPage=pageIndex=params[:pageIndex].to_i
-# startIndex,endIndex=PageHelper::generate_page_index(pageIndex,$DEPSIZE)
-# demands,@totalCount= DemanderHelper::get_file_demands fileId,startIndex,endIndex,type
-#
-# end
-# end
 
 end
