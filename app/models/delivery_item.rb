@@ -1,6 +1,6 @@
 #coding:utf-8
 require 'base_class'
 
-class DeliveryItem<CZ::BaseClass
-  attr_accessor :key,:partRelMetaKey
+class DeliveryItem<DeliveryBase
+  attr_accessor :salesNo,:purchaseNo,:cpartNr,:spartNr,:partRelMetaKey
 end

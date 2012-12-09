@@ -8,8 +8,12 @@ Demand::Application.initialize!
 if defined?(PhusionPassenger)
   PhusionPassenger.on_event(:starting_worker_process) do |forked|
     if forked
-      #Redis.current.client.reconnect
-      $redis.client.reconnect
+      require 'redis'
+      $redis.client.disconnect
+      $redis=Redis.new(:host => "127.0.0.1",:port => "6379")
+      
+      $redisBase.client.disconnect
+      $redisBase=Redis.new(:host => "127.0.0.1",:port => "6379",:db=>3)
     end
   end
 end

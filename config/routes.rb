@@ -47,8 +47,8 @@ Demand::Application.routes.draw do
     collection do
      get :searcher
      get :redis_search
-     post :get_parts_by_partnerNr
-     post :get_all_partRels_by_cusId
+     #post :get_parts_by_partnerNr
+     # post :get_all_partRels_by_cusId
      match :get_part_rel_meta_inpage
     end
   end 

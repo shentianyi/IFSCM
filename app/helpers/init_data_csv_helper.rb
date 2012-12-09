@@ -42,24 +42,29 @@ module InitDataCsvHelper
 
   # init part and cs part rel
   def self.initPartAndCsPartRel c,s,fileName
+    i=0
     CSV.foreach(File.join(@@path,fileName+'.csv'),:headers=>true,:col_sep=>$CSVSP) do |row|
+   
       puts "--------CPartNr:#{row["CpartNr"]}---SPartNr:#{row["SpartNr"]}--------------------"
       cp=sp=nil
-      if !cp=Part.find_partKey_by_orgId_partNr(c.id,row["CpartNr"])
+      if !cp=Part.find(Part.find_partKey_by_orgId_partNr(c.id,row["CpartNr"]))
+        puts '------------ save client part-------------'
         cp=Part.new(:key=>Part.gen_key,:orgId=>c.id,:partNr=>row["CpartNr"])
         cp.save
        cp.add_to_org c.id
       end
 
-      if !sp= Part.find_partKey_by_orgId_partNr(s.id,row["SpartNr"])
+      if !sp= Part.find(Part.find_partKey_by_orgId_partNr(s.id,row["SpartNr"]))
+        puts '------------ save supplier part-------------'
         sp=Part.new(:key=>Part.gen_key,:orgId=>s.id,:partNr=>row["SpartNr"])
        sp.save
        sp.add_to_org s.id
       end
 
-      if !PartRel.get_single_part_cs_parts c.id,s.id,cp.key,PartRelType::Client
-        PartRel.generate_cs_part_relation cp,sp,row["SaleNo"]||"",row["PurchaseNo"]||""
-      end
+   #   if !PartRel.get_single_part_cs_parts c.id,s.id,cp.key,PartRelType::Client
+        #PartRel.generate_cs_part_relation cp,sp,row["SaleNo"]||"",row["PurchaseNo"]||""
+         PartRelHelper::generate_cs_part_relation({:cpart=>cp,:spart=>sp,:saleNo=>row["SaleNo"]||"",:purchaseNo=>row["PurchaseNo"]||""})
+   #   end
     end
   end
 
