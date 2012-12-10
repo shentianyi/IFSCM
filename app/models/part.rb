@@ -44,6 +44,10 @@ class Part<CZ::BaseClass
     hash_key=Part.generate_org_part_hash_key orgId
     $redis.hset hash_key,@partNr,@key
   end
+  
+  def id
+    self.key.gsub(/part:/,'').to_i
+  end
 
   private
 
