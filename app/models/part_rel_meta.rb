@@ -30,16 +30,17 @@ class PartRelMeta<CZ::BaseClass
   end
   
   # ws
-  # [功能：] 将PartRelMeta加入到 Org-CS-RelMeta Set
+  # [功能：] 将PartRelMeta加入到 Org-CS-RelMeta ZSet
   # 参数：
   # - int - orgId
   # - int - partnerId
+  # - int - partId
   # - PartRelType : partRelType
   # 返回值：
   # - 无
-  def add_to_org_relmeta_set orgId,partnerId,partRelType
-    set_key=PartRelMeta.generate_org_relmeta_set orgId,partnerId,partRelType
-    $redis.sadd set_key,self.key
+  def add_to_org_relmeta_zset orgId,partnerId,partId,partRelType
+    zset_key=PartRelMeta.generate_org_relmeta_zset orgId,partnerId,partRelType
+    $redis.zadd zset_key,partId,self.key
   end
   
   # ws
@@ -67,8 +68,8 @@ class PartRelMeta<CZ::BaseClass
   # - Array : 零件关系元数组   
   # - int : 总数
   def self.get_by_parterId orgId,partnerId,partRelType,startIndex=nil,endIndex=nil
-     zset_key=PartRelMeta.generate_org_relmeta_zset orgId,partRelType
-     total=$redis.zcount zset_key,partnerId,partnerId
+     set_key=PartRelMeta.generate_org_relmeta_set orgId,parterId,partRelType
+     total=$redis.scard zset_key,partnerId,partnerId
      if total>0
        # metaKeys=
      end
@@ -81,8 +82,8 @@ class PartRelMeta<CZ::BaseClass
   
   private 
   
-   def self.generate_org_relmeta_set cid,sid,partRelType
-    "clientId:#{cid}:supplierId:#{sid}:relType:#{PartRelType.get_by_value(partRelType)}:relmetaset"
+   def self.generate_org_relmeta_zset cid,sid,partRelType
+    "clientId:#{cid}:supplierId:#{sid}:relType:#{PartRelType.get_by_value(partRelType)}:relmetazset"
   end
 
   

@@ -71,7 +71,7 @@ def self.gen_partRelMeta_relation  cpart,spart,partA,partB,saleNo,purchaseNo,par
   puts "------------#{partA.key} & #{partB.key} has no rel, build it--------------------"
   partRelMeta=PartRelMeta.new(:key=>PartRelMeta.gen_key,:cpartId=>cpart.key,:spartId=>spart.key,:saleNo=>saleNo,:purchaseNo=>purchaseNo)
   partRelMeta.save
-  partRelMeta.add_to_org_relmeta_set partA.orgId,partB.orgId.to_i,partRelType
+  partRelMeta.add_to_org_relmeta_zset partA.orgId,partB.orgId.to_i,partA.id,partRelType
   partRelMeta.add_to_org_part_relmeta_set cpart.orgId,spart.orgId,partA.key
   return partRelMeta
 end
