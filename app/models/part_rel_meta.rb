@@ -33,7 +33,7 @@ class PartRelMeta<CZ::BaseClass
   # [功能：] 将PartRelMeta加入到 Org-CS-RelMeta Set
   # 参数：
   # - int - orgId
-  # - int - partnerNr
+  # - int - partnerId
   # - PartRelType : partRelType
   # 返回值：
   # - 无
