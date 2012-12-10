@@ -154,8 +154,7 @@ class Demander<CZ::BaseClass
   # 返回值：
   # - 无
   def update_cf_record
-    partId=PartRelMeta.find(self.relpartId).cpartId
-    zsetKey=Demander.generate_org_part_cf_zset_key(self.clientId,partId,self.supplierId,self.type)
+    zsetKey=Demander.generate_org_part_cf_zset_key(self.clientId,self.relpartId,self.supplierId,self.type)
     if !$redis.zscore zsetKey,self.key
       $redis.zadd zsetKey,self.date.gsub(/\//,'').to_i,self.key
     end
@@ -191,8 +190,8 @@ class Demander<CZ::BaseClass
     "#{sId}:#{Rns::De}:#{Rns::Kes}"
   end
 
-  def self.generate_org_part_cf_zset_key orgId,partId,supplierId,type
-    "orgId:#{orgId}:partId:#{partId}:supplierId:#{supplierId}:type:#{type}:cf:zset"
+  def self.generate_org_part_cf_zset_key orgId,partrelId,supplierId,type
+    "orgId:#{orgId}:partId:#{partrelId}:supplierId:#{supplierId}:type:#{type}:cf:zset"
   end
 
 end
