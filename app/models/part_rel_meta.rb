@@ -82,7 +82,7 @@ class PartRelMeta<CZ::BaseClass
   private 
   
    def self.generate_org_relmeta_set cid,sid,partRelType
-    "clientId:#{cid}:supplierId:#{sid}::relType:#{PartRelType.get_by_value(partRelType)}:relmetaset"
+    "clientId:#{cid}:supplierId:#{sid}:relType:#{PartRelType.get_by_value(partRelType)}:relmetaset"
   end
 
   
