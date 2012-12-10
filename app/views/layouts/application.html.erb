@@ -23,7 +23,7 @@
 					<li><a href="../demander">查看需求</a></li>
 					<li><a href="../organisation_manager/search">客户信息</a></li>
 					<li>数据分析</li>
-					<li><a  href="../delivery/send_delivery">发运</a></li>
+					<li>发运</li>
 				<% end %>
 			</ul>
 			<p class="greeting">早上好！<%= Staff.find(session[:staff_id]).name %>，您现在代表的是：<%= @cz_org.name%>公司&emsp;<a href="/logout">注销</a></p>
