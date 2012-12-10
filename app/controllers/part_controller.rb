@@ -31,11 +31,7 @@ class PartController<ApplicationController
 
     if org=Organisation.find_by_id(org_id)
       if  partnerId=org.get_parterId_by_parterNr(orgOpeType,partnerNr)
-        # if orgOpeType==OrgOperateType::Client
-          # #parts=Part.get_all_relation_parts(org_id,partnerId,PartRelType::Client)
-        # elsif
-        # #parts=Part.get_all_relation_parts(partnerId,org_id,PartRelType::Supplier)
-        # end
+        
       end
     end
     respond_to do |format|
@@ -46,6 +42,7 @@ class PartController<ApplicationController
   end
 
   # ws get parts by condtions in page
+  # redis-search
   def get_part_rel_meta_inpage
     @currentPage=pageIndex=params[:pageIndex].to_i
     startIndex=pageIndex*$DEPSIZE

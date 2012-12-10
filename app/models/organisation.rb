@@ -90,7 +90,7 @@ class Organisation<CZ::BaseClass
     end
   end
   
-      def find_client_byNr( clientNr )
+  def find_client_byNr( clientNr )
     key = s_key
      clientId= $redis.zscore( key, clientNr )
      return client.nil? ? nil : clientId.to_i

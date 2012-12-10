@@ -52,5 +52,12 @@ Demand::Application.routes.draw do
      match :get_part_rel_meta_inpage
     end
   end 
+  
+  # resources :delivery do
+    # collection do
+      # match :send_delivery
+    # end
+  # end
+  
   mount Resque::Server.new, :at=>"/admin/resque"
 end

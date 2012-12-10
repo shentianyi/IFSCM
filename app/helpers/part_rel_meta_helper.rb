@@ -39,17 +39,19 @@ module PartRelMetaHelper
   # 参数：
   # - int : orgId
   # - int : partnerId
+  # - int : orgOpeType
   # - int : startIndex, 可空
   # - int ： endIndex, 可空
   # 返回值：
   # - PartRelMeat : 对象数组
-  def self.get_part_rel_metas_by_parterId orgId,partnerId,startIndex=nil,endIndex=nil
-    # parts=[]
-    # if orgOpeType==OrgOperateType::Client
-      # parts=Part.get_all_relation_parts(orgId,partnerId,PartRelType::Client)
-    # elsif
-    # parts=Part.get_all_relation_parts(partnerId,orgId,PartRelType::Supplier)
-    # end
-    # return parts
+  def self.get_part_rel_metas_by_parterId orgId,partnerId,orgOpeType,startIndex=nil,endIndex=nil
+    partRelMetas=[]
+    partRelType= if orgOpeType==OrgOperateType::Client
+      PartRelType::Client
+    else
+      PartRelType::Supplier
+    end
+    
+    return partRelMetas
  end
 end

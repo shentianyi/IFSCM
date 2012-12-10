@@ -2,14 +2,29 @@
 
 class DeliveryController < ApplicationController
   
+  before_filter  :authorize
+  # ws
+  # [功能：] 发送运单
+  # 参数：
+  # - 无
+  # 返回值：
+  # - ReturnMsg : JSON 
+  def send_delivery
+    if request.post?
+      
+    end
+  end
+  
   # ws
   # [功能：] 检查运单项缓存
   # 参数：
   # - 无
   # 返回值：
   # - DeliveryItem : 运单项对象数组 
-  def check_di_cache
-    
+  def check_di_temp_cache
+    if request.post?
+      
+    end
   end
   
   # ws
@@ -29,7 +44,7 @@ class DeliveryController < ApplicationController
   # - int : amount
   # 返回值：
   # - ReturnMsg : JSON  
-  def add_di
+  def add_di_temp
     
   end
   

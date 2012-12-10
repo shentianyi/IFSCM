@@ -10,22 +10,8 @@
 	.uploadline {
 		margin-top: 30px;
 		margin-bottom: 50px;
-
-               /*		margin-left: 220px;*/
-
-/*		width: 800px;*/
 	}
-	.btupload {
-		background-color: #1297cf;
-		width: 76px;
-		height: 34px;
-		border-width: 0px;
-		font-size: 18px;
-		color: #ffffff;
-	}
-	.btupload:hover {
-		background-color: #0e80b0;
-	}
+	
 	.uploadfile{
           height: 30px;
           width: 300px;
@@ -253,7 +239,6 @@
                display: inline-block;
                line-height: 38px;
           }
-
           .upload-controls-blocks .btupload{
                cursor:pointer;
                width: 100px;
