@@ -285,6 +285,7 @@ class DemanderController<ApplicationController
                         demand.save
                         demand.save_to_send
                       end
+                      demand.update_cf_record
                       if nd.rate.to_i != 0 or nd.oldamount.nil?
                         Demander.send_kestrel(demand.supplierId, demand.key, demand.type)
                       end

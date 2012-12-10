@@ -271,4 +271,5 @@ module DemanderHelper
     end
     return img,thisLineWidth,lastLineWidth
   end
+  
 end
