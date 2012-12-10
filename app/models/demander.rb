@@ -191,7 +191,7 @@ class Demander<CZ::BaseClass
   end
 
   def self.generate_org_part_cf_zset_key orgId,partrelId,supplierId,type
-    "orgId:#{orgId}:partId:#{partrelId}:supplierId:#{supplierId}:type:#{type}:cf:zset"
+    "orgId:#{orgId}:partrelId:#{partrelId}:supplierId:#{supplierId}:type:#{type}:cf:zset"
   end
 
 end
