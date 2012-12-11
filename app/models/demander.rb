@@ -156,7 +156,7 @@ class Demander<CZ::BaseClass
   def update_cf_record
     zsetKey=Demander.generate_org_part_cf_zset_key(self.clientId,self.relpartId,self.supplierId,self.type)
     if !$redis.zscore zsetKey,self.key
-      $redis.zadd zsetKey,self.date.gsub(/\//,'').to_i,self.key
+      $redis.zadd zsetKey,Time.parse(self.date).strftime('%Y%m%d').to_i,self.key
     end
   end
 
