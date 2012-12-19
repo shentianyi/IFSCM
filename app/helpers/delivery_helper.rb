@@ -197,8 +197,6 @@ module DeliveryHelper
     if condition and condition[:queue]
       return DeliveryNote.get_org_dn_queue(orgId,orgOpeType,startIndex,endIndex)
     else
-      puts "-----------#{condition}"
-      puts "-----------#{condition.class. name}"
       condi={}
       if orgOpeType==OrgOperateType::Client
         condi[:desiOrgId]=orgId
