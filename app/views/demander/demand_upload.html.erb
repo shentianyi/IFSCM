@@ -56,11 +56,4 @@
           </div>
      </div>
 </div>
-<div id="handle-dialog-modal">
-     <div class="handle-dialog-modal-content">
-          <p>
-               <img src="/assets/loading.gif" />&nbsp;&nbsp;正在发送中...
-          </p>
-     </div>
-</div>
-<div id="dialog-overlay"></div>
+<%= render :partial => "shared/handling_msg_box", :locals => { :handlemsg => "正在发送中..." } %>  

@@ -83,19 +83,12 @@ class Redis
             true
           end
 
-          set_callback :destory, :before do
-           titles = []
-            titles = redis_search_alias_value("#{alias_field}")
-            titles << self.#{title_field}
-            redis_search_index_delete(titles)
-            true
-          end
-
           def redis_search_index_need_reindex
             index_fields_changed = false
+            puts     #{ext_fields.inspect}
             #{ext_fields.inspect}.each do |f|
               next if f.to_s == "key"
-              field_method = f.to_s + "_changed?"
+              field_method = f.to_s + "_changed?"              
               if !self.methods.include?(field_method.to_sym)
                 Search.warn("#{self.class.name} model reindex on update need "+field_method+" method.")
                 next
@@ -116,13 +109,21 @@ class Redis
             return index_fields_changed
           end
 
+     set_callback :destroy, :before do
+           titles = []
+            titles = redis_search_alias_value("#{alias_field}")
+            titles << self.#{title_field}
+            redis_search_index_delete(titles)
+            true
+          end
+          
           set_callback :update, :after do
-            # if self.redis_search_index_need_reindex
+             if self.redis_search_index_need_reindex
               titles = []
               titles = redis_search_alias_value("#{alias_field}_was")
               titles << self.#{title_field}_was
               redis_search_index_delete(titles)
-           # end
+            end
             true
           end
 

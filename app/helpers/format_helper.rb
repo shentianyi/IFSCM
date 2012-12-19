@@ -30,27 +30,16 @@ module FormatHelper
     end
     return true
   end
-
-  # valid if string is int and less than 0
-  def self.str_is_notint_less_zero str
-    if str.to_i.to_s==str
-    return str.to_i<0
-    end
-    return true
-  end
-
-  # valid if string is float and less than 0
-  def self.str_is_notfloat_less_zero str
-    if str.to_f.to_s==str
-    return str.to_f<0
-    end
-    return true
-  end
   
   
-  # valid if string is Number and less than 0
-  def self.str_is_notNum_less_zero str
-   return !(/^[\d]+(\.[\d]+){0,1}$/ ===str)
+  # vali if string is positive float
+  def self.str_is_positive_float str
+   return /^[\d]+(\.[\d]+){0,1}$/ ===str
+  end
+  
+  # vali if string is positive integer
+  def self.str_is_positive_integer str
+       return (/^[1-9]\d*$/ ===str)
   end
   
   # demand date by date string and type

@@ -10,7 +10,7 @@ module InitDataCsvHelper
     orgs=[]
     CSV.foreach(File.join(@@path,fileName+'.csv'),:headers=>true,:col_sep=>$CSVSP) do |row|
       puts "----- init org : #{row["Name"]}----------------------------"
-      org=Organisation.new(:key=>Organisation.get_key(Organisation.gen_id),:name=>row["Name"],:description=>row["Description"],
+      org=Organisation.new(:name=>row["Name"],:description=>row["Description"],
       :address=>row["Address"], :tel=>row["Tel"], :website=>row["Website"],:abbr=>row["Abbr"],:contact=>row["Contact"],:email=>row["Email"])
       org.save
       orgs<<org
@@ -49,14 +49,14 @@ module InitDataCsvHelper
       cp=sp=nil
       if !cp=Part.find(Part.find_partKey_by_orgId_partNr(c.id,row["CpartNr"]))
         puts '------------ save client part-------------'
-        cp=Part.new(:key=>Part.gen_key,:orgId=>c.id,:partNr=>row["CpartNr"])
+        cp=Part.new(:orgId=>c.id,:partNr=>row["CpartNr"])
         cp.save
        cp.add_to_org c.id
       end
 
       if !sp= Part.find(Part.find_partKey_by_orgId_partNr(s.id,row["SpartNr"]))
         puts '------------ save supplier part-------------'
-        sp=Part.new(:key=>Part.gen_key,:orgId=>s.id,:partNr=>row["SpartNr"])
+        sp=Part.new(:orgId=>s.id,:partNr=>row["SpartNr"])
        sp.save
        sp.add_to_org s.id
       end

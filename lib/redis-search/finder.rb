@@ -33,9 +33,9 @@ class Redis
       if start = Redis::Search.config.redis.zrank(key,prefix)
         steplen = rangelen*limit
         totalcount=Redis::Search.config.redis.zcard(key)
-        puts "totalcount:#{totalcount}"
+        # puts "totalcount:#{totalcount}"
         steps=totalcount/steplen+(totalcount%steplen==0 ? 0 : 1)
-        puts "steps:#{steps}"
+        # puts "steps:#{steps}"
         for i in 0...steps
           range = Redis::Search.config.redis.zrange(key,start, start+steplen)
           break if !range or range.length == 0
@@ -49,7 +49,7 @@ class Redis
             prefix_matchs << entry[0...-1]
             end
           }
-          puts "step no.#{i}"
+          # puts "step no.#{i}"
           start+=(steplen+1)
         end
       end
@@ -63,15 +63,15 @@ class Redis
     
       # 组合 words 的特别 key 名
       words = []
-      words = prefix_matchs.uniq.collect { |w| Search.mk_sets_key(type,w) }
-      puts "words:#{words}"
+      words = prefix_matchs.uniq.collect { |ws| Search.mk_sets_key(type,ws) }
+      # puts "words:#{words}"
       # 组合特别 key ,但这里不会像 query 那样放入 words， 因为在 complete 里面 words 是用 union 取的，condition_keys 和 words 应该取交集
       condition_keys = []
       if !conditions.blank?
         conditions = conditions[0] if conditions.is_a?(Array)
         conditions.keys.each do |c|
           condition_keys << Search.mk_condition_key(type,c,conditions[c])
-          puts condition_keys
+          # puts condition_keys
         end
       end
 
@@ -99,8 +99,8 @@ class Redis
         end
       end
 
-      puts "total:#{ Redis::Search.config.redis.scard(temp_store_key)}"
-      puts options
+      # puts "total:#{ Redis::Search.config.redis.scard(temp_store_key)}"
+      # puts options
       if options[:startIndex] and options[:take]
         ids = Redis::Search.config.redis.sort(temp_store_key,:limit => [options[:startIndex],options[:take]],:by => Search.mk_score_key(type,"*"),:order => "desc")
         return   hmget(type,ids) , Redis::Search.config.redis.scard(temp_store_key)

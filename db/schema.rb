@@ -11,7 +11,36 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120527123131) do
+ActiveRecord::Schema.define(:version => 20121214015757) do
+
+  create_table "m_delivery_items", :force => true do |t|
+    t.string   "key"
+    t.integer  "state"
+    t.integer  "amount"
+    t.string   "parentKey"
+    t.string   "saleNo"
+    t.string   "purchaseNo"
+    t.string   "cpartNr"
+    t.string   "spartNr"
+    t.string   "partRelMetaKey"
+    t.integer  "m_delivery_note_id"
+    t.datetime "created_at",         :null => false
+    t.datetime "updated_at",         :null => false
+  end
+
+  add_index "m_delivery_items", ["m_delivery_note_id"], :name => "index_m_delivery_items_on_m_delivery_note_id"
+
+  create_table "m_delivery_notes", :force => true do |t|
+    t.string   "key"
+    t.integer  "wayState"
+    t.integer  "orgId"
+    t.integer  "sender"
+    t.integer  "desiOrgId"
+    t.string   "destination"
+    t.integer  "state"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
+  end
 
   create_table "staffs", :force => true do |t|
     t.string   "staffNr"

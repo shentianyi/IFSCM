@@ -6,7 +6,7 @@ require "iconv"
 module DemanderHelper
   # ws : generate batch file index
   def self.generate_batchFile_index(files)
-    batchFile=RedisFile.new(:key=>UUID.generate,:itemCount=>0,:errorCount=>0,:normalItemKey=>UUID.generate,:repeatItemKey=>UUID.generate,:finished=>false)
+    batchFile=RedisFile.new(:itemCount=>0,:errorCount=>0,:normalItemKey=>UUID.generate,:repeatItemKey=>UUID.generate,:finished=>false)
     items=[]
     files.each do |f|
       sfile=RedisFile.new(:key=>f.uuidName,:oriName=>f.oriName,:uuidName=>f.pathName,
@@ -36,7 +36,7 @@ module DemanderHelper
       CSV.foreach(File.join($DECSVP,sfile.uuidName),:headers=>true,:col_sep=>$CSVSP) do |row|
         if row["PartNr"] and row["Supplier"] and row["Date"] and row["Type"] and row["Amount"]
           sfile.itemCount+=1
-          demand= DemanderTemp.new(:key=>UUID.generate,:cpartNr=>row["PartNr"],:clientId=>clientId,:supplierNr=>row["Supplier"],
+          demand= DemanderTemp.new(:cpartNr=>row["PartNr"],:clientId=>clientId,:supplierNr=>row["Supplier"],
           :filedate=>row["Date"],:type=>row["Type"],:amount=>row["Amount"],:lineNo=>sfile.itemCount,:source=>sfile.oriName,:oldamount=>0)
           demand.date=FormatHelper::demand_date_by_str_type(demand.filedate,demand.type)
 
@@ -93,10 +93,6 @@ module DemanderHelper
     if !partId=Part.find_partKey_by_orgId_partNr(demand.clientId,demand.cpartNr)
       msg.result=false
       msg.content_key<<:pnrNotEx
-    # File.open(File.join('initData/lackData','LackPart.csv'),'a') do |f|
-    # f.puts demand.cpartNr
-    # puts demand.cpartNr
-    # end
     else
     demand.cpartId=partId
     end
@@ -140,9 +136,9 @@ module DemanderHelper
     end
 
     # vali amount
-    if FormatHelper::str_is_notNum_less_zero(demand.amount false)
+    if !FormatHelper::str_is_positive_float(demand.amount false)
       msg.result=false
-      msg.content_key<<:pAmountIsNotNumOrLessZero
+      msg.content_key<<:amountIsNotPositiveFloat
     else
     demand.amount=demand.amount
     end

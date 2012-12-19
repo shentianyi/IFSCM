@@ -1,12 +1,8 @@
 require 'base_class'
 
 class PartRel<CZ::BaseClass
-  attr_accessor :key,:cId,:sId,:type,:partMetaSetKey
+  attr_accessor :cId,:sId,:type,:partMetaSetKey
   
-  # has many part rel metas
-  def self.gen_key cid,sid,type
-    generate_cs_partRel_hashkey cid,sid,type
-  end
 
   #ws get part relation id
   def self.get_partRelMetas_by_partKey cid,sid,partKey,partRelType
@@ -23,7 +19,6 @@ class PartRel<CZ::BaseClass
     end
     return nil 
   end
- 
   
   def self.get_all_partRelMetaKey_by_partNr( csid, partNr, partRelType )
     if partNr.is_a?(String)
@@ -41,7 +36,7 @@ class PartRel<CZ::BaseClass
         $redis.zrange( org.s_key, 0, -1, :withscores=>true ).each do |item|
             key = generate_cs_partRel_hashkey( csid, item[1].to_i, partRelType )
             next if $redis.hexists( key,k )==0
-            next unless pr = PartRel.find( $redis.hget key,k )
+            next unless pr = PartRel.find($redis.hget key,k )
             mkey=pr.partMetaSetKey
             total+=$redis.smembers(mkey) if $redis.exists mkey
         end
@@ -84,40 +79,6 @@ class PartRel<CZ::BaseClass
     return nil
   end
  
-  # ws : generate cs parts relationship
-  # def self.generate_cs_part_relation cpart,spart,saleNo,purchaseNo
-#     
-    # # 1. gen part rel meta
-      # partRelMeta=PartRelMeta.new(:key=>PartRelMeta.gen_key,:cpartId=>cpart.key,:spartId=>spart.key,:saleNo=>saleNo,:purchaseNo=>purchaseNo)
-      # partRelMeta.save
-#        
-     # # # 2. add part meta key to set
-     # # cpartmeta_rel_set_key=  generate_cs_partRel_meta_set_key cpart.orgId,spart.orgId,cpart.key
-     # # $redis.sadd cpartmeta_rel_set_key,partRelMeta.key
-      # # spartmeta_rel_set_key=  generate_cs_partRel_meta_set_key cpart.orgId,spart.orgId,spart.key
-     # # $redis.sadd spartmeta_rel_set_key,partRelMeta.key
-     # partRelMeta.add_to_org_relmeta_zset cpart.orgId,spart.orgId,cpart.key
-     # partRelMeta.add_to_org_relmeta_zset cpart.orgId,spart.orgId,spart.key
-    # # 3. gen part rel
-     # cpartRel=PartRel.new(:key=>UUID.generate,:cId=>cpart.orgId,:sId=>spart.orgId,:type=>PartRelType::Client,:partMetaSetKey=>cpartmeta_rel_set_key)
-     # cpartRel.save
-     # spartRel=PartRel.new(:key=>UUID.generate,:cId=>cpart.orgId,:sId=>spart.orgId,:type=>PartRelType::Supplier,:partMetaSetKey=>spartmeta_rel_set_key)
-     # spartRel.save
-#      
-     # # 4. add part rel key to cs_part_rel_hash
-     # cpartRel_hash_key=generate_cs_partRel_hashkey cpart.orgId,spart.orgId,PartRelType::Client
-     # $redis.hset cpartRel_hash_key,cpart.key,cpartRel.key
-#      
-     # spartRel_hash_key=generate_cs_partRel_hashkey cpart.orgId,spart.orgId,PartRelType::Supplier
-     # $redis.hset spartRel_hash_key,spart.key,spartRel.key 
-#      
-     # # 5. add part rel key to org_part_rel sorted set
-     # cpartRel_set_key=generate_org_partRel_zset_key cpart.orgId,cpart.key
-     # $redis.zadd cpartRel_set_key,PartRelType::Client,cpartRel.key
-     # spartRel_set_key=generate_org_partRel_zset_key spart.orgId,spart.key
-     # $redis.zadd spartRel_set_key,PartRelType::Supplier,spartRel.key
-#      
-  # end
   
   # ws
   # [功能：] 获取PartRel实例

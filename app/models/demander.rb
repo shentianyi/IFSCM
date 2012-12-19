@@ -1,17 +1,7 @@
 #coding:utf-8
-require 'digest/md5'
-require 'base_class'
-
 class Demander<CZ::BaseClass
-  attr_accessor :key,:clientId,:relpartId,:supplierId, :type,:amount,:oldamount,:date,:rate
+  attr_accessor :clientId,:relpartId,:supplierId, :type,:amount,:oldamount,:date,:rate
   NumPer=$DEPSIZE
-  def self.gen_key
-    Rns::De+":#{$redis.incr 'demand_index_incr'}"
-  end
-
-  def self.get_key( id )
-    Rns::De+":#{id}"
-  end
 
   # ws : add demand history
   def add_to_history history_key
@@ -21,6 +11,7 @@ class Demander<CZ::BaseClass
 
   def self.search( hash )
     list = []
+    puts "......#{hash}"
     resultKey = "resultKey"
     ###########################  client
     if client = union_params( Rns::C, hash[:clientId] )
@@ -40,6 +31,9 @@ class Demander<CZ::BaseClass
     end
     ###########################  date
     list<<Rns::Date
+    
+        puts "00000000000#{list}"
+        
     $redis.zinterstore( resultKey, list, :aggregate=>"MAX" )
 
     demands = []
@@ -112,9 +106,9 @@ class Demander<CZ::BaseClass
     return $redis.del( kesKey )
   end
 
-  def id
-    key.delete "#{Rns::De}:"
-  end
+  # def id
+    # key.delete "#{Rns::De}:"
+  # end
 
   def clientNr
     Organisation.find_by_id(supplierId).search_client_byId( clientId )
@@ -156,7 +150,7 @@ class Demander<CZ::BaseClass
   def update_cf_record
     zsetKey=Demander.generate_org_part_cf_zset_key(self.clientId,self.relpartId,self.supplierId,self.type)
     if !$redis.zscore zsetKey,self.key
-      $redis.zadd zsetKey,self.date.gsub(/\//,'').to_i,self.key
+      $redis.zadd zsetKey,Time.parse(self.date).strftime('%Y%m%d').to_i,self.key
     end
   end
 

@@ -38,7 +38,7 @@ module PageHelper
   
   # ws : get total pages count
   def self.generate_page_count total,size
-     total/size+(total%size==0?0:1)
+     (total||0)/size+((total||0)%size==0?0:1)
   end
   
   private
@@ -51,7 +51,9 @@ module PageHelper
       so={}
       
       if i!=current
-        if target.is_a?(String)
+        if target.nil?
+          so[:onclick]="return "+action+"("+i.to_s+")"
+        elsif target.is_a?(String)
           so[:onclick]="return "+action+"('"+target+"',"+i.to_s+")"
         else
           so[:onclick]="return "+action+"(#{target.to_json},"+i.to_s+")"

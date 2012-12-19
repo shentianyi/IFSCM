@@ -1,0 +1,58 @@
+<% if dns%>
+<table class="upData">
+     <tr class="lineone">
+          <th>&nbsp;</th>
+          <th onclick="pop_box(this);"  style="cursor: pointer"  box="dn-search-box">运单号</th>
+          <% if session[:orgOpeType]==OrgOperateType::Client %>
+          <th onclick="pop_box(this);"  box="sender-search-box"  style="cursor: pointer" >供应商号</th>
+          <% elsif session[:orgOpeType]==OrgOperateType::Supplier %>
+          <th  onclick="pop_box(this);"  box="rece-search-box"  style="cursor: pointer" >客户号</th>
+          <%end%>
+          <th onclick="pop_box(this);"  box="date-search-box"  style="cursor: pointer" >发货日期</th>
+          <th>收货地点</th>
+          <th>运单状态</th>
+          <th>是否异常</th>
+     </tr>
+     <tr class="divide" style="display: none">
+          <th>&nbsp;</th>
+          <th class="nordvd"></th>
+          <th class="nordvd"></th>
+          <th class="nordvd"></th>
+          <th class="nordvd"></th>
+          <th class="lastdvd"></th>
+          <th class="lastdvd"></th>
+     </tr>
+     <% i=0
+     dns.each do |dn|
+     partnerId=if session[:orgOpeType]==OrgOperateType::Client
+     dn.orgId
+     else
+     dn.desiOrgId
+     end
+     partnerNr=Organisation.find_by_id(session[:org_id]).get_parterNr_by_parterId session[:orgOpeType],partnerId.to_i
+     %>
+     <tr class="norline hoverable">
+          <th><%= (i+=1)%></th>
+          <th><%= dn.key%></th>
+          <th><%= partnerNr%></th>
+          <th><%= Time.at(dn.created_at.to_i).strftime('%Y/%m/%d %H:%M') %></th>
+          <th><%= dn.destination%></th>
+          <th>
+          <div class="<%= DeliveryHelper::get_dn_wayState_css(dn.wayState.to_i)%>">
+               <%= DeliveryHelper::get_dn_wayState(dn.wayState.to_i)%>
+          </div></th>
+          <th>
+          <div class="<%= DeliveryHelper::get_delivery_obj_state_css(dn.state.to_i)%>">
+               <%= DeliveryHelper::get_delivery_obj_state(dn.state.to_i)%>
+          </div></th>
+     </tr>
+     <%end%>
+</table>
+<div class="census">
+     共 <%= @totalCount%> 条
+</div>
+<!-- pager -->
+<div class="pagers">
+     <%= bri_pager options={:class=>"pagination",:pages=>@totalPages,:current=>@currentPage,:action=>'search_dn',:target=>@condition}%>
+</div>
+<%end%>

@@ -1,11 +1,7 @@
 require 'base_class'
 
 class Part<CZ::BaseClass
-  attr_accessor :key,:orgId,:partNr
-  
-  def self.gen_key
-    "part:#{$redis.incr('part_index_incr')}"
-  end
+  attr_accessor :orgId,:partNr
 
   # redis search -----------------------------
   include Redis::Search
@@ -45,9 +41,6 @@ class Part<CZ::BaseClass
     $redis.hset hash_key,@partNr,@key
   end
   
-  def id
-    self.key.gsub(/part:/,'').to_i
-  end
 
   private
 

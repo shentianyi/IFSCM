@@ -2,17 +2,21 @@ require 'active_support'
 
 module CZ
   class BaseClass
-    attr_accessor :created_at
+    attr_accessor :key,:created_at
     include ActiveSupport::Callbacks
 
     define_callbacks :update
-    define_callbacks :destory
+    define_callbacks :destroy
     define_callbacks :save
     define_callbacks :buildRSIndex
     define_callbacks :cleanRSIndex
-    
     def initialize args={}
       if args.count>0
+        if !(args.key?(:key) or args.key?("key"))
+          if gk=ClassKeyHelper::gen_key(self.class.name)
+          self.key=gk
+          end
+        end
         args.each do |k,v|
           instance_variable_set "@#{k}",v
         end
@@ -30,15 +34,15 @@ module CZ
       run_callbacks :save
       return true
     end
-    
+
     def cover
-       instance_variables.each do |attr|
+      instance_variables.each do |attr|
         $redis.hset @key,attr.to_s.sub(/@/,''),instance_variable_get(attr)
       end
     end
 
     def update attrs={}
-       return false  unless $redis.exists(@key)
+      return false  unless $redis.exists(@key)
       if attrs.count>0
         attrs.each do |k,v|
           instance_variable_set "@#{k}",v
@@ -55,24 +59,32 @@ module CZ
       return nil
     end
 
-    def destory
+    def destroy
       if $redis.exists @key
         $redis.del @key
-        run_callbacks :destory
+        run_callbacks :destroy
       return true
       end
       return false
     end
 
-   # for build Redis Search Index 
-   def buildRSIndex
-     run_callbacks :buildRSIndex
-   end
-   
-   # for clean Redis Search Index
-   def cleanRSIndex
-     run_callbacks :cleanRSIndex
-   end
-   
+    def id
+      ClassKeyHelper::decompose_key self.class.name,self.key
+    end
+
+    def self.get_key_by_id id
+      ClassKeyHelper::compose_key name,id
+    end
+
+    # for build Redis Search Index
+    def buildRSIndex
+      run_callbacks :buildRSIndex
+    end
+
+    # for clean Redis Search Index
+    def cleanRSIndex
+      run_callbacks :cleanRSIndex
+    end
+
   end
 end
