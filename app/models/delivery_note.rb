@@ -45,7 +45,6 @@ class DeliveryNote<DeliveryBase
   # ws
   # [功能：] 将运单Key加入到组织 Zset
   # 参数：
-  # - 无
   # 返回值：
   # - 无
   def add_to_orgs
@@ -57,7 +56,7 @@ class DeliveryNote<DeliveryBase
     $redis.zadd key,self.orgId.to_i,self.key
 
     # add to queue
-    self.add_to_new_queue
+    self.add_to_new_queue OrgOperateType::Client
   end
 
   # ws
@@ -66,8 +65,8 @@ class DeliveryNote<DeliveryBase
   # - 无
   # 返回值：
   # - 无
-  def add_to_new_queue
-    key=DeliveryNote.generate_org_new_queue_zset_key self.desiOrgId
+  def add_to_new_queue orgOpeType
+    key=DeliveryNote.generate_org_new_queue_zset_key self.desiOrgId,orgOpeType
     $redis.zadd key,Time.now.to_i,self.key
   end
 
@@ -110,8 +109,8 @@ class DeliveryNote<DeliveryBase
   # - int - orgId
   # 返回值：
   # - int : count
-  def self.count_org_dn_queue orgId
-    key=generate_org_new_queue_zset_key orgId
+  def self.count_org_dn_queue orgId,orgOpeType
+    key=generate_org_new_queue_zset_key orgId,orgOpeType
     $redis.zcard key
   end
 
@@ -121,8 +120,8 @@ class DeliveryNote<DeliveryBase
   # - int - orgId
   # 返回值：
   # - 无
-  def self.clean_org_dn_queue orgId
-    key=generate_org_new_queue_zset_key orgId
+  def self.clean_org_dn_queue orgId,orgOpeType
+    key=generate_org_new_queue_zset_key orgId,orgOpeType
     $redis.zremrangebyrank key,0,-1
   end
 
@@ -134,8 +133,8 @@ class DeliveryNote<DeliveryBase
   # - int ： endIndex
   # 返回值：
   # - int : 子总数
-  def self.get_org_dn_queue orgId,startIndex,endIndex
-    key=generate_org_new_queue_zset_key orgId
+  def self.get_org_dn_queue orgId,orgOpeType,startIndex,endIndex
+    key=generate_org_new_queue_zset_key orgId,orgOpeType
     total=$redis.zcard key
     if total>0
       dns=[]
@@ -160,7 +159,7 @@ class DeliveryNote<DeliveryBase
     "orgId:#{orgId}:orgRelType:#{orgOpeType}:dn:zset"
   end
 
-  def self.generate_org_new_queue_zset_key orgId
-    "orgId:#{orgId}:newDNqueue"
+  def self.generate_org_new_queue_zset_key orgId,orgOpeType
+    "orgId:#{orgId}:orgOpeType:#{orgOpeType}:newDNqueue"
   end
 end

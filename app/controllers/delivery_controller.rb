@@ -215,7 +215,7 @@ class DeliveryController < ApplicationController
   # - DeliveryNote : 对象数组
   def count_dn_queue
     if request.post?
-      render :json=>{:count=>DeliveryNote.count_org_dn_queue(session[:org_id])}
+      render :json=>{:count=>DeliveryNote.count_org_dn_queue(session[:org_id],session[:orgOpeType])}
     end
   end
 
@@ -228,7 +228,7 @@ class DeliveryController < ApplicationController
   def clean_dn_queue
     if request.post?
       msg=ReturnMsg.new(:result=>false,:content=>'')
-      msg.result=DeliveryNote.clean_org_dn_queue(session[:org_id])
+      msg.result=DeliveryNote.clean_org_dn_queue(session[:org_id],session[:orgOpeType])
       render :json=>msg
     end
   end
@@ -242,9 +242,9 @@ class DeliveryController < ApplicationController
   def search_dn
     if request.post?
       @currentPage=pageIndex=params[:pageIndex].to_i
-      startIndex,endIndex=PageHelper::generate_page_index(pageIndex,1)
+      startIndex,endIndex=PageHelper::generate_page_index(pageIndex,$DEPSIZE)
       dns,@totalCount=DeliveryHelper::search_dn params[:condition],session[:org_id],session[:orgOpeType], startIndex,endIndex
-      @totalPages=PageHelper::generate_page_count @totalCount,1
+      @totalPages=PageHelper::generate_page_count @totalCount,$DEPSIZE
       @condition=params[:condition]||{}
       respond_to do |format|
         format.xml {render :xml=>dns}

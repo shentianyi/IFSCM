@@ -1,4 +1,4 @@
-<% if dns%>
+<% if dns and dns.count>0%>
 <table class="upData">
      <tr class="lineone">
           <th>&nbsp;</th>
@@ -54,5 +54,9 @@
 <!-- pager -->
 <div class="pagers">
      <%= bri_pager options={:class=>"pagination",:pages=>@totalPages,:current=>@currentPage,:action=>'search_dn',:target=>@condition}%>
+</div>
+<%else%>
+<div class="abstractblock">
+     无运单
 </div>
 <%end%>

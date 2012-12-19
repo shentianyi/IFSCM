@@ -195,7 +195,7 @@ module DeliveryHelper
   # - DeliveryNote : 对象数组
   def self.search_dn condition=nil,orgId,orgOpeType,startIndex,endIndex
     if condition and condition[:queue]
-      return DeliveryNote.get_org_dn_queue(orgId,startIndex,endIndex)
+      return DeliveryNote.get_org_dn_queue(orgId,orgOpeType,startIndex,endIndex)
     else
       puts "-----------#{condition}"
       puts "-----------#{condition.class. name}"
