@@ -1,5 +1,6 @@
 #coding:utf-8
 require 'base_class'
+
 class Demander<CZ::BaseClass
   attr_accessor :clientId,:relpartId,:supplierId, :type,:amount,:oldamount,:date,:rate
   NumPer=$DEPSIZE
