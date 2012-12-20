@@ -4,282 +4,218 @@
 /*small screen*/
 /*@media screen and (max-width: 800px) {
 
-}*/
+ }*/
 
 /*big screen*/
-	.uploadline {
-		margin-top: 30px;
-		margin-bottom: 50px;
-	}
-	
-	.uploadfile{
-          height: 30px;
-          width: 300px;
-          margin: 0px;
-          padding-left: 5px;
-          font-size: 18px;
-          color: #9d9d9d;
-          margin: 0px
-	}
-	input.uploadfile {
-		border-color: #DBDBDB;
-		border-style: solid;
-		border-width: 1px;
-		height: 30px;
-		width: 300px;
-		margin: 0px;
-		padding-left: 5px;
-		font-size: 14px;
-		line-height: 14px;
-		color: #9d9d9d;
-		float: left;
-		margin: 0px
-	}
-	.uploadfile:active,.uploadfile:focus {
-		border-color: #b1b1b1;
-		color: #7c7c7c;
-	}
-	.linef {
-		float: left;
-		display: block;
-		width: 900px;
-	}
-	.lineone {
-		border-bottom: 1px solid #a8a8a8;
-	}
-	.divide {
-		height: 3px;
-	}
-	.nordvd {
-		border-right: 5px solid #ffffff;
-	}
-	.lastdvd {
-		border-left: 5px solid #ffffff;
-	}
-	.botbts {
-		/*width: 430px;
-		margin-left: 330px;
-		height: 120px;
-		position: fixed;
-		bottom: 0px;
-		margin-top: 20px;
-		text-align: center;
-		background-color: #efefef;*/
-		width: 110px;
-          right:0px;
-          height: 480px;
-          position: fixed;
-          bottom: 20px;
-          margin-top: 20px;
-          text-align: center;
-          background-color: #efefef;
-	}
-	.botbtn {
-		float: left;
-		width: 85px;
-		height: 85px;
-		border-width: 1px;
-		border-style: solid;
-		border-color: transparent;
-		margin: 20px 10px 10px 10px;
-		background-color: #efefef;
-	}
-	.botbtn:hover {
-		background-color: #dbdbdb;
-		border-color: #c2c2c2;
-		border-radius: 3px;
-		border-style: solid;
-		border-width: 1px;
-	}
-	.botbtn p {
-		font-size: 14px;
-		margin-top: 60px;
-		color: #696d72;
-	}
-	.btsave {
-		background-image:  url(../save.png);
-		background-repeat: no-repeat;
-		background-position: center 8px;
-	}
-	.btdownload {
-		background-image: url(../download.png);
-		background-repeat: no-repeat;
-		background-position: center 8px;
-	}
-	.btcancel {
-		background-image: url(../cancel.png);
-		background-repeat: no-repeat;
-		background-position: center 8px;
-	}
-	.btsend {
-		background-image: url(../send.png);
-		background-repeat: no-repeat;
-		background-position: center 8px;
-	}
-	.listoffiles {
-		position: fixed;
-		float: left;
-		margin-left: 800px;
-		top: 70px;
-		right: 10px;
-		background-color: #ffffff;
-		border: 1px solid #dbdbdb;
-		border-radius: 5px;
-		height: auto;
-		padding: 3px;
-	}
-	.file {
-		float: left;
-		padding: 3px 0px 3px 0px;
-		line-height: 20px;
-		margin: 0px 5px 0px 5px;
-		border-bottom: 1px dashed #dbdbdb;
-		clear: left;
-	}
-	.noshowfile {
-		text-decoration: line-through;
-	}
-	.filename {
-		color: #696d72;
-		font-size: 14px;
-		padding: 0px;
-		margin: 0px 5px 0px 5px;
-		float: left;
-	}
-	.filestatus {
-		color: #696d72;
-		font-size: 14px;
-		padding: 0px;
-		margin: 0px;
-		float: left;
-	}
-	.filenum {
-		font-size: 14px;
-		background-color: #dbdbdb;
-		color: #7c7c7c;
-		border: 1px solid #dbdbdb;
-		border-radius: 3px;
-		float: left;
-		width: 15px;
-		height: 15px;
-		line-height: 15px;
-		text-align: center;
-		margin-top: 2px;
-	}
-	.filerr {
-		color: red;
-	}
-	.currentview {
-		text-decoration: blink;
-	}
+.uploadline {
+     margin-top: 30px;
+     margin-bottom: 50px;
+}
 
-  .abstractblock {
-	    padding: 10px 10px 10px 10px;
-          width: 720px;
-          border: 1px solid #dbdbdb;
-          border-radius:5px;
-         float: left;
-     } 
-	.abstractline {
-		width: 720px;
-		height: 50px;
-		line-height: 50px;
-		border: 1px solid #dbdbdb;
-		border-radius:5px;
-		float: left;
-		padding: 3px 3px 3px 20px;
-		margin-bottom: 20px;
-	}
-	.abstractline p {
-		font-size: 14px;
-		float: left;
-		margin-top: 0px;
-		margin-bottom: 0px;
-		padding: 0px;
-	}
-	.abstractline img {
-		float: left;
-		margin-right:10px;
-	}
+.uploadfile {
+     height: 30px;
+     width: 300px;
+     margin: 0px;
+     padding-left: 5px;
+     font-size: 18px;
+     color: #9d9d9d;
+     margin: 0px
+}
+input.uploadfile {
+     border-color: #DBDBDB;
+     border-style: solid;
+     border-width: 1px;
+     height: 30px;
+     width: 300px;
+     margin: 0px;
+     padding-left: 5px;
+     font-size: 14px;
+     line-height: 14px;
+     color: #9d9d9d;
+     float: left;
+     margin: 0px
+}
+.uploadfile:active, .uploadfile:focus {
+     border-color: #b1b1b1;
+     color: #7c7c7c;
+}
+.linef {
+     float: left;
+     display: block;
+     width: 900px;
+}
+.lineone {
+     border-bottom: 1px solid #a8a8a8;
+}
+.divide {
+     height: 3px;
+}
+.nordvd {
+     border-right: 5px solid #ffffff;
+}
+.lastdvd {
+     border-left: 5px solid #ffffff;
+}
+
+.listoffiles {
+     position: fixed;
+     float: left;
+     margin-left: 800px;
+     top: 70px;
+     right: 10px;
+     background-color: #ffffff;
+     border: 1px solid #dbdbdb;
+     border-radius: 5px;
+     height: auto;
+     padding: 3px;
+}
+.file {
+     float: left;
+     padding: 3px 0px 3px 0px;
+     line-height: 20px;
+     margin: 0px 5px 0px 5px;
+     border-bottom: 1px dashed #dbdbdb;
+     clear: left;
+}
+.noshowfile {
+     text-decoration: line-through;
+}
+.filename {
+     color: #696d72;
+     font-size: 14px;
+     padding: 0px;
+     margin: 0px 5px 0px 5px;
+     float: left;
+}
+.filestatus {
+     color: #696d72;
+     font-size: 14px;
+     padding: 0px;
+     margin: 0px;
+     float: left;
+}
+.filenum {
+     font-size: 14px;
+     background-color: #dbdbdb;
+     color: #7c7c7c;
+     border: 1px solid #dbdbdb;
+     border-radius: 3px;
+     float: left;
+     width: 15px;
+     height: 15px;
+     line-height: 15px;
+     text-align: center;
+     margin-top: 2px;
+}
+.filerr {
+     color: red;
+}
+.currentview {
+     text-decoration: blink;
+}
+
+
+.abstractline {
+     width: 720px;
+     height: 50px;
+     line-height: 50px;
+     border: 1px solid #dbdbdb;
+     border-radius: 5px;
+     float: left;
+     padding: 3px 3px 3px 20px;
+     margin-bottom: 20px;
+}
+.abstractline p {
+     font-size: 14px;
+     float: left;
+     margin-top: 0px;
+     margin-bottom: 0px;
+     padding: 0px;
+}
+.abstractline img {
+     float: left;
+     margin-right: 10px;
+}
 /* upload demand	buttons*/
-    #demandupload {
-          opacity: 0;
-          filter: alpha(opacity=0);
-          cursor: pointer;
-          display: block;
-          height: 40px;
-          position: absolute;
-          width: 320px;
-          font-size: 30px;
-          left: -170px;
-          top: -8px;
-     }
-     @-moz-document url-prefix() {
-     #demandupload {
-          left: -355px;
-          width: 190px;
-     }
-     }
-     .add-file-button {
-          position: relative;
-          float: left;
-          overflow: hidden;
-          cursor: pointer;
-          text-align: center;
-          font: -webkit-small-control;
-          -webkit-box-align: center;
-          margin-right:3px;
-          font-size: 18px;
-                width: 100px;
-     }
-        .add-file-button:hover{
-             background-color: #0E80B0;
-          }
-          .add-file-button .title{cursor:pointer;
-               display: inline-block;
-               line-height: 38px;
-          }
-          .upload-controls-blocks .btupload{
-               cursor:pointer;
-               width: 100px;
-               height:38px;
-          }
-          #file-upload-info-list{
-               margin-top: 3px;
-               padding:3px;
-               font-size: 16px;
-               color: #696D72;
-          }
-          #file-upload-info-list .filenum-td{
-               width: 20px;
-               height: 20px;
-          }
-          #file-upload-info-list .filenum-list{
-background-color: #DBDBDB;
-color: #7C7C7C;
-border: 2px solid #DBDBDB;
-border-radius: 3px;
-width: 20px;
-height: 15px;
-line-height: 15px;
-text-align: center;
-          }
-          #file-upload-info-list .filename-td{
-               min-width: 80px;
-          }
-          #file-upload-info-list .filebyte-td{
-               min-width: 40px;
-               text-align: center;
-          }
-             #file-upload-info-list .filemsg-td{
-                  color: red;
-          }
-          .correct-img-span{
-               height: 20px;
-               height: 20px; 
-               background-image: url(/assets/iconedit.png);
-               display: block;
-          }
-            .correct-img-span:hover{
-               background-image: url(/assets/iconedith.png);
-          }
+#demandupload {
+     opacity: 0;
+     filter: alpha(opacity=0);
+     cursor: pointer;
+     display: block;
+     height: 40px;
+     position: absolute;
+     width: 320px;
+     font-size: 30px;
+     left: -170px;
+     top: -8px;
+}
+@-moz-document url-prefix() {
+#demandupload {
+     left: -355px;
+     width: 190px;
+}
+}
+.add-file-button {
+     position: relative;
+     float: left;
+     overflow: hidden;
+     cursor: pointer;
+     text-align: center;
+     font: -webkit-small-control;
+     -webkit-box-align: center;
+     margin-right: 3px;
+     font-size: 18px;
+     width: 100px;
+}
+.add-file-button:hover {
+     background-color: #0E80B0;
+}
+.add-file-button .title {
+     cursor: pointer;
+     display: inline-block;
+     line-height: 38px;
+}
+.upload-controls-blocks .btupload {
+     cursor: pointer;
+     width: 100px;
+     height: 38px;
+}
+#file-upload-info-list {
+     margin-top: 3px;
+     padding: 3px;
+     font-size: 16px;
+     color: #696D72;
+}
+#file-upload-info-list .filenum-td {
+     width: 20px;
+     height: 20px;
+}
+#file-upload-info-list .filenum-list {
+     background-color: #DBDBDB;
+     color: #7C7C7C;
+     border: 2px solid #DBDBDB;
+     border-radius: 3px;
+     width: 20px;
+     height: 15px;
+     line-height: 15px;
+     text-align: center;
+}
+#file-upload-info-list .filename-td {
+     min-width: 80px;
+}
+#file-upload-info-list .filebyte-td {
+     min-width: 40px;
+     text-align: center;
+}
+#file-upload-info-list .filemsg-td {
+     color: red;
+}
+.correct-img-span {
+     height: 20px;
+     height: 20px;
+     background-image: url(/assets/iconedit.png);
+     display: block;
+}
+.correct-img-span:hover {
+     background-image: url(/assets/iconedith.png);
+}

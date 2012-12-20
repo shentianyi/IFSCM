@@ -1,7 +1,8 @@
+#coding:utf-8
 require 'base_class'
 
 class PartRelMeta<CZ::BaseClass
-  attr_accessor :key,:cpartId,:spartId,:saleNo,:purchaseNo
+  attr_accessor :cpartId,:spartId,:saleNo,:purchaseNo
 
   # ---------------------------------------------
   #ws : for redis search
@@ -23,26 +24,21 @@ class PartRelMeta<CZ::BaseClass
     orgids<<Part.find(self.spartId).orgId
     orgids
   end
-#-----------------------------
-
-  def self.gen_key
-    "partrelmeta:#{$redis.incr('partrelmeta_index_incr')}"
-  end
-  
+  #-----------------------------
   # ws
   # [功能：] 将PartRelMeta加入到 Org-CS-RelMeta ZSet
   # 参数：
-  # - int - orgId
-  # - int - partnerId
+  # - int - clientId
+  # - int - supplierId
   # - int - partId
   # - PartRelType : partRelType
   # 返回值：
   # - 无
-  def add_to_org_relmeta_zset orgId,partnerId,partId,partRelType
-    zset_key=PartRelMeta.generate_org_relmeta_zset orgId,partnerId,partRelType
+  def add_to_org_relmeta_zset clientId,supplierId,partId,partRelType
+    zset_key=PartRelMeta.generate_org_relmeta_zset_key clientId,supplierId,partRelType
     $redis.zadd zset_key,partId,self.key
   end
-  
+
   # ws
   # [功能：] 将PartRelMeta加入到 Org-Part-RelMeta Set
   # 参数：
@@ -55,36 +51,81 @@ class PartRelMeta<CZ::BaseClass
     set_key=PartRelMeta.generate_cs_partRel_meta_set_key clientId,supplierId,partKey
     $redis.sadd set_key,self.key
   end
-    
+
   # ws
   # [功能：] 分页获取组织关系零件关系元数组及总数
   # 参数：
-  # - int - orgId
-  # - int - partnerId
+  # - int - cId
+  # - int - sId
   # - PartRelType : partRelType
   # - int : startIndex, 可空
   # - int ： endIndex, 可空
   # 返回值：
-  # - Array : 零件关系元数组   
+  # - Array : 零件关系元数组
   # - int : 总数
-  def self.get_by_parterId orgId,partnerId,partRelType,startIndex=nil,endIndex=nil
-     set_key=PartRelMeta.generate_org_relmeta_set orgId,parterId,partRelType
-     total=$redis.scard zset_key,partnerId,partnerId
-     if total>0
-       # metaKeys=
-     end
-     return nil
+  def self.get_by_orgId cId,sId,partRelType,startIndex=nil,endIndex=nil
+    zset_key=PartRelMeta.generate_org_relmeta_zset_key cId,sId,partRelType
+    total=$redis.zcard zset_key
+    if total>0
+      metaKeys=if startIndex
+      $redis.zrange zset_key,startIndex,endIndex
+      else
+      $redis.zrange zset_key,0,-1
+      end
+      metas=[]
+      metaKeys.each do |k|
+        metas<<PartRelMeta.find(k)
+      end
+      if startIndex
+      return metas,total
+      end
+    return metas
+    end
+    return nil
   end
-    
+  
+  # ws
+  # [功能：] 分页获取组织关系零件关系元数组及总数
+  # 参数：
+  # - int - cId
+  # - int - sId
+  # - int - partId
+  # - PartRelType : partRelType
+  # - int : offset, 可空
+  # - int：count, 可空
+  # 返回值：
+  # - Array : 零件关系元数组
+  # - int : 总数
+  def self.get_by_partId_orgId cId,sId,partRelType,partId,offset=nil,count=nil
+    zset_key=PartRelMeta.generate_org_relmeta_zset_key cId,sId,partRelType
+    total=$redis.zcount zset_key,partId,partId
+    if total>0
+      metaKeys=if offset
+        puts "partId:#{partId}"
+      $redis.zrangebyscore zset_key,partId,partId,:limit=>[offset,count]
+      else
+      $redis.zrangebyscore zset_key,partId,partId
+      end
+      metas=[]
+      metaKeys.each do |k|
+        metas<<PartRelMeta.find(k)
+      end
+      if offset
+      return metas,total
+      end
+    return metas
+    end
+    return nil
+  end
+
   def self.generate_cs_partRel_meta_set_key cid,sid,partKey
     "clientId:#{cid}:supplierId:#{sid}:#{partKey}:metaset"
   end
-  
-  private 
-  
-   def self.generate_org_relmeta_zset cid,sid,partRelType
+
+  private
+
+  def self.generate_org_relmeta_zset_key cid,sid,partRelType
     "clientId:#{cid}:supplierId:#{sid}:relType:#{PartRelType.get_by_value(partRelType)}:relmetazset"
   end
 
-  
 end

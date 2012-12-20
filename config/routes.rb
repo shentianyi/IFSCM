@@ -4,7 +4,7 @@ Demand::Application.routes.draw do
   controller :welman do
     get 'welcome' => :index
   end
-  
+
   controller :sessions do
     get 'login' => :new
     post 'login' => :create
@@ -45,19 +45,31 @@ Demand::Application.routes.draw do
 
   resources :part do
     collection do
-     get :searcher
-     get :redis_search
-     #post :get_parts_by_partnerNr
-     # post :get_all_partRels_by_cusId
-     match :get_part_rel_meta_inpage
+      get :searcher
+      get :redis_search
+      post :get_partRels
+      # post :get_all_partRels_by_cusId
+      match :redis_search_meta
     end
-  end 
-  
+  end
+
   # resources :delivery do
     # collection do
-      # match :send_delivery
+      # match :pick_part
+      # match :view_pend_dn
+      # post :send_delivery
+      # post :get_dit_dn_cache
+      # post :add_di_temp
+      # post :delete_dit
+      # post :build_dn
+      # match :view_pend_dn
+      # post :cancel_staff_dn
+      # post :count_dn_queue
+      # post :clean_dn_queue
+     # post :search_dn
+     # get :redis_search_dn
     # end
   # end
-  
+
   mount Resque::Server.new, :at=>"/admin/resque"
 end

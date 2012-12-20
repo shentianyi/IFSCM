@@ -4,7 +4,7 @@
      }); 
      function get_part_rel_meta(){
            $.ajax({
-          url : '../part/get_part_rel_meta_inpage',
+          url : '../part/redis_search_meta',
           data : {
                'q' : $('#partRelMetaTxt').val(),
                'pageIndex' :$('#pageIndex').val()

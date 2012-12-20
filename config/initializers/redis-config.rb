@@ -1,6 +1,8 @@
 require "redis"
 require "redis-namespace"
 require "redis-search"
+require "resque/server"
+ 
 
 
 $redis= Redis.new(:host => "127.0.0.1",:port => "6379")

@@ -30,12 +30,21 @@ module Enum
     def const_missing(key)
       @hash[key].value
     end
-    
-    def get_by_value(value)
+
+    def get_by_value value
       @hash.each do |k,v|
-       if v.value==value
-         return v.desc
-       end
+        if v.value==value
+        return v.key
+        end
+      end
+      return nil
+    end
+
+    def get_desc_by_value value
+      @hash.each do |k,v|
+        if v.value==value
+        return v.desc
+        end
       end
       return nil
     end

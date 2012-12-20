@@ -39,6 +39,7 @@
 }
 .addparts {
      font-size: 14px;
+     cursor: pointer;
 }
 input.partsamount {
      font-size: 14px;
@@ -50,9 +51,9 @@ input.partsamount {
 }
 .fillindestinations {
      width: 745px;
-     padding: 0px;
      border: 1px solid #dbdbdb;
-     height: 104px;
+     min-height: 104px;
+        max-height: 124px;
      margin-top: 20px;
      margin-bottom: 20px;
 }
@@ -65,15 +66,19 @@ input.partsamount {
      margin-right: 20px;
      height: 30px;
 }
+
 .fillindest {
      border: 1px solid #dbdbdb;
-     width: 280px;
+     width: 200px;
      height: 25px;
      font-size: 14px;
      padding: 5px;
      float: left;
      margin: 10px 30px 5px 10px;
      color: #7c7c7c;
+}
+.fillindestlonger{
+          width: 280px;
 }
 .search-btn{
           margin: 11px 30px 5px 10px;
@@ -177,12 +182,13 @@ input.partsamount {
 .unfoldcart {
      border: 1px solid #dbdbdb;
      border-bottom-width: 0px;
-max-height:300px;
+max-height:400px;
      float: left;
      margin-left: 5px;
      margin-right: 30px;
      background-color: #ffffff;
-     overflow:auto;
+     overflow-y:auto;
+     overflow-x: hidden;
 }
 .ensurecart {
      width: 268px;
@@ -195,22 +201,21 @@ max-height:300px;
      margin-left: 5px;
      margin-right: 30px;
 }
-.cartline {
-     width: 100%;
+.cfirstlevel{
+          width: 100%;
      float: left;
-     height: 25px;
+     min-height: 25px;
      font-size: 12px;
      line-height: 25px;
      padding-bottom: 5px;
+}
+.cfirstlevel:hover{
+     background-color: #1297CF;
+}
+.cartline {
      background-color: #efefef;
 }
 .oddcartline {
-     width: 100%;
-     float: left;
-     height: 25px;
-     font-size: 12px;
-     line-height: 25px;
-     padding-bottom: 5px;
      background-color: #ffffff;
 }
 .partserialnmb {
@@ -256,3 +261,38 @@ min-width:80px;
      border-radius: 5px;
      color: #7c7c7c;
 }
+
+     .waybillstatus {
+          width: 50px;
+          height: 25px;
+          border: 1px solid #efefef;
+          float: left;
+          margin: 8px 5px 0px 5px;
+          background-color: transparent;
+          font-size: 14px;
+          border-radius:15px;
+     }
+     .waybillstatus:hover {
+          background-color: #efefef;
+     }
+     .rightstatus {
+          margin-right: 10px;
+     }
+     .instransit {
+          color: #1297cf;
+     }
+     .received {
+          color: #44a730;
+     }
+     .returned {
+          color: #ff000c;
+     }
+     .checked {
+          background-color: #efefef;
+     }
+     .abnorm{
+          background-image:url(../abnormbg.png);
+     }
+     .hoverable:hover{
+          background-color:#efefef;
+     }

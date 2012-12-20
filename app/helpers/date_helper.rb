@@ -1,3 +1,4 @@
+#coding:utf-8
 module DateHelper
   def self.str_to_date str
     str=str.match(/^\d{4}\/(0?[1-9]|1[0-2])\/(0?[1-9]|[1-2]\d|3[0-1])$/)

@@ -51,7 +51,7 @@ module PartRelHelper
       puts "--------------#{partA.key} has not been build part rel-----------"
       gen_partRelMeta_relation(cpart,spart,partA,partB,args[:saleNo],args[:purchaseNo],args[:partRelType])
       partMetaSetKey=PartRelMeta.generate_cs_partRel_meta_set_key cpart.orgId,spart.orgId,partA.key
-      partRel=PartRel.new(:key=>UUID.generate,:cId=>cpart.orgId,:sId=>spart.orgId,:type=>args[:partRelType],:partMetaSetKey=>partMetaSetKey)
+      partRel=PartRel.new(:cId=>cpart.orgId,:sId=>spart.orgId,:type=>args[:partRelType],:partMetaSetKey=>partMetaSetKey)
       partRel.save
       partRel.add_to_org_part_zset partA.orgId,partA.key,args[:partRelType]
       partRel.add_to_org_cs_part_hash partA.key,args[:partRelType]
@@ -69,7 +69,7 @@ end
 
 def self.gen_partRelMeta_relation  cpart,spart,partA,partB,saleNo,purchaseNo,partRelType
   puts "------------#{partA.key} & #{partB.key} has no rel, build it--------------------"
-  partRelMeta=PartRelMeta.new(:key=>PartRelMeta.gen_key,:cpartId=>cpart.key,:spartId=>spart.key,:saleNo=>saleNo,:purchaseNo=>purchaseNo)
+  partRelMeta=PartRelMeta.new(:cpartId=>cpart.key,:spartId=>spart.key,:saleNo=>saleNo,:purchaseNo=>purchaseNo)
   partRelMeta.save
   partRelMeta.add_to_org_relmeta_zset cpart.orgId,spart.orgId,partA.id,partRelType
   partRelMeta.add_to_org_part_relmeta_set cpart.orgId,spart.orgId,partA.key

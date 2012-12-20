@@ -279,7 +279,7 @@ class DemanderController<ApplicationController
                         :amount=>nd.amount, :oldamount=>nd.oldamount, :rate=>nd.rate)
                         demand.save_to_send_update
                       else
-                        demand = Demander.new( :key=>Demander.gen_key,
+                        demand = Demander.new(
                         :clientId=>nd.clientId, :supplierId=>nd.supplierId, :relpartId=>nd.relpartId, :type=>nd.type, :date=>nd.date,
                         :amount=>nd.amount, :oldamount=>nd.oldamount, :rate=>nd.rate)
                         demand.save
@@ -289,7 +289,7 @@ class DemanderController<ApplicationController
                       if nd.rate.to_i != 0 or nd.oldamount.nil?
                         Demander.send_kestrel(demand.supplierId, demand.key, demand.type)
                       end
-                      demandH=DemandHistory.new(:key=>UUID.generate,:amount=>nd.amount,:rate=>nd.rate,:oldmount=>nd.oldamount,:demandKey=>demand.key)
+                      demandH=DemandHistory.new(:amount=>nd.amount,:rate=>nd.rate,:oldmount=>nd.oldamount,:demandKey=>demand.key)
                       demand.add_to_history demandH.key
                       demandH.save
                     end
@@ -351,6 +351,8 @@ class DemanderController<ApplicationController
             else
               clientId = @cz_org.search_client_byNr( c ) if c && c.size>0
               supplierId = @cz_org.id
+              puts "s:#{supplierId}"
+               puts "c:#{clientId}"
               partRelMetaKey = PartRel.get_all_partRelMetaKey_by_partNr( supplierId, p, PartRelType::Supplier ) if p && p.size>0
             end
             partRelMetaKey = 'none' if partRelMetaKey && partRelMetaKey.size==0

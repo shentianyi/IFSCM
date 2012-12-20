@@ -22,19 +22,19 @@ module RedisFileHelper
               if count>0
                 nnkeys.each do |dkey|
                   if d=DemanderTemp.find(dkey)
-                    d.destory
+                    d.destroy
                   end
                 end
               end
             end
           # del sf
           sf.del_items_link
-          sf.destory
+          sf.destroy
           end
         end
       end
     r.del_items_link
-    r.destory
+    r.destroy
     end
   end
   

@@ -12,3 +12,4 @@
 //
 //= require jquery-1.8.2.min
 //= require jquery.ui/jquery-ui-1.9.1.custom.min
+//= require scm-js-base

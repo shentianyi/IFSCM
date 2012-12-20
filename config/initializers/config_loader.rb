@@ -1,5 +1,3 @@
-require "resque/server"
- 
 config=YAML.load(File.open("#{Rails.root}/config/userconfig.yaml"))
 
 # load format

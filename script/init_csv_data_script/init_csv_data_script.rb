@@ -33,11 +33,11 @@ class InitCSVDataScript
 end
 
 # add org
-orgs=InitCSVDataScript.initOrgByFile 'org20121109'
+orgs=InitCSVDataScript.initOrgByFile 'org20121109-leoni-cz'
 # add org rel
-InitCSVDataScript.initCSByOrgFile orgs,'csrel20121109'
+InitCSVDataScript.initCSByOrgFile orgs,'csrel20121109-leoni-cz'
 # add part and build rel
-InitCSVDataScript.initPartAndCSPartRel orgs[0],orgs[1],'part20121109'
+InitCSVDataScript.initPartAndCSPartRel orgs[0],orgs[1],'part20121109-leoni-cz'
 
 # init staff
 staffs=[{:name=>'leoni',:staffNr=>'leoni',:pass=>'leoni',:conpass=>'leoni',:orgId=>orgs[0].id},{:name=>'leonicz',:staffNr=>'leonicz',:pass=>'leonicz',:conpass=>'leonicz',:orgId=>orgs[1].id}]

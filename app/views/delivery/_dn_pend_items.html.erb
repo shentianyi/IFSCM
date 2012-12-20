@@ -1,0 +1,53 @@
+<%if dnItems and dnItems.count>0%>
+<div class="tableview">
+<table class="upData">
+     <tr  class="lineone">
+          <th>&nbsp;</th>
+          <th>包装箱号</th>
+          <th>内部零件号</th>
+          <th>客户零件号</th>
+          <th>数量</th>
+          <th>内部销售订单号</th>
+          <th>客户采购订单号</th>
+          </tr>
+          <tr class="divide" style="display: none">
+               <th class="nordvd">&nbsp;</th>
+               <th class="nordvd"></th>
+               <th class="nordvd"></th>
+               <th class="nordvd"></th>
+               <th class="nordvd"></th>
+               <th class="nordvd"></th>
+               <th class="nordvd"></th>
+               <th class="lastdvd"></th>
+               <th>&nbsp;</th>
+          </tr>
+          <% i=0%>
+          <%
+          dnItems.each do |item|
+          prm=PartRelMeta.find( item.partRelMetaKey)
+          %>
+     <tr class="norline">
+          <th><%= (i+=1)%></th>
+          <th><%= item.key%></th>
+          <th style="text-align:left;"><%= Part.find(prm.spartId).partNr%></th>
+          <th><%= Part.find(prm.cpartId).partNr%></th>
+          <th><%= item.amount%></th>
+          <th><%= prm.saleNo%></th>
+          <th> <%= prm.purchaseNo%></th>
+     </tr>
+     <%end%>
+     </tr>
+</table>
+     <div class="census">
+          共 <%= @totalCount%> 条
+     </div> 
+<!-- pager -->
+<div class="pagers">
+     <%= bri_pager options={:class=>"pagination",:pages=>@totalPages,:current=>@currentPage,:action=>'get_dn_detail'}%>
+</div>
+ </div>
+<%else%>
+<div class="abstractblock">
+     无运单项
+</div>
+<%end%>

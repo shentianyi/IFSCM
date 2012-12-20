@@ -1,12 +1,3 @@
-// ws: Negative judgement
-function notNegaNum(value) {
-     if(!isNaN(value)) {
-          var nreg = /^([0-9]\d*|\d+\.\d+)$/;
-          return nreg.test(value);
-     }
-     return false;
-}
-
 // ws : redirect
 // url : direction ulr
 // timeout : redirect after timeout -- ms
@@ -134,32 +125,9 @@ function do_after_fileupload(data) {
 // ws : do after upfile info load
 function do_after_fileinfo_load(data) {
      $('#upresult').html(data);
-     // document.getElementById('upresult').innerHTML = data;
-     // if($('#batchFileId').val() != null) {
      $('#upload-file-area').hide();
      $('.botbts').show();
-     /*
-     $(window).bind('beforeunload', function() {
-     check_staff_unfinished_file(function(data) {
-     if(data.result) {
-     var msg = '你有未发送/取消的预测，是否离开？';
-     if(/Firefox[\/\s](\d+)/.test(navigator.userAgent)) {
-     if(confirm(msg)) {
-     history.go();
-     } else {
-     window.setTimeout(function() {
-     window.stop();
-     }, 0);
-     }
-     } else {
-     return msg;
-     }
-     }
-     });
-     alert('dddd');
-     });
-     */
-     // }
+     
 }
 
 // ws: get uploaded file demands
@@ -239,7 +207,7 @@ function reset_demand_amount(obj) {
                txt.value = val;
           obj.innerHTML = txt.value;
           if(val != txt.value) {
-               if(notNegaNum(txt.value)) {
+               if(isNotNegaNum(txt.value)) {
                     var demand = $(obj).parent();
                     update_demand(demand, function(data) {
                          if(data != null) {
