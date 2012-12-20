@@ -96,9 +96,9 @@ class DemanderController<ApplicationController
 
       if bf and sf and od
 
-        nd= DemanderTemp.new(:key=>od.key,:cpartNr=>params[:partNr].strip,:clientId=>clientId,:supplierNr=>params[:supplierNr].strip,
-        :filedate=>params[:filedate].strip,:date=>(FormatHelper::demand_date_by_str_type(params[:filedate].strip,params[:type].strip)),
-        :type=>params[:type].strip,:amount=>params[:amount].strip,:lineNo=>od.lineNo,:source=>od.source)
+        nd= DemanderTemp.new(:key=>od.key,:cpartNr=>params[:partNr],:clientId=>clientId,:supplierNr=>params[:supplierNr],
+        :filedate=>params[:filedate],:date=>(FormatHelper::demand_date_by_str_type(params[:filedate],params[:type])),
+        :type=>params[:type],:amount=>params[:amount],:lineNo=>od.lineNo,:source=>od.source)
 
         okey, nkey=od.gen_md5_repeat_key,nd.gen_md5_repeat_key
         if okey!=nkey
