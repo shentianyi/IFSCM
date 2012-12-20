@@ -36,8 +36,8 @@ module DemanderHelper
       CSV.foreach(File.join($DECSVP,sfile.uuidName),:headers=>true,:col_sep=>$CSVSP) do |row|
         if row["PartNr"] and row["Supplier"] and row["Date"] and row["Type"] and row["Amount"]
           sfile.itemCount+=1
-          demand= DemanderTemp.new(:cpartNr=>row["PartNr"].strip,:clientId=>clientId,:supplierNr=>row["Supplier"].strip,
-          :filedate=>row["Date"].strip,:type=>row["Type"].strip,:amount=>row["Amount"].strip,:lineNo=>sfile.itemCount,:source=>sfile.oriName,:oldamount=>0)
+          demand= DemanderTemp.new(:cpartNr=>row["PartNr"],:clientId=>clientId,:supplierNr=>row["Supplier"],
+          :filedate=>row["Date"],:type=>row["Type"],:amount=>row["Amount"],:lineNo=>sfile.itemCount,:source=>sfile.oriName,:oldamount=>0)
           demand.date=FormatHelper::demand_date_by_str_type(demand.filedate,demand.type)
 
           # validate demand field
