@@ -75,6 +75,7 @@ class Demander<CZ::BaseClass
     when 'W'   then  DemanderType::Week
     when 'M'   then  DemanderType::Month
     when 'Y'   then  DemanderType::Year
+    when 'T'   then  DemanderType::Plan
     end
     $redis.zadd( kesKey, score, demandKey)
   end
@@ -87,6 +88,7 @@ class Demander<CZ::BaseClass
     when 'W'   then  DemanderType::Week
     when 'M'   then  DemanderType::Month
     when 'Y'   then  DemanderType::Year
+    when 'T'   then  DemanderType::Plan
     when ''
       total = $redis.zcard( kesKey )
       $redis.zrange( kesKey, page.to_i*NumPer, (page.to_i+1)*NumPer-1 ).each do |item|

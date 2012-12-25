@@ -61,7 +61,7 @@ module FormatHelper
 
   def self.demand_date_to_date date,type
     if date
-      if type=='D'
+      if type=='D' or type=='T'
         return  Time.parse(date)
       elsif type=='W'
         yw = date.split('/')
