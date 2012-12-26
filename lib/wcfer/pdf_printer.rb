@@ -7,7 +7,7 @@ class Wcfer
     
      Savon.configure do |config|
       config.soap_version = 1
-      config.env_namespace = :srail
+      config.env_namespace = :s
       # config.log = false
       # config.logger=Rails.logger
     end 
@@ -31,6 +31,7 @@ class Wcfer
         :dnJson=>dnJson
       }  
     end 
+    puts '----------------'
             puts res.to_hash
       if res.success?
         resResult=res.to_hash[:generate_dn_pdf_response][:generate_dn_pdf_result]
