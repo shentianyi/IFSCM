@@ -20,6 +20,7 @@ class Wcfer
     # 返回值：
     # - bool,string : 生成结果，文件名 - hash 
     def self.generate_dn_pdf(dnJson)
+          puts '----------------'
       result={:result=>false}
       begin
        client = Savon.client do |wsdl,http|
