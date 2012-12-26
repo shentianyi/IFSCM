@@ -53,23 +53,24 @@ Demand::Application.routes.draw do
     end
   end
 
-  # resources :delivery do
-    # collection do
-      # match :pick_part
-      # match :view_pend_dn
-      # post :send_delivery
-      # post :get_dit_dn_cache
-      # post :add_di_temp
-      # post :delete_dit
-      # post :build_dn
-      # match :view_pend_dn
-      # post :cancel_staff_dn
-      # post :count_dn_queue
-      # post :clean_dn_queue
-     # post :search_dn
-     # get :redis_search_dn
-    # end
-  # end
+  resources :delivery do
+    collection do
+      match :pick_part
+      match :view_pend_dn
+      post :send_delivery
+      post :get_dit_dn_cache
+      post :add_di_temp
+      post :delete_dit
+      post :build_dn
+      match :view_pend_dn
+      post :cancel_staff_dn
+      post :count_dn_queue
+      post :clean_dn_queue
+     post :search_dn
+     get :redis_search_dn
+     match :gen_dn_pdf
+    end
+  end
 
   mount Resque::Server.new, :at=>"/admin/resque"
 end

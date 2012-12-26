@@ -34,8 +34,6 @@ class Demander<CZ::BaseClass
     ###########################  date
     list<<Rns::Date
     
-        puts "00000000000#{list}"
-        
     $redis.zinterstore( resultKey, list, :aggregate=>"MAX" )
 
     demands = []
