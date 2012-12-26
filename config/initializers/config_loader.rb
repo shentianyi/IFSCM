@@ -8,6 +8,7 @@ $CSVSP=format_config[:csv_splitor] # csv splitor
 path_config=config['path']
 $DECSVP=path_config[:demand_csv_path] # demand csv file save path
 $DETMP=path_config[:demand_tmp_path] # demand tmo file path, for download 
+$DNLABELPDFP=path_config[:dn_pdf_label_path] # delivery note and delivery package label pdf file path
 
 # load title
 title_config=config['title']

@@ -1,23 +1,15 @@
-// ws
-// 功能 ： 根据parterNr搜索关系零件
-// 参数 ：
-//  - string : partnerNr
-// - string : partNr
-// - int : pageIndex
-// 返回 ：
-// - 无
 function flash_message(obj, times) {
      var i = 0, t = false, times = times || 4;
-     if(t)
+     if (t)
           return;
      t = setInterval(function() {
           i++;
-          if(i % 2 == 0) {
+          if (i % 2 == 0) {
                $(obj).hide();
           } else {
                $(obj).show();
           }
-          if(i == times * 2) {
+          if (i == times * 2) {
                clearInterval(t);
           }
      }, 300);
@@ -33,7 +25,7 @@ function flash_message(obj, times) {
 // - 无
 function get_partRels_by_parterNr_partNr(pageIndex) {
      var partnerNr = document.getElementById('client-search-text').value;
-     if(partnerNr == "") {
+     if (partnerNr == "") {
           flash_message(".errparts");
      } else {
           $.ajax({
@@ -65,34 +57,39 @@ function check_staff_dn_cache() {
           type : 'post',
           success : function(cache) {
                // show dn
-               if(cache.dn != null) {
+               if (cache.dn != null) {
                     var pane = $("#staff-dn-cache-link");
                     var linker, del;
+                    var block=$("#staff-dn-cache-content");
                     $.each(cache.dn, function(i, v) {
                          // var link=
-                         linker = $("<div/>").html("<a href='../delivery/view_pend_dn?dnKey=" + v.key + "'>" + v.key + "</a>");
-                         del = $("<div/>").attr('class', 'deleteparts').attr('id', v.key).attr('title', '取消').css('cursor', 'pointer').html('X');
+                         linker = $("<div/>").html("<a class='dn-linker' href='../delivery/view_pend_dn?dnKey=" + v.key + "'>" + v.key + "</a>").attr('class','dn-linker-div');
+                         del = $("<span/>").attr('class', 'closebt').attr('id', v.key).attr('title', '取消');
                          del.appendTo(linker);
                          linker.appendTo(pane);
+                         var size=pane.children('div').size();                   
+                         block.css('height',25*size+13+"px")
                          del.bind('click', {
                               dnKey : del.attr('id')
                          }, function(e) {
-                              if(delete_dn_from_staff(e.data.dnKey)) {
+                              if (delete_dn_from_staff(e.data.dnKey)) {
                                    var p = $("[id='" + e.data.dnKey + "']").parent();
                                    p.fadeOut("slow", function() {
                                         p.remove();
                                         p = null;
-                                        if($("#staff-dn-cache-link").children().size() == 0) {
+                                        var lsize=$("#staff-dn-cache-link").children().size();
+                                        block.css('height',25*lsize+13+"px")
+                                        if (lsize == 0) {
                                              $("#staff-dn-cache-content").hide();
                                         }
                                    });
                               }
                          });
                     });
-                    $("#staff-dn-cache-content").show();
+                    block.show();
                }
                // show dit
-               if(cache.dit != null) {
+               if (cache.dit != null) {
                     $.each(cache.dit, function(i, t) {
                          $("#build-dn-btn").show();
                          add_dit_to_cart(t.spartNr, t.perPackAmount, t.packAmount, t.total, t.key);
@@ -110,7 +107,7 @@ function check_staff_dn_cache() {
 // - 无
 function delete_dn_from_staff(dnKey) {
      var result = false;
-     if(confirm('确定取消？')) {
+     if (confirm('确定取消？')) {
           $.ajax({
                url : '../delivery/cancel_staff_dn',
                data : {
@@ -120,7 +117,7 @@ function delete_dn_from_staff(dnKey) {
                type : 'post',
                async : false,
                success : function(data) {
-                    if(!data.result) {
+                    if (!data.result) {
                          alert(data.content);
                     }
                     result = data.result;
@@ -139,6 +136,7 @@ function delete_dn_from_staff(dnKey) {
 function add_pack_info(e, metaKey) {
      $('#selected-spart-nr').html($(e).parent().prevAll('.spartNr').html());
      $('#selected-part-rel-key').val(metaKey);
+     $("#pick-part-info-box").show();
 }
 
 // ws
@@ -148,15 +146,18 @@ function add_pack_info(e, metaKey) {
 // 返回 ：
 // - 无
 function add_part_to_cart() {
-     var per = $("#selected-part-perpack").val();
-     var packN = $("#selected-part-pack-num").val();
+     if($('#selected-part-rel-key').val()!=""){
+     var per = $("#selected-part-perpack");
+     var packN = $("#selected-part-pack-num");
      var partNr = $("#selected-spart-nr").html();
-     if(!isPositiveNum(per)) {
+     if (!isPositiveNum(per.val())) {        
           alert('每包装箱量必须为正数！');
+          per.val("");
           return;
      }
-     if(!isPositiveInt(packN)) {
+     if (!isPositiveInt(packN.val())) {
           alert('包装箱数必须为正整数！');
+          packN.val("");
           return;
      }
      $.ajax({
@@ -164,17 +165,22 @@ function add_part_to_cart() {
           dataType : 'json',
           data : {
                metaKey : $("#selected-part-rel-key").val(),
-               packAmount : packN,
-               perPackAmount : per
+               packAmount : packN.val(),
+               perPackAmount : per.val()
           },
           type : 'post',
-          success : function(msg) {
-               if(msg.result) {
+          success : function(msg) { packN
+               if (msg.result) {
+                    $("#pick-part-info-box").hide();
+                    per.val("");
+                    packN.val("");
+                    $('#selected-part-rel-key').val("");
                     var t = msg.object;
                     add_dit_to_cart(partNr, t.perPackAmount, t.packAmount, t.total, t.key);
                }
           }
      });
+     }
 }
 
 // ws
@@ -188,7 +194,7 @@ function add_part_to_cart() {
 // 返回 ：
 // - 无
 function add_dit_to_cart(partNr, per, amount, total, key) {
-     if($("#build-dn-btn").is(":hidden")) {
+     if ($("#build-dn-btn").is(":hidden")) {
           $("#build-dn-btn").show();
      }
      var cart = $('#unfoldcart');
@@ -224,7 +230,7 @@ function delete_dit_from_cart(key) {
                tempKey : key
           },
           success : function(data) {
-               if(data.result) {
+               if (data.result) {
                     var p = $("[id='" + key + "']").parent();
                     // reset cart item no
                     var nexts = p.nextAll();
@@ -240,7 +246,7 @@ function delete_dit_from_cart(key) {
                     ele = null;
                     nexts = null;
                     //.....
-                    if(p.parent().children().size() == 1) {
+                    if (p.parent().children().size() == 1) {
                          $("#build-dn-btn").hide();
                     }
                     p.effect("shake", {
@@ -264,7 +270,7 @@ function delete_dit_from_cart(key) {
 // - 无
 function build_delivery_note() {
      var desiOrgNr = document.getElementById('client-search-text').value;
-     if(desiOrgNr == "") {
+     if (desiOrgNr == "") {
           flash_message(".errparts");
           alert("请先填写正确的客户号");
           return;
@@ -278,7 +284,7 @@ function build_delivery_note() {
                desiOrgNr : desiOrgNr
           },
           success : function(data) {
-               if(data.result) {
+               if (data.result) {
                     window.location = "../delivery/view_pend_dn?dnKey=" + data.object;
                } else {
                     alert(data.content);
@@ -316,8 +322,8 @@ function get_dn_detail(pageIndex) {
 // 返回 ：
 // - 无
 function send_staff_dn(ele) {
-     var desi = $("#destination-text").val();
-     if(desi == "") {
+     var desi = $("#destination-text");
+     if (desi.val() == "") {
           flash_message(".errparts");
      } else {
           show_handle_dialog();
@@ -328,10 +334,11 @@ function send_staff_dn(ele) {
                async : false,
                data : {
                     dnKey : $('#dnkey-hidden').val(),
-                    destiStr : desi
+                    destiStr : desi.val()
                },
                success : function(data) {
-                    if(data.result) {
+                    if (data.result) {
+                         desi.attr('disabled', true);
                          $(ele).unbind('click').removeAttr('onclick').bind('click', function() {
                               alert('运单已经发送成功，不可重复发送');
                          });
@@ -354,15 +361,21 @@ function send_staff_dn(ele) {
 // 返回 ：
 // - 无
 function cancel_staff_dn() {
-     if(delete_dn_from_staff($('#dnkey-hidden').val())) {
+     if (delete_dn_from_staff($('#dnkey-hidden').val())) {
           window.location = "../delivery/pick_part";
      }
 }
 
-/******** dn list ****************/
+/******** 运单查看部分js ****************/
+// ws
+// 功能 ： 初始化页面设置
+// 参数 ：
+// - 无
+// 返回 ：
+// - 无
 function dn_list_ready() {
      $('.textsearchbox').keypress(function(event) {
-          if(event.which == 13)
+          if (event.which == 13)
                $(this).find('input.startsearch').click()
      }).hover(function() {
           $(this).children().unbind('blur');
@@ -379,7 +392,7 @@ function dn_list_ready() {
           source : "../organisation_manager/redis_search"
      });
      $('#supplier-search-text').autocomplete({
-     source : "../organisation_manager/redis_search"
+          source : "../organisation_manager/redis_search"
      });
      // dn way state and obj state
      $(".wayState[wayState='ALL']").click(function() {
@@ -433,20 +446,26 @@ function dn_list_ready() {
      search_dn();
 }
 
+// ws
+// 功能 ： 添加查询条件节点
+// 参数 ：
+// - hash : 查询条件
+// 返回 ：
+// - 无
 function add_condition_node(hash) {
      $.each(hash, function(k, v) {
           var kv = null;
-          if( typeof (v) == 'string' || v.constructor == Array) {
+          if ( typeof (v) == 'string' || v.constructor == Array) {
                kv = v;
           } else {
                kv = v["key"]
           }
-          if($("#label_" + k).children("[" + k + "='" + kv + "']").size() == 0) {
-               if( typeof (v) == 'string')
+          if ($("#label_" + k).children("[" + k + "='" + kv + "']").size() == 0) {
+               if ( typeof (v) == 'string')
                     $('<span class="notifyNewForcast"></span>').attr('key', k).attr(k, v).text(v).appendTo($('#label_' + k)).click(function() {
                          del_condition_node(k, v);
                     });
-               else if(v.constructor == Array) {
+               else if (v.constructor == Array) {
                     $("#label_" + k).children().remove();
                     $('<span class="notifyNewForcast"></span>').attr('key', k).attr('value-type', 'array').attr(k, v).text(v[0] + '~' + v[1]).appendTo($('#label_' + k)).click(function() {
                          del_condition_node(k, v);
@@ -462,17 +481,30 @@ function add_condition_node(hash) {
      });
 }
 
+// ws
+// 功能 ： 删除查询条件节点
+// 参数 ：
+// - string : k - 节点Key
+// - string : v - 节点Value
+// 返回 ：
+// - 无
 function del_condition_node(k, v) {
      $("#label_" + k).children("[" + k + "=" + v + "]").remove();
-     if($("#label_" + k).children().size() == 0) {
+     if ($("#label_" + k).children().size() == 0) {
           $('#label_' + k).hide();
      }
      search_dynamic();
 }
 
+// ws
+// 功能 ： 获取组织运单队列未读运单数，并为提示添加事件
+// 参数 ：
+// - 无
+// 返回 ：
+// - 无
 function check_org_kn_queue() {
      $.post('../delivery/count_dn_queue', function(data) {
-          if(data.count > 0) {
+          if (data.count > 0) {
                $('<span class="notifyNewForcast"></span>').text(data.count).appendTo($("div[wayState='ALL']")).click(function(e) {
                     $('.search_label').children().remove().end().hide();
                     search_dn({
@@ -488,18 +520,31 @@ function check_org_kn_queue() {
      }, 'json');
 }
 
+// ws
+// 功能 ： 双击提示数字，清空组织未读运单
+// 参数 ：
+// - 无
+// 返回 ：
+// - 无
 function clear_org_kn_queue() {
      $.post('../delivery/clean_dn_queue', function(data) {
-          if(data.result) {
+          if (data.result) {
                $('.notifyNewForcast').remove();
           }
      }, 'json');
 }
 
+// ws
+// 功能 ： 搜索运单
+// 参数 ：
+// - hash : condition
+// - int : pageIndex
+// 返回 ：
+// - 无
 function search_dn(condition, pageIndex) {
-     if(condition == null)
+     if (condition == null)
           condition = {};
-     if(pageIndex == null)
+     if (pageIndex == null)
           pageIndex = 0;
      $.ajax({
           url : '../delivery/search_dn',
@@ -515,14 +560,20 @@ function search_dn(condition, pageIndex) {
      });
 }
 
+// ws
+// 功能 ： 遍历条件节点，查询运单
+// 参数 ：
+// - 无
+// 返回 ：
+// - 无
 function search_dynamic() {
      var condition = {};
      $(".search_label").children().each(function() {
           var t = $(this);
           var key = t.attr('key');
-          if(condition[key] == null)
+          if (condition[key] == null)
                condition[key] = [];
-          if(t.attr('value-type') == 'array')
+          if (t.attr('value-type') == 'array')
                condition[key].push(t.attr(key).split(','));
           else
                condition[key].push(t.attr(key));
@@ -530,6 +581,12 @@ function search_dynamic() {
      search_dn(condition);
 }
 
+// ws
+// 功能 ： 显示搜索框
+// 参数 ：
+// - 调用者 : e
+// 返回 ：
+// - 无
 function pop_box(e) {
      var id = e.attributes['box'].nodeValue;
      $('#' + id).css({
@@ -538,6 +595,29 @@ function pop_box(e) {
      }).show().find("input").get(0).focus();
 }
 
+// ws
+// 功能 ： 隐藏搜索框
+// 参数 ：
+// - 调用者 : e
+// 返回 ：
+// - 无
 function pop_cancel(e) {
      $(e).parent().hide();
+}
+
+// ws
+// 功能 ： 生成标签PDF
+// 参数 ：
+// - 调用者 : 无
+// 返回 ：
+// - 无
+function generate_dn_label_pdf(type) {
+     var desi = $("#destination-text").val();
+     if (desi == "" && type == "dn") {
+          flash_message(".errparts");
+     } else {
+          var form = $("#gen_dn_pdf_form");
+          form.append($("<input>").attr("type", "hidden").attr("name", "printType").val(type));
+          form.submit();
+     }
 }
