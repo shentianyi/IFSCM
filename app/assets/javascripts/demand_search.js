@@ -10,6 +10,7 @@ function pop(e){
 
 function pop_cancel(e){
 	$(e).parent().hide();
+	$(e).parent().find('input[placeholder]').val("");
 }
 
 function chartview_cancel(){
@@ -113,7 +114,8 @@ function demand_search_label_add(hash){
   		} 
   		else if (hash[t].length>0)
   		{
-  			if ($('#label_'+t).children().size()>0)  $('#label_'+t).children().remove();
+  			$('#label_time').children().remove();	$('#label_time').hide();
+  			$('#label_amount').children().remove();	$('#label_amount').hide();
   			hash[t]=hash[t][0]+"~"+hash[t][1];
   			$('<span class="notifyNewForcast"></span>').text(hash[t]).appendTo($('#label_'+t)).click(function(){
   				var temp={};
@@ -235,10 +237,14 @@ function active_chart_type(e){
 }
 ///////////////////////////////////////////////////////////////////         DOM  on   ready
 $(function() {
-	$('.textsearchbox').keypress(function(event){  if (event.which == 13) $(this).find('input.startsearch').click()  })
+	$('.textsearchbox').not($('#date_float')).keypress(function(event){  if (event.which == 13) $(this).find('input.startsearch').click()  })
 										// .mouseleave(function(){  $(this).hide();  });
 										.hover(function(){  $(this).children().unbind('blur');  }, function(){  $(this).children().blur(function(){pop_cancel(this)});  });
 	// $('.textsearchbox.texts').find('input[placeholder]').blur(function(){  pop_cancel(this);  });
+	$('.searchcancelbt').click(function(){  pop_cancel(this);  });
+	$('#date_float > input[placeholder*=开始]').datepicker({  showButtonPanel: true  });
+	$('#date_float > input[placeholder*=结束]').datepicker({  showButtonPanel: true  });
+	$('.textsearchbox').draggable();
 	$('.chartview').draggable();
 	
 	$('.forcasttype[demand=""]').click(function(){  demand_search_all(this);  });
@@ -246,11 +252,11 @@ $(function() {
 	$('#client_float > input.searchcontent').autocomplete({source: "/organisation_manager/redis_search", appendTo: "#client_float"} );
 	$('#supplier_float > input.searchcontent').autocomplete({source: "/organisation_manager/redis_search", appendTo: "#supplier_float"} );
 	$("#partNr_float > input.searchcontent").autocomplete({ source:"/part/redis_search", appendTo: "#partNr_float" });
-	$('#client_float > input.startsearch').click(function(){ demand_search_label_add( {client:$('#client_float > input[placeholder]').val()} );    });
-	$('#supplier_float > input.startsearch').click(function(){ demand_search_label_add( {supplier:$('#supplier_float > input[placeholder]').val()} );    });
-	$('#partNr_float > input.startsearch').click(function(){ demand_search_label_add( {partNr:$('#partNr_float > input[placeholder]').val()} );    });
-	$('#date_float > input.startsearch').click(function(){ demand_search_label_add( {time:[$(this).prev().prev().val(), $(this).prev().val()]} );    });
-	$('#amount_float > input.startsearch').click(function(){ demand_search_label_add( {amount:[$(this).prev().prev().val(), $(this).prev().val()]} );    });
+	$('#client_float > input.startsearch').click(function(){ demand_search_label_add( {client:$('#client_float > input[placeholder]').val()} );	$('#client_float > input[placeholder]').val("");    });
+	$('#supplier_float > input.startsearch').click(function(){ demand_search_label_add( {supplier:$('#supplier_float > input[placeholder]').val()} );	$('#supplier_float > input[placeholder]').val("");    });
+	$('#partNr_float > input.startsearch').click(function(){ demand_search_label_add( {partNr:$('#partNr_float > input[placeholder]').val()} );	$('#partNr_float > input[placeholder]').val("");    });
+	$('#date_float > input.startsearch').click(function(){ demand_search_label_add( {time:[$(this).prev().prev().val(), $(this).prev().val()]} );	$(this).prev().prev().val("");$(this).prev().val("");    });
+	$('#amount_float > input.startsearch').click(function(){ demand_search_label_add( {amount:[$(this).prev().prev().val(), $(this).prev().val()]} );	$(this).prev().prev().val("");$(this).prev().val("");    });
 	// $('#type_float > input.searchforcasttype').click(function(){ $(this).toggleClass('activetype'); });
 	
 	$('div.previousdate').click(function (){	chart_history( $('div.centerchart').attr('prime'), new Date(new Date($('div.centerchart').attr('startline')).valueOf() - 1*(24*60*60*1000)) );		})

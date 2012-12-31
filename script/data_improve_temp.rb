@@ -1,4 +1,3 @@
-# $redis.flushall
 # (29..70).each do |num|
   # key="Demander:"+num.to_s
   # puts "Add:    "+key
