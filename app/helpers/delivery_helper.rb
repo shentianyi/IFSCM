@@ -285,4 +285,43 @@ module DeliveryHelper
     end
     return cssClass
   end
+  
+  # ws
+  # [功能：] 生成运单标签PDF文件
+  # 参数：
+  # - string : dnKey
+  # - string : destination
+  # 返回值：
+  # - string : fileName
+  def self.generate_dn_label_pdf dnKey,destination
+    fileName=nil
+    if dn=DeliveryNote.find(dnKey)
+      dn.update(:destination=>destination)
+      result=Wcfer::PdfPrinter.generate_dn_pdf dn.to_json
+      if result[:result]
+        fileName=result[:content]
+      end
+    end
+    return fileName
+  end
+  
+  # ws
+  # [功能：] 生成运单包装箱标签PDF文件
+  # 参数：
+  # - string : dnKey
+  # 返回值：
+  # - string : fileName
+  def self.generate_dn_pack_label_pdf dnKey
+    fileName=nil
+    if dn=DeliveryNote.find(dnKey)
+     dn.get_children 0,-1
+      result=Wcfer::PdfPrinter.generate_dn_pack_pdf dn.items.to_json
+      if result[:result]
+        fileName=result[:content]
+      end
+    end
+    return fileName
+  end
+  
+  
 end

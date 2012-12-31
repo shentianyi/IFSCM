@@ -269,4 +269,24 @@ class DeliveryController < ApplicationController
       format.json { render text: dnKeys }
     end
   end
+  
+  # ws
+  # [功能：] 打印运单标签
+  # 参数：
+  # - 无
+  # 返回值：
+  # - string : 文件地址
+  def gen_dn_pdf
+    if request.post?
+   
+      type=params[:printType]
+     fileName= if type=='dn'
+        DeliveryHelper.generate_dn_label_pdf params[:dnKey],params[:destination]
+      elsif type=="pack"
+        DeliveryHelper.generate_dn_pack_label_pdf params[:dnKey]
+      end
+      
+      send_file File.join($DNLABELPDFP,fileName),:type => 'application/pdf', :filename => fileName
+    end
+  end
 end
