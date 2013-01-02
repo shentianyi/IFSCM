@@ -2,14 +2,12 @@
 require 'savon'
 class Wcfer
   module PdfPrinter
-    
     HTTPI.log = false  
-    
      Savon.configure do |config|
       config.soap_version = 1
       config.env_namespace = :s
-      # config.log = false
-      # config.logger=Rails.logger
+      config.log = false
+      config.logger=Rails.logger
     end 
     @@wsdlPath= File.expand_path("../MonoScmPrinterServicewsdl.xml", __FILE__)
     
@@ -20,7 +18,6 @@ class Wcfer
     # 返回值：
     # - bool,string : 生成结果，文件名 - hash 
     def self.generate_dn_pdf(dnJson)
-          puts '----------------'
       result={:result=>false}
       begin
        client = Savon.client do |wsdl,http|
@@ -32,16 +29,12 @@ class Wcfer
         :dnJson=>dnJson
       }  
     end 
-    puts '----------------'
-            puts res.to_hash
       if res.success?
         resResult=res.to_hash[:generate_dn_pdf_response][:generate_dn_pdf_result]
         result[:result]=resResult[:result]
         result[:content]=resResult[:content]
       end
       rescue => e
-        puts e.message
-
         result[:content]=e.message.to_s
       end
       return result

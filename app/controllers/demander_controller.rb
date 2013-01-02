@@ -351,8 +351,6 @@ class DemanderController<ApplicationController
             else
               clientId = @cz_org.search_client_byNr( c ) if c && c.size>0
               supplierId = @cz_org.id
-              puts "s:#{supplierId}"
-               puts "c:#{clientId}"
               partRelMetaKey = PartRel.get_all_partRelMetaKey_by_partNr( supplierId, p, PartRelType::Supplier ) if p && p.size>0
             end
             partRelMetaKey = 'none' if partRelMetaKey && partRelMetaKey.size==0
@@ -372,6 +370,41 @@ class DemanderController<ApplicationController
     respond_to do |format|
       format.html {render :partial=>"table" }
       format.json { render json: @demands }
+    end
+  end
+
+  def download_viewed_demand
+    if request.post?
+              c = params[:client]
+            s = params[:supplier]
+            p = params[:partNr]
+            
+                tstart = Time.parse(params[:start]).to_i if params[:start] && params[:start].size>0
+            tend = Time.parse(params[:end]).to_i if params[:end] && params[:end].size>0
+        
+            ######  判断类型 C or S ， 将session[:id]赋值给 id
+        
+            if session[:orgOpeType]==OrgOperateType::Client
+              supplierId = @cz_org.search_supplier_byNr( s.split(',') ) if s && s.size>0
+              clientId = @cz_org.id
+              partRelMetaKey = PartRel.get_all_partRelMetaKey_by_partNr( clientId, p.split(','), PartRelType::Client ) if p && p.size>0
+            else
+              clientId = @cz_org.search_client_byNr( c.split(',') ) if c && c.size>0
+              supplierId = @cz_org.id
+              partRelMetaKey = PartRel.get_all_partRelMetaKey_by_partNr( supplierId, p.split(','), PartRelType::Supplier ) if p && p.size>0
+            end
+            partRelMetaKey = 'none' if partRelMetaKey && partRelMetaKey.size==0
+              demands = []
+            demands = Demander.search( :clientId=>clientId, :supplierId=>supplierId,
+            :rpartNr=>partRelMetaKey, :start=>tstart, :end=>tend,
+            :type=>params[:type].nil? ? nil : params[:type].split(',') ,  :amount=>params[:amount].nil? ? nil : params[:amount].split(','))[0]
+            
+              msg=DemanderHelper::down_load_demand demands,session[:orgOpeType],request.user_agent
+      if msg.result
+        send_file msg.content,:type => 'application/csv', :filename => "#{UUID.generate}.csv"
+        File.delete(msg.content)
+      end
+            
     end
   end
 

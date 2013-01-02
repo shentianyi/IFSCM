@@ -4,7 +4,6 @@ require 'base_class'
 class Demander<CZ::BaseClass
   attr_accessor :clientId,:relpartId,:supplierId, :type,:amount,:oldamount,:date,:rate
   NumPer=$DEPSIZE
-
   # ws : add demand history
   def add_to_history history_key
     zset_key=DemandHistory.generate_zset_key @clientId,@supplierId,@relpartId,@type,@date
@@ -13,7 +12,6 @@ class Demander<CZ::BaseClass
 
   def self.search( hash )
     list = []
-    puts "......#{hash}"
     resultKey = "resultKey"
     ###########################  client
     if client = union_params( Rns::C, hash[:clientId] )
@@ -33,7 +31,7 @@ class Demander<CZ::BaseClass
     end
     ###########################  date
     list<<Rns::Date
-    
+
     $redis.zinterstore( resultKey, list, :aggregate=>"MAX" )
 
     demands = []
@@ -49,16 +47,29 @@ class Demander<CZ::BaseClass
       amountend = amount.last
       end
       $redis.zinterstore( resultKey, [resultKey, Rns::Amount], :weights=>[0,1] )
-      total = $redis.zcount( resultKey, start, amountend )
-      $redis.zrangebyscore( resultKey, start, amountend, :withscores=>false, :limit=>[(hash[:page].to_i)*NumPer, NumPer] ).each do |item|
-        demands << Demander.find( item )
+
+      if hash[:page]
+        total = $redis.zcount( resultKey, start, amountend )
+        $redis.zrangebyscore( resultKey, start, amountend, :withscores=>false, :limit=>[(hash[:page].to_i)*NumPer, NumPer] ).each do |item|
+          demands << Demander.find( item )
+        end
+      else
+        $redis.zrangebyscore( resultKey, start, amountend, :withscores=>false).each do |item|
+          demands << Demander.find( item )
+        end
       end
     else
       start = (hash[:start]&&hash[:start].size>0) ? hash[:start].to_i : -$Infin
       timeend = (hash[:end]&&hash[:end].size>0) ? hash[:end].to_i : $Infin
-      total = $redis.zcount( resultKey, start, timeend )
-      $redis.zrangebyscore( resultKey, start, timeend, :withscores=>false, :limit=>[(hash[:page].to_i)*NumPer, NumPer] ).each do |item|
-        demands << Demander.find( item )
+      if hash[:page]
+        total = $redis.zcount( resultKey, start, timeend )
+        $redis.zrangebyscore( resultKey, start, timeend, :withscores=>false, :limit=>[(hash[:page].to_i)*NumPer, NumPer] ).each do |item|
+          demands << Demander.find( item )
+        end
+      else
+        $redis.zrangebyscore( resultKey, start, timeend, :withscores=>false).each do |item|
+          demands << Demander.find( item )
+        end
       end
     end
 
@@ -109,7 +120,7 @@ class Demander<CZ::BaseClass
   end
 
   # def id
-    # key.delete "#{Rns::De}:"
+  # key.delete "#{Rns::De}:"
   # end
 
   def clientNr

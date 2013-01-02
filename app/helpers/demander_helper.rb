@@ -1,4 +1,4 @@
-#coding:utf-8 
+#coding:utf-8
 require 'csv'
 require 'zip/zip'
 require "iconv"
@@ -24,59 +24,59 @@ module DemanderHelper
   # ws: handle batchFile from csv
   def self.handle_batchFile_from_csv(batchFileKey,clientId)
     begin
-    returnMsg=ReturnMsg.new(:result=>false,:content=>'')
-    batchFile=RedisFile.find(batchFileKey)
-    batchFile.errorCount=0
-    singleFileKeys=batchFile.get_normal_item_keys(0,-1)[0]
-    items=[]
-    singleFileKeys.each do |sfkey|
-      sfile=RedisFile.find(sfkey)
-      sfile.itemCount=sfile.errorCount=0
+      returnMsg=ReturnMsg.new(:result=>false,:content=>'')
+      batchFile=RedisFile.find(batchFileKey)
+      batchFile.errorCount=0
+      singleFileKeys=batchFile.get_normal_item_keys(0,-1)[0]
+      items=[]
+      singleFileKeys.each do |sfkey|
+        sfile=RedisFile.find(sfkey)
+        sfile.itemCount=sfile.errorCount=0
 
-      CSV.foreach(File.join($DECSVP,sfile.uuidName),:headers=>true,:col_sep=>$CSVSP) do |row|
-        if row["PartNr"] and row["Supplier"] and row["Date"] and row["Type"] and row["Amount"]
-          sfile.itemCount+=1
-          demand= DemanderTemp.new(:cpartNr=>row["PartNr"].strip,:clientId=>clientId,:supplierNr=>row["Supplier"].strip,
-          :filedate=>row["Date"].strip,:type=>row["Type"].strip,:amount=>row["Amount"].strip,:lineNo=>sfile.itemCount,:source=>sfile.oriName,:oldamount=>0)
-          demand.date=FormatHelper::demand_date_by_str_type(demand.filedate,demand.type)
+        CSV.foreach(File.join($DECSVP,sfile.uuidName),:headers=>true,:col_sep=>$CSVSP) do |row|
+          if row["PartNr"] and row["Supplier"] and row["Date"] and row["Type"] and row["Amount"]
+            sfile.itemCount+=1
+            demand= DemanderTemp.new(:cpartNr=>row["PartNr"].strip,:clientId=>clientId,:supplierNr=>row["Supplier"].strip,
+            :filedate=>row["Date"].strip,:type=>row["Type"].strip,:amount=>row["Amount"].strip,:lineNo=>sfile.itemCount,:source=>sfile.oriName,:oldamount=>0)
+            demand.date=FormatHelper::demand_date_by_str_type(demand.filedate,demand.type)
 
-          # validate demand field
-          msg=demand_field_validate(demand,batchFile)
-          demand.vali=msg.result
-          if msg.result
-            demand.rate,demand.oldamount=DemandHistory.compare_rate(demand)
+            # validate demand field
+            msg=demand_field_validate(demand,batchFile)
+            demand.vali=msg.result
+            if msg.result
+              demand.rate,demand.oldamount=DemandHistory.compare_rate(demand)
+            else
+            demand.msg=msg.contents.to_json
+            end
+            demand.save
+
+            if msg.result
+            sfile.add_normal_item demand.rate.to_i.abs,demand.key
+            else
+            sfile.add_error_item demand.lineNo,demand.key
+            sfile.errorCount+= 1
+            end
           else
-          demand.msg=msg.contents.to_json
+            returnMsg.content="文件:#{sfile.oriName},行号:#{sfile.itemCount+1},缺少列值或文件标题错误,请重新修改上传！"
+          return returnMsg
           end
-          demand.save
-
-          if msg.result
-          sfile.add_normal_item demand.rate.to_i.abs,demand.key
-          else
-          sfile.add_error_item demand.lineNo,demand.key
-          sfile.errorCount+= 1
-          end
-        else
-          returnMsg.content="文件:#{sfile.oriName},行号:#{sfile.itemCount+1},缺少列值或文件标题错误,请重新修改上传！"
-        return returnMsg
         end
+        # csv --end
+        if sfile.itemCount==0
+          returnMsg.result=false
+          returnMsg.content="文件:#{sfile.oriName},不存在预测"
+        break
+        end
+        sfile.cover
+        batchFile.remove_normal_item sfile.key
+        batchFile.add_normal_item sfile.errorCount,sfile.key # order the files by error items count
+        items<<sfile
+        batchFile.errorCount+=1 if sfile.errorCount>0
+        returnMsg.result=true
       end
-      # csv --end
-      if sfile.itemCount==0
-         returnMsg.result=false
-         returnMsg.content="文件:#{sfile.oriName},不存在预测"
-         break
-      end
-      sfile.cover
-      batchFile.remove_normal_item sfile.key
-      batchFile.add_normal_item sfile.errorCount,sfile.key # order the files by error items count
-      items<<sfile
-      batchFile.errorCount+=1 if sfile.errorCount>0
-      returnMsg.result=true
-    end
-    batchFile.cover
-    batchFile.items=items if items.count>0
-    returnMsg.object=batchFile
+      batchFile.cover
+      batchFile.items=items if items.count>0
+      returnMsg.object=batchFile
     rescue Exception=>e
       returnMsg.content='文件格式错误,请重新上传'
     end
@@ -117,8 +117,8 @@ module DemanderHelper
           msg.result=false
           msg.content_key<<:partMutiFitOrgP
         else
-          demand.spartId=parts[0].spartId
-          demand.relpartId=parts[0].key
+        demand.spartId=parts[0].spartId
+        demand.relpartId=parts[0].key
         end
       end
     end
@@ -195,7 +195,6 @@ module DemanderHelper
     msg=ReturnMsg.new(:result=>false,:content=>'')
     path=nil
     if bf=RedisFile.find(batchId)
-      # if bf.errorCount==0
       sfKeys,scount=bf.get_normal_item_keys 0,-1
       if scount>0
         tmps=[]
@@ -218,8 +217,6 @@ module DemanderHelper
                 end
               end
             tmps<<spath
-            #z.add(Iconv.iconv( 'GBK//IGNORE','utf-8//IGNORE',sf.oriName).to_s,spath)
-            #   z.add(sf.oriName.decode('gbk'),spath)
             z.add(sf.oriName,spath)
             end
           end
@@ -236,13 +233,30 @@ module DemanderHelper
       else
         msg.content='批次上次中不存在任何文件'
       end
-    # else
-    # msg.content='仍存在错误文件，请全部修改后再下载'
-    # end
     else
       msg.content='上传文件被取消，无法下载'
     end
     return msg
+  end
+
+  # ws : download demands as csv
+  def self.down_load_demand demands,opeType,user_agent
+    msg=ReturnMsg.new(:result=>false,:content=>'')
+    csv_encode=FormatHelper::csv_write_encode user_agent
+    path=File.join($DETMP,UUID.generate+'.csv')
+    File.open(path,"wb:#{csv_encode}") do |f|
+      f.puts $DECSVT.join($CSVSP)
+      demands.each do |nd|
+        if opeType==OrgOperateType::Client
+          f.puts [nd.cpartNr,nd.supplierNr,nd.date,nd.type,nd.amount].join($CSVSP)
+        elsif opeType==OrgOperateType::Supplier
+          f.puts [nd.spartNr,nd.clientNr,nd.date,nd.type,nd.amount].join($CSVSP)
+        end
+      end
+    end
+   msg.result=true
+   msg.content=path
+   return msg
   end
 
   # ws : generate bar
@@ -250,22 +264,22 @@ module DemanderHelper
     img= thisLineWidth=lastLineWidth=nil
     if demand.oldamount.nil?
       img='dotchecked'
-      thisLineWidth=demand.amount>0 ? 100 : 0
-      lastLineWidth=0
+    thisLineWidth=demand.amount>0 ? 100 : 0
+    lastLineWidth=0
     elsif demand.rate.to_i>0
       img='arrup'
-      thisLineWidth=100
-      lastLineWidth= demand.oldamount>0 ? 100/(1+demand.rate.to_f/100) : 0
+    thisLineWidth=100
+    lastLineWidth= demand.oldamount>0 ? 100/(1+demand.rate.to_f/100) : 0
     elsif demand.rate.to_i<0
       img='arrdown'
-      thisLineWidth=(100+demand.rate.to_f)
+    thisLineWidth=(100+demand.rate.to_f)
     lastLineWidth=100
     else
       img='equal'
-      thisLineWidth=demand.amount>0 ? 100 : 0
-      lastLineWidth=demand.oldamount>0 ? 100 : 0
+    thisLineWidth=demand.amount>0 ? 100 : 0
+    lastLineWidth=demand.oldamount>0 ? 100 : 0
     end
     return img,thisLineWidth,lastLineWidth
   end
-  
+
 end

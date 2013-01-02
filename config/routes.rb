@@ -40,6 +40,7 @@ Demand::Application.routes.draw do
       post :clean_staff_cache_file
       post :get_cache_file_info
       post :handle_batch
+      post :download_viewed_demand
     end
   end
 
@@ -48,7 +49,6 @@ Demand::Application.routes.draw do
       get :searcher
       get :redis_search
       post :get_partRels
-      # post :get_all_partRels_by_cusId
       match :redis_search_meta
     end
   end
