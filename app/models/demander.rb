@@ -12,7 +12,7 @@ class Demander<CZ::BaseClass
 
   def self.search( hash )
     list = []
-    resultKey = "resultKey"
+    resultKey = "resultKey_temp_#{$redis.incr('resultKey_temp_')}"
     ###########################  client
     if client = union_params( Rns::C, hash[:clientId] )
     list<<client
