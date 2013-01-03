@@ -384,6 +384,16 @@ function dn_list_ready() {
                pop_cancel(this);
           });
      });
+     
+     // // date picker
+          // $('#startdate-search-text').datepicker({
+          // showButtonPanel : true
+     // });
+//      
+            // $('#enddate-search-text').datepicker({
+          // showButtonPanel : true
+     // });
+//   
      // auto complete
      $('#dn-search-text').autocomplete({
           source : "/delivery/redis_search_dn"
