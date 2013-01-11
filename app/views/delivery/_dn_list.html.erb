@@ -35,7 +35,7 @@
           <th><%= (i+=1)%></th>
           <th><%= dn.key%></th>
           <th><%= partnerNr%></th>
-          <th><%= Time.at(dn.created_at.to_i).strftime('%Y/%m/%d %H:%M') %></th>
+          <th><%= Time.at(dn.sendDate.to_i).strftime('%Y/%m/%d') %></th>
           <th><%= dn.destination%></th>
           <th>
           <div class="<%= DeliveryHelper::get_dn_wayState_css(dn.wayState.to_i)%>">

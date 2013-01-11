@@ -323,7 +323,8 @@ function get_dn_detail(pageIndex) {
 // - 无
 function send_staff_dn(ele) {
      var desi = $("#destination-text");
-     if (desi.val() == "") {
+     var sendDate=$("#sendDate-text");
+     if (desi.val() == ""||sendDate.val()=="") {
           flash_message(".errparts");
      } else {
           show_handle_dialog();
@@ -334,7 +335,8 @@ function send_staff_dn(ele) {
                async : false,
                data : {
                     dnKey : $('#dnkey-hidden').val(),
-                    destiStr : desi.val()
+                    destiStr : desi.val(),
+                    sendDate : sendDate.val()
                },
                success : function(data) {
                     if (data.result) {

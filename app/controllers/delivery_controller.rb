@@ -22,7 +22,7 @@ class DeliveryController < ApplicationController
   def send_delivery
     if request.post?
       if request.post?
-        msg=DeliveryHelper::send_dn  session[:staff_id],params[:dnKey],params[:destiStr]
+        msg=DeliveryHelper::send_dn  session[:staff_id],params[:dnKey],params[:destiStr],params[:sendDate]
         render :json=>msg
       end
     end
@@ -281,7 +281,7 @@ class DeliveryController < ApplicationController
    
       type=params[:printType]
      fileName= if type=='dn'
-        DeliveryHelper.generate_dn_label_pdf params[:dnKey],params[:destination]
+        DeliveryHelper.generate_dn_label_pdf params[:dnKey],params[:destination],params[:sendDate]
       elsif type=="pack"
         DeliveryHelper.generate_dn_pack_label_pdf params[:dnKey]
       end

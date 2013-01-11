@@ -95,9 +95,10 @@ module DeliveryHelper
   # - int : staffId
   # - string : dnKey
   # - string : destiStr
+  # - string : sendDate
   # 返回值：
   # - ReturnMsg : JSON
-  def self.send_dn  staffId,dnKey,destiStr
+  def self.send_dn  staffId,dnKey,destiStr,sendDate
     msg=ReturnMsg.new(:result=>false,:content=>'')
     if DeliveryNote.exist_in_staff_cache(staffId,dnKey)
       if dn=DeliveryNote.find(dnKey)
@@ -106,7 +107,7 @@ module DeliveryHelper
             prm=PartRelMeta.find(i.partRelMetaKey)
             i.update(:cpartNr=>Part.find(prm.cpartId).partNr,:spartNr=>Part.find(prm.spartId).partNr,:saleNo=>prm.saleNo,:purchaseNo=>prm.purchaseNo)
           end
-          dn.update(:wayState=>DeliveryNoteWayState::Intransit,:destination=>destiStr)
+          dn.update(:wayState=>DeliveryNoteWayState::Intransit,:destination=>destiStr,:sendDate=>sendDate)
           dn.add_to_orgs
           dn.delete_from_staff_cache
           # DelieveryNote & DeliveryItem 写入Mysql
@@ -174,7 +175,8 @@ module DeliveryHelper
   # - 无
   def self.record_dn_into_mysql dnKey
     if dn=DeliveryNote.find(dnKey)
-      mdn =MDeliveryNote.new( :desiOrgId=>dn.desiOrgId, :destination=>dn.destination, :key=>dn.key, :orgId=>dn.orgId, :sender=>dn.sender, :state=>dn.state, :wayState=>dn.wayState)
+      mdn =MDeliveryNote.new( :desiOrgId=>dn.desiOrgId, :destination=>dn.destination, :key=>dn.key, :orgId=>dn.orgId, 
+      :sender=>dn.sender, :state=>dn.state, :wayState=>dn.wayState,:sendDate=>dn.sendDate)
       if dn.get_children 0,-1
         dn.items.each do |i|
           mdn.m_delivery_item.build( :amount=>i.amount, :cpartNr=>i.cpartNr, :key=>i.key, :parentKey=>i.parentKey, :partRelMetaKey=>i.partRelMetaKey,
@@ -223,7 +225,7 @@ module DeliveryHelper
         #  condi[:desiOrgId]=condition[:receiver] if condition[:receiver]
         condi[:wayState]=condition[:wayState] if condition[:wayState]
         condi[:state]=condition[:objState] if condition[:objState]
-        condi[:created_at]=(condition[:date]["0"][0]..condition[:date]["0"][1]) if condition[:date]
+        condi[:sendDate]=(condition[:date]["0"][0]..condition[:date]["0"][1]) if condition[:date]
       end
       total= MDeliveryNote.where(condi).count
       return MDeliveryNote.limit(endIndex-startIndex+1).offset(startIndex).all(:conditions=>condi),total
@@ -291,12 +293,20 @@ module DeliveryHelper
   # 参数：
   # - string : dnKey
   # - string : destination
+  # - string : sendDate
   # 返回值：
   # - string : fileName
-  def self.generate_dn_label_pdf dnKey,destination
+  def self.generate_dn_label_pdf dnKey,destination,sendDate
     fileName=nil
     if dn=DeliveryNote.find(dnKey)
-      dn.update(:destination=>destination)
+      dn.update(:destination=>destination,:sendDate=>sendDate)
+      
+      # gen label head
+      labelHead=Class.new
+      labelHead.instance_variable_set :@dnKey,dnKey
+      labelHead.instance_variable_set :@sendDate,dn.sendDate
+      labelHead.instance_variable_set :@dnKey,dnKey
+      
       result=Wcfer::PdfPrinter.generate_dn_pdf dn.to_json
       if result[:result]
         fileName=result[:content]

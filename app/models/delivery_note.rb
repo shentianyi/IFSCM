@@ -2,7 +2,7 @@
 require 'base_class'
 
 class DeliveryNote<DeliveryBase
-  attr_accessor :wayState,:sender,:orgId,:desiOrgId,:destination
+  attr_accessor :wayState,:sender,:orgId,:desiOrgId,:destination,:sendDate
   # ---------------------------------------------
   #ws : for redis search
   include Redis::Search
