@@ -17,7 +17,7 @@
 		<input type="text" class="fillindest"id="client-text" autocomplete="off" disabled="false"  style="width: 150px"
 		value="<%= Organisation.find_by_id(@msg.object.orgId).search_client_byId(@msg.object.desiOrgId.to_i)%>"
 		disabled/>
-		<form action='../delivery/gen_dn_pdf' method="post" id="gen_dn_pdf_form">
+		<form method="post" id="gen_dn_pdf_form" action="../delivery/gen_dn_pdf">
 			<input type="hidden" value="<%= @msg.object.key%>" id="dnkey-hidden" name="dnKey">
 			<input type="text" class="fillindest fillindestlonger" name="destination" value="<%=@msg.object.destination%>"
 			placeholder="请您填写送货地址-必填" id="destination-text" style="width: 250px">
@@ -35,7 +35,7 @@
 			打印运单
 		</p>
 	</div>
-		<div class="btsave botbtn" onclick="generate_dn_label_pdf('pack');">
+        <div class="btsave botbtn" onclick="alert('开发中，暂不可用');">
 		<p>
 			打印包装箱
 		</p>

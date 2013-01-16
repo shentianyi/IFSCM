@@ -1,1 +1,39 @@
-<?xml version="1.0" encoding="utf-8"?><definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tns="http://tempuri.org/" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsap="http://schemas.xmlsoap.org/ws/2004/08/addressing/policy" xmlns:msc="http://schemas.microsoft.com/ws/2005/12/wsdl/contract" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:wsa10="http://www.w3.org/2005/08/addressing" name="service" targetNamespace="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns="http://schemas.xmlsoap.org/wsdl/"><types><xs:schema xmlns:tns="http://tempuri.org/Imports" targetNamespace="http://tempuri.org/Imports" xmlns:xs="http://www.w3.org/2001/XMLSchema"><xs:import schemaLocation="http://localhost:9000/MonoScmPrinterService/GenDNPdfService/wsdl?xsd=xsd0" namespace="http://schemas.microsoft.com/2003/10/Serialization/" /><xs:import schemaLocation="http://localhost:9000/MonoScmPrinterService/GenDNPdfService/wsdl?xsd=xsd1" namespace="http://tempuri.org/" /><xs:import schemaLocation="http://localhost:9000/MonoScmPrinterService/GenDNPdfService/wsdl?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/MonoScmPrinterService.DataModel" /></xs:schema></types><message name="IGenDNPdfService_GenerateDNPdf_InputMessage"><part name="parameters" element="tns:GenerateDNPdf" /></message><message name="IGenDNPdfService_GenerateDNPdf_OutputMessage"><part name="parameters" element="tns:GenerateDNPdfResponse" /></message><message name="IGenDNPdfService_GenerateDNPackPdf_InputMessage"><part name="parameters" element="tns:GenerateDNPackPdf" /></message><message name="IGenDNPdfService_GenerateDNPackPdf_OutputMessage"><part name="parameters" element="tns:GenerateDNPackPdfResponse" /></message><portType name="IGenDNPdfService"><operation name="GenerateDNPdf"><input wsaw:Action="http://tempuri.org/IGenDNPdfService/GenerateDNPdf" message="tns:IGenDNPdfService_GenerateDNPdf_InputMessage" /><output wsaw:Action="http://tempuri.org/IGenDNPdfService/GenerateDNPdfResponse" message="tns:IGenDNPdfService_GenerateDNPdf_OutputMessage" /></operation><operation name="GenerateDNPackPdf"><input wsaw:Action="http://tempuri.org/IGenDNPdfService/GenerateDNPackPdf" message="tns:IGenDNPdfService_GenerateDNPackPdf_InputMessage" /><output wsaw:Action="http://tempuri.org/IGenDNPdfService/GenerateDNPackPdfResponse" message="tns:IGenDNPdfService_GenerateDNPackPdf_OutputMessage" /></operation></portType><binding name="BasicHttpBinding_IGenDNPdfService" type="tns:IGenDNPdfService"><soap:binding transport="http://schemas.xmlsoap.org/soap/http" /><operation name="GenerateDNPdf"><soap:operation soapAction="http://tempuri.org/IGenDNPdfService/GenerateDNPdf" style="document" /><input><soap:body use="literal" /></input><output><soap:body use="literal" /></output></operation><operation name="GenerateDNPackPdf"><soap:operation soapAction="http://tempuri.org/IGenDNPdfService/GenerateDNPackPdf" style="document" /><input><soap:body use="literal" /></input><output><soap:body use="literal" /></output></operation></binding><service name="service"><port name="BasicHttpBinding_IGenDNPdfService" binding="tns:BasicHttpBinding_IGenDNPdfService"><soap:address location="http://localhost:9000/MonoScmPrinterService/GenDNPdfService/soap" /></port></service></definitions>
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions name="GenDNPdfService" targetNamespace="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsx="http://schemas.xmlsoap.org/ws/2004/09/mex" xmlns:wsa10="http://www.w3.org/2005/08/addressing" xmlns:tns="http://tempuri.org/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsap="http://schemas.xmlsoap.org/ws/2004/08/addressing/policy" xmlns:msc="http://schemas.microsoft.com/ws/2005/12/wsdl/contract" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/">
+	<wsdl:types>
+		<xsd:schema targetNamespace="http://tempuri.org/Imports">
+			<xsd:import schemaLocation="http://42.121.111.38:9000/MonoScmPrinterService/GenDNPdfService/wsdl?xsd=xsd0" namespace="http://tempuri.org/"/>
+			<xsd:import schemaLocation="http://42.121.111.38:9000/MonoScmPrinterService/GenDNPdfService/wsdl?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/"/>
+			<xsd:import schemaLocation="http://42.121.111.38:9000/MonoScmPrinterService/GenDNPdfService/wsdl?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/MonoScmPrinterService.DataModel"/>
+		</xsd:schema>
+	</wsdl:types>
+	<wsdl:message name="IGenDNPdfService_GenerateDnPdf_InputMessage">
+		<wsdl:part name="parameters" element="tns:GenerateDnPdf"/>
+	</wsdl:message>
+	<wsdl:message name="IGenDNPdfService_GenerateDnPdf_OutputMessage">
+		<wsdl:part name="parameters" element="tns:GenerateDnPdfResponse"/>
+	</wsdl:message>
+	<wsdl:portType name="IGenDNPdfService">
+		<wsdl:operation name="GenerateDnPdf">
+			<wsdl:input wsaw:Action="http://tempuri.org/IGenDNPdfService/GenerateDnPdf" message="tns:IGenDNPdfService_GenerateDnPdf_InputMessage"/>
+			<wsdl:output wsaw:Action="http://tempuri.org/IGenDNPdfService/GenerateDnPdfResponse" message="tns:IGenDNPdfService_GenerateDnPdf_OutputMessage"/>
+		</wsdl:operation>
+	</wsdl:portType>
+	<wsdl:binding name="soap" type="tns:IGenDNPdfService">
+		<soap:binding transport="http://schemas.xmlsoap.org/soap/http"/>
+		<wsdl:operation name="GenerateDnPdf">
+			<soap:operation soapAction="http://tempuri.org/IGenDNPdfService/GenerateDnPdf" style="document"/>
+			<wsdl:input>
+				<soap:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+	</wsdl:binding>
+	<wsdl:service name="GenDNPdfService">
+		<wsdl:port name="soap" binding="tns:soap">
+			<soap:address location="http://42.121.111.38:9000/MonoScmPrinterService/GenDNPdfService/soap"/>
+		</wsdl:port>
+	</wsdl:service>
+</wsdl:definitions>

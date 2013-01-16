@@ -9,7 +9,7 @@ module ClassKeyHelper
     :DeliveryItemTemp=>:generate_redis_incr_key,
     :DeliveryItem=>:generate_pack_key,
     :DeliveryNote=>:generate_dn_key,
-    :DeliveryPackage=>:generate_pack_key,
+    :DeliveryPackage=>:generate_redis_incr_key,
     :DemandHistory=>:generate_uuid_key,
     :DemanderTemp=>:generate_uuid_key,
     :Demander=>:generate_redis_incr_key,

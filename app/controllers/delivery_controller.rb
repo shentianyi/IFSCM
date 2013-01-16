@@ -182,7 +182,7 @@ class DeliveryController < ApplicationController
       if (st=Staff.find(dn.sender.to_i)) and st.orgId==session[:org_id]
         @currentPage=pageIndex=params[:pageIndex].nil? ? 0 : params[:pageIndex].to_i
         startIndex,endIndex=PageHelper::generate_page_index(pageIndex,$DEPSIZE)
-        dn,@totalCount=DeliveryHelper::get_dn_detail dn,startIndex,endIndex
+        dn.items,@totalCount=DeliveryHelper::get_delivery_detail dn.key,startIndex,endIndex
         if @totalCount
           @totalPages=PageHelper::generate_page_count @totalCount,$DEPSIZE
         msg.object=dn
@@ -269,7 +269,7 @@ class DeliveryController < ApplicationController
       format.json { render text: dnKeys }
     end
   end
-  
+
   # ws
   # [功能：] 打印运单标签
   # 参数：
@@ -278,15 +278,26 @@ class DeliveryController < ApplicationController
   # - string : 文件地址
   def gen_dn_pdf
     if request.post?
-   
+      msg=ReturnMsg.new(:result=>false,:content=>'')
       type=params[:printType]
-     fileName= if type=='dn'
+      fileName= if type=='dn'
         DeliveryHelper.generate_dn_label_pdf params[:dnKey],params[:destination],params[:sendDate]
       elsif type=="pack"
         DeliveryHelper.generate_dn_pack_label_pdf params[:dnKey]
       end
-      
-      send_file File.join($DNLABELPDFP,fileName),:type => 'application/pdf', :filename => fileName
+      # begin
+       # send_file AliBucket.url_for(fileName),:type => 'application/pdf', :filename => fileName
+      # rescue Exception=>e
+       # puts e
+      # end
+      # puts "-------------"
+       # puts AliBucket.url_for(fileName)
+      # puts "----------------"
+      if fileName
+        msg.result=true
+        msg.content= AliBucket.url_for(fileName)
+      end
+      render :json=>msg
     end
   end
 end

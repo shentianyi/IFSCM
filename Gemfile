@@ -17,6 +17,7 @@ gem "rubyzip"
 
 # for web service
 gem 'savon' ,  '~>1.2.0'
+gem 'aliyun-oss'
 
 group :assets do
   gem 'sass-rails',   '~> 3.2.3'
