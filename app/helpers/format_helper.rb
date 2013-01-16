@@ -30,18 +30,17 @@ module FormatHelper
     end
     return true
   end
-  
-  
+
   # vali if string is positive float
   def self.str_is_positive_float str
-   return /^[\d]+(\.[\d]+){0,1}$/ ===str
+    return /^[\d]+(\.[\d]+){0,1}$/ ===str
   end
-  
+
   # vali if string is positive integer
   def self.str_is_positive_integer str
-       return (/^[1-9]\d*$/ ===str)
+    return (/^[1-9]\d*$/ ===str)
   end
-  
+
   # demand date by date string and type
   def self.demand_date_by_str_type date,type
     date=str_to_date(date)
@@ -99,7 +98,7 @@ module FormatHelper
       break
       end
     end
-    
+
     case os
     when 'windows'
       return 'GB18030'
@@ -110,15 +109,25 @@ module FormatHelper
     end
   end
 
- # ws
- def self.get_number num,t=nil
-   return nil if num==''
+  # ws
+  def self.get_number num,t=nil
+    return nil if num==''
     return num if !t.nil?
-   if num.is_a?(String)
-     return num.to_f if num.include?('.')
-     return num.to_i 
-   end
-   return num
- end
- 
+    if num.is_a?(String)
+      return num.to_f if num.include?('.')
+    return num.to_i
+    end
+    return num
+  end
+
+  def self.string_multiply n1,n2
+    n1=n1.to_s if !n1.is_a?(String)
+    n2=n2.to_s if !n2.is_a?(String)
+    if n1.include?('.') or n2.include?('.')
+      return (BigDecimal.new(n1)*BigDecimal.new(n2)).to_f
+    else
+    return n1.to_i*n2.to_i
+    end
+  end
+
 end

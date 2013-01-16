@@ -33,7 +33,7 @@
           <th><%= Part.find(prm.cpartId).partNr%></th>
           <th><%= item.perPackAmount%></th>
           <th><%= item.packAmount%></th>
-          <th><%= (item.perPackAmount*item.packAmount)%></th>
+          <th><%= (FormatHelper.string_multiply(item.perPackAmount,item.packAmount))%></th>
           <th><%= prm.saleNo%></th>
           <th> <%= prm.purchaseNo%></th>
      </tr>

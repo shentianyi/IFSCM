@@ -95,7 +95,8 @@ class DeliveryController < ApplicationController
       valiMsg= DeliveryHelper::vali_di_temp(metaKey,packAmount,per)
       msg.result=valiMsg.result
       if valiMsg.result
-        dit=DeliveryItemTemp.new(:packAmount=>packAmount,:perPackAmount=>per,:partRelMetaKey=>metaKey,:total=>(packAmount.to_i)*(FormatHelper::get_number(per)))
+        dit=DeliveryItemTemp.new(:packAmount=>packAmount,:perPackAmount=>per,:partRelMetaKey=>metaKey,
+         :total=>FormatHelper.string_multiply(per,packAmount))
         dit.save
         dit.add_to_staff_cache session[:staff_id]
       msg.object=dit

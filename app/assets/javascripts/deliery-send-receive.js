@@ -629,10 +629,11 @@ function generate_dn_label_pdf(type) {
 	if ((desi == "" || sendDate == "") && type == "dn") {
 		flash_message(".errparts");
 	} else {
+		show_handle_dialog();
 		$.ajax({
 			url : '../delivery/gen_dn_pdf',
 			type : 'post',
-			async : false,
+			// async : false,
 			data : {
 				printType : type,
 				dnKey : $("#dnkey-hidden").val(),
@@ -641,6 +642,7 @@ function generate_dn_label_pdf(type) {
 			},
 			dataType : 'json',
 			success : function(data) {
+				hide_handle_dialog();
 				if (data.result) {
 					window.open(data.content, '_blank');
 					window.focus();

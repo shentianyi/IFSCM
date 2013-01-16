@@ -48,7 +48,7 @@ module LeoniNbtpDn
     data={}
     data[:PerPackNum]=pack.perPackAmount
     data[:PackNum]=pack.packAmount
-    data[:TotalQuantity]=pack.perPackAmount*pack.packAmount
+    data[:TotalQuantity]=FormatHelper.string_multiply(pack.perPackAmount,pack.packAmount)
     if sent
       data[:CPartNr]=pack.cpartNr
       data[:SPartNr]=pack.spartNr
