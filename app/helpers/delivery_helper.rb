@@ -50,16 +50,18 @@ module DeliveryHelper
         :state=>dstate,:sender=>staffId,:orgId=>orgId,:desiOrgId=>desiOrgId)
         temps.each do |t|
           packcount=t.packAmount
+          pack=DeliveryPackage.new(:type=>DeliveryObjType::Package, :parentKey=>dn.key,
+          :packAmount=>packcount,:perPackAmount=>t.perPackAmount,:partRelMetaKey=>t.partRelMetaKey)
           for i in 0...packcount
             # pack=DeliveryPackage.new(:type=>DeliveryObjType::Package,:parentKey=>dn.key,:state=>dstate)
-            item=DeliveryItem.new(:type=>DeliveryObjType::Item,:parentKey=>dn.key,:amount=>t.perPackAmount,:partRelMetaKey=>t.partRelMetaKey,:state=>dstate)
+            item=DeliveryItem.new(:type=>DeliveryObjType::Item,:parentKey=>pack.key,:state=>dstate)
             item.save
             item.add_to_parent
-            # pack.save
-            # pack.add_to_parent
             t.destroy
             t.delete_from_staff_cache staffId
           end
+          pack.save
+          pack.add_to_parent
         end
       dn.add_to_staff_cache staffId
       dn.save
@@ -77,14 +79,14 @@ module DeliveryHelper
   # ws
   # [功能：] 获取运单详细
   # 参数：
-  # - DeliveryNote : dn
+  # - DeliveryBaseKey : key
   # - int : startIndex
   # - int : endIndex
   # 返回值：
   # - DeliveryNote.childernCount : 实例对象,子总数
-  def self.get_dn_detail dn,startIndex,endIndex
-    if total=(dn.get_children startIndex,endIndex)
-    return dn,total
+  def self.get_delivery_detail key,startIndex,endIndex
+    if result=(DeliveryBase.get_children key,startIndex,endIndex)
+    return result[0],result[1]
     end
     return nil
   end
@@ -95,18 +97,26 @@ module DeliveryHelper
   # - int : staffId
   # - string : dnKey
   # - string : destiStr
+  # - string : sendDate
   # 返回值：
   # - ReturnMsg : JSON
-  def self.send_dn  staffId,dnKey,destiStr
+  def self.send_dn  staffId,dnKey,destiStr,sendDate
     msg=ReturnMsg.new(:result=>false,:content=>'')
     if DeliveryNote.exist_in_staff_cache(staffId,dnKey)
       if dn=DeliveryNote.find(dnKey)
-        if dn.get_children 0,-1
+        if dn.items=DeliveryBase.get_children(dn.key,0,-1)[0]
           dn.items.each do |i|
+          # p=DeliveryPackage.find(i.pack_info_key)
+          # puts "------------pitem:#{i.key}"
+          # if !p.cpartNr
+          # prm=PartRelMeta.find(p.partRelMetaKey)
+          # puts "------packInfo:#{p.key}"
+          # p.update(:cpartNr=>Part.find(prm.cpartId).partNr,:spartNr=>Part.find(prm.spartId).partNr,:saleNo=>prm.saleNo,:purchaseNo=>prm.purchaseNo)
+          # end
             prm=PartRelMeta.find(i.partRelMetaKey)
             i.update(:cpartNr=>Part.find(prm.cpartId).partNr,:spartNr=>Part.find(prm.spartId).partNr,:saleNo=>prm.saleNo,:purchaseNo=>prm.purchaseNo)
           end
-          dn.update(:wayState=>DeliveryNoteWayState::Intransit,:destination=>destiStr)
+          dn.update(:wayState=>DeliveryNoteWayState::Intransit,:destination=>destiStr,:sendDate=>sendDate)
           dn.add_to_orgs
           dn.delete_from_staff_cache
           # DelieveryNote & DeliveryItem 写入Mysql
@@ -154,9 +164,17 @@ module DeliveryHelper
   def self.cancel_staff_dn staffId,dnKey
     if dn=DeliveryNote.find(dnKey)
       if dn.sender.to_i==staffId
-        dn.get_children 0,-1
-        if dn.items
+        # dn.get_children 0,-1
+        if dn.items=DeliveryBase.get_children(dn.key,0,-1)[0]
           dn.items.each do |i|
+            if i.items=DeliveryBase.get_children(i.key,0,-1)[0]
+              i.items.each do |ii|
+                puts "pack item key:#{ii.key}"
+                ii.remove_from_parent
+                ii.destroy
+              end
+            end
+            puts "pack key:#{i.key}"
             i.remove_from_parent
             i.destroy
           end
@@ -174,11 +192,18 @@ module DeliveryHelper
   # - 无
   def self.record_dn_into_mysql dnKey
     if dn=DeliveryNote.find(dnKey)
-      mdn =MDeliveryNote.new( :desiOrgId=>dn.desiOrgId, :destination=>dn.destination, :key=>dn.key, :orgId=>dn.orgId, :sender=>dn.sender, :state=>dn.state, :wayState=>dn.wayState)
-      if dn.get_children 0,-1
-        dn.items.each do |i|
-          mdn.m_delivery_item.build( :amount=>i.amount, :cpartNr=>i.cpartNr, :key=>i.key, :parentKey=>i.parentKey, :partRelMetaKey=>i.partRelMetaKey,
-          :purchaseNo=>i.purchaseNo, :saleNo=>i.saleNo, :spartNr=>i.spartNr, :state=>i.state).save
+      mdn =MDeliveryNote.new( :desiOrgId=>dn.desiOrgId, :destination=>dn.destination, :key=>dn.key, :orgId=>dn.orgId,
+      :sender=>dn.sender, :state=>dn.state, :wayState=>dn.wayState,:sendDate=>dn.sendDate)
+      if  dn.items=DeliveryBase.get_children(dn.key,0,-1)[0]
+        dn.items.each do |p|
+          pack= mdn.m_delivery_packages.build( :cpartNr=>p.cpartNr, :key=>p.key, :parentKey=>p.parentKey, :partRelMetaKey=>p.partRelMetaKey,
+          :purchaseNo=>p.purchaseNo, :saleNo=>p.saleNo, :spartNr=>p.spartNr, :packAmount=>p.packAmount,:perPackAmount=>p.perPackAmount)
+          pack.save
+          if p.items=DeliveryBase.get_children(p.key,0,-1)[0]
+            p.items.each do |item|
+              pack.m_delivery_items.build(:key=>item.key,:state=>item.state,:parentKey=>item.parentKey).save
+            end
+          end
         end
       end
     mdn.save
@@ -223,7 +248,7 @@ module DeliveryHelper
         #  condi[:desiOrgId]=condition[:receiver] if condition[:receiver]
         condi[:wayState]=condition[:wayState] if condition[:wayState]
         condi[:state]=condition[:objState] if condition[:objState]
-        condi[:created_at]=(condition[:date]["0"][0]..condition[:date]["0"][1]) if condition[:date]
+        condi[:sendDate]=(condition[:date]["0"][0]..condition[:date]["0"][1]) if condition[:date]
       end
       total= MDeliveryNote.where(condi).count
       return MDeliveryNote.limit(endIndex-startIndex+1).offset(startIndex).all(:conditions=>condi),total
@@ -285,26 +310,27 @@ module DeliveryHelper
     end
     return cssClass
   end
-  
+
   # ws
   # [功能：] 生成运单标签PDF文件
   # 参数：
   # - string : dnKey
   # - string : destination
+  # - string : sendDate
   # 返回值：
   # - string : fileName
-  def self.generate_dn_label_pdf dnKey,destination
+  def self.generate_dn_label_pdf dnKey,destination,sendDate
     fileName=nil
     if dn=DeliveryNote.find(dnKey)
-      dn.update(:destination=>destination)
-      result=Wcfer::PdfPrinter.generate_dn_pdf dn.to_json
+      dn.update(:destination=>destination,:sendDate=>sendDate)
+      result=TPrinter.print_dn_pdf(dnKey,"leoni_nbtp_dn","Leoni_Nbtp_DNTemplete.tff")
       if result[:result]
         fileName=result[:content]
       end
     end
     return fileName
   end
-  
+
   # ws
   # [功能：] 生成运单包装箱标签PDF文件
   # 参数：
@@ -314,7 +340,7 @@ module DeliveryHelper
   def self.generate_dn_pack_label_pdf dnKey
     fileName=nil
     if dn=DeliveryNote.find(dnKey)
-     dn.get_children 0,-1
+      dn.items=DeliveryBase.get_children dn.key,0,-1
       result=Wcfer::PdfPrinter.generate_dn_pack_pdf dn.items.to_json
       if result[:result]
         fileName=result[:content]
@@ -322,6 +348,5 @@ module DeliveryHelper
     end
     return fileName
   end
-  
-  
+
 end

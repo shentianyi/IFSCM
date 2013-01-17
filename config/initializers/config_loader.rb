@@ -1,3 +1,5 @@
+require 'aliyun/oss'
+
 config=YAML.load(File.open("#{Rails.root}/config/userconfig.yaml"))
 
 # load format
@@ -21,3 +23,14 @@ $DEPSIZE=page_config[:demand_page_size].to_i # demand page size
 # resque_config=config['resque']
 # Resque.redis=Redis.new(:host=>resque_config[:resquehost],:port=>resque_config[:resqueport],:db=>resque_config[:resquedb])
 # Dir["#{Rails.root}/app/jobs/*.rb"].each { |file| require file }
+
+Dir["#{Rails.root}/app/tprinters/*.rb"].each { |file| require file }
+
+Aliyun::OSS::Base.establish_connection!(
+  :access_key_id     => 'VDXgx2g1F7gZe8SY', 
+  :secret_access_key => 'cVJoHKSh377Al7il90VuQD7Fo1GiPG'
+)
+
+class AliBucket < Aliyun::OSS::OSSObject
+  set_current_bucket_to 'scm-dn'
+end

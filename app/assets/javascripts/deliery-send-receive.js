@@ -1,18 +1,18 @@
 function flash_message(obj, times) {
-     var i = 0, t = false, times = times || 4;
-     if (t)
-          return;
-     t = setInterval(function() {
-          i++;
-          if (i % 2 == 0) {
-               $(obj).hide();
-          } else {
-               $(obj).show();
-          }
-          if (i == times * 2) {
-               clearInterval(t);
-          }
-     }, 300);
+	var i = 0, t = false, times = times || 4;
+	if (t)
+		return;
+	t = setInterval(function() {
+		i++;
+		if (i % 2 == 0) {
+			$(obj).hide();
+		} else {
+			$(obj).show();
+		}
+		if (i == times * 2) {
+			clearInterval(t);
+		}
+	}, 300);
 }
 
 // ws
@@ -24,24 +24,24 @@ function flash_message(obj, times) {
 // 返回 ：
 // - 无
 function get_partRels_by_parterNr_partNr(pageIndex) {
-     var partnerNr = document.getElementById('client-search-text').value;
-     if (partnerNr == "") {
-          flash_message(".errparts");
-     } else {
-          $.ajax({
-               url : '../part/get_partRels',
-               type : 'post',
-               dataType : 'html',
-               data : {
-                    partnerNr : partnerNr,
-                    partNr : document.getElementById('part-search-text').value,
-                    pageIndex : pageIndex
-               },
-               success : function(data) {
-                    $('.tableviewparts').html(data);
-               }
-          });
-     }
+	var partnerNr = document.getElementById('client-search-text').value;
+	if (partnerNr == "") {
+		flash_message(".errparts");
+	} else {
+		$.ajax({
+			url : '../part/get_partRels',
+			type : 'post',
+			dataType : 'html',
+			data : {
+				partnerNr : partnerNr,
+				partNr : document.getElementById('part-search-text').value,
+				pageIndex : pageIndex
+			},
+			success : function(data) {
+				$('.tableviewparts').html(data);
+			}
+		});
+	}
 }
 
 // ws
@@ -51,52 +51,52 @@ function get_partRels_by_parterNr_partNr(pageIndex) {
 // 返回 ：
 // - 无
 function check_staff_dn_cache() {
-     $.ajax({
-          url : '../delivery/get_dit_dn_cache',
-          dataType : 'json',
-          type : 'post',
-          success : function(cache) {
-               // show dn
-               if (cache.dn != null) {
-                    var pane = $("#staff-dn-cache-link");
-                    var linker, del;
-                    var block=$("#staff-dn-cache-content");
-                    $.each(cache.dn, function(i, v) {
-                         // var link=
-                         linker = $("<div/>").html("<a class='dn-linker' href='../delivery/view_pend_dn?dnKey=" + v.key + "'>" + v.key + "</a>").attr('class','dn-linker-div');
-                         del = $("<span/>").attr('class', 'closebt').attr('id', v.key).attr('title', '取消');
-                         del.appendTo(linker);
-                         linker.appendTo(pane);
-                         var size=pane.children('div').size();                   
-                         block.css('height',25*size+13+"px")
-                         del.bind('click', {
-                              dnKey : del.attr('id')
-                         }, function(e) {
-                              if (delete_dn_from_staff(e.data.dnKey)) {
-                                   var p = $("[id='" + e.data.dnKey + "']").parent();
-                                   p.fadeOut("slow", function() {
-                                        p.remove();
-                                        p = null;
-                                        var lsize=$("#staff-dn-cache-link").children().size();
-                                        block.css('height',25*lsize+13+"px")
-                                        if (lsize == 0) {
-                                             $("#staff-dn-cache-content").hide();
-                                        }
-                                   });
-                              }
-                         });
-                    });
-                    block.show();
-               }
-               // show dit
-               if (cache.dit != null) {
-                    $.each(cache.dit, function(i, t) {
-                         $("#build-dn-btn").show();
-                         add_dit_to_cart(t.spartNr, t.perPackAmount, t.packAmount, t.total, t.key);
-                    });
-               }
-          }
-     });
+	$.ajax({
+		url : '../delivery/get_dit_dn_cache',
+		dataType : 'json',
+		type : 'post',
+		success : function(cache) {
+			// show dn
+			if (cache.dn != null) {
+				var pane = $("#staff-dn-cache-link");
+				var linker, del;
+				var block = $("#staff-dn-cache-content");
+				$.each(cache.dn, function(i, v) {
+					// var link=
+					linker = $("<div/>").html("<a class='dn-linker' href='../delivery/view_pend_dn?dnKey=" + v.key + "'>" + v.key + "</a>").attr('class', 'dn-linker-div');
+					del = $("<span/>").attr('class', 'closebt').attr('id', v.key).attr('title', '取消');
+					del.appendTo(linker);
+					linker.appendTo(pane);
+					var size = pane.children('div').size();
+					block.css('height', 25 * size + 13 + "px")
+					del.bind('click', {
+						dnKey : del.attr('id')
+					}, function(e) {
+						if (delete_dn_from_staff(e.data.dnKey)) {
+							var p = $("[id='" + e.data.dnKey + "']").parent();
+							p.fadeOut("slow", function() {
+								p.remove();
+								p = null;
+								var lsize = $("#staff-dn-cache-link").children().size();
+								block.css('height', 25 * lsize + 13 + "px")
+								if (lsize == 0) {
+									$("#staff-dn-cache-content").hide();
+								}
+							});
+						}
+					});
+				});
+				block.show();
+			}
+			// show dit
+			if (cache.dit != null) {
+				$.each(cache.dit, function(i, t) {
+					$("#build-dn-btn").show();
+					add_dit_to_cart(t.spartNr, t.perPackAmount, t.packAmount, t.total, t.key);
+				});
+			}
+		}
+	});
 }
 
 // ws
@@ -106,25 +106,25 @@ function check_staff_dn_cache() {
 // 返回 ：
 // - 无
 function delete_dn_from_staff(dnKey) {
-     var result = false;
-     if (confirm('确定取消？')) {
-          $.ajax({
-               url : '../delivery/cancel_staff_dn',
-               data : {
-                    dnKey : dnKey
-               },
-               dataType : 'json',
-               type : 'post',
-               async : false,
-               success : function(data) {
-                    if (!data.result) {
-                         alert(data.content);
-                    }
-                    result = data.result;
-               }
-          });
-     }
-     return result;
+	var result = false;
+	if (confirm('确定取消？')) {
+		$.ajax({
+			url : '../delivery/cancel_staff_dn',
+			data : {
+				dnKey : dnKey
+			},
+			dataType : 'json',
+			type : 'post',
+			async : false,
+			success : function(data) {
+				if (!data.result) {
+					alert(data.content);
+				}
+				result = data.result;
+			}
+		});
+	}
+	return result;
 }
 
 // ws
@@ -134,9 +134,9 @@ function delete_dn_from_staff(dnKey) {
 // 返回 ：
 // - 无
 function add_pack_info(e, metaKey) {
-     $('#selected-spart-nr').html($(e).parent().prevAll('.spartNr').html());
-     $('#selected-part-rel-key').val(metaKey);
-     $("#pick-part-info-box").show();
+	$('#selected-spart-nr').html($(e).parent().prevAll('.spartNr').html());
+	$('#selected-part-rel-key').val(metaKey);
+	$("#pick-part-info-box").show();
 }
 
 // ws
@@ -146,41 +146,41 @@ function add_pack_info(e, metaKey) {
 // 返回 ：
 // - 无
 function add_part_to_cart() {
-     if($('#selected-part-rel-key').val()!=""){
-     var per = $("#selected-part-perpack");
-     var packN = $("#selected-part-pack-num");
-     var partNr = $("#selected-spart-nr").html();
-     if (!isPositiveNum(per.val())) {        
-          alert('每包装箱量必须为正数！');
-          per.val("");
-          return;
-     }
-     if (!isPositiveInt(packN.val())) {
-          alert('包装箱数必须为正整数！');
-          packN.val("");
-          return;
-     }
-     $.ajax({
-          url : '../delivery/add_di_temp',
-          dataType : 'json',
-          data : {
-               metaKey : $("#selected-part-rel-key").val(),
-               packAmount : packN.val(),
-               perPackAmount : per.val()
-          },
-          type : 'post',
-          success : function(msg) { packN
-               if (msg.result) {
-                    $("#pick-part-info-box").hide();
-                    per.val("");
-                    packN.val("");
-                    $('#selected-part-rel-key').val("");
-                    var t = msg.object;
-                    add_dit_to_cart(partNr, t.perPackAmount, t.packAmount, t.total, t.key);
-               }
-          }
-     });
-     }
+	if ($('#selected-part-rel-key').val() != "") {
+		var per = $("#selected-part-perpack");
+		var packN = $("#selected-part-pack-num");
+		var partNr = $("#selected-spart-nr").html();
+		if (!isPositiveNum(per.val())) {
+			alert('每包装箱量必须为正数！');
+			per.val("");
+			return;
+		}
+		if (!isPositiveInt(packN.val())) {
+			alert('包装箱数必须为正整数！');
+			packN.val("");
+			return;
+		}
+		$.ajax({
+			url : '../delivery/add_di_temp',
+			dataType : 'json',
+			data : {
+				metaKey : $("#selected-part-rel-key").val(),
+				packAmount : packN.val(),
+				perPackAmount : per.val()
+			},
+			type : 'post',
+			success : function(msg) { packN
+				if (msg.result) {
+					$("#pick-part-info-box").hide();
+					per.val("");
+					packN.val("");
+					$('#selected-part-rel-key').val("");
+					var t = msg.object;
+					add_dit_to_cart(partNr, t.perPackAmount, t.packAmount, t.total, t.key);
+				}
+			}
+		});
+	}
 }
 
 // ws
@@ -194,25 +194,25 @@ function add_part_to_cart() {
 // 返回 ：
 // - 无
 function add_dit_to_cart(partNr, per, amount, total, key) {
-     if ($("#build-dn-btn").is(":hidden")) {
-          $("#build-dn-btn").show();
-     }
-     var cart = $('#unfoldcart');
-     var cartSize = cart.children('.cfirstlevel').size();
-     // alert(cartSize);
-     var lineclass = cartSize % 2 == 0 ? 'cartline cfirstlevel' : 'oddcartline cfirstlevel';
-     var line = $("<div/>").attr('class', lineclass).html("<div class='partserialnmb'>" + (cartSize + 1) + "</div><div class='partscart'>" + partNr + "</div>" + "<div class='partscart'>" + per + "&nbsp;X&nbsp;" + amount + "&nbsp;=&nbsp;" + total + "</div>");
-     var del = $("<div/>").attr('class', 'deleteparts').attr('id', key).css('cursor', 'pointer').html('X');
-     // <div class='deleteparts' style='cursor:pointer;' id='"+mkey+"'>X</div>
-     del.appendTo(line);
-     line.appendTo(cart);
-     del.bind('click', {
-          id : del.attr('id')
-     }, function(e) {
-          delete_dit_from_cart(e.data.id);
-     });
-     line = null;
-     del = null;
+	if ($("#build-dn-btn").is(":hidden")) {
+		$("#build-dn-btn").show();
+	}
+	var cart = $('#unfoldcart');
+	var cartSize = cart.children('.cfirstlevel').size();
+	// alert(cartSize);
+	var lineclass = cartSize % 2 == 0 ? 'cartline cfirstlevel' : 'oddcartline cfirstlevel';
+	var line = $("<div/>").attr('class', lineclass).html("<div class='partserialnmb'>" + (cartSize + 1) + "</div><div class='partscart'>" + partNr + "</div>" + "<div class='partscart'>" + per + "&nbsp;X&nbsp;" + amount + "&nbsp;=&nbsp;" + total + "</div>");
+	var del = $("<div/>").attr('class', 'deleteparts').attr('id', key).css('cursor', 'pointer').html('X');
+	// <div class='deleteparts' style='cursor:pointer;' id='"+mkey+"'>X</div>
+	del.appendTo(line);
+	line.appendTo(cart);
+	del.bind('click', {
+		id : del.attr('id')
+	}, function(e) {
+		delete_dit_from_cart(e.data.id);
+	});
+	line = null;
+	del = null;
 }
 
 // ws
@@ -222,44 +222,44 @@ function add_dit_to_cart(partNr, per, amount, total, key) {
 // 返回 ：
 // - 无
 function delete_dit_from_cart(key) {
-     $.ajax({
-          url : '../delivery/delete_dit',
-          type : 'post',
-          dataType : 'json',
-          data : {
-               tempKey : key
-          },
-          success : function(data) {
-               if (data.result) {
-                    var p = $("[id='" + key + "']").parent();
-                    // reset cart item no
-                    var nexts = p.nextAll();
-                    var no = null;
-                    var ele = null;
-                    $.each(nexts, function(i, n) {
-                         ele = $(n).find(".partserialnmb");
-                         no = parseInt(ele.text() - 1);
-                         ele.html(no);
-                         $(n).attr('class', (no + 1) % 2 == 0 ? 'cartline cfirstlevel' : 'oddcartline cfirstlevel')
-                    });
-                    no = null;
-                    ele = null;
-                    nexts = null;
-                    //.....
-                    if (p.parent().children().size() == 1) {
-                         $("#build-dn-btn").hide();
-                    }
-                    p.effect("shake", {
-                         times : 1,
-                         distance : 30
-                    }, 500);
-                    p.fadeOut("slow", function() {
-                         p.remove();
-                         p = null;
-                    });
-               }
-          }
-     });
+	$.ajax({
+		url : '../delivery/delete_dit',
+		type : 'post',
+		dataType : 'json',
+		data : {
+			tempKey : key
+		},
+		success : function(data) {
+			if (data.result) {
+				var p = $("[id='" + key + "']").parent();
+				// reset cart item no
+				var nexts = p.nextAll();
+				var no = null;
+				var ele = null;
+				$.each(nexts, function(i, n) {
+					ele = $(n).find(".partserialnmb");
+					no = parseInt(ele.text() - 1);
+					ele.html(no);
+					$(n).attr('class', (no + 1) % 2 == 0 ? 'cartline cfirstlevel' : 'oddcartline cfirstlevel')
+				});
+				no = null;
+				ele = null;
+				nexts = null;
+				//.....
+				if (p.parent().children().size() == 1) {
+					$("#build-dn-btn").hide();
+				}
+				p.effect("shake", {
+					times : 1,
+					distance : 30
+				}, 500);
+				p.fadeOut("slow", function() {
+					p.remove();
+					p = null;
+				});
+			}
+		}
+	});
 }
 
 // ws
@@ -269,28 +269,28 @@ function delete_dit_from_cart(key) {
 // 返回 ：
 // - 无
 function build_delivery_note() {
-     var desiOrgNr = document.getElementById('client-search-text').value;
-     if (desiOrgNr == "") {
-          flash_message(".errparts");
-          alert("请先填写正确的客户号");
-          return;
-     }
-     show_handle_dialog();
-     $.ajax({
-          url : '../delivery/build_dn',
-          type : 'post',
-          dataType : 'json',
-          data : {
-               desiOrgNr : desiOrgNr
-          },
-          success : function(data) {
-               if (data.result) {
-                    window.location = "../delivery/view_pend_dn?dnKey=" + data.object;
-               } else {
-                    alert(data.content);
-               }
-          }
-     });
+	var desiOrgNr = document.getElementById('client-search-text').value;
+	if (desiOrgNr == "") {
+		flash_message(".errparts");
+		alert("请先填写正确的客户号");
+		return;
+	}
+	show_handle_dialog();
+	$.ajax({
+		url : '../delivery/build_dn',
+		type : 'post',
+		dataType : 'json',
+		data : {
+			desiOrgNr : desiOrgNr
+		},
+		success : function(data) {
+			if (data.result) {
+				window.location = "../delivery/view_pend_dn?dnKey=" + data.object;
+			} else {
+				alert(data.content);
+			}
+		}
+	});
 }
 
 // ws
@@ -301,18 +301,18 @@ function build_delivery_note() {
 // 返回 ：
 // - 无
 function get_dn_detail(pageIndex) {
-     $.ajax({
-          url : '../delivery/view_pend_dn',
-          type : 'post',
-          dataType : 'html',
-          data : {
-               dnKey : $('#dnkey-hidden').val(),
-               pageIndex : pageIndex
-          },
-          success : function(data) {
-               $('#delivery-items-div').html(data);
-          }
-     });
+	$.ajax({
+		url : '../delivery/view_pend_dn',
+		type : 'post',
+		dataType : 'html',
+		data : {
+			dnKey : $('#dnkey-hidden').val(),
+			pageIndex : pageIndex
+		},
+		success : function(data) {
+			$('#delivery-items-div').html(data);
+		}
+	});
 }
 
 // ws
@@ -322,36 +322,38 @@ function get_dn_detail(pageIndex) {
 // 返回 ：
 // - 无
 function send_staff_dn(ele) {
-     var desi = $("#destination-text");
-     if (desi.val() == "") {
-          flash_message(".errparts");
-     } else {
-          show_handle_dialog();
-          $.ajax({
-               url : '../delivery/send_delivery',
-               type : 'post',
-               dataType : 'json',
-               async : false,
-               data : {
-                    dnKey : $('#dnkey-hidden').val(),
-                    destiStr : desi.val()
-               },
-               success : function(data) {
-                    if (data.result) {
-                         desi.attr('disabled', true);
-                         $(ele).unbind('click').removeAttr('onclick').bind('click', function() {
-                              alert('运单已经发送成功，不可重复发送');
-                         });
-                         $('#cancelDeliverySendBtn').unbind('click').removeAttr('onclick').bind('click', function() {
-                              alert('已经发送成功，不可取消');
-                         });
-                    }
-                    hide_handle_dialog();
-                    alert(data.content);
-               }
-          });
+	var desi = $("#destination-text");
+	var sendDate = $("#sendDate-text");
+	if (desi.val() == "" || sendDate.val() == "") {
+		flash_message(".errparts");
+	} else {
+		show_handle_dialog();
+		$.ajax({
+			url : '../delivery/send_delivery',
+			type : 'post',
+			dataType : 'json',
+			async : false,
+			data : {
+				dnKey : $('#dnkey-hidden').val(),
+				destiStr : desi.val(),
+				sendDate : sendDate.val()
+			},
+			success : function(data) {
+				if (data.result) {
+					desi.attr('disabled', true);
+					$(ele).unbind('click').removeAttr('onclick').bind('click', function() {
+						alert('运单已经发送成功，不可重复发送');
+					});
+					$('#cancelDeliverySendBtn').unbind('click').removeAttr('onclick').bind('click', function() {
+						alert('已经发送成功，不可取消');
+					});
+				}
+				hide_handle_dialog();
+				alert(data.content);
+			}
+		});
 
-     }
+	}
 }
 
 // ws
@@ -361,9 +363,9 @@ function send_staff_dn(ele) {
 // 返回 ：
 // - 无
 function cancel_staff_dn() {
-     if (delete_dn_from_staff($('#dnkey-hidden').val())) {
-          window.location = "../delivery/pick_part";
-     }
+	if (delete_dn_from_staff($('#dnkey-hidden').val())) {
+		window.location = "../delivery/pick_part";
+	}
 }
 
 /******** 运单查看部分js ****************/
@@ -374,86 +376,86 @@ function cancel_staff_dn() {
 // 返回 ：
 // - 无
 function dn_list_ready() {
-     $('.textsearchbox').keypress(function(event) {
-          if (event.which == 13)
-               $(this).find('input.startsearch').click()
-     }).hover(function() {
-          $(this).children().unbind('blur');
-     }, function() {
-          $(this).children().blur(function() {
-               pop_cancel(this);
-          });
-     });
-     
-     // // date picker
-          // $('#startdate-search-text').datepicker({
-          // showButtonPanel : true
-     // });
-//      
-            // $('#enddate-search-text').datepicker({
-          // showButtonPanel : true
-     // });
-//   
-     // auto complete
-     $('#dn-search-text').autocomplete({
-          source : "/delivery/redis_search_dn"
-     });
-     $('#client-search-text').autocomplete({
-          source : "../organisation_manager/redis_search"
-     });
-     $('#supplier-search-text').autocomplete({
-          source : "../organisation_manager/redis_search"
-     });
-     // dn way state and obj state
-     $(".wayState[wayState='ALL']").click(function() {
-          $('.search_label').children().remove().end().hide();
-          search_dn();
-     });
-     // dn way state and obj state
-     $(".wayState").not("[wayState='ALL']").click(function(e) {
-          add_condition_node({
-               wayState : {
-                    key : $(this).attr('wayState'),
-                    value : $(this).text()
-               }
-          });
-     });
-     $(".objState").click(function(e) {
-          add_condition_node({
-               objState : {
-                    key : $(this).attr('objState'),
-                    value : $(this).text()
-               }
-          });
-     });
+	$('.textsearchbox').keypress(function(event) {
+		if (event.which == 13)
+			$(this).find('input.startsearch').click()
+	}).hover(function() {
+		$(this).children().unbind('blur');
+	}, function() {
+		$(this).children().blur(function() {
+			pop_cancel(this);
+		});
+	});
 
-     // search box
-     $("#dn-search-box>input.startsearch").click(function() {
-          add_condition_node({
-               dnKey : $("#dn-search-text").val()
-          });
-     });
+	// // date picker
+	// $('#startdate-search-text').datepicker({
+	// showButtonPanel : true
+	// });
+	//
+	// $('#enddate-search-text').datepicker({
+	// showButtonPanel : true
+	// });
+	//
+	// auto complete
+	$('#dn-search-text').autocomplete({
+		source : "/delivery/redis_search_dn"
+	});
+	$('#client-search-text').autocomplete({
+		source : "../organisation_manager/redis_search"
+	});
+	$('#supplier-search-text').autocomplete({
+		source : "../organisation_manager/redis_search"
+	});
+	// dn way state and obj state
+	$(".wayState[wayState='ALL']").click(function() {
+		$('.search_label').children().remove().end().hide();
+		search_dn();
+	});
+	// dn way state and obj state
+	$(".wayState").not("[wayState='ALL']").click(function(e) {
+		add_condition_node({
+			wayState : {
+				key : $(this).attr('wayState'),
+				value : $(this).text()
+			}
+		});
+	});
+	$(".objState").click(function(e) {
+		add_condition_node({
+			objState : {
+				key : $(this).attr('objState'),
+				value : $(this).text()
+			}
+		});
+	});
 
-     $("#rece-search-box>input.startsearch").click(function() {
-          add_condition_node({
-               receiver : $("#client-search-text").val()
-          });
-     });
+	// search box
+	$("#dn-search-box>input.startsearch").click(function() {
+		add_condition_node({
+			dnKey : $("#dn-search-text").val()
+		});
+	});
 
-     $("#sender-search-box>input.startsearch").click(function() {
-          add_condition_node({
-               sender : $("#supplier-search-text").val()
-          });
-     });
+	$("#rece-search-box>input.startsearch").click(function() {
+		add_condition_node({
+			receiver : $("#client-search-text").val()
+		});
+	});
 
-     $("#date-search-box>input.startsearch").click(function() {
-          add_condition_node({
-               date : [$("#startdate-search-text").val(), $("#enddate-search-text").val()]
-          });
-     });
+	$("#sender-search-box>input.startsearch").click(function() {
+		add_condition_node({
+			sender : $("#supplier-search-text").val()
+		});
+	});
 
-     check_org_kn_queue();
-     search_dn();
+	$("#date-search-box>input.startsearch").click(function() {
+		add_condition_node({
+			date : [$("#startdate-search-text").val(), $("#enddate-search-text").val()]
+		});
+	});
+
+	check_org_kn_queue();
+	search_dn();
 }
 
 // ws
@@ -463,32 +465,32 @@ function dn_list_ready() {
 // 返回 ：
 // - 无
 function add_condition_node(hash) {
-     $.each(hash, function(k, v) {
-          var kv = null;
-          if ( typeof (v) == 'string' || v.constructor == Array) {
-               kv = v;
-          } else {
-               kv = v["key"]
-          }
-          if ($("#label_" + k).children("[" + k + "='" + kv + "']").size() == 0) {
-               if ( typeof (v) == 'string')
-                    $('<span class="notifyNewForcast"></span>').attr('key', k).attr(k, v).text(v).appendTo($('#label_' + k)).click(function() {
-                         del_condition_node(k, v);
-                    });
-               else if (v.constructor == Array) {
-                    $("#label_" + k).children().remove();
-                    $('<span class="notifyNewForcast"></span>').attr('key', k).attr('value-type', 'array').attr(k, v).text(v[0] + '~' + v[1]).appendTo($('#label_' + k)).click(function() {
-                         del_condition_node(k, v);
-                    });
-               } else {
-                    $('<span class="notifyNewForcast"></span>').attr('key', k).attr(k, v["key"]).text(v["value"]).appendTo($('#label_' + k)).click(function() {
-                         del_condition_node(k, v["key"]);
-                    });
-               }
-               $('#label_' + k).show();
-               search_dynamic();
-          }
-     });
+	$.each(hash, function(k, v) {
+		var kv = null;
+		if ( typeof (v) == 'string' || v.constructor == Array) {
+			kv = v;
+		} else {
+			kv = v["key"]
+		}
+		if ($("#label_" + k).children("[" + k + "='" + kv + "']").size() == 0) {
+			if ( typeof (v) == 'string')
+				$('<span class="notifyNewForcast"></span>').attr('key', k).attr(k, v).text(v).appendTo($('#label_' + k)).click(function() {
+					del_condition_node(k, v);
+				});
+			else if (v.constructor == Array) {
+				$("#label_" + k).children().remove();
+				$('<span class="notifyNewForcast"></span>').attr('key', k).attr('value-type', 'array').attr(k, v).text(v[0] + '~' + v[1]).appendTo($('#label_' + k)).click(function() {
+					del_condition_node(k, v);
+				});
+			} else {
+				$('<span class="notifyNewForcast"></span>').attr('key', k).attr(k, v["key"]).text(v["value"]).appendTo($('#label_' + k)).click(function() {
+					del_condition_node(k, v["key"]);
+				});
+			}
+			$('#label_' + k).show();
+			search_dynamic();
+		}
+	});
 }
 
 // ws
@@ -499,11 +501,11 @@ function add_condition_node(hash) {
 // 返回 ：
 // - 无
 function del_condition_node(k, v) {
-     $("#label_" + k).children("[" + k + "=" + v + "]").remove();
-     if ($("#label_" + k).children().size() == 0) {
-          $('#label_' + k).hide();
-     }
-     search_dynamic();
+	$("#label_" + k).children("[" + k + "=" + v + "]").remove();
+	if ($("#label_" + k).children().size() == 0) {
+		$('#label_' + k).hide();
+	}
+	search_dynamic();
 }
 
 // ws
@@ -513,21 +515,21 @@ function del_condition_node(k, v) {
 // 返回 ：
 // - 无
 function check_org_kn_queue() {
-     $.post('../delivery/count_dn_queue', function(data) {
-          if (data.count > 0) {
-               $('<span class="notifyNewForcast"></span>').text(data.count).appendTo($("div[wayState='ALL']")).click(function(e) {
-                    $('.search_label').children().remove().end().hide();
-                    search_dn({
-                         queue : true
-                    });
-                    e.stopPropagation();
-               }).dblclick(function(e) {
-                    clear_org_kn_queue();
-                    search_dn();
-                    e.stopPropagation();
-               });
-          }
-     }, 'json');
+	$.post('../delivery/count_dn_queue', function(data) {
+		if (data.count > 0) {
+			$('<span class="notifyNewForcast"></span>').text(data.count).appendTo($("div[wayState='ALL']")).click(function(e) {
+				$('.search_label').children().remove().end().hide();
+				search_dn({
+					queue : true
+				});
+				e.stopPropagation();
+			}).dblclick(function(e) {
+				clear_org_kn_queue();
+				search_dn();
+				e.stopPropagation();
+			});
+		}
+	}, 'json');
 }
 
 // ws
@@ -537,11 +539,11 @@ function check_org_kn_queue() {
 // 返回 ：
 // - 无
 function clear_org_kn_queue() {
-     $.post('../delivery/clean_dn_queue', function(data) {
-          if (data.result) {
-               $('.notifyNewForcast').remove();
-          }
-     }, 'json');
+	$.post('../delivery/clean_dn_queue', function(data) {
+		if (data.result) {
+			$('.notifyNewForcast').remove();
+		}
+	}, 'json');
 }
 
 // ws
@@ -552,22 +554,22 @@ function clear_org_kn_queue() {
 // 返回 ：
 // - 无
 function search_dn(condition, pageIndex) {
-     if (condition == null)
-          condition = {};
-     if (pageIndex == null)
-          pageIndex = 0;
-     $.ajax({
-          url : '../delivery/search_dn',
-          type : 'post',
-          data : {
-               condition : condition,
-               pageIndex : pageIndex
-          },
-          dataType : 'html',
-          success : function(data) {
-               $("#dn-list-div").html(data);
-          }
-     });
+	if (condition == null)
+		condition = {};
+	if (pageIndex == null)
+		pageIndex = 0;
+	$.ajax({
+		url : '../delivery/search_dn',
+		type : 'post',
+		data : {
+			condition : condition,
+			pageIndex : pageIndex
+		},
+		dataType : 'html',
+		success : function(data) {
+			$("#dn-list-div").html(data);
+		}
+	});
 }
 
 // ws
@@ -577,18 +579,18 @@ function search_dn(condition, pageIndex) {
 // 返回 ：
 // - 无
 function search_dynamic() {
-     var condition = {};
-     $(".search_label").children().each(function() {
-          var t = $(this);
-          var key = t.attr('key');
-          if (condition[key] == null)
-               condition[key] = [];
-          if (t.attr('value-type') == 'array')
-               condition[key].push(t.attr(key).split(','));
-          else
-               condition[key].push(t.attr(key));
-     });
-     search_dn(condition);
+	var condition = {};
+	$(".search_label").children().each(function() {
+		var t = $(this);
+		var key = t.attr('key');
+		if (condition[key] == null)
+			condition[key] = [];
+		if (t.attr('value-type') == 'array')
+			condition[key].push(t.attr(key).split(','));
+		else
+			condition[key].push(t.attr(key));
+	});
+	search_dn(condition);
 }
 
 // ws
@@ -598,11 +600,11 @@ function search_dynamic() {
 // 返回 ：
 // - 无
 function pop_box(e) {
-     var id = e.attributes['box'].nodeValue;
-     $('#' + id).css({
-          top : $(e).offset().top + $(e).height(),
-          left : $(e).offset().left + $(e).width()
-     }).show().find("input").get(0).focus();
+	var id = e.attributes['box'].nodeValue;
+	$('#' + id).css({
+		top : $(e).offset().top + $(e).height(),
+		left : $(e).offset().left + $(e).width()
+	}).show().find("input").get(0).focus();
 }
 
 // ws
@@ -612,7 +614,7 @@ function pop_box(e) {
 // 返回 ：
 // - 无
 function pop_cancel(e) {
-     $(e).parent().hide();
+	$(e).parent().hide();
 }
 
 // ws
@@ -622,12 +624,32 @@ function pop_cancel(e) {
 // 返回 ：
 // - 无
 function generate_dn_label_pdf(type) {
-     var desi = $("#destination-text").val();
-     if (desi == "" && type == "dn") {
-          flash_message(".errparts");
-     } else {
-          var form = $("#gen_dn_pdf_form");
-          form.append($("<input>").attr("type", "hidden").attr("name", "printType").val(type));
-          form.submit();
-     }
+	var desi = $("#destination-text").val();
+	var sendDate = $("#sendDate-text").val();
+	if ((desi == "" || sendDate == "") && type == "dn") {
+		flash_message(".errparts");
+	} else {
+		show_handle_dialog();
+		$.ajax({
+			url : '../delivery/gen_dn_pdf',
+			type : 'post',
+			// async : false,
+			data : {
+				printType : type,
+				dnKey : $("#dnkey-hidden").val(),
+				destination : desi,
+				sendDate : sendDate
+			},
+			dataType : 'json',
+			success : function(data) {
+				hide_handle_dialog();
+				if (data.result) {
+					window.open(data.content, '_blank');
+					window.focus();
+				} else {
+					alert("打印失败，请重试");
+				}
+			}
+		});
+	}
 }

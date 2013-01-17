@@ -29,21 +29,22 @@ class DeliveryBase<CZ::BaseClass
   # ws
   # [功能：] 将运单对象加入到父级 ZSet
   # 参数：
+  # - string : key
   # - int : startIndex
   # - int ： endIndex
   # 返回值：
   # - int : 子总数
-  def get_children startIndex,endIndex
-    key=DeliveryBase.generate_child_zset_key self.key
+  def self.get_children key,startIndex,endIndex
+    key=DeliveryBase.generate_child_zset_key key
     total=$redis.zcard key
     if total>0
       if  (keys=$redis.zrange(key,startIndex,endIndex,:withscores=>true)).count>0
-        self.items=[]
+        items=[]
         keys.each do |k,s|
           i=eval(DeliveryHelper::delivery_obj_converter s).find(k)          
-          self.items<<i
+          items<<i
         end
-        return total
+        return items,total
       end
     end
     return nil

@@ -31,6 +31,10 @@ GEM
     akami (1.2.0)
       gyoku (>= 0.4.0)
       nokogiri (>= 1.4.0)
+    aliyun-oss (0.7.0.1349333720)
+      builder
+      mime-types
+      xml-simple
     arel (3.0.2)
     builder (3.0.4)
     chinese_pinyin (0.4.1)
@@ -142,11 +146,13 @@ GEM
     wasabi (2.5.1)
       httpi (~> 1.0)
       nokogiri (>= 1.4.0)
+    xml-simple (1.1.2)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
+  aliyun-oss
   chinese_pinyin (= 0.4.1)
   coffee-rails (~> 3.2.1)
   jquery-rails

@@ -7,8 +7,7 @@ class CreateMDeliveryNotes < ActiveRecord::Migration
       t.integer :sender
       t.integer :desiOrgId
       t.string :destination
-      t.integer :state
-
+      t.integer :state 
       t.timestamps
     end
   end

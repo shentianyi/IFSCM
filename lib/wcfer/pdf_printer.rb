@@ -17,16 +17,18 @@ class Wcfer
     # - json : dn
     # 返回值：
     # - bool,string : 生成结果，文件名 - hash 
-    def self.generate_dn_pdf(dnJson)
+    def self.generate_dn_pdf(template,dataset,dnKey)
       result={:result=>false}
-      begin
+       begin
        client = Savon.client do |wsdl,http|
        wsdl.document=@@wsdlPath
-    end
+       end
     res = client.request :generate_dn_pdf do |soap|
-      soap.input = ["GenerateDNPdf", {xmlns: "http://tempuri.org/"}]
+      soap.input = ["GenerateDnPdf", {xmlns: "http://tempuri.org/"}]
       soap.body={
-        :dnJson=>dnJson
+        :template=>template,
+        :dataJson=>dataset,
+        :dnKey=>dnKey
       }  
     end 
       if res.success?
@@ -39,34 +41,5 @@ class Wcfer
       end
       return result
     end
-  
-    #ws
-    # [功能：] 生成包装箱标签 pdf
-    # 参数：
-    # - json : packsJson
-    # 返回值：
-    # - bool,string : 生成结果，文件名 - hash 
-  def self.generate_dn_pack_pdf(paksJson)
-       result={:result=>false}
-      begin
-       client = Savon.client do |wsdl,http|
-       wsdl.document=@@wsdlPath
-    end
-    res = client.request :generate_dn_pack_pdf do |soap|
-      soap.input = ["GenerateDNPackPdf", {xmlns: "http://tempuri.org/"}]
-      soap.body={
-        :packsJson=>paksJson
-      }
-      end
-      if res.success?
-        resResult=res.to_hash[:generate_dn_pack_pdf_response][:generate_dn_pack_pdf_result]
-        result[:result]=resResult[:result]
-        result[:content]=resResult[:content]      
-    end
-      rescue => e
-        result[:content]=e.message.to_s
-      end
-      return result
-  end
   end
 end
