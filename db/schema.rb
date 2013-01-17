@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121214015757) do
+ActiveRecord::Schema.define(:version => 20130114065603) do
 
   create_table "m_delivery_items", :force => true do |t|
     t.string   "key"
@@ -40,6 +40,45 @@ ActiveRecord::Schema.define(:version => 20121214015757) do
     t.integer  "state"
     t.datetime "created_at",  :null => false
     t.datetime "updated_at",  :null => false
+  end
+
+  create_table "m_organisation_relations", :force => true do |t|
+    t.string   "supplierNr"
+    t.string   "clientNr"
+    t.integer  "origin_supplier_id"
+    t.integer  "origin_client_id"
+    t.datetime "created_at",         :null => false
+    t.datetime "updated_at",         :null => false
+  end
+
+  create_table "m_organisations", :force => true do |t|
+    t.string   "name"
+    t.string   "description"
+    t.string   "address"
+    t.string   "tel"
+    t.string   "website"
+    t.string   "abbr"
+    t.string   "contact"
+    t.string   "email"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
+  end
+
+  create_table "m_part_rel_meta", :force => true do |t|
+    t.string   "saleNo"
+    t.string   "purchaseNo"
+    t.integer  "client_part_id"
+    t.integer  "supplier_part_id"
+    t.datetime "created_at",       :null => false
+    t.datetime "updated_at",       :null => false
+  end
+
+  create_table "m_parts", :force => true do |t|
+    t.string   "type"
+    t.string   "partNr"
+    t.integer  "m_organisation_relation_id"
+    t.datetime "created_at",                 :null => false
+    t.datetime "updated_at",                 :null => false
   end
 
   create_table "staffs", :force => true do |t|

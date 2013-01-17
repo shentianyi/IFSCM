@@ -1,7 +1,6 @@
 #coding:utf-8
 require 'csv'
 require 'zip/zip'
-require "iconv"
 
 module DemanderHelper
   # ws : generate batch file index

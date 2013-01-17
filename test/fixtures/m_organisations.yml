@@ -1,0 +1,41 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+# This model initially had no columns defined.  If you add columns to the
+# model remove the '{}' from the fixture names and add the columns immediately
+# below each fixture, per the syntax in the comments below
+#
+
+orgone:
+  id: <%= auto_inc %>
+  name: "orgone"
+  description: "This is the first org for test."
+  address: "North Shannxi Road"
+  tel: 021-222 
+  website: www
+  abbr: "?abbr?"
+  contact: "ding"
+  email: "ph.d@cz-tek.com"
+# column: value
+#
+orgtwo:
+  id: <%= auto_inc %>
+  name: "orgtwo"
+  description: "This is the second org for test again."
+  address: "East Nanjing Road"
+  tel: 021-1111111
+  website: www
+  abbr: "?abbr?"
+  contact: "sir"
+  email: "ph.d@cz-tek.com"
+#  column: value
+
+orgthree:
+  id: <%= auto_inc %>
+  name: "orgthree"
+  description: "This is the third org for test just one more time."
+  address: "Heaven Road"
+  tel: 021-121212121
+  website: www
+  abbr: "?abbr?"
+  contact: "czar"
+  email: "ph.d@cz-tek.com"
