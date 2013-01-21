@@ -13,18 +13,17 @@ class DemanderController<ApplicationController
       else
       files=params[:files]
       begin
-        msg=ReturnMsg.new(:result=>false,:content=>'')
+        msg=ReturnMsg.new
         hfiles=[]
         if files.count>0
           files.each do |f|
-            dcsv=FileData.new(:data=>f,:type=>FileDataType::CSVDemand,:oriName=>f.original_filename,:uuidName=>UUID.generate,:path=>$DECSVP)
+            dcsv=FileData.new(:data=>f,:type=>FileDataType::CSVDemand,:oriName=>f.original_filename,:path=>$DECSVP)
             dcsv.saveFile
             hfiles<<dcsv
           end
-          batchIndex=DemanderHelper::generate_batchFile_index(hfiles)
+            batchIndex=DemanderBll.generate_batchFile_index(hfiles)
             msg.result=true
             msg.object=batchIndex
-            #Resque.enqueue(DemandUpfilesDeler,batch_file.key)
         else
           msg.content='未选择文件'
         end
@@ -43,7 +42,7 @@ class DemanderController<ApplicationController
   def handle_batch
     if request.post?
       batchFileId=params[:batchFileId]
-      msg=DemanderHelper::handle_batchFile_from_csv(batchFileId,session[:org_id])
+      msg=DemanderBll.handle_batchFile_from_csv(batchFileId,session[:org_id])
       if !msg.result
         Resque.enqueue(DemandUploadCanceler,batchFileId)
       else

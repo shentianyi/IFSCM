@@ -113,6 +113,10 @@ class RedisFile<CZ::BaseClass
     set_key=generate_staff_zset_key staffId
     $redis.zrem set_key,batchFileId
   end
+  
+  # def default
+    # {:itemCount=>0,:errorCount=>0,:normalItemKey=>UUID.generate,:repeatItemKey=>UUID.generate,:finished=>false}
+  # end
 
   private
 
