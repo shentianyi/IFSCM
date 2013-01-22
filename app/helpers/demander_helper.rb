@@ -158,21 +158,21 @@ module DemanderHelper
     # return msg
   # end
 
-  # ws: get file demands by type
-  def self.get_file_demands fileId,startIndex,endIndex,type
-    demands=RedisFile.find(fileId)
-    itemKeys,totalCount=demands.send "get_#{type}_item_keys".to_sym,startIndex,endIndex
-    demands.itemCount=itemKeys.count
-    if demands.itemCount>0
-      demands.items=[]
-      itemKeys.each do |k|
-        if d=DemanderTemp.find(k)
-        demands.items<<d
-        end
-      end
-    end
-    return demands,totalCount
-  end
+  # # ws: get file demands by type
+  # def self.get_file_demands fileId,startIndex,endIndex,type
+    # demands=RedisFile.find(fileId)
+    # itemKeys,totalCount=demands.send "get_#{type}_item_keys".to_sym,startIndex,endIndex
+    # demands.itemCount=itemKeys.count
+    # if demands.itemCount>0
+      # demands.items=[]
+      # itemKeys.each do |k|
+        # if d=DemanderTemp.find(k)
+        # demands.items<<d
+        # end
+      # end
+    # end
+    # return demands,totalCount
+  # end
 
   # ws : get batch file info
   def self.get_batch_file_info fileId,startIndex,endIndex

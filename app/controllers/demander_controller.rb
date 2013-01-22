@@ -9,8 +9,7 @@ class DemanderController<ApplicationController
 
   # ws upload demands from csv -- support muti files
   def upload_files
-    if request.get?
-      else
+    if request.post?
       files=params[:files]
       begin
         msg=ReturnMsg.new
@@ -49,7 +48,7 @@ class DemanderController<ApplicationController
           msg.object.add_to_staff_zset session[:staff_id]
         Resque.enqueue(DemandUpfilesDeler,batchFileId)
       end
-        respond_to do |format|
+      respond_to do |format|
         format.xml {render :xml=>JSON.parse(msg.to_json).to_xml(:root=>'filesInfo')}
         format.json { render json: msg }
         format.html {render partial:'upfile_items',:locals=>{:msg=>msg}}
@@ -61,23 +60,16 @@ class DemanderController<ApplicationController
   def get_tempdemand_items
     if request.post?
       fileId=params[:fileId]
-      demands=nil
-      file=RedisFile.find(fileId)
-      type='error'
-      if file
-        demands=[]
-        type=file.errorCount.to_i>0 ? 'error':'normal'
         @currentPage=pageIndex=params[:pageIndex].to_i
         startIndex,endIndex=PageHelper::generate_page_index(pageIndex,$DEPSIZE)
-        demands,@totalCount= DemanderHelper::get_file_demands fileId,startIndex,endIndex,type
+        demands,type,@totalCount= DemanderBll.get_file_demands fileId,startIndex,endIndex
         if demands.items.nil? # for error
               @currentPage=pageIndex=params[:pageIndex].to_i-1
               startIndex,endIndex=PageHelper::generate_page_index(pageIndex,$DEPSIZE)
-             demands,@totalCount= DemanderHelper::get_file_demands fileId,startIndex,endIndex,type
+             demands,type,@totalCount= DemanderBll.get_file_demands fileId,startIndex,endIndex
         end
         @totalPages=PageHelper::generate_page_count @totalCount,$DEPSIZE
-        @finished=file.finished
-      end
+        @finished=demands.finished
       respond_to do |format|
         format.xml {render :xml=>JSON.parse(demands.to_json).to_xml(:root=>'demands')}
         format.json { render json: demands }
@@ -90,11 +82,9 @@ class DemanderController<ApplicationController
   def correct_error
     if request.post?
       clientId=session[:org_id]
-      msg=ReturnMsg.new(:result=>false,:content=>'')
+      msg=ReturnMsg.new
       bf,sf,od=RedisFile.find(params[:batchId]),RedisFile.find(params[:fileId]),DemanderTemp.find(params[:uuid])
-
       if bf and sf and od
-
         nd= DemanderTemp.new(:key=>od.key,:cpartNr=>params[:partNr],:clientId=>clientId,:supplierNr=>params[:supplierNr],
         :filedate=>params[:filedate],:date=>(FormatHelper::demand_date_by_str_type(params[:filedate],params[:type])),
         :type=>params[:type],:amount=>params[:amount],:lineNo=>od.lineNo,:source=>od.source)
@@ -103,9 +93,8 @@ class DemanderController<ApplicationController
         if okey!=nkey
         bf.del_repeat_item(od.gen_md5_repeat_key,od.key)
         end
-        vmsg=DemanderHelper::demand_field_validate(nd,bf)
+        vmsg=DemanderBll.demand_field_validate(nd,bf)
         nd.vali=vmsg.result
-
         if vmsg.result
           nd.rate,nd.oldamount=DemandHistory.compare_rate(nd)
           if od.vali=='false'
@@ -145,8 +134,7 @@ class DemanderController<ApplicationController
       end
       respond_to do |format|
         format.xml {render :xml=>JSON.parse(msg.to_json).to_xml(:root=>'validInfo')}
-        format.json { render json: msg }
-      
+        format.json { render json: msg }      
       end
     end
   end
@@ -154,7 +142,7 @@ class DemanderController<ApplicationController
   # ws cancel upload
   def cancel_upload
     if request.post?
-      msg=ReturnMsg.new(:result=>false,:content=>'')
+      msg=ReturnMsg.new
       if batchFile=RedisFile.find(params[:batchId])
         if batchFile.finished=='false'
           RedisFile.remove_staff_cache_file session[:staff_id],batchFile.key
@@ -266,10 +254,9 @@ class DemanderController<ApplicationController
           if bf.finished=='false'
             sfKeys,scount=bf.get_normal_item_keys 0,-1
             if scount>0
-
               sfKeys.each do |sk|
                 if sf=RedisFile.find(sk) and sf.finished=='false'
-                  nds,ncount=DemanderHelper::get_file_demands sf.key,0,-1,'normal'
+                  nds,type,ncount=DemanderBll.get_file_demands sf.key,0,-1
                   if ncount>0
                     nds.items.each do |nd|
                       if tempKey = DemandHistory.exists( nd.clientId,nd.supplierId,nd.relpartId,nd.type,nd.date )
@@ -440,8 +427,6 @@ class DemanderController<ApplicationController
       batchId=params[:batchFileId]
       result=false
       if bf=RedisFile.find(batchId)
-        puts 'check key:'+batchId
-        puts 'fin:'+bf.finished
         if bf.finished=='false'
         result=true
         end

@@ -13,7 +13,6 @@ module CZ
     def initialize args={}
       if !(args.key?(:key) or args.key?("key"))
         if gk=ClassKeyHelper::gen_key(self.class.name)
-          puts gk
         self.key=gk
         end
       end

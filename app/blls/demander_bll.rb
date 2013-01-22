@@ -22,7 +22,7 @@ module DemanderBll
     begin
       returnMsg=ReturnMsg.new
       batchFile=RedisFile.find(batchFileKey)
-      # batchFile.errorCount=0
+      batchFile.errorCount=0
       singleFileKeys=batchFile.get_normal_item_keys(0,-1)[0]
       items=[]
       singleFileKeys.each do |sfkey|
@@ -73,6 +73,7 @@ module DemanderBll
       batchFile.items=items if items.count>0
       returnMsg.object=batchFile
     rescue Exception=>e
+      puts e.backtrace
       returnMsg.content='文件格式错误,请重新上传'
     end
     return returnMsg
@@ -151,5 +152,21 @@ module DemanderBll
     return msg
   end
 
+ # ws: get file demands by type
+  def self.get_file_demands fileId,startIndex,endIndex,type=nil
+    demands=RedisFile.find(fileId)
+    type=demands.errorCount.to_i>0 ? 'error':'normal' if type
+    itemKeys,totalCount=demands.send "get_#{type}_item_keys".to_sym,startIndex,endIndex
+    demands.itemCount=itemKeys.count
+    if demands.itemCount>0
+      demands.items=[]
+      itemKeys.each do |k|
+        if d=DemanderTemp.find(k)
+        demands.items<<d
+        end
+      end
+    end
+    return demands,type,totalCount
+  end
 
 end
