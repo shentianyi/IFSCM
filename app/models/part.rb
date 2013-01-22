@@ -7,11 +7,18 @@ class Part < ActiveRecord::Base
   after_save :add_or_update_redis_index
   after_destroy :del_redis_index
   
-  def self.get_id_by_orgId_partNr orgId,partNr
+  def self.get_id orgId,partNr
     find_id_from_redis(orgId,partNr)
   end
 
   private
+
+  def self.find_id_from_redis orgId,partNr
+    if id=$redis.zscore(generate_org_part_zset_key(orgId),partNr)
+    id=id.to_i
+    end
+    return id
+  end
 
   def add_or_update_redis_index
     if self.partNr_change
@@ -23,23 +30,16 @@ class Part < ActiveRecord::Base
     end
   end
 
-  def self.find_id_from_redis orgId,partNr
-    if id=$redis.hget(Part.generate_org_part_hash_key(orgId),partNr)
-    id=id.to_i
-    end
-    return id
-  end
-
-  def self.generate_org_part_hash_key org_id
-    "organisation:#{org_id}:parts:hash"
+  def self.generate_org_part_zset_key orgId
+    "org:#{orgId}:parts:zset"
   end
 
   def add_redis_index
-    $redis.hset Part.generate_org_part_hash_key(self.organisation_id),self.partNr,self.id
+    $redis.zadd Part.generate_org_part_zset_key(self.organisation_id),self.id,self.partNr
   end
 
   def del_redis_index
-    $redis.hdel Part.generate_org_part_hash_key(self.organisation_id),self.partNr
+    $redis.zrem Part.generate_org_part_zset_key(self.organisation_id),self.partNr
   end
 
   def update_redis_index

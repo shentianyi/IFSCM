@@ -3,19 +3,6 @@ class DeliveryNote < ActiveRecord::Base
   attr_accessible :desiOrgId, :destination, :key, :orgId, :sender, :state, :wayState,:sendDate
   has_many :delivery_packages,:dependent=>:destroy
 
-  # ---------------------------------------------
-  #ws : for redis search
-  # include Redis::Search
-  # redis_search_index(:title_field => :key,
-                     # :alias_field => :alias,
-                     # :prefix_index_enable => true,
-                     # :condition_fields=>[:orgIds],
-                     # :ext_fields => [:destination])
-# 
-  # def orgIds
-    # [self.orgId,self.desiOrgId]
-  # end
-
   #-----------------------------
   # ws
   # [功能：] 将运单加入用户 ZSet

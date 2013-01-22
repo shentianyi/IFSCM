@@ -232,7 +232,7 @@ class DemanderController<ApplicationController
   # download up demand files as zip
   def download
     if request.post?
-      msg=DemanderHelper::zip_demand_cvs params[:batchFileId], request.user_agent
+      msg=DemanderBll.zip_demand_cvs params[:batchFileId], request.user_agent
       if msg.result
         send_file msg.content,:type => 'application/zip', :filename => "#{UUID.generate}.zip"
         File.delete(msg.content)
@@ -385,7 +385,7 @@ class DemanderController<ApplicationController
             :rpartNr=>partRelMetaKey, :start=>tstart, :end=>tend,
             :type=>params[:type].nil? ? nil : params[:type].split(',') ,  :amount=>params[:amount].nil? ? nil : params[:amount].split(','))[0]
             
-              msg=DemanderHelper::down_load_demand demands,session[:orgOpeType],request.user_agent
+              msg=DemanderBll.down_load_demand demands,session[:orgOpeType],request.user_agent
       if msg.result
         send_file msg.content,:type => 'application/csv', :filename => "#{UUID.generate}.csv"
         File.delete(msg.content)
@@ -461,7 +461,7 @@ class DemanderController<ApplicationController
   def get_cache_file_info
     if request.post?
       msg=ReturnMsg.new(:result=>false)
-      if bf=DemanderHelper::get_batch_file_info(params[:batchFileId],0,-1)[0]
+      if bf=DemanderBll.get_batch_file_info(params[:batchFileId],0,-1)[0]
       msg.result=true
       msg.object=bf
       end
