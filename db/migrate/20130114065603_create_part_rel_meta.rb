@@ -1,6 +1,6 @@
-class CreateMPartRelMeta < ActiveRecord::Migration
+class CreatePartRelMeta < ActiveRecord::Migration
   def change
-    create_table :m_part_rel_meta do |t|
+    create_table :part_rel_meta do |t|
       t.string :saleNo
       t.string :purchaseNo
       

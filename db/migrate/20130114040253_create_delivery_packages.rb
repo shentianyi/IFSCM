@@ -1,6 +1,6 @@
-class CreateMDeliveryPackages < ActiveRecord::Migration
+class CreateDeliveryPackages < ActiveRecord::Migration
   def change
-    create_table :m_delivery_packages do |t|
+    create_table :delivery_packages do |t|
       t.string :key
       t.string :saleNo
       t.string :purchaseNo
@@ -10,10 +10,10 @@ class CreateMDeliveryPackages < ActiveRecord::Migration
       t.string :partRelMetaKey
       t.integer :packAmount
       t.float :perPackAmount
-      t.references :m_delivery_note
+      t.references :delivery_note
 
       t.timestamps
     end
-    add_index :m_delivery_packages, :m_delivery_note_id
+    add_index :delivery_packages, :delivery_note_id
   end
 end
