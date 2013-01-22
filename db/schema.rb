@@ -81,21 +81,21 @@ ActiveRecord::Schema.define(:version => 20130117032759) do
     t.datetime "updated_at",  :null => false
   end
 
-  create_table "part_rel_meta", :force => true do |t|
+  create_table "part_rels", :force => true do |t|
     t.string   "saleNo"
     t.string   "purchaseNo"
     t.integer  "client_part_id"
     t.integer  "supplier_part_id"
-    t.datetime "created_at",       :null => false
-    t.datetime "updated_at",       :null => false
-  end
-
-  create_table "parts", :force => true do |t|
-    t.string   "type"
-    t.string   "partNr"
     t.integer  "organisation_relation_id"
     t.datetime "created_at",               :null => false
     t.datetime "updated_at",               :null => false
+  end
+
+  create_table "parts", :force => true do |t|
+    t.string   "partNr"
+    t.integer  "organisation_id"
+    t.datetime "created_at",      :null => false
+    t.datetime "updated_at",      :null => false
   end
 
   create_table "staffs", :force => true do |t|

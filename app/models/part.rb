@@ -7,7 +7,6 @@ class Part < ActiveRecord::Base
   after_save :add_or_update_redis_index
   after_destroy :del_redis_index
   
-  
   def self.get_id_by_orgId_partNr orgId,partNr
     find_id_from_redis(orgId,partNr)
   end
@@ -48,3 +47,4 @@ class Part < ActiveRecord::Base
     add_redis_index
   end
 end
+

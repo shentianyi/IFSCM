@@ -6,61 +6,51 @@
 #
 pOne:
   id: 1
-  type: ClientPart
   partNr: leoni001
-  organisation_relation_id: 1
+  organisation_id: 1
 # column: value
 #
 pTwo:
   id: 2
-  type: SupplierPar
   partNr: nl001
-  organisation_relation_id: 1
+  organisation_id: 2
 #  column: value
 pThree:
   id: 3
-  type: ClientPart
   partNr: leoni002
-  organisation_relation_id: 1
+  organisation_id: 1
 
 pFour:
   id: 4
-  type: SupplierPar
   partNr: nl002
-  organisation_relation_id: 1
+  organisation_id: 2
 
 pFive:
   id: 5
-  type: ClientPart
   partNr: leoni003
-  organisation_relation_id: 1
+  organisation_id: 1
 
 pSix:
   id: 6
-  type: SupplierPar
   partNr: nl003
-  organisation_relation_id: 1
+  organisation_id: 2
 
 pOOne:
   id: 11
-  type: ClientPart
   partNr: leoni011
-  organisation_relation_id: 2
+  organisation_id: 1
 
 pOTwo:
   id: 12
-  type: SupplierPar
   partNr: chl011
-  organisation_relation_id: 2
+  organisation_id: 3
 
 pOThree:
   id: 13
-  type: ClientPart
   partNr: leoni012
-  organisation_relation_id: 2
+  organisation_id: 1
 
 pOFour:
   id: 14
-  type: SupplierPar
   partNr: chl012
-  organisation_relation_id: 2
+  organisation_id: 3
