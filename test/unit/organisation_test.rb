@@ -6,28 +6,27 @@ class OrganisationTest < ActiveSupport::TestCase
   # end
   def setup
     @leoni=organisations(:leoni)
+    @ningbo = organisations(:ningbo)
   end
   
   def test_clients
-    @leoni = organisations(:ningbo)
-    org2 = organisations(:leoni)
-    assert_equal org.clients.first.origin_client.id, org2.id 
+    assert_equal @ningbo.clients.first.origin_client.id, @leoni.id 
   end
   
   def test_suppliers
-    org = organisations(:leoni)
-    org2 = organisations(:ningbo)
-    assert_equal org.suppliers.first.origin_supplier.id, org2.id 
+    assert_equal @leoni.suppliers.first.origin_supplier.id, @ningbo.id 
   end
   
-  def test_cli_req_parts
-    org = organisations(:ningbo)
-    assert_equal org.suppliers.first.origin_supplier.id, org2.id
+  def test_pOne_not_in_cli_req_parts
+    assert_include  parts(:pOne), @ningbo.cli_req_parts
   end
   
-  def test_sup_res_parts
-    
-    
+  def test_pTwo_in_cli_req_parts
+    assert_include  parts(:pTwo), @ningbo.cli_req_parts
+  end
+  
+  def test_pOne_in_sup_res_parts
+    assert_include  parts(:pOne), @leoni.sup_res_parts
   end
 
   # def test_create_org
