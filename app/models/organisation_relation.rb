@@ -2,10 +2,10 @@ class OrganisationRelation < ActiveRecord::Base
   attr_accessible :supplierNr, :clientNr
   belongs_to :origin_supplier, :class_name=>"Organisation"#, :foreign_key=>"origin_supplier_id"
   belongs_to :origin_client, :class_name=>"Organisation"#, :foreign_key=>"origin_client_id"
-  has_many :client_parts
-  has_many :supplier_parts
+  has_many :part_rels
+  # has_many :supplier_parts
   
-  attr_accessor :cs_key,:orgrelNr
+  # attr_accessor :cs_key,:orgrelNr
   
   # include Redis::Search
 
@@ -34,8 +34,8 @@ class OrganisationRelation < ActiveRecord::Base
       # Organisation.find_by_id( orgId )
     # end
     
-    def save_index
-      run_callbacks :save
-    end
+    # def save_index
+      # run_callbacks :save
+    # end
     
 end
