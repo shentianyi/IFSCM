@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class MDeliveryItemTest < ActiveSupport::TestCase
+class DeliveryItemTest < ActiveSupport::TestCase
   # test "the truth" do
   #   assert true
   # end

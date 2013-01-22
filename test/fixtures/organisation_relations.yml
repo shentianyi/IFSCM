@@ -1,0 +1,19 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+# This model initially had no columns defined.  If you add columns to the
+# model remove the '{}' from the fixture names and add the columns immediately
+# below each fixture, per the syntax in the comments below
+#
+orgRelOne:
+  id: 1
+  supplierNr: Ninggg
+  clientNr: Leoni
+  origin_supplier_id: 2
+  origin_client_id: 1
+#
+orgRelTwo:
+  id: 2
+  supplierNr: Changgg
+  clientNr: Leoni
+  origin_supplier_id: 3
+  origin_client_id: 1

@@ -1,8 +1,6 @@
 #coding:utf-8
-require 'base_class'
-
-class Demander<CZ::BaseClass
-  attr_accessor :clientId,:relpartId,:supplierId, :type,:amount,:oldamount,:date,:rate
+class Demander < ActiveRecord::Base
+  attr_accessible :clientId,:relpartId,:supplierId, :type,:amount,:oldamount,:date,:rate
   NumPer=$DEPSIZE
   # ws : add demand history
   def add_to_history history_key

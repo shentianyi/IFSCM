@@ -1,23 +1,20 @@
 #coding:utf-8
-require 'base_class'
+class DeliveryNote < ActiveRecord::Base
+  attr_accessible :desiOrgId, :destination, :key, :orgId, :sender, :state, :wayState,:sendDate
+  has_many :delivery_packages,:dependent=>:destroy
 
-class DeliveryNote<DeliveryBase
-  attr_accessor :wayState,:sender,:orgId,:desiOrgId,:destination,:sendDate
   # ---------------------------------------------
   #ws : for redis search
-  include Redis::Search
-  redis_search_index(:title_field => :key,
-                     :alias_field => :alias,
-                     :prefix_index_enable => true,
-                     :condition_fields=>[:orgIds],
-                     :ext_fields => [:destination])
-  def alias
-    [self.key]
-  end
-
-  def orgIds
-    [self.orgId,self.desiOrgId]
-  end
+  # include Redis::Search
+  # redis_search_index(:title_field => :key,
+                     # :alias_field => :alias,
+                     # :prefix_index_enable => true,
+                     # :condition_fields=>[:orgIds],
+                     # :ext_fields => [:destination])
+# 
+  # def orgIds
+    # [self.orgId,self.desiOrgId]
+  # end
 
   #-----------------------------
   # ws

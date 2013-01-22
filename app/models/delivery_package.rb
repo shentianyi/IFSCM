@@ -1,8 +1,8 @@
 #coding:utf-8
-require 'base_class'
-
-class DeliveryPackage<DeliveryBase
-  attr_accessor :saleNo,:purchaseNo,:cpartNr,:spartNr,:partRelMetaKey, :packAmount,:perPackAmount,:total
+class DeliveryPackage < ActiveRecord::Base
+  attr_accessible :cpartNr, :key,:parentKey,:packAmount, :partRelMetaKey, :perPackAmount, :purchaseNo, :saleNo, :spartNr, :total
+  belongs_to :delivery_note
+  has_many :delivery_items,:dependent=>:destroy
   
   def packAmount t=nil
     return FormatHelper::get_number @packAmount,t
