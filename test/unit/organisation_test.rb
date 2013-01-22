@@ -17,16 +17,14 @@ class OrganisationTest < ActiveSupport::TestCase
     assert_equal @leoni.suppliers.first.origin_supplier.id, @ningbo.id 
   end
   
-  def test_pOne_not_in_cli_req_parts
-    assert_include  parts(:pOne), @ningbo.cli_req_parts
+  def test_pOne_not_in_cli_parts
+    p = @ningbo.parts.where("partNr = 'nl001'").first
+    assert_not_equal  parts(:pOne).id, p.id
   end
   
-  def test_pTwo_in_cli_req_parts
-    assert_include  parts(:pTwo), @ningbo.cli_req_parts
-  end
-  
-  def test_pOne_in_sup_res_parts
-    assert_include  parts(:pOne), @leoni.sup_res_parts
+  def test_pOne_in_cli_parts
+    p = @leoni.parts.where("partNr = 'leoni001'").first
+    assert_equal  parts(:pOne).id, p.id
   end
 
   # def test_create_org
