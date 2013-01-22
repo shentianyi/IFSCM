@@ -12,6 +12,5 @@ class ApplicationController < ActionController::Base
   
   # def org_initial
     # @cz_org = Organisation.find_by_id(session[:org_id])
-  # end
-  
+  # end  
 end

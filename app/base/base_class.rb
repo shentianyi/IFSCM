@@ -11,13 +11,18 @@ module CZ
     define_callbacks :buildRSIndex
     define_callbacks :cleanRSIndex
     def initialize args={}
-      if args.count>0
-        if !(args.key?(:key) or args.key?("key"))
-          if gk=ClassKeyHelper::gen_key(self.class.name)
-          self.key=gk
-          end
+      if !(args.key?(:key) or args.key?("key"))
+        if gk=ClassKeyHelper::gen_key(self.class.name)
+        self.key=gk
         end
-        args.each do |k,v|
+      end
+      
+      args.each do |k,v|
+        instance_variable_set "@#{k}",v
+      end
+      
+      if self.respond_to?(:default)
+        self.default.each do |k,v|
           instance_variable_set "@#{k}",v
         end
       end
