@@ -27,7 +27,8 @@ class DemanderController<ApplicationController
           msg.content='未选择文件'
         end
       rescue Exception => e
-        msg.content=e.message+'//'+ e.backtrace.inspect
+        # msg.content=e.message+'//'+ e.backtrace.inspect
+        msg.content="上传失败，请重试"
       end
       respond_to do |format|
         format.xml {render :xml=>JSON.parse(msg.to_json).to_xml(:root=>'filesInfo')}
@@ -247,7 +248,7 @@ class DemanderController<ApplicationController
   # rewrite: ws
   def send_demand
     if request.post?
-      msg=ReturnMsg.new(:result=>false,:content=>'')
+      msg=ReturnMsg.new
       batchId=params[:batchFileId]
       if bf=RedisFile.find(batchId)
         if bf.errorCount.to_i==0
@@ -259,6 +260,7 @@ class DemanderController<ApplicationController
                   nds,type,ncount=DemanderBll.get_file_demands sf.key,0,-1
                   if ncount>0
                     nds.items.each do |nd|
+                      puts nd.to_json
                       if tempKey = DemandHistory.exists( nd.clientId,nd.supplierId,nd.relpartId,nd.type,nd.date )
                         demand = Demander.find(tempKey)
                         demand.update( :clientId=>nd.clientId, :supplierId=>nd.supplierId, :relpartId=>nd.relpartId, :type=>nd.type, :date=>nd.date,
@@ -438,7 +440,7 @@ class DemanderController<ApplicationController
   # ws : check cache file after page load
   def check_staff_cache_file
     if request.post?
-      msg=ReturnMsg.new(:result=>false)
+      msg=ReturnMsg.new
       if batchFileId=RedisFile.check_staff_cache_file(session[:staff_id])
       msg.result=true
       msg.object=batchFileId
@@ -460,7 +462,7 @@ class DemanderController<ApplicationController
   # ws : get cache file info
   def get_cache_file_info
     if request.post?
-      msg=ReturnMsg.new(:result=>false)
+      msg=ReturnMsg.new
       if bf=DemanderBll.get_batch_file_info(params[:batchFileId],0,-1)[0]
       msg.result=true
       msg.object=bf

@@ -73,6 +73,7 @@ module DemanderBll
       batchFile.items=items if items.count>0
       returnMsg.object=batchFile
     rescue Exception=>e
+      puts e.message
       puts e.backtrace
       returnMsg.content='文件格式错误,请重新上传'
     end
@@ -102,7 +103,7 @@ module DemanderBll
 
     # vali part relation
     if partId and supplierId
-      if prId=PartRel.get_part_rel_id(:cid=>demand.clientId,:si=>supplierId,:pid=>partId,:pt=>:c)
+      if prId=PartRel.get_part_rel_id(:cid=>demand.clientId,:sid=>supplierId,:pid=>partId,:ot=>:c)
           demand.relpartId=prId
       else      
         msg.result=false
@@ -147,7 +148,7 @@ module DemanderBll
   # ws: get file demands by type
   def self.get_file_demands fileId,startIndex,endIndex,type=nil
     demands=RedisFile.find(fileId)
-    type=demands.errorCount.to_i>0 ? 'error':'normal' if type
+    type=demands.errorCount.to_i>0 ? 'error':'normal' if type.nil?
     itemKeys,totalCount=demands.send "get_#{type}_item_keys".to_sym,startIndex,endIndex
     demands.itemCount=itemKeys.count
     if demands.itemCount>0
@@ -181,7 +182,7 @@ module DemanderBll
 
   # ws : zip demand files
   def self.zip_demand_cvs batchId, user_agent
-    msg=ReturnMsg.new(:result=>false,:content=>'')
+    msg=ReturnMsg.new
     path=nil
     if bf=RedisFile.find(batchId)
       sfKeys,scount=bf.get_normal_item_keys 0,-1
@@ -230,7 +231,7 @@ module DemanderBll
 
   # ws : download demands as csv
   def self.down_load_demand demands,opeType,user_agent
-    msg=ReturnMsg.new(:result=>false,:content=>'')
+    msg=ReturnMsg.new
     csv_encode=FormatHelper::csv_write_encode user_agent
     path=File.join($DETMP,UUID.generate+'.csv')
     File.open(path,"wb:#{csv_encode}") do |f|

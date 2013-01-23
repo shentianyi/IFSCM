@@ -1,7 +1,6 @@
 class PartController<ApplicationController
 
   before_filter  :authorize
-  include PageHelper
   def searcher
 
   end
@@ -33,8 +32,7 @@ class PartController<ApplicationController
   def get_partRels
     if request.post?
       @currentPage=pageIndex=params[:pageIndex].to_i
-      startIndex,endIndex=PageHelper::generate_page_index(pageIndex,$DEPSIZE)
-      partRels,@totalCount=PartRelMetaHelper::get_part_rel_metas_by_parterNr(session[:org_id],params[:partnerNr],session[:orgOpeType],params[:partNr],startIndex,endIndex)
+      partRels,@totalCount=PartRelBll.get_part_rel_by_partnerNr(session[:org_id],params[:partnerNr],session[:orgOpeType],params[:partNr],$DEPSIZE,pageIndex)
       @totalPages=PageHelper::generate_page_count @totalCount,$DEPSIZE
       respond_to do |format|
         format.xml {render :xml=>JSON.parse(partRels.to_json).to_xml(:root=>'partRels')}
@@ -49,7 +47,7 @@ class PartController<ApplicationController
   def redis_search_meta
     @currentPage=pageIndex=params[:pageIndex].to_i
     startIndex=pageIndex*$DEPSIZE
-    prms,@totalCount=PartRelMetaHelper::redis_search_by_conditions(params[:q],:conditions=>{:orgIds=>session[:org_id]},:startIndex=>startIndex,:take=>$DEPSIZE)
+    prms,@totalCount=PartRelBll.redis_search_by_conditions(params[:q],:conditions=>{:orgIds=>session[:org_id]},:startIndex=>startIndex,:take=>$DEPSIZE)
     @totalPages=PageHelper::generate_page_count @totalCount,$DEPSIZE
     respond_to do |format|
       format.xml {render :xml=>JSON.parse(demands.to_json).to_xml(:root=>'prms')}

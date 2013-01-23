@@ -7,7 +7,7 @@ class CreateDeliveryPackages < ActiveRecord::Migration
       t.string :cpartNr
       t.string :spartNr
       t.string :parentKey
-      t.string :partRelMetaKey
+      t.integer :partRelId
       t.integer :packAmount
       t.float :perPackAmount
       t.references :delivery_note

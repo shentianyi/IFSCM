@@ -3,14 +3,21 @@ class Part < ActiveRecord::Base
   belongs_to :organisation
   has_many :client_part_rels, :class_name=>"PartRel", :foreign_key=>"client_part_id" # org is client
   has_many :supplier_part_rels, :class_name=>"PartRel", :foreign_key=>"supplier_part_id" # org is supplier
+ 
+  after_save :add_or_update_redis_index
+  after_destroy :del_redis_index
 
-  # after_save :add_or_update_redis_index
-  # after_destroy :del_redis_index
+ 
   
   def self.get_id orgId,partNr
     find_id_from_redis(orgId,partNr)
   end
-
+  
+    
+  def self.get_partNr orgId,partId
+   find_nr_from_redis(orgId,partId) 
+  end
+  
   private
 
   def self.find_id_from_redis orgId,partNr
@@ -18,6 +25,10 @@ class Part < ActiveRecord::Base
     id=id.to_i
     end
     return id
+  end
+  
+  def self.find_nr_from_redis orgId,partId
+    $redis.zrangebyscore(generate_org_part_zset_key(orgId),partId)[0]
   end
 
   def add_or_update_redis_index

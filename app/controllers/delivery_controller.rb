@@ -22,7 +22,7 @@ class DeliveryController < ApplicationController
   def send_delivery
     if request.post?
       if request.post?
-        msg=DeliveryHelper::send_dn  session[:staff_id],params[:dnKey],params[:destiStr],params[:sendDate]
+        msg=DeliveryBll.send_dn session[:staff_id],params[:dnKey],params[:destiStr],params[:sendDate]
         render :json=>msg
       end
     end
@@ -91,11 +91,11 @@ class DeliveryController < ApplicationController
       packAmount=params[:packAmount]
       per=params[:perPackAmount]
       metaKey=params[:metaKey]
-      msg=ReturnMsg.new(:result=>false,:content=>'')
-      valiMsg= DeliveryHelper::vali_di_temp(metaKey,packAmount,per)
+      msg=ReturnMsg.new
+      valiMsg= DeliveryBll.vali_di_temp(metaKey,packAmount,per)
       msg.result=valiMsg.result
       if valiMsg.result
-        dit=DeliveryItemTemp.new(:packAmount=>packAmount,:perPackAmount=>per,:partRelMetaKey=>metaKey,
+        dit=DeliveryItemTemp.new(:packAmount=>packAmount,:perPackAmount=>per,:partRelId=>metaKey,
          :total=>FormatHelper.string_multiply(per,packAmount))
         dit.save
         dit.add_to_staff_cache session[:staff_id]
@@ -163,7 +163,7 @@ class DeliveryController < ApplicationController
   # - ReturnMsg : JSON
   def build_dn
     if request.post?
-      msg=DeliveryHelper::build_delivery_note(session[:staff_id],session[:org_id],params[:desiOrgNr])
+      msg=DeliveryBll.build_delivery_note(session[:staff_id],session[:org_id],params[:desiOrgNr])
       respond_to do |format|
         format.xml {render :xml=>msg}
         format.json { render json: msg }
@@ -183,7 +183,7 @@ class DeliveryController < ApplicationController
       if (st=Staff.find(dn.sender.to_i)) and st.orgId==session[:org_id]
         @currentPage=pageIndex=params[:pageIndex].nil? ? 0 : params[:pageIndex].to_i
         startIndex,endIndex=PageHelper::generate_page_index(pageIndex,$DEPSIZE)
-        dn.items,@totalCount=DeliveryHelper::get_delivery_detail dn.key,startIndex,endIndex
+        dn.items,@totalCount=DeliveryBll.get_delivery_detail dn.key,startIndex,endIndex
         if @totalCount
           @totalPages=PageHelper::generate_page_count @totalCount,$DEPSIZE
         msg.object=dn
@@ -244,7 +244,7 @@ class DeliveryController < ApplicationController
     if request.post?
       @currentPage=pageIndex=params[:pageIndex].to_i
       startIndex,endIndex=PageHelper::generate_page_index(pageIndex,$DEPSIZE)
-      dns,@totalCount=DeliveryHelper::search_dn params[:condition],session[:org_id],session[:orgOpeType], startIndex,endIndex
+      dns,@totalCount=DeliveryBll.search_dn params[:condition],session[:org_id],session[:orgOpeType], startIndex,endIndex
       @totalPages=PageHelper::generate_page_count @totalCount,$DEPSIZE
       @condition=params[:condition]||{}
       respond_to do |format|

@@ -2,7 +2,6 @@
 class PartRel < ActiveRecord::Base
   attr_accessible :saleNo, :purchaseNo
   attr_accessible :client_part_id, :supplier_part_id, :organisation_relation_id
-
   @@stype={:c=>"clientprls:zset",:s=>"supplierprls:zset"}
 
   belongs_to :organisation_relation
@@ -13,15 +12,15 @@ class PartRel < ActiveRecord::Base
   after_destroy :del_redis_indexs
 
   def self.get_part_rel_id args
-    find_partnerid_from_redis args
+    find_prid_from_redis args
   end
-
+  
   private
 
-  def self.find_partnerid_from_redis args
-    key=generate_org_partrel_zset_key(args[:cid],args[:sid],args[:pid],args[:ot])
+  def self.find_prid_from_redis args
+    key=generate_org_partrel_zset_key(args[:cid],args[:sid],args[:pid],@@stype[args[:ot]])
     if pid=$redis.zrange(key,0,-1)[0]
-    pid=pid.to_i
+     pid=pid.to_i
     end
     return pid
   end
@@ -43,11 +42,11 @@ class PartRel < ActiveRecord::Base
   end
 
   def add_redis_index *args
-    $redis.zadd PartRel.generate_org_partrel_set_key(*args),0,self.id
+    $redis.zadd PartRel.generate_org_partrel_zset_key(*args),0,self.id
   end
 
   def del_redis_index *args
-    $redis.zrem PartRel.generate_org_partrel_set_key(args),self.id
+    $redis.zrem PartRel.generate_org_partrel_zset_key(args),self.id
   end
 
   def get_client_supplier
