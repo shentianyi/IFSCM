@@ -5,10 +5,13 @@ class Staff < ActiveRecord::Base
       Pwd = 0
       attr_accessible :pwd, :salt
       attr_accessible :password, :password_confirmation, :staffNr, :name, :orgId
+      attr_accessible :organisation_id
       validates :staffNr, :presence => true, :uniqueness => true
       validates :password, :confirmation => true
       validate      :password_must_be_present
-      
+   
+      has_many :delivery_notes
+      belongs_to :organisation   
       def password
            @password
       end

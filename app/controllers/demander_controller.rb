@@ -260,6 +260,7 @@ class DemanderController<ApplicationController
                   nds,type,ncount=DemanderBll.get_file_demands sf.key,0,-1
                   if ncount>0
                     nds.items.each do |nd|
+                      puts nd.to_json
                       if tempKey = DemandHistory.exists( nd.clientId,nd.supplierId,nd.relpartId,nd.type,nd.date )
                         demand = Demander.find(tempKey)
                         demand.update( :clientId=>nd.clientId, :supplierId=>nd.supplierId, :relpartId=>nd.relpartId, :type=>nd.type, :date=>nd.date,

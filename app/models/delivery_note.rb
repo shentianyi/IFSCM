@@ -1,9 +1,12 @@
 #coding:utf-8
 class DeliveryNote < ActiveRecord::Base
-  attr_accessible :desiOrgId, :destination, :key, :orgId, :sender, :state, :wayState,:sendDate
+  attr_accessible :rece_org_id, :destination, :key, :state, :wayState,:sendDate
+  attr_accessible :staff_id,:organisation_id
+  
   has_many :delivery_packages,:dependent=>:destroy
 
-  #-----------------------------
+  belongs_to :organisation
+  belongs_to :staff
   # ws
   # [功能：] 将运单加入用户 ZSet
   # 参数：

@@ -40,7 +40,8 @@ InitCSVDataScript.initCSByOrgFile orgs,'csrel20121109-leoni-cz'
 InitCSVDataScript.initPartAndCSPartRel orgs[0],orgs[1],'part20121109-leoni-cz'
 
 # init staff
-staffs=[{:name=>'leoni',:staffNr=>'leoni',:pass=>'leoni',:conpass=>'leoni',:orgId=>orgs[0].id},{:name=>'leonicz',:staffNr=>'leonicz',:pass=>'leonicz',:conpass=>'leonicz',:orgId=>orgs[1].id}]
+staffs=[{:name=>'leoni',:staffNr=>'leoni',:pass=>'leoni',:conpass=>'leoni',:orgId=>orgs[0].id,:organisation_id=>orgs[0].id},
+{:name=>'leonicz',:staffNr=>'leonicz',:pass=>'leonicz',:conpass=>'leonicz',:orgId=>orgs[1].id,:organisation_id=>orgs[1].id}]
 InitCSVDataScript.initStaff staffs
 
 # add org
@@ -53,5 +54,5 @@ InitCSVDataScript.initCSByOrgFile orgs,'csrel20121203-leoni-nb'
 InitCSVDataScript.initPartAndCSPartRel orgs[0],orgs[1],'part20121203-leoni-nb'
 
 # init staff
-staffs=[{:name=>'nbtp',:staffNr=>'nbtp',:pass=>'nbtp@',:conpass=>'nbtp@',:orgId=>orgs[1].id}]
+staffs=[{:name=>'nbtp',:staffNr=>'nbtp',:pass=>'nbtp@',:conpass=>'nbtp@',:orgId=>orgs[1].id,:organisation_id=>orgs[1].id}]
 InitCSVDataScript.initStaff staffs

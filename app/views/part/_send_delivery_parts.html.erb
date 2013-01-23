@@ -2,8 +2,7 @@
 <table class="partsData">
      <tr class="titline">
           <th>&nbsp;</th>
-          <th>内部零件号</th>
-          <th>客户零件号</th>
+          <th>零件号</th>
           <th>内部销售订单号</th>
           <th>客户采购订单号</th>
           <th>添加数目</th>
@@ -12,12 +11,11 @@
         
      <tr class="partlines">
           <th><div class="partsthumb"></div></th>
-          <th style="text-align:left;" class="spartNr"><%= Part.find(pl.spartId).partNr%></th>
-          <th><%= Part.find(pl.cpartId).partNr%></th>
+          <th style="text-align:left;" class="spartNr"><%= pl.partNr%></th>
           <th><%= pl.saleNo%></th>
           <th> <%= pl.purchaseNo%></th>
           <th>
-          <input type="button" class="addparts gbtn" value="添加零件" onclick="add_pack_info(this,'<%= pl.key%>');"/>
+          <input type="button" class="addparts gbtn" value="添加零件" onclick="add_pack_info(this,'<%= pl.id%>');"/>
           </th>
      </tr>
      <%end%>

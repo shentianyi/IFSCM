@@ -1,6 +1,6 @@
 #coding:utf-8
 
-module PartRelDll
+module PartRelBll
   # ws redis search by conditions
   def  self.redis_search_by_conditions q,options=nil
     prms=[]
@@ -32,9 +32,7 @@ module PartRelDll
       if  (partNr.nil? or partNr=="")
         return get_part_rel_by_partnerId orgId,partnerId,orgOpeType,psize,page
       elsif pid=Part.get_id(orgId,partNr)
-        offset=startIndex
-        count=startIndex.nil? ? nil:(endIndex-startIndex)
-        return get_part_rel_metas_by_parterId_partId orgId,partnerId,orgOpeType,pid,offset,count
+        return get_part_rels_by_partnerId_partId orgId,partnerId,orgOpeType,pid,partNr
       end
     end
     return nil
@@ -52,12 +50,13 @@ module PartRelDll
   # - PartRel : 对象数组
   # - int : total
   def self.get_part_rel_by_partnerId orgId,partnerId,orgOpeType,psize=nil,page=nil
-    cid,sid=get_csId_by_orgOpeType(orgOpeType,orgId,partnerId)
+    cid,sid,part=get_csId_by_orgOpeType(orgOpeType,orgId,partnerId)
     c={}
-    c["organisation_relation.origin_client_id"]=cid
-    c["organisation_relation.origin_supplier_id"]=sid
-    count=PartRel.joins(:organisation_relation).find(:all,:conditions=>c).count   
-    prs=PartRel.joins(:organisation_relation).limit(psize).offset(psize*page).find(:all,:conditions=>c) if count>0
+    c["organisation_relations.origin_client_id"]=cid
+    c["organisation_relations.origin_supplier_id"]=sid
+    select="part_rels.*,parts.partNr"
+    count=PartRel.joins(:organisation_relation).count(:conditions=>c)
+    prs=PartRel.joins(:organisation_relation).joins(part).limit(psize).offset(psize*page).find(:all,:select=>select,:conditions=>c) if count>0
     return prs,count
   end
 
@@ -72,14 +71,12 @@ module PartRelDll
   # - int ： count, 可空
   # 返回值：
   # - PartRel : 对象数组
-  def self.get_part_rel_metas_by_parterId_partId orgId,partnerId,orgOpeType,partId,offset=nil,count=nil
-    partRelType=get_partRelType_by_orgOpeType orgOpeType
-    cId,sId=get_csId_by_orgOpeType orgOpeType,orgId,partnerId
-    partRelMetas,total=PartRelMeta.get_by_partId_orgId(cId,sId,partRelType,partId,offset,count)
-    if offset
-    return  partRelMetas,total
-    end
-    return partRelMetas
+  def self.get_part_rels_by_partnerId_partId orgId,partnerId,orgOpeType,partId,partNr
+    cid,sid,part,ot=get_csId_by_orgOpeType(orgOpeType,orgId,partnerId)
+      prid=PartRel.get_part_rel_id(:cid=>cid,:sid=>sid,:pid=>partId,:ot=>ot)
+      pr=PartRel.find(prid)
+      pr.partNr=partNr
+     return [pr],1
   end
 
   # ws
@@ -107,9 +104,9 @@ module PartRelDll
   # - int : supplierId
   def self.get_csId_by_orgOpeType orgOpeType,orgId,partnerId
     if orgOpeType==OrgOperateType::Client
-    return  orgId,partnerId
+    return  orgId,partnerId,:client_part,:c
     else
-    return partnerId,orgId
+    return partnerId,orgId,:supplier_part,:s
     end
   end
 

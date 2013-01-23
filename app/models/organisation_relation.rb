@@ -78,9 +78,9 @@ class OrganisationRelation < ActiveRecord::Base
 
   def generate_zset_members type
     if type==@@zstype[:s]
-      return OrganisationRelation.generate_org_rel_zset_key(self.origin_client_id,type),self.origin_client_id,self.supplierNr
+      return OrganisationRelation.generate_org_rel_zset_key(self.origin_client_id,type),self.origin_supplier_id,self.supplierNr
     else
-      return OrganisationRelation.generate_org_rel_zset_key(self.origin_supplier_id,type),self.origin_supplier_id,self.clientNr
+      return OrganisationRelation.generate_org_rel_zset_key(self.origin_supplier_id,type),self.origin_client_id,self.clientNr
     end
   end
 end

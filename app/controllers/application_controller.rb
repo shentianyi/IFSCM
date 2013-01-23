@@ -4,10 +4,10 @@ class ApplicationController < ActionController::Base
   
   protected
   def authorize
-    unless Staff.find_by_id(session[:staff_id])
+    unless Staff.find(session[:staff_id])
       redirect_to login_url, :notice => "请登录"
     end
-    @cz_org = Organisation.find_by_id(session[:org_id])
+    @cz_org = Organisation.find(session[:org_id])
   end
   
   # def org_initial

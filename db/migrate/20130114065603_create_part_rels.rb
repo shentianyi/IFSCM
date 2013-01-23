@@ -10,5 +10,7 @@ class CreatePartRels < ActiveRecord::Migration
 
       t.timestamps
     end
+    
+        add_index :part_rels, :organisation_relation_id
   end
 end

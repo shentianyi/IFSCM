@@ -6,8 +6,9 @@ class CreateStaffs < ActiveRecord::Migration
       t.integer :orgId
       t.string :salt
       t.string :pwd
-      
+      t.references :organisation
       t.timestamps
     end
+    add_index :staffs, :organisation_id
   end
 end
