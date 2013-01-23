@@ -32,7 +32,7 @@ module PartRelBll
       if  (partNr.nil? or partNr=="")
         return get_part_rel_by_partnerId orgId,partnerId,orgOpeType,psize,page
       elsif pid=Part.get_id(orgId,partNr)
-        return get_part_rels_by_partnerId_partId orgId,partnerId,orgOpeType,pid,partNr
+        return get_part_rels_by_partnerId_partId orgId,partnerId,orgOpeType,pid
       end
     end
     return nil
@@ -71,12 +71,14 @@ module PartRelBll
   # - int ： count, 可空
   # 返回值：
   # - PartRel : 对象数组
-  def self.get_part_rels_by_partnerId_partId orgId,partnerId,orgOpeType,partId,partNr
+  def self.get_part_rels_by_partnerId_partId orgId,partnerId,orgOpeType,partId
     cid,sid,part,ot=get_csId_by_orgOpeType(orgOpeType,orgId,partnerId)
       prid=PartRel.get_part_rel_id(:cid=>cid,:sid=>sid,:pid=>partId,:ot=>ot)
-      pr=PartRel.find(prid)
-      pr.partNr=partNr
-     return [pr],1
+      c={}
+      c["parts.id"]=partId
+      select="part_rels.*,parts.partNr"
+      prs=PartRel.joins(part).find(:all,:select=>select,:conditions=>c)
+     return prs,1
   end
 
   # ws

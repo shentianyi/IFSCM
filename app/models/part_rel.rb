@@ -2,7 +2,6 @@
 class PartRel < ActiveRecord::Base
   attr_accessible :saleNo, :purchaseNo
   attr_accessible :client_part_id, :supplier_part_id, :organisation_relation_id
-  attr_accessor :partNr # to show the org's partNr
   @@stype={:c=>"clientprls:zset",:s=>"supplierprls:zset"}
 
   belongs_to :organisation_relation
