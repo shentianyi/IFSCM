@@ -65,7 +65,7 @@ ActiveRecord::Schema.define(:version => 20130117032759) do
     t.string   "type"
     t.float    "amount"
     t.float    "oldamount"
-    t.datetime "date"
+    t.string   "date"
     t.float    "rate"
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false

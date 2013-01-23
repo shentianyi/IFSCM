@@ -61,6 +61,9 @@ module FormatHelper
   def self.demand_date_to_date date,type
     if date
       if type=='D' or type=='T'
+        puts date
+        puts date.class
+        puts "-"*30
         return  Time.parse(date)
       elsif type=='W'
         yw = date.split('/')
