@@ -18,10 +18,11 @@ class InitCSVDataScript
   def self.initStaff staffs
     if staffs.count>0
       staffs.each do |arg|
-        if !s=Staff.find(:first,:conditions=>{:name=>arg[:staffNr],:orgId=>arg[:orgId]})
+        if !s=Staff.find(:first,:conditions=>{:name=>arg[:staffNr],:orgId=>arg[:orgId],:organisation_id=>arg[:orgId]})
           puts "create staff: staffNr:#{arg[:staffNr]}  orgId:#{arg[:orgId]}"
           begin
-          st=Staff.new(:staffNr => arg[:staffNr], :name=>arg[:name], :orgId=>arg[:orgId],:password => arg[:pass],  :password_confirmation => arg[:conpass]).save!
+          st=Staff.new(:staffNr => arg[:staffNr], :name=>arg[:name], :orgId=>arg[:orgId],:password => arg[:pass], :organisation_id=>arg[:orgId],
+           :password_confirmation => arg[:conpass]).save!
           rescue Exception=>e
            puts e.message
           end
@@ -40,8 +41,8 @@ InitCSVDataScript.initCSByOrgFile orgs,'csrel20121109-leoni-cz'
 InitCSVDataScript.initPartAndCSPartRel orgs[0],orgs[1],'part20121109-leoni-cz'
 
 # init staff
-staffs=[{:name=>'leoni',:staffNr=>'leoni',:pass=>'leoni',:conpass=>'leoni',:orgId=>orgs[0].id,:organisation_id=>orgs[0].id},
-{:name=>'leonicz',:staffNr=>'leonicz',:pass=>'leonicz',:conpass=>'leonicz',:orgId=>orgs[1].id,:organisation_id=>orgs[1].id}]
+staffs=[{:name=>'leoni',:staffNr=>'leoni',:pass=>'leoni',:conpass=>'leoni',:orgId=>orgs[0].id},
+{:name=>'leonicz',:staffNr=>'leonicz',:pass=>'leonicz',:conpass=>'leonicz',:orgId=>orgs[1].id}]
 InitCSVDataScript.initStaff staffs
 
 # add org
@@ -54,5 +55,5 @@ InitCSVDataScript.initCSByOrgFile orgs,'csrel20121203-leoni-nb'
 InitCSVDataScript.initPartAndCSPartRel orgs[0],orgs[1],'part20121203-leoni-nb'
 
 # init staff
-staffs=[{:name=>'nbtp',:staffNr=>'nbtp',:pass=>'nbtp@',:conpass=>'nbtp@',:orgId=>orgs[1].id,:organisation_id=>orgs[1].id}]
+staffs=[{:name=>'nbtp',:staffNr=>'nbtp',:pass=>'nbtp@',:conpass=>'nbtp@',:orgId=>orgs[1].id}]
 InitCSVDataScript.initStaff staffs

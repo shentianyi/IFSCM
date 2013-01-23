@@ -42,10 +42,7 @@ class OrganisationRelation < ActiveRecord::Base
 
   def self.find_partnerNr_from_redis args
     key=generate_org_rel_zset_key(args[:oid],@@zstype[args[:pt]])
-    if pid=$redis.zrange(key,args[:pid],args[:pid])[0]
-      pid=pid.to_i
-    end
-    return pid
+    $redis.zrangebyscore(key,args[:pid],args[:pid])[0]
   end
   
   def add_or_update_redis_index
