@@ -268,7 +268,7 @@ class DemanderController<ApplicationController
                         demand = Demander.new(
                         :clientId=>nd.clientId, :supplierId=>nd.supplierId, :relpartId=>nd.relpartId, :type=>nd.type, :date=>nd.date,
                         :amount=>nd.amount, :oldamount=>nd.oldamount, :rate=>nd.rate)
-                        demand.save
+                        demand.save_to_redis
                         demand.save_to_send
                       end
                       demand.update_cf_record

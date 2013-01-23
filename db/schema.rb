@@ -55,6 +55,15 @@ ActiveRecord::Schema.define(:version => 20130117032759) do
   add_index "delivery_packages", ["delivery_note_id"], :name => "index_delivery_packages_on_delivery_note_id"
 
   create_table "demanders", :force => true do |t|
+    t.string   "key"
+    t.integer  "clientId"
+    t.integer  "supplierId"
+    t.integer  "relpartId"
+    t.string   "type"
+    t.integer  "amount"
+    t.integer  "oldamount"
+    t.datetime "date"
+    t.integer  "rate"
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
   end

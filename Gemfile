@@ -13,6 +13,7 @@ gem 'redis-namespace'
 
 gem "uuid"
 gem 'resque'
+gem 'whenever'
 gem "rubyzip" 
 
 # for web service

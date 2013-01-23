@@ -1,10 +1,11 @@
 #coding:utf-8
 class Demander < ActiveRecord::Base
-  attr_accessible :clientId,:relpartId,:supplierId, :type,:amount,:oldamount,:date,:rate
+  attr_accessible :id, :created_at, :updated_at
+  attr_accessible :key, :clientId,:relpartId,:supplierId, :type,:amount,:oldamount,:date,:rate
   NumPer=$DEPSIZE
   
   include DemanderRedis
-  include DemanderNewbie
+  extend  DemanderNewbie
   # ws : add demand history
   def add_to_history history_key
     zset_key=DemandHistory.generate_zset_key @clientId,@supplierId,@relpartId,@type,@date

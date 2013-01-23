@@ -1,15 +1,59 @@
 require 'active_support'
 
 module CZ
+  module BaseModule
+    def save_to_redis
+      if self.key.nil?
+        if gk=ClassKeyHelper::gen_key(self.class.name)
+          self.key=gk
+        end
+        self.created_at=Time.now.to_i
+        @attributes.each do |k,v|
+          $redis.hset(self.key, k, v)
+        end
+        return true
+      else
+        return false
+      end
+    end
+
+    def rupdate attrs={}
+      if $redis.exists(self.key) && attrs.count>0
+        attrs.each do |k,v|
+          @attributes["#{k}"] = v
+          $redis.hset(self.key, k, v)
+        end
+        return true
+      else
+        return false
+      end
+    end
+
+    def self.included(base)
+        def base.rfind( key )
+          return self.new($redis.hgetall key)   if $redis.exists key
+          return nil
+        end
+    end
+
+    def rdestroy
+      if $redis.exists self.key
+        $redis.del self.key
+        return true
+      end
+      return false
+    end
+  end
+  
   class BaseClass
     attr_accessor :key,:created_at
     include ActiveSupport::Callbacks
 
-    define_callbacks :update
-    define_callbacks :destroy
-    define_callbacks :save
-    define_callbacks :buildRSIndex
-    define_callbacks :cleanRSIndex
+    # define_callbacks :update
+    # define_callbacks :destroy
+    # define_callbacks :save
+    # define_callbacks :buildRSIndex
+    # define_callbacks :cleanRSIndex
     def initialize args={}
       if !(args.key?(:key) or args.key?("key"))
         if gk=ClassKeyHelper::gen_key(self.class.name)
