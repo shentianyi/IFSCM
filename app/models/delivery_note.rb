@@ -44,10 +44,10 @@ class DeliveryNote < ActiveRecord::Base
   def add_to_orgs
     # add to sender org zset
     key= DeliveryNote.generate_org_zset_key self.organisation_id,OrgOperateType::Supplier
-    $redis.zadd key,self.desiOrgId.to_i,self.key
+    $redis.zadd key,self.organisation_id.to_i,self.key
     # add to receiver org zset
     key= DeliveryNote.generate_org_zset_key self.rece_org_id,OrgOperateType::Client
-    $redis.zadd key,self.orgId.to_i,self.key
+    $redis.zadd key,self.rece_org_id.to_i,self.key
 
     # add to queue
     self.add_to_new_queue OrgOperateType::Client

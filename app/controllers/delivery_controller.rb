@@ -283,18 +283,10 @@ class DeliveryController < ApplicationController
       msg=ReturnMsg.new(:result=>false,:content=>'')
       type=params[:printType]
       fileName= if type=='dn'
-        DeliveryHelper.generate_dn_label_pdf params[:dnKey],params[:destination],params[:sendDate]
+        DeliveryBll.generate_dn_label_pdf params[:dnKey],params[:destination],params[:sendDate]
       elsif type=="pack"
-        DeliveryHelper.generate_dn_pack_label_pdf params[:dnKey]
+        DeliveryBll.generate_dn_pack_label_pdf params[:dnKey]
       end
-      # begin
-       # send_file AliBucket.url_for(fileName),:type => 'application/pdf', :filename => fileName
-      # rescue Exception=>e
-       # puts e
-      # end
-      # puts "-------------"
-       # puts AliBucket.url_for(fileName)
-      # puts "----------------"
       if fileName
         msg.result=true
         msg.content= AliBucket.url_for(fileName)
