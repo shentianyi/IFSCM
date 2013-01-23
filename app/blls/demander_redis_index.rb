@@ -1,47 +1,6 @@
 #coding:utf-8
-module DemanderRedis
-    def save_to_redis
-      if self.key.nil?
-        if gk=ClassKeyHelper::gen_key(self.class.name)
-          self.key=gk
-        end
-        self.created_at=Time.now.to_i
-        @attributes.each do |k,v|
-          $redis.hset(self.key, k, v)
-        end
-        return true
-      else
-        return false
-      end
-    end
+module DemanderRedisIndex
 
-    def rupdate attrs={}
-      if $redis.exists(self.key) && attrs.count>0
-        attrs.each do |k,v|
-          @attributes["#{k}"] = v
-          $redis.hset(self.key, k, v)
-        end
-        return true
-      else
-        return false
-      end
-    end
-
-    # def self.included(base)
-        # def base.rfind( key )
-          # return self.new($redis.hgetall key)   if $redis.exists key
-          # return nil
-        # end
-    # end
-
-    def rdestroy
-      if $redis.exists self.key
-        $redis.del self.key
-        return true
-      end
-      return false
-    end
-    
   def save_to_send
     $redis.sadd( "#{Rns::C}:#{clientId}", key )
     $redis.sadd( "#{Rns::S}:#{supplierId}", key )
@@ -58,15 +17,6 @@ module DemanderRedis
   end
   
   def self.included(base)
-        def base.rfind( key )
-          if $redis.exists key
-            ob = self.new
-            ob.rupdate($redis.hgetall key)
-            return ob
-          end
-          return nil
-        end
-      
       def base.search( hash )
         list = []
         resultKey = "resultKey_temp_#{$redis.incr('resultKey_temp_')}"

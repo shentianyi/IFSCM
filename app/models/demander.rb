@@ -1,10 +1,12 @@
 #coding:utf-8
+require "base_class"
 class Demander < ActiveRecord::Base
   attr_accessible :id, :created_at, :updated_at
   attr_accessible :key, :clientId,:relpartId,:supplierId, :type,:amount,:oldamount,:date,:rate
   NumPer=$DEPSIZE
   
-  include DemanderRedis
+  include CZ::BaseModule
+  include DemanderRedisIndex
   extend  DemanderNewbie
   # ws : add demand history
   def add_to_history history_key
@@ -42,7 +44,7 @@ class Demander < ActiveRecord::Base
   end
 
   def amount t=nil
-    return FormatHelper::get_number @amount,t
+    return FormatHelper::get_number @attributes["amount"],t
   end
 
   def oldamount t=nil

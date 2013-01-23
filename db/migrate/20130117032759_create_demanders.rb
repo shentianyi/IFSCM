@@ -6,10 +6,10 @@ class CreateDemanders < ActiveRecord::Migration
       t.integer :supplierId
       t.integer :relpartId
       t.string :type
-      t.integer :amount
-      t.integer :oldamount
+      t.float :amount
+      t.float :oldamount
       t.datetime :date
-      t.integer :rate
+      t.float :rate
       t.timestamps
     end
   end
