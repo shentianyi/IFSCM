@@ -16,8 +16,8 @@ module DemanderBll
     batchFile.items=items
     return batchFile
   end
-  
-    # ws: handle batchFile from csv
+
+  # ws: handle batchFile from csv
   def self.handle_batchFile_from_csv(batchFileKey,clientId)
     begin
       returnMsg=ReturnMsg.new
@@ -85,36 +85,28 @@ module DemanderBll
     msg=ValidMsg.new(:result=>true,:content_key=>Array.new)
     # vali partNr
     partId=supplierId=nil
-    if !partId=Part.find_partKey_by_orgId_partNr(demand.clientId,demand.cpartNr)
+    if partId=Part.get_id(demand.clientId,demand.cpartNr)
+          demand.cpartId=partId
+    else
       msg.result=false
       msg.content_key<<:pnrNotEx
-    else
-    demand.cpartId=partId
     end
 
     # vali supplier
-    if client=Organisation.find_by_id(demand.clientId)
-      if !supplierId=client.find_supplier_byNr(demand.supplierNr)
-        msg.result=false
-        msg.content_key<<:spNrNotEx
-      else
+    if supplierId= OrganisationRelation.get_partnerid(:oid=>demand.clientId,:pt=>:s,:pnr=>demand.supplierNr)
       demand.supplierId=supplierId
-      end
+    else   
+     msg.result=false
+      msg.content_key<<:spNrNotEx
     end
 
     # vali part relation
     if partId and supplierId
-      if !parts=PartRel.get_partRelMetas_by_partKey(demand.clientId,supplierId,partId,PartRelType::Client)
+      if prId=PartRel.get_part_rel_id(:cid=>demand.clientId,:si=>supplierId,:pid=>partId,:pt=>:c)
+          demand.relpartId=prId
+      else      
         msg.result=false
         msg.content_key<<:partNotFitOrgP
-      else
-        if parts.count>1
-          msg.result=false
-          msg.content_key<<:partMutiFitOrgP
-        else
-        demand.spartId=parts[0].spartId
-        demand.relpartId=parts[0].key
-        end
       end
     end
 
@@ -125,7 +117,7 @@ module DemanderBll
     end
 
     # vali date
-    if  FormatHelper::str_less_today(demand.filedate)
+    if FormatHelper::str_less_today(demand.filedate)
       msg.result=false
       msg.content_key<<:fcDateErr
     end
@@ -152,7 +144,7 @@ module DemanderBll
     return msg
   end
 
- # ws: get file demands by type
+  # ws: get file demands by type
   def self.get_file_demands fileId,startIndex,endIndex,type=nil
     demands=RedisFile.find(fileId)
     type=demands.errorCount.to_i>0 ? 'error':'normal' if type
@@ -169,4 +161,91 @@ module DemanderBll
     return demands,type,totalCount
   end
 
+  
+  # ws : get batch file info
+  def self.get_batch_file_info fileId,startIndex,endIndex
+    bf=RedisFile.find(fileId)
+    itemKeys,totalCount=bf.send "get_normal_item_keys".to_sym,startIndex,endIndex
+    bf.itemCount,bf.errorCount,bf.created_at=bf.itemCount.to_i,bf.errorCount.to_i,bf.created_at.to_i
+    if bf.itemCount>0
+      bf.items=[]
+      itemKeys.each do |k|
+        if d=RedisFile.find(k)
+        d.itemCount,d.errorCount=d.itemCount.to_i,d.errorCount.to_i
+        bf.items<<d
+        end
+      end
+    end
+    return bf,totalCount
+  end
+
+  # ws : zip demand files
+  def self.zip_demand_cvs batchId, user_agent
+    msg=ReturnMsg.new(:result=>false,:content=>'')
+    path=nil
+    if bf=RedisFile.find(batchId)
+      sfKeys,scount=bf.get_normal_item_keys 0,-1
+      if scount>0
+        tmps=[]
+        zfilename=File.join($DETMP, UUID.generate+'.zip')
+        csv_encode=FormatHelper::csv_write_encode user_agent
+        Zip::ZipFile.open(zfilename, Zip::ZipFile::CREATE) do |z|
+          sfKeys.each do |sk|
+            if sf=RedisFile.find(sk)
+              spath=File.join($DETMP,sf.uuidName)
+              File.open(spath,"wb:#{csv_encode}") do |f|
+                f.puts $DECSVT.join($CSVSP)
+                mt=['normal','error']
+                mt.each do |m|
+                  nds,ncount=get_file_demands sf.key,0,-1,m
+                  if ncount>0
+                    nds.items.each do |nd|
+                      f.puts [nd.cpartNr,nd.supplierNr,nd.filedate,nd.type,nd.amount].join($CSVSP)
+                    end
+                  end
+                end
+              end
+            tmps<<spath
+            z.add(sf.oriName,spath)
+            end
+          end
+        end
+
+        if tmps.count>0
+          tmps.each do |t|
+            File.delete(t)
+          end
+        end
+
+      msg.result=true
+      msg.content=zfilename
+      else
+        msg.content='批次上次中不存在任何文件'
+      end
+    else
+      msg.content='上传文件被取消，无法下载'
+    end
+    return msg
+  end
+
+  # ws : download demands as csv
+  def self.down_load_demand demands,opeType,user_agent
+    msg=ReturnMsg.new(:result=>false,:content=>'')
+    csv_encode=FormatHelper::csv_write_encode user_agent
+    path=File.join($DETMP,UUID.generate+'.csv')
+    File.open(path,"wb:#{csv_encode}") do |f|
+      f.puts $DECSVT.join($CSVSP)
+      demands.each do |nd|
+        if opeType==OrgOperateType::Client
+          f.puts [nd.cpartNr,nd.supplierNr,nd.date,nd.type,nd.amount].join($CSVSP)
+        elsif opeType==OrgOperateType::Supplier
+          f.puts [nd.spartNr,nd.clientNr,nd.date,nd.type,nd.amount].join($CSVSP)
+        end
+      end
+    end
+   msg.result=true
+   msg.content=path
+   return msg
+  end
+  
 end

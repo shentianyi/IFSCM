@@ -1,3 +1,4 @@
+#coding:utf-8
 require 'base_class'
 
 class DemandType<CZ::BaseClass

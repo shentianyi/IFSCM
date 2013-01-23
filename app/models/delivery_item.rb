@@ -1,3 +1,4 @@
+#coding:utf-8
 class DeliveryItem < ActiveRecord::Base
   attr_accessible :key,  :parentKey,:state
   belongs_to :delivery_packages
