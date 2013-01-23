@@ -4,9 +4,18 @@ class OrganisationTest < ActiveSupport::TestCase
   # test "the truth" do
   #   assert true
   # end
+  
   def setup
     @leoni=organisations(:leoni)
     @ningbo = organisations(:ningbo)
+  end
+  
+  def test_create_org
+    org = Organisation.new(:name=>"Test",:description=>"Test",
+      :address=>"Address", :tel=>"Tel", :website=>"Website",:abbr=>"Abbr",:contact=>"Contact",:email=>"Email")
+    org.save
+    org.reload
+    assert_not_nil org, "Organisation one creation failed"
   end
   
   def test_clients
@@ -27,10 +36,4 @@ class OrganisationTest < ActiveSupport::TestCase
     assert_equal  parts(:pOne).id, p.id
   end
 
-  # def test_create_org
-    # org = organisations(:orgone)
-    # org.save
-    # org.reload
-    # assert_not_nil org, "Organisation one creation failed"
-  # end
 end
