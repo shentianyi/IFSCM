@@ -18,6 +18,10 @@ class OrganisationRelation < ActiveRecord::Base
    find_partnerid_from_redis args
   end  
   
+  def self.get_parterNr args
+    find_partnerNr_from_redis args
+  end
+  
   def self.get_type_by_opetype orgOpeType
     if orgOpeType==OrgOperateType::Client
       return :s
@@ -36,6 +40,14 @@ class OrganisationRelation < ActiveRecord::Base
     return pid
   end
 
+  def self.find_partnerNr_from_redis args
+    key=generate_org_rel_zset_key(args[:oid],@@zstype[args[:pt]])
+    if pid=$redis.zrange(key,args[:pid],args[:pid])[0]
+      pid=pid.to_i
+    end
+    return pid
+  end
+  
   def add_or_update_redis_index
     if self.supplierNr_change
       if self.supplierNr_was.nil?

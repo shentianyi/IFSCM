@@ -16,4 +16,13 @@ module DeliveryHelper
     end
     return cssClass
   end
+  
+  def self.get_clientNr_by_orgId orgId,pid
+    OrganisationRelation.get_parterNr(:oid=>orgId,:pt=>:c,:pid=>pid)
+  end
+      
+  def self.get_supplierNr_by_orgId orgId,pid
+    OrganisationRelation.get_parterNr(:oid=>orgId,:pt=>:s,:pid=>pid)
+  end
+  
 end

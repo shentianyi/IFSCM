@@ -1,12 +1,19 @@
 #coding:utf-8
+require 'base_class'
+require 'base_delivery'
+
 class DeliveryNote < ActiveRecord::Base
   attr_accessible :rece_org_id, :destination, :key, :state, :wayState,:sendDate
   attr_accessible :staff_id,:organisation_id
+  attr_accessible :id, :created_at, :updated_at
   
   has_many :delivery_packages,:dependent=>:destroy
 
   belongs_to :organisation
   belongs_to :staff
+  
+  include CZ::BaseModule
+    include CZ::DeliveryBase
   # ws
   # [功能：] 将运单加入用户 ZSet
   # 参数：
@@ -25,7 +32,7 @@ class DeliveryNote < ActiveRecord::Base
   # 返回值：
   # - 无
   def delete_from_staff_cache
-    zset_key=DeliveryNote.generate_staff_zset_key self.sender
+    zset_key=DeliveryNote.generate_staff_zset_key self.staff_id
     $redis.zrem zset_key,self.key
   end
 
@@ -81,7 +88,7 @@ class DeliveryNote < ActiveRecord::Base
     if keys.count>0
       dns=[]
       keys.each do |k|
-        if dn=DeliveryNote.find(k)
+        if dn=DeliveryNote.rfind(k)
         dns<<dn
         end
       end
@@ -127,7 +134,7 @@ class DeliveryNote < ActiveRecord::Base
       dns=[]
       dnKeys=$redis.zrange key,startIndex,endIndex
       dnKeys.each do |dnKey|
-        if dn=DeliveryNote.find(dnKey)
+        if dn=DeliveryNote.rfind(dnKey)
         dns<<dn
         end
       end

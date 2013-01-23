@@ -1,5 +1,7 @@
 #coding:utf-8
-class DeliveryItemTemp<DeliveryBase
+require 'base_class'
+
+class DeliveryItemTemp<CZ::BaseClass
    attr_accessor :cpartNr, :key,:parentKey,:packAmount, :partRelId, :perPackAmount, :purchaseNo, :saleNo, :spartNr, :total
   # ws
   # [功能：] 将临时运单项加入用户 ZSet
@@ -56,6 +58,14 @@ class DeliveryItemTemp<DeliveryBase
     $redis.remrangebyrank zset_key,0,-1
   end
 
+ def packAmount t=nil
+    return FormatHelper::get_number @packAmount,t
+  end
+
+  def perPackAmount t=nil
+    return FormatHelper::get_number @perPackAmount,t
+  end
+  
   
   private
 
