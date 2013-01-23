@@ -262,8 +262,8 @@ class DemanderController<ApplicationController
                     nds.items.each do |nd|
                       puts nd.to_json
                       if tempKey = DemandHistory.exists( nd.clientId,nd.supplierId,nd.relpartId,nd.type,nd.date )
-                        demand = Demander.find(tempKey)
-                        demand.update( :clientId=>nd.clientId, :supplierId=>nd.supplierId, :relpartId=>nd.relpartId, :type=>nd.type, :date=>nd.date,
+                        demand = Demander.rfind(tempKey)
+                        demand.rupdate( :clientId=>nd.clientId, :supplierId=>nd.supplierId, :relpartId=>nd.relpartId, :type=>nd.type, :date=>nd.date,
                         :amount=>nd.amount, :oldamount=>nd.oldamount, :rate=>nd.rate)
                         demand.save_to_send_update
                       else

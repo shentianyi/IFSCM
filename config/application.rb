@@ -20,6 +20,7 @@ module Demand
     config.autoload_paths += Dir["#{config.root}/lib/**/"]
     config.autoload_paths += %W(#{config.root}/blls)
     config.autoload_paths += Dir["#{config.root}/blls/**/"]
+    config.autoload_paths += %W(#{config.root}/base)
     
     # Only load the plugins named here, in the order given (default is alphabetical).
     # :all can be used as a placeholder for all plugins not explicitly named.
