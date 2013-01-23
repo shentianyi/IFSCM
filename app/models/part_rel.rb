@@ -20,7 +20,7 @@ class PartRel < ActiveRecord::Base
   def self.find_partnerid_from_redis args
     key=generate_org_partrel_zset_key(args[:cid],args[:sid],args[:pid],args[:ot])
     if pid=$redis.zrange(key,0,-1)[0]
-    pid=pid.to_i
+     pid=pid.to_i
     end
     return pid
   end

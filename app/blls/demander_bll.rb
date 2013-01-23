@@ -181,7 +181,7 @@ module DemanderBll
 
   # ws : zip demand files
   def self.zip_demand_cvs batchId, user_agent
-    msg=ReturnMsg.new(:result=>false,:content=>'')
+    msg=ReturnMsg.new
     path=nil
     if bf=RedisFile.find(batchId)
       sfKeys,scount=bf.get_normal_item_keys 0,-1
@@ -230,7 +230,7 @@ module DemanderBll
 
   # ws : download demands as csv
   def self.down_load_demand demands,opeType,user_agent
-    msg=ReturnMsg.new(:result=>false,:content=>'')
+    msg=ReturnMsg.new
     csv_encode=FormatHelper::csv_write_encode user_agent
     path=File.join($DETMP,UUID.generate+'.csv')
     File.open(path,"wb:#{csv_encode}") do |f|

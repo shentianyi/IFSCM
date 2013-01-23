@@ -16,6 +16,14 @@ class OrganisationRelation < ActiveRecord::Base
    find_partnerid_from_redis args
   end  
   
+  def self.get_type_by_opetype orgOpeType
+    if orgOpeType==OrgOperateType::Client
+      return :s
+    elsif orgOpeType==OrgOperateType::Supplier
+      return :c
+    end
+  end
+  
   private
   
   def self.find_partnerid_from_redis args
