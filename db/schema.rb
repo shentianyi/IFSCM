@@ -44,7 +44,7 @@ ActiveRecord::Schema.define(:version => 20130117032759) do
     t.string   "cpartNr"
     t.string   "spartNr"
     t.string   "parentKey"
-    t.string   "partRelMetaKey"
+    t.integer  "partRelId"
     t.integer  "packAmount"
     t.float    "perPackAmount"
     t.integer  "delivery_note_id"
@@ -100,12 +100,16 @@ ActiveRecord::Schema.define(:version => 20130117032759) do
     t.datetime "updated_at",               :null => false
   end
 
+  add_index "part_rels", ["organisation_relation_id"], :name => "index_part_rels_on_organisation_relation_id"
+
   create_table "parts", :force => true do |t|
     t.string   "partNr"
     t.integer  "organisation_id"
     t.datetime "created_at",      :null => false
     t.datetime "updated_at",      :null => false
   end
+
+  add_index "parts", ["organisation_id"], :name => "index_parts_on_organisation_id"
 
   create_table "staffs", :force => true do |t|
     t.string   "staffNr"
