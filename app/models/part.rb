@@ -4,8 +4,8 @@ class Part < ActiveRecord::Base
   has_many :client_part_rels, :class_name=>"PartRel", :foreign_key=>"client_part_id" # org is client
   has_many :supplier_part_rels, :class_name=>"PartRel", :foreign_key=>"supplier_part_id" # org is supplier
 
-  after_save :add_or_update_redis_index
-  after_destroy :del_redis_index
+  # after_save :add_or_update_redis_index
+  # after_destroy :del_redis_index
   
   def self.get_id_by_orgId_partNr orgId,partNr
     find_id_from_redis(orgId,partNr)

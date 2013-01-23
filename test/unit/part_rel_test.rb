@@ -4,11 +4,22 @@ class PartRelTest < ActiveSupport::TestCase
   # test "the truth" do
   #   assert true
   # end
+  def setup
+    @pOne = parts(:pOne)
+    @pTwo = parts(:pTwo)
+    @pThree = parts(:pThree)
+    @orgRel = organisation_relations(:orgRelOne)
+  end
   
   def test_fixtures_access
     assert_not_nil part_rels(:pRelOne), "fixtures test"
   end
   
+  def test_create_part_relation
+    pRel = PartRel.create(:saleNo=>"saleNo_Test", :purchaseNo=>"purchaseNo_Test",
+                                                          :client_part_id=>@pOne.id, :supplier_part_id=>@pTwo.id, :organisation_relation_id=>@orgRel.id)
+    assert_not_nil pRel.reload
+  end
   # def test_create_part_meta 
     # orgone = organisations(:orgone)
     # orgtwo = organisations(:orgtwo)

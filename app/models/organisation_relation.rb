@@ -1,5 +1,7 @@
 class OrganisationRelation < ActiveRecord::Base
   attr_accessible :supplierNr, :clientNr
+  attr_accessible :origin_supplier_id, :origin_client_id
+  
   belongs_to :origin_supplier, :class_name=>"Organisation"#, :foreign_key=>"origin_supplier_id"
   belongs_to :origin_client, :class_name=>"Organisation"#, :foreign_key=>"origin_client_id"
   has_many :part_rels
