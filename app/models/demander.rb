@@ -15,19 +15,20 @@ class Demander < ActiveRecord::Base
   end
 
   def clientNr
-    Organisation.find_by_id(supplierId).search_client_byId( clientId )
+    OrganisationRelation.get_parterNr(:oid=>supplierId,:pt=>:c,:pid=>clientId)
   end
 
   def supplierNr
-    Organisation.find_by_id(clientId).search_supplier_byId( supplierId )
+    OrganisationRelation.get_parterNr(:oid=>clientId,:pt=>:s,:pid=>supplierId)
   end
 
   def cpartNr
-    Part.find(PartRelMeta.find(relpartId).cpartId).partNr
+    PartRel.find(relpartId).client_part.partNr
+    # Part.get_partNr clientId,partId
   end
 
   def spartNr
-    Part.find(PartRelMeta.find(relpartId).spartId).partNr
+    PartRel.find(relpartId).supplier_part.partNr
   end
 
   # ws
@@ -48,7 +49,7 @@ class Demander < ActiveRecord::Base
   end
 
   def oldamount t=nil
-    return FormatHelper::get_number @oldamount,t
+    return FormatHelper::get_number @attributes["oldamount"],t
   end
 
   private

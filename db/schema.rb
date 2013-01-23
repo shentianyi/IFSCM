@@ -27,15 +27,18 @@ ActiveRecord::Schema.define(:version => 20130117032759) do
   create_table "delivery_notes", :force => true do |t|
     t.string   "key"
     t.integer  "wayState"
-    t.integer  "orgId"
-    t.integer  "sender"
-    t.integer  "desiOrgId"
+    t.integer  "rece_org_id"
     t.string   "destination"
     t.integer  "state"
     t.datetime "sendDate"
-    t.datetime "created_at",  :null => false
-    t.datetime "updated_at",  :null => false
+    t.datetime "created_at",      :null => false
+    t.datetime "updated_at",      :null => false
+    t.integer  "staff_id"
+    t.integer  "organisation_id"
   end
+
+  add_index "delivery_notes", ["organisation_id"], :name => "index_delivery_notes_on_organisation_id"
+  add_index "delivery_notes", ["staff_id"], :name => "index_delivery_notes_on_staff_id"
 
   create_table "delivery_packages", :force => true do |t|
     t.string   "key"
@@ -62,7 +65,7 @@ ActiveRecord::Schema.define(:version => 20130117032759) do
     t.string   "type"
     t.float    "amount"
     t.float    "oldamount"
-    t.datetime "date"
+    t.string   "date"
     t.float    "rate"
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
@@ -117,8 +120,11 @@ ActiveRecord::Schema.define(:version => 20130117032759) do
     t.integer  "orgId"
     t.string   "salt"
     t.string   "pwd"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+    t.integer  "organisation_id"
+    t.datetime "created_at",      :null => false
+    t.datetime "updated_at",      :null => false
   end
+
+  add_index "staffs", ["organisation_id"], :name => "index_staffs_on_organisation_id"
 
 end

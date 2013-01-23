@@ -32,9 +32,9 @@ class DemanderTest < ActiveSupport::TestCase
   end
   
   def test_redis_rupdate
-    @demand.rupdate(:amount=>999)
+    @demand.rupdate(:amount=>99.9)
     de = Demander.rfind(@key)
-    assert_equal  de.amount, 999
+    assert_equal  de.amount, 99.9
   end
   
   def test_redis_rdestroy

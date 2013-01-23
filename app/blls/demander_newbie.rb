@@ -1,7 +1,7 @@
 #coding:utf-8
 module DemanderNewbie
   
-  def self.send_kestrel( sId, demandKey, demandType )
+  def send_kestrel( sId, demandKey, demandType )
     kesKey = gen_kestrel(sId)
     score = case demandType
     when 'D'   then  DemanderType::Day
@@ -13,7 +13,7 @@ module DemanderNewbie
     $redis.zadd( kesKey, score, demandKey)
   end
 
-  def self.get_kestrel( orgId, demandType, page )
+  def get_kestrel( orgId, demandType, page )
     kesKey = gen_kestrel(orgId)
     demands = []
     score = case demandType
@@ -25,20 +25,20 @@ module DemanderNewbie
     when ''
       total = $redis.zcard( kesKey )
       $redis.zrange( kesKey, page.to_i*NumPer, (page.to_i+1)*NumPer-1 ).each do |item|
-        demands << Demander.find( item )
+        demands << Demander.rfind( item )
         $redis.zrem( kesKey, item )
       end
       return demands, total
     end
     total = $redis.zcount( kesKey, score, score )
     $redis.zrangebyscore( kesKey, score, score, :limit=>[(page.to_i)*NumPer, NumPer] ).each do |item|
-      demands << Demander.find( item )
+      demands << Demander.rfind( item )
       $redis.zrem( kesKey, item )
     end
     return demands, total
   end
 
-  def self.clear_kestrel( orgId )
+  def clear_kestrel( orgId )
     kesKey = gen_kestrel(orgId)
     return $redis.del( kesKey )
   end

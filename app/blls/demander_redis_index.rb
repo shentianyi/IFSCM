@@ -57,12 +57,12 @@ module DemanderRedisIndex
     
           if hash[:page]
             total = $redis.zcount( resultKey, start, amountend )
-            $redis.zrangebyscore( resultKey, start, amountend, :withscores=>false, :limit=>[(hash[:page].to_i)*NumPer, NumPer] ).each do |item|
-              demands << Demander.find( item )
+            $redis.zrangebyscore( resultKey, start, amountend, :withscores=>false, :limit=>[(hash[:page].to_i)*$DEPSIZE, $DEPSIZE] ).each do |item|
+              demands << Demander.rfind( item )
             end
           else
             $redis.zrangebyscore( resultKey, start, amountend, :withscores=>false).each do |item|
-              demands << Demander.find( item )
+              demands << Demander.rfind( item )
             end
           end
         else
@@ -70,12 +70,12 @@ module DemanderRedisIndex
           timeend = (hash[:end]&&hash[:end].size>0) ? hash[:end].to_i : $Infin
           if hash[:page]
             total = $redis.zcount( resultKey, start, timeend )
-            $redis.zrangebyscore( resultKey, start, timeend, :withscores=>false, :limit=>[(hash[:page].to_i)*NumPer, NumPer] ).each do |item|
-              demands << Demander.find( item )
+            $redis.zrangebyscore( resultKey, start, timeend, :withscores=>false, :limit=>[(hash[:page].to_i)*$DEPSIZE, $DEPSIZE] ).each do |item|
+              demands << Demander.rfind( item )
             end
           else
             $redis.zrangebyscore( resultKey, start, timeend, :withscores=>false).each do |item|
-              demands << Demander.find( item )
+              demands << Demander.rfind( item )
             end
           end
         end

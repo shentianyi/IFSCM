@@ -15,6 +15,9 @@ namespace :db do
               :page=>nil )
       puts total
       puts demands.each {|d|d.amount}
+      demands.each do |d|
+        
+      end
   end
   
   
