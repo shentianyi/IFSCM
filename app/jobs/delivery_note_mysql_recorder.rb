@@ -3,7 +3,7 @@ class DeliveryNoteMysqlRecorder
   def self.perform dnKey
     begin
     puts "DeliveryNoteMysqlRecorder:#{dnKey}"
-    DeliveryHelper::record_dn_into_mysql dnKey
+    DeliveryBll.record_dn_into_mysql dnKey
     rescue Exception=>e
      puts e.message
     end

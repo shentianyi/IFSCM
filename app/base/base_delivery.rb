@@ -4,8 +4,6 @@ module CZ
     attr_accessor :items
     def add_to_parent
       key=eval(self.class.name).generate_child_zset_key self.parentKey
-      puts self.parentKey
-      puts DeliveryBll.delivery_obj_reconverter(self.class.name)
       $redis.zadd key,DeliveryBll.delivery_obj_reconverter(self.class.name),self.key
     end
 

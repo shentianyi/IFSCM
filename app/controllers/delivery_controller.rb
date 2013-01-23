@@ -181,10 +181,6 @@ class DeliveryController < ApplicationController
     msg=ReturnMsg.new(:result=>false,:content=>'')
     if dn=DeliveryNote.rfind(params[:dnKey])
       st=Staff.find(dn.staff_id.to_i)
-      puts '(((((((((((((((((((((())))))))))))))))))))))'
-      puts st.organisation_id
-      puts session[:org_id]
-            puts '(((((((((((((((((((((())))))))))))))))))))))'
       if (st=Staff.find(dn.staff_id.to_i)) and st.orgId==session[:org_id]
         @currentPage=pageIndex=params[:pageIndex].nil? ? 0 : params[:pageIndex].to_i
         startIndex,endIndex=PageHelper::generate_page_index(pageIndex,$DEPSIZE)

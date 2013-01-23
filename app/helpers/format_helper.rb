@@ -129,5 +129,8 @@ module FormatHelper
     return n1.to_i*n2.to_i
     end
   end
-
+  
+  def self.string_to_int str
+   return str.sub(/(\.0)$/,'')
+  end
 end

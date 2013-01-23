@@ -101,15 +101,16 @@ module DeliveryBll
   # 返回值：
   # - ReturnMsg : JSON
   def self.send_dn  staffId,dnKey,destiStr,sendDate
-    msg=ReturnMsg.new(:result=>false,:content=>'')
+    msg=ReturnMsg.new
     if DeliveryNote.exist_in_staff_cache(staffId,dnKey)
-      if dn=DeliveryNote.find(dnKey)
-        if dn.items=DeliveryBase.get_children(dn.key,0,-1)[0]
+      if dn=DeliveryNote.rfind(dnKey)
+        if dn.items=DeliveryNote.get_children(dn.key,0,-1)[0]
           dn.items.each do |i|
-            prm=PartRelMeta.find(i.partRelMetaKey)
-            i.update(:cpartNr=>Part.find(prm.cpartId).partNr,:spartNr=>Part.find(prm.spartId).partNr,:saleNo=>prm.saleNo,:purchaseNo=>prm.purchaseNo)
+            pl=PartRel.find(i.partRelId)
+            i.rupdate(:cpartNr=>Part.get_partNr(dn.rece_org_id,pl.client_part_id),
+            :spartNr=>Part.get_partNr(orgId,pl.supplier_part_id),:saleNo=>pl.saleNo,:purchaseNo=>pl.purchaseNo)
           end
-          dn.update(:wayState=>DeliveryNoteWayState::Intransit,:destination=>destiStr,:sendDate=>sendDate)
+          dn.rupdate(:wayState=>DeliveryNoteWayState::Intransit,:destination=>destiStr,:sendDate=>sendDate)
           dn.add_to_orgs
           dn.delete_from_staff_cache
           # DelieveryNote & DeliveryItem 写入Mysql
@@ -196,22 +197,18 @@ module DeliveryBll
   # 返回值：
   # - 无
   def self.record_dn_into_mysql dnKey
-    if dn=DeliveryNote.find(dnKey)
-      mdn =MDeliveryNote.new( :desiOrgId=>dn.desiOrgId, :destination=>dn.destination, :key=>dn.key, :orgId=>dn.orgId,
-      :sender=>dn.sender, :state=>dn.state, :wayState=>dn.wayState,:sendDate=>dn.sendDate)
-      if  dn.items=DeliveryBase.get_children(dn.key,0,-1)[0]
+    if dn=DeliveryNote.rfind(dnKey)
+      if  dn.items=DeliveryNote.get_children(dn.key,0,-1)[0]
         dn.items.each do |p|
-          pack= mdn.m_delivery_packages.build( :cpartNr=>p.cpartNr, :key=>p.key, :parentKey=>p.parentKey, :partRelMetaKey=>p.partRelMetaKey,
-          :purchaseNo=>p.purchaseNo, :saleNo=>p.saleNo, :spartNr=>p.spartNr, :packAmount=>p.packAmount,:perPackAmount=>p.perPackAmount)
-          pack.save
-          if p.items=DeliveryBase.get_children(p.key,0,-1)[0]
+          p.save
+          if p.items=DeliveryPackage.get_children(p.key,0,-1)[0]
             p.items.each do |item|
-              pack.m_delivery_items.build(:key=>item.key,:state=>item.state,:parentKey=>item.parentKey).save
+              p.delivery_items.build(:key=>item.key,:state=>item.state,:parentKey=>item.parentKey).save
             end
           end
         end
       end
-    mdn.save
+     mdn.save
     end
   end
 

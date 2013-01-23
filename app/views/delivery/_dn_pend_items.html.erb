@@ -25,14 +25,15 @@
           <% i=0%>
           <%
           dnItems.each do |item|
+          	per=FormatHelper.string_to_int(item.perPackAmount.to_s)
           %>
      <tr class="norline">
           <th><%= (i+=1)%></th>
-          <th style="text-align:left;"><%= item.cpartNr%></th>
-          <th><%= item.spartNr%></th>
-          <th><%= item.perPackAmount%></th>
+          <th style="text-align:left;"><%= item.spartNr%></th>
+          <th><%= item.cpartNr%></th>
+          <th><%= per%></th>
           <th><%= item.packAmount%></th>
-          <th><%= (FormatHelper.string_multiply(item.perPackAmount,item.packAmount))%></th>
+          <th><%= (FormatHelper.string_multiply(per,item.packAmount))%></th>
           <th><%= item.saleNo%></th>
           <th> <%= item.purchaseNo%></th>
      </tr>

@@ -13,7 +13,7 @@ class DeliveryNote < ActiveRecord::Base
   belongs_to :staff
   
   include CZ::BaseModule
-    include CZ::DeliveryBase
+  include CZ::DeliveryBase
   # ws
   # [功能：] 将运单加入用户 ZSet
   # 参数：
@@ -43,10 +43,10 @@ class DeliveryNote < ActiveRecord::Base
   # - 无
   def add_to_orgs
     # add to sender org zset
-    key= DeliveryNote.generate_org_zset_key self.orgId,OrgOperateType::Supplier
+    key= DeliveryNote.generate_org_zset_key self.organisation_id,OrgOperateType::Supplier
     $redis.zadd key,self.desiOrgId.to_i,self.key
     # add to receiver org zset
-    key= DeliveryNote.generate_org_zset_key self.desiOrgId,OrgOperateType::Client
+    key= DeliveryNote.generate_org_zset_key self.rece_org_id,OrgOperateType::Client
     $redis.zadd key,self.orgId.to_i,self.key
 
     # add to queue
@@ -60,7 +60,7 @@ class DeliveryNote < ActiveRecord::Base
   # 返回值：
   # - 无
   def add_to_new_queue orgOpeType
-    key=DeliveryNote.generate_org_new_queue_zset_key self.desiOrgId,orgOpeType
+    key=DeliveryNote.generate_org_new_queue_zset_key self.rece_org_id,orgOpeType
     $redis.zadd key,Time.now.to_i,self.key
   end
 
