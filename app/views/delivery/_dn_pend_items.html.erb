@@ -3,8 +3,7 @@
 <table class="upData">
      <tr  class="lineone">
           <th>&nbsp;</th>
-          <th>内部零件号</th>
-          <th>客户零件号</th>
+          <th>零件号</th>
           <th>箱单位量</th>
           <th>箱数</th>
           <th>总量</th>
@@ -25,12 +24,11 @@
           <% i=0%>
           <%
           dnItems.each do |item|
-           prm=PartRelMeta.find(item.partRelMetaKey)
+           prm=PartRel.find(item.partRelId)
           %>
      <tr class="norline">
           <th><%= (i+=1)%></th>
-          <th style="text-align:left;"><%= Part.find(prm.spartId).partNr%></th>
-          <th><%= Part.find(prm.cpartId).partNr%></th>
+          <th style="text-align:left;"><%= Part.find(prm.spartId).partNr%></th>           
           <th><%= item.perPackAmount%></th>
           <th><%= item.packAmount%></th>
           <th><%= (FormatHelper.string_multiply(item.perPackAmount,item.packAmount))%></th>

@@ -46,22 +46,25 @@ module DeliveryBll
       if temps=DeliveryItemTemp.get_all_staff_cache(staffId)
         #new delivery note
         dstate=DeliveryObjState::Normal
-        dn=DeliveryNote.new(:state=>dstate,:sender=>staffId,:orgId=>orgId,:desiOrgId=>desiOrgId)
+        dn=DeliveryNote.new(:key=>ClassKeyHelper::gen_key("DeliveryNote"),:state=>dstate,:staff_id=>staffId,:organisation_id=>orgId,:rece_org_id=>desiOrgId)
         temps.each do |t|
           packcount=t.packAmount
-          pack=DeliveryPackage.new(:parentKey=>dn.key,:packAmount=>packcount,:perPackAmount=>t.perPackAmount,:partRelId=>t.partRelId)
+          pl=PartRel.find(t.partRelId)
+          pack=DeliveryPackage.new(:key=>ClassKeyHelper::gen_key("DeliveryPackage"),:parentKey=>dn.key,:packAmount=>packcount,
+          :perPackAmount=>t.perPackAmount,:partRelId=>t.partRelId,:saleNo=>pl.saleNo,:purchaseNo=>pl.purchaseNo,
+          :cpartNr=>Part.get_partNr(desiOrgId,pl.client_part_id),:spartNr=>Part.get_partNr(orgId,pl.supplier_part_id))
           for i in 0...packcount
-            item=DeliveryItem.new(:type=>DeliveryObjType::Item,:parentKey=>pack.key,:state=>dstate)
-            item.save
+            item=DeliveryItem.new(:key=>ClassKeyHelper::gen_key("DeliveryItem"),:parentKey=>pack.key,:state=>dstate)
+            item.save_to_redis
             item.add_to_parent
             t.destroy
             t.delete_from_staff_cache staffId
           end
-          pack.save
+          pack.save_to_redis
           pack.add_to_parent
         end
       dn.add_to_staff_cache staffId
-      dn.save
+      dn.save_to_redis
       msg.object=dn.key
       msg.result=true
       else
@@ -82,7 +85,7 @@ module DeliveryBll
   # 返回值：
   # - DeliveryNote.childernCount : 实例对象,子总数
   def self.get_delivery_detail key,startIndex,endIndex
-    if result=(DeliveryBase.get_children key,startIndex,endIndex)
+    if result=(DeliveryNote.get_children key,startIndex,endIndex)
     return result[0],result[1]
     end
     return nil
@@ -140,6 +143,18 @@ module DeliveryBll
       "DeliveryPackage"
     when DeliveryObjType::Item
       "DeliveryItem"
+    end
+    return m
+  end
+  
+   def self.delivery_obj_reconverter className
+    m=case className
+    when  "DeliveryNote"
+     DeliveryObjType::Note
+    when "DeliveryPackage"
+      DeliveryObjType::Package
+    when  "DeliveryItem" 
+     DeliveryObjType::Item
     end
     return m
   end

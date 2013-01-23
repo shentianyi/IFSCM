@@ -143,7 +143,7 @@ class DeliveryController < ApplicationController
     if request.post?
       msg=ReturnMsg.new(:result=>false,:content=>'')
       if DeliveryNote.exist_in_staff_cache(session[:staff_id],params[:dnKey])
-        if dn=DeliveryNote.find(params[:dnKey])
+        if dn=DeliveryNote.rfind(params[:dnKey])
           dn.delete_from_staff_cache
           Resque.enqueue(DeliveryStaffCacheDiscarder,session[:staff_id],params[:dnKey])
         end
@@ -179,8 +179,13 @@ class DeliveryController < ApplicationController
   # - ReturnMsg : JSON
   def view_pend_dn
     msg=ReturnMsg.new(:result=>false,:content=>'')
-    if dn=DeliveryNote.find(params[:dnKey])
-      if (st=Staff.find(dn.sender.to_i)) and st.orgId==session[:org_id]
+    if dn=DeliveryNote.rfind(params[:dnKey])
+      st=Staff.find(dn.staff_id.to_i)
+      puts '(((((((((((((((((((((())))))))))))))))))))))'
+      puts st.organisation_id
+      puts session[:org_id]
+            puts '(((((((((((((((((((((())))))))))))))))))))))'
+      if (st=Staff.find(dn.staff_id.to_i)) and st.orgId==session[:org_id]
         @currentPage=pageIndex=params[:pageIndex].nil? ? 0 : params[:pageIndex].to_i
         startIndex,endIndex=PageHelper::generate_page_index(pageIndex,$DEPSIZE)
         dn.items,@totalCount=DeliveryBll.get_delivery_detail dn.key,startIndex,endIndex
