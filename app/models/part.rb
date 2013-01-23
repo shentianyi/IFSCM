@@ -28,7 +28,7 @@ class Part < ActiveRecord::Base
   end
   
   def self.find_nr_from_redis orgId,partId
-    $redis.zrangebyscore(generate_org_part_zset_key(orgId),partId)[0]
+    $redis.zrangebyscore(generate_org_part_zset_key(orgId),partId,partId)[0]
   end
 
   def add_or_update_redis_index
