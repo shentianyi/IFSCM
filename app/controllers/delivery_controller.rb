@@ -143,7 +143,7 @@ class DeliveryController < ApplicationController
     if request.post?
       msg=ReturnMsg.new(:result=>false,:content=>'')
       if DeliveryNote.exist_in_staff_cache(session[:staff_id],params[:dnKey])
-        if dn=DeliveryNote.rfind(params[:dnKey])
+        if dn=DeliveryNote.single_or_default(params[:dnKey])
           dn.delete_from_staff_cache
           Resque.enqueue(DeliveryStaffCacheDiscarder,session[:staff_id],params[:dnKey])
         end
