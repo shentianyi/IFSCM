@@ -9,14 +9,20 @@ namespace :db do
   desc "Transform Redis to Mysql ... ..."
   task :redis_to_mysql => :environment do
       puts "Transform Redis to Mysql ... ..."
-      demands, total = Demander.search( :clientId=>nil, :supplierId=>nil,
-              :rpartNr=>nil, :start=>Time.parse("2012/1/1").to_i, :end=>Time.now.to_i,
-              :type=>nil,  :amount=>nil,
-              :page=>nil )
-      puts total
-      puts demands.each {|d|d.amount}
+      demands, total = Demander.search(:end=>Time.now.to_i )
       demands.each do |d|
-        
+          puts "--#{d.key}:"
+          # d.instance_variable_get("@attributes").each do |k,v|
+            # puts "---------------------#{k}---------------------------------#{v}"
+          # end
+          if d.save
+              $redis.srem( "#{Rns::C}:#{d.clientId}", d.key )
+              $redis.srem( "#{Rns::S}:#{d.supplierId}", d.key )
+              $redis.srem( "#{Rns::RP}:#{d.relpartId}", d.key )
+              $redis.zrem( Rns::Date, d.key )
+              $redis.zrem( Rns::Amount, d.key )
+              $redis.srem( "#{Rns::T}:#{d.type}", d.key )
+          end
       end
   end
   

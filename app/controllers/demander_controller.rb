@@ -333,27 +333,43 @@ class DemanderController<ApplicationController
             ######  判断类型 C or S ， 将session[:id]赋值给 id
         
             if session[:orgOpeType]==OrgOperateType::Client
-              supplierId = @cz_org.search_supplier_byNr( s ) if s && s.size>0
+              if s.blank?
+                  supplierId = nil
+              else
+                  supplierId = @cz_org.suppliers.where( supplierNr:s ).map{|o|o.origin_supplier_id}
+                  supplierId = "none" if supplierId.blank?
+              end
               clientId = @cz_org.id
-              partRelMetaKey = PartRel.get_all_partRelMetaKey_by_partNr( clientId, p, PartRelType::Client ) if p && p.size>0
+              if p.blank?
+                  partRelId = nil
+              else
+                  partRelId = Part.where(organisation_id:@cz_org.id, partNr:p).joins(:client_part_rels).select("part_rels.id").map{|rel|rel.id}
+                  partRelId = "none"  if partRelId.blank?
+              end
             else
-              clientId = @cz_org.search_client_byNr( c ) if c && c.size>0
+              if c.blank?
+                  clientId = nil
+              else
+                  clientId = @cz_org.clients.where( clientNr:c ).map{|o|o.origin_client_id}
+                  clientId = "none" if clientId.blank?
+              end
               supplierId = @cz_org.id
-              partRelMetaKey = PartRel.get_all_partRelMetaKey_by_partNr( supplierId, p, PartRelType::Supplier ) if p && p.size>0
+              if p.blank?
+                  partRelId = nil
+              else
+                  partRelId = Part.where(organisation_id:@cz_org.id, partNr:p).joins(:supplier_part_rels).select("part_rels.id").map{|rel|rel.id}
+                  partRelId = "none"  if partRelId.blank?
+              end
             end
-            partRelMetaKey = 'none' if partRelMetaKey && partRelMetaKey.size==0
             @demands = []
             @demands, @total = Demander.search( :clientId=>clientId, :supplierId=>supplierId,
-            :rpartNr=>partRelMetaKey, :start=>tstart, :end=>tend,
+            :rpartNr=>partRelId, :start=>tstart, :end=>tend,
             :type=>params[:type],  :amount=>params[:amount],
             :page=>params[:page] )
             @totalPages=@total/Demander::NumPer+(@total%Demander::NumPer==0 ? 0:1)
             @currentPage=params[:page].to_i
             @options = params[:options]?params[:options]:{}
     end
-    # @totalPages=@total/Demander::NumPer+(@total%Demander::NumPer==0 ? 0:1)
-    # @currentPage=params[:page].to_i
-    # @options = params[:options]?params[:options]:{}
 
     respond_to do |format|
       format.html {render :partial=>"table" }
@@ -371,20 +387,39 @@ class DemanderController<ApplicationController
             tend = Time.parse(params[:end]).to_i if params[:end] && params[:end].size>0
         
             ######  判断类型 C or S ， 将session[:id]赋值给 id
-        
             if session[:orgOpeType]==OrgOperateType::Client
-              supplierId = @cz_org.search_supplier_byNr( s.split(',') ) if s && s.size>0
+              if s.blank?
+                  supplierId = nil
+              else
+                  supplierId = @cz_org.suppliers.where( supplierNr:s.split(',') ).map{|o|o.origin_supplier_id}
+                  supplierId = "none" if supplierId.blank?
+              end
               clientId = @cz_org.id
-              partRelMetaKey = PartRel.get_all_partRelMetaKey_by_partNr( clientId, p.split(','), PartRelType::Client ) if p && p.size>0
+              if p.blank?
+                  partRelId = nil
+              else
+                  partRelId = Part.where(organisation_id:@cz_org.id, partNr:p.split(',')).joins(:client_part_rels).select("part_rels.id").map{|rel|rel.id}
+                  partRelId = "none"  if partRelId.blank?
+              end
             else
-              clientId = @cz_org.search_client_byNr( c.split(',') ) if c && c.size>0
+              if c.blank?
+                  clientId = nil
+              else
+                  clientId = @cz_org.clients.where( clientNr:c.split(',') ).map{|o|o.origin_client_id}
+                  clientId = "none" if clientId.blank?
+              end
               supplierId = @cz_org.id
-              partRelMetaKey = PartRel.get_all_partRelMetaKey_by_partNr( supplierId, p.split(','), PartRelType::Supplier ) if p && p.size>0
+              if p.blank?
+                  partRelId = nil
+              else
+                  partRelId = Part.where(organisation_id:@cz_org.id, partNr:p.split(',')).joins(:supplier_part_rels).select("part_rels.id").map{|rel|rel.id}
+                  partRelId = "none"  if partRelId.blank?
+              end
             end
-            partRelMetaKey = 'none' if partRelMetaKey && partRelMetaKey.size==0
+            
               demands = []
             demands = Demander.search( :clientId=>clientId, :supplierId=>supplierId,
-            :rpartNr=>partRelMetaKey, :start=>tstart, :end=>tend,
+            :rpartNr=>partRelId, :start=>tstart, :end=>tend,
             :type=>params[:type].nil? ? nil : params[:type].split(',') ,  :amount=>params[:amount].nil? ? nil : params[:amount].split(','))[0]
             
               msg=DemanderBll.down_load_demand demands,session[:orgOpeType],request.user_agent
@@ -393,6 +428,51 @@ class DemanderController<ApplicationController
         File.delete(msg.content)
       end
             
+    end
+  end
+  
+  def search_expired
+    if request.get?
+    elsif request.post?
+            c = params[:client]
+            s = params[:supplier]
+            p = params[:partNr]
+            tstart = Time.parse(params[:start]).to_s if params[:start].present?
+            tend = Time.parse(params[:end]).to_s if params[:end].present?
+            astart = (params[:amount][0].present?) ? params[:amount][0].to_f : 0
+            aend = (params[:amount][1].present?) ? params[:amount][1].to_f : 999999999
+        
+            ######  判断类型 C or S ， 将session[:id]赋值给 id
+            conditions = {}
+            if session[:orgOpeType]==OrgOperateType::Client
+              conditions[:supplierId] = @cz_org.suppliers.where( supplierNr:s ).map{|o|o.origin_supplier_id}  if s.present?
+              conditions[:clientId] = @cz_org.id
+              conditions[:relpartId] = Part.where(organisation_id:@cz_org.id, partNr:p).joins(:client_part_rels).select("part_rels.id").map{|rel|rel.id}  if p.present?
+            else
+              conditions[:clientId] = @cz_org.clients.where( clientNr:c ).map{|o|o.origin_client_id} if c.present?
+              conditions[:supplierId] = @cz_org.id
+              conditions[:relpartId] = Part.where(organisation_id:@cz_org.id, partNr:p).joins(:supplier_part_rels).select("part_rels.id").map{|rel|rel.id}  if p.present?
+            end
+            if tstart.present? && tend.blank?
+                conditions[:date] = tstart..$Infin.to_s
+            elsif tstart.blank? && tend.present?
+                conditions[:date] = (-$Infin).to_s..tend
+            elsif tstart.present? && tend.present?
+                conditions[:date] = tstart..tend
+            end
+            conditions[:type] = params[:type] if params[:type].present?
+            conditions[:amount] = astart..aend
+            des = Demander.where( conditions )
+            @demands =  des.offset( Demander::NumPer*params[:page].to_i ).limit( Demander::NumPer )
+            @total = des.count
+            @totalPages=@total/Demander::NumPer+(@total%Demander::NumPer==0 ? 0:1)
+            @currentPage=params[:page].to_i
+            @options = params[:options]?params[:options]:{}
+            
+            respond_to do |format|
+              format.html {render :partial=>"expired_table" }
+              format.json { render json: @demands }
+            end
     end
   end
 

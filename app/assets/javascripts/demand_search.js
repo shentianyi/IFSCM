@@ -184,7 +184,7 @@ function download_viewed_demand() {
      $.each(label, function(k, v) {
           form.append($("<input>").attr("type", "hidden").attr("name", k).val(v));
      });
-     form.submit();
+     form.appendTo("body").submit();
 }
 
 ///////////////////////////////////////////////////////////////////         charting

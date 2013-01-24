@@ -24,6 +24,7 @@ Demand::Application.routes.draw do
   resources :demander do
     collection do
       post :search
+      match :search_expired
       get :demand_upload
       match :upload_files
       post :get_tempdemand_items
