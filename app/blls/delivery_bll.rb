@@ -103,7 +103,7 @@ module DeliveryBll
   def self.send_dn  staffId,dnKey,destiStr,sendDate
     msg=ReturnMsg.new
     if DeliveryNote.exist_in_staff_cache(staffId,dnKey)
-      if dn=DeliveryNote.rfind(dnKey)
+      if dn=DeliveryNote.single_or_default(dnKey)
         if dn.items=DeliveryNote.get_children(dn.key,0,-1)[0]
           dn.items.each do |i|
             pl=PartRel.find(i.partRelId)
@@ -197,7 +197,7 @@ module DeliveryBll
   # 返回值：
   # - 无
   def self.record_dn_into_mysql dnKey
-    if dn=DeliveryNote.rfind(dnKey)
+    if dn=DeliveryNote.single_or_default(dnKey)
       if  dn.items=DeliveryNote.get_children(dn.key,0,-1)[0]
         dn.items.each do |p|
           p.save
@@ -263,7 +263,7 @@ module DeliveryBll
   # - string : fileName
   def self.generate_dn_label_pdf dnKey,destination,sendDate
     fileName=nil
-    if dn=DeliveryNote.rfind(dnKey)
+    if dn=DeliveryNote.single_or_default(dnKey)
       if dn.wayState.nil?
         dn.rupdate(:destination=>destination,:sendDate=>sendDate)
       end
@@ -283,7 +283,7 @@ module DeliveryBll
   # - string : fileName
   def self.generate_dn_pack_label_pdf dnKey
     fileName=nil
-    if dn=DeliveryNote.rfind(dnKey)
+    if dn=DeliveryNote.single_or_default(dnKey)
       dn.items=DeliveryBase.get_children dn.key,0,-1
       result=Wcfer::PdfPrinter.generate_dn_pack_pdf dn.items.to_json
       if result[:result]

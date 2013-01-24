@@ -6,7 +6,7 @@ module LeoniNbtpDn
 
   def self.gen_data dnKey
     dataset=[]
-    dn=DeliveryNote.rfind(dnKey)
+    dn=DeliveryNote.single_or_default(dnKey)
     sendOrg=Organisation.find(dn.organisation_id)
     receOrg=Organisation.find(dn.rece_org_id)
 

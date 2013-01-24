@@ -14,6 +14,12 @@ class DeliveryNote < ActiveRecord::Base
   
   include CZ::BaseModule
   include CZ::DeliveryBase
+  
+  
+  def self.single_or_default key
+    find_from_redis key
+  end
+  
   # ws
   # [功能：] 将运单加入用户 ZSet
   # 参数：
@@ -144,6 +150,10 @@ class DeliveryNote < ActiveRecord::Base
   end
 
   private
+  
+  def self.find_from_redis key
+    rfind(key)
+  end
 
   def self.generate_staff_zset_key staffId
     "staff:#{staffId}:deliverynote:cache:zset"
