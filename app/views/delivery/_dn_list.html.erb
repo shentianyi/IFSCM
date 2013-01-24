@@ -24,12 +24,11 @@
      </tr>
      <% i=0
      dns.each do |dn|
-     partnerId=if session[:orgOpeType]==OrgOperateType::Client
-     dn.orgId
+     partnerNr=if session[:orgOpeType]==OrgOperateType::Client
+      DeliveryHelper.get_supplierNr_by_orgId(dn.rece_org_id,dn.organisation_id)
      else
-     dn.desiOrgId
+      DeliveryHelper.get_clientNr_by_orgId(dn.organisation_id,dn.rece_org_id)
      end
-     partnerNr=Organisation.find_by_id(session[:org_id]).get_parterNr_by_parterId session[:orgOpeType],partnerId.to_i
      %>
      <tr class="norline hoverable">
           <th><%= (i+=1)%></th>

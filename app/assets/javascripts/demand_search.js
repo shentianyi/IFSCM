@@ -180,11 +180,11 @@ function demand_search_all(e) {
 
 function download_viewed_demand() {
      var label = get_demand_search_stimulate();
-     var form = $("<form/>").attr("action", "../demander/download_viewed_demand").attr("method", "post");
+     var f = $("<form/>").attr("action", "../demander/download_viewed_demand").attr("enctype","text/plain").attr("method", "post");
      $.each(label, function(k, v) {
-          form.append($("<input>").attr("type", "hidden").attr("name", k).val(v));
+          f.append($("<input>").attr("type", "hidden").attr("name", k).val(v));
      });
-     form.appendTo("body").submit();
+     f.appendTo("body").submit();
 }
 
 ///////////////////////////////////////////////////////////////////         charting

@@ -23,7 +23,7 @@
 			<input type="text" class="fillindest fillindestlonger" name="destination" value="<%=dn.destination%>"
 			placeholder="请您填写送货地址-必填" id="destination-text" style="width: 250px">
 			<input type="text" class="fillindest fillindestlonger" name="sendDate"
-			placeholder="请您填写送货日期-必填" id="sendDate-text"  style="width: 150px" value="<%=dn.sendDate%>">
+			placeholder="请您填写送货日期-必填" id="sendDate-text"  style="width: 150px" value="<%=dn.sendDate.nil? ? "":Time.at(dn.sendDate.to_i).strftime('%Y/%m/%d')%>">
 		</form>
 	</div>
 </div>

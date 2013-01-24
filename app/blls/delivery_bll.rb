@@ -103,12 +103,12 @@ module DeliveryBll
   def self.send_dn  staffId,dnKey,destiStr,sendDate
     msg=ReturnMsg.new
     if DeliveryNote.exist_in_staff_cache(staffId,dnKey)
-      if dn=DeliveryNote.rfind(dnKey)
+      if dn=DeliveryNote.single_or_default(dnKey)
         if dn.items=DeliveryNote.get_children(dn.key,0,-1)[0]
           dn.items.each do |i|
             pl=PartRel.find(i.partRelId)
             i.rupdate(:cpartNr=>Part.get_partNr(dn.rece_org_id,pl.client_part_id),
-            :spartNr=>Part.get_partNr(orgId,pl.supplier_part_id),:saleNo=>pl.saleNo,:purchaseNo=>pl.purchaseNo)
+            :spartNr=>Part.get_partNr(dn.organisation_id,pl.supplier_part_id),:saleNo=>pl.saleNo,:purchaseNo=>pl.purchaseNo)
           end
           dn.rupdate(:wayState=>DeliveryNoteWayState::Intransit,:destination=>destiStr,:sendDate=>sendDate)
           dn.add_to_orgs
@@ -197,7 +197,7 @@ module DeliveryBll
   # 返回值：
   # - 无
   def self.record_dn_into_mysql dnKey
-    if dn=DeliveryNote.rfind(dnKey)
+    if dn=DeliveryNote.single_or_default(dnKey)
       if  dn.items=DeliveryNote.get_children(dn.key,0,-1)[0]
         dn.items.each do |p|
           p.save
@@ -208,7 +208,7 @@ module DeliveryBll
           end
         end
       end
-     mdn.save
+     dn.save
     end
   end
 
@@ -226,21 +226,19 @@ module DeliveryBll
     else
       condi={}
       if orgOpeType==OrgOperateType::Client
-        condi[:desiOrgId]=orgId
+        condi[:rece_org_id]=orgId
         if condition and condition[:sender]
-          org=Organisation.find_by_id(orgId)
-          condi[:orgId]=[]
+          condi[:organisation_id]=[]
           condition[:sender].each do |sender|
-            condi[:orgId]<<org.get_parterId_by_parterNr(orgOpeType,sender)
+            condi[:organisation_id]<<OrganisationRelation.get_partnerid(:oid=>orgId,:pt=>:s,:pnr=>sender)
           end
         end
       elsif orgOpeType==OrgOperateType::Supplier
-        condi[:orgId]=orgId
+        condi[:organisation_id]=orgId
         if condition and condition[:receiver]
-          org=Organisation.find_by_id(orgId)
           condi[:desiOrgId]=[]
           condition[:receiver].each do |receiver|
-            condi[:desiOrgId]<<org.get_parterId_by_parterNr(orgOpeType,receiver)
+            condi[:rece_org_id]<<OrganisationRelation.get_partnerid(:oid=>orgId,:pt=>:c,:pnr=>receiver)
           end
         end
       end
@@ -250,29 +248,9 @@ module DeliveryBll
         condi[:state]=condition[:objState] if condition[:objState]
         condi[:sendDate]=(condition[:date]["0"][0]..condition[:date]["0"][1]) if condition[:date]
       end
-      total= MDeliveryNote.where(condi).count
-      return MDeliveryNote.limit(endIndex-startIndex+1).offset(startIndex).all(:conditions=>condi),total
+      total= DeliveryNote.where(condi).count
+      return DeliveryNote.limit(endIndex-startIndex+1).offset(startIndex).all(:conditions=>condi),total
     end
-  end
-
-  # ws
-  # [功能：] 获得运单运输状态
-  # 参数：
-  # - code : 状态码
-  # 返回值：
-  # - string : description
-  def self.get_dn_wayState code
-    DeliveryNoteWayState.get_desc_by_value code
-  end
-
-  # ws
-  # [功能：] 获得运单项状态
-  # 参数：
-  # - code : 状态码
-  # 返回值：
-  # - string : description
-  def self.get_delivery_obj_state code
-    DeliveryObjState.get_desc_by_value code
   end
 
   # ws
@@ -285,8 +263,10 @@ module DeliveryBll
   # - string : fileName
   def self.generate_dn_label_pdf dnKey,destination,sendDate
     fileName=nil
-    if dn=DeliveryNote.find(dnKey)
-      dn.update(:destination=>destination,:sendDate=>sendDate)
+    if dn=DeliveryNote.single_or_default(dnKey)
+      if dn.wayState.nil?
+        dn.rupdate(:destination=>destination,:sendDate=>sendDate)
+      end
       result=TPrinter.print_dn_pdf(dnKey,"leoni_nbtp_dn","Leoni_Nbtp_DNTemplete.tff")
       if result[:result]
         fileName=result[:content]
@@ -303,7 +283,7 @@ module DeliveryBll
   # - string : fileName
   def self.generate_dn_pack_label_pdf dnKey
     fileName=nil
-    if dn=DeliveryNote.find(dnKey)
+    if dn=DeliveryNote.single_or_default(dnKey)
       dn.items=DeliveryBase.get_children dn.key,0,-1
       result=Wcfer::PdfPrinter.generate_dn_pack_pdf dn.items.to_json
       if result[:result]

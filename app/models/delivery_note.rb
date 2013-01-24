@@ -14,6 +14,12 @@ class DeliveryNote < ActiveRecord::Base
   
   include CZ::BaseModule
   include CZ::DeliveryBase
+  
+  
+  def self.single_or_default key
+    find_from_redis key
+  end
+  
   # ws
   # [功能：] 将运单加入用户 ZSet
   # 参数：
@@ -44,10 +50,10 @@ class DeliveryNote < ActiveRecord::Base
   def add_to_orgs
     # add to sender org zset
     key= DeliveryNote.generate_org_zset_key self.organisation_id,OrgOperateType::Supplier
-    $redis.zadd key,self.desiOrgId.to_i,self.key
+    $redis.zadd key,self.organisation_id.to_i,self.key
     # add to receiver org zset
     key= DeliveryNote.generate_org_zset_key self.rece_org_id,OrgOperateType::Client
-    $redis.zadd key,self.orgId.to_i,self.key
+    $redis.zadd key,self.rece_org_id.to_i,self.key
 
     # add to queue
     self.add_to_new_queue OrgOperateType::Client
@@ -144,6 +150,10 @@ class DeliveryNote < ActiveRecord::Base
   end
 
   private
+  
+  def self.find_from_redis key
+    rfind(key)
+  end
 
   def self.generate_staff_zset_key staffId
     "staff:#{staffId}:deliverynote:cache:zset"
