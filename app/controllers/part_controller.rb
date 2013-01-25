@@ -7,12 +7,14 @@ class PartController<ApplicationController
 
   # ws part redis search
   def redis_search
-    org_id=@cz_org.id
     parts=[]
-    search = Redis::Search.complete("Part",params[:term],:conditions=>{:orgId=>org_id})
+    search = Redis::Search.complete("Part",params[:term],:conditions=>{:organisation_id=>@cz_org.id})
     #   puts @search
-    search.collect do |item|
+    search.each do |item|
       parts<<item['partNr']
+      puts "-"*30
+      puts item['partNr']
+      puts "-"*30
     end
     respond_to do |format|
       format.xml {render :xml=>JSON.parse(parts.to_json).to_xml(:root=>'parts')}

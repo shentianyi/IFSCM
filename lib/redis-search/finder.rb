@@ -54,6 +54,7 @@ class Redis
         end
       end
       
+      # return [] if prefix_matchs.count==0
       # for in page it needs exact results
       if options[:startIndex] and options[:take]
         if prefix_matchs.count==0

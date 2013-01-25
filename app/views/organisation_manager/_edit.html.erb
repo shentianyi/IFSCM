@@ -1,0 +1,38 @@
+
+<%= form_tag( {:action=>:update}, id:"forminfo" ) do %>
+<fieldset>
+		<legend>机构信息</legend>
+		<div>
+				<label>ID:</label><%= text_field_tag :id, @org.id, :size=>3, :readOnly=>true %>
+		</div>
+		<div>
+				<label>名称:</label><%= text_field_tag :name, @org.name %>
+				<label>缩写:</label><%= text_field_tag :abbr, @org.abbr %>
+				<label>介绍:</label><%= text_field_tag :description, @org.description %>
+		</div>
+		
+		<hr/>
+		<div>
+				<label>联系人:</label><%= text_field_tag :contact, @org.contact %>
+				<label>电子邮箱:</label><%= text_field_tag :email, @org.email %>
+		</div>
+		
+		<hr/>
+		<div>
+				<label>电话:</label><%= text_field_tag :tel, @org.tel %>
+				<label>网站:</label><%= text_field_tag :website, @org.website %>
+				<label>地址:</label><%= text_field_tag :address, @org.address %>
+		</div>
+		
+		<hr/>
+		<br /><br />
+		<div>
+				<%= button_tag '修改',:type=>'button',:onclick=>"organisation_edit_submit();"%>
+		</div>
+</fieldset>
+<% end %>
+
+<hr/>
+
+
+

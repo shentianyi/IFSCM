@@ -14,6 +14,12 @@ class OrganisationRelation < ActiveRecord::Base
   after_save :add_or_update_redis_index
   after_destroy :del_redis_index
   
+  include Redis::Search
+  redis_search_index(:title_field => :clientNr,
+                     :prefix_index_enable => true,
+                     :condition_fields=>[:origin_client_id, :origin_supplier_id],
+                     :ext_fields => [:clientNr, :supplierNr, :id])
+  
   def self.get_partnerid args
    find_partnerid_from_redis args
   end  

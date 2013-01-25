@@ -15,6 +15,8 @@ Demand::Application.routes.draw do
 
   controller :organisation_manager do
     get 'organisation_manager' => :index
+    match 'organisation_manager/edit' => :edit
+    post 'organisation_manager/update' => :update
     match 'organisation_manager/search' => :search
     get 'organisation_manager/redis_search' => :redis_search
     post 'organisation_manager/add_supplier' => :add_supplier
