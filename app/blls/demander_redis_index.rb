@@ -87,18 +87,17 @@ module DemanderRedisIndex
       private
     
       def base.union_params( column, param )
-        return false unless param && param.size>0
-        if param.is_a?(String)
-          key = "#{column}:#{param}"
-        elsif param.is_a?(Array)
+        return false if param.blank?
+        if param.is_a?(Array)
           key = column
-          param.uniq.each do |c|
-            c.insert( 0, "#{column}:" )
+          param = param.uniq.map do |c|
+            "#{column}:#{c}"
           end
-        $redis.zunionstore( key, param )
-        key
+          $redis.zunionstore( key, param )
+          key
         else
-        return false
+          
+          key = "#{column}:#{param}"
         end
       end
   

@@ -42,6 +42,7 @@ module CZ
       end
       return false
     end
+    
   end
   
   class BaseClass

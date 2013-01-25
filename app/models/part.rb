@@ -8,7 +8,11 @@ class Part < ActiveRecord::Base
   after_save :add_or_update_redis_index
   after_destroy :del_redis_index
 
- 
+  include Redis::Search
+  redis_search_index(:title_field => :partNr,
+                     :prefix_index_enable => true,
+                     :condition_fields=>[:organisation_id],
+                     :ext_fields => [:partNr])
   
   def self.get_id orgId,partNr
     find_id_from_redis(orgId,partNr)

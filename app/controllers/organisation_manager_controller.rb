@@ -1,10 +1,32 @@
+ 
 #encoding: utf-8
+ 
 class OrganisationManagerController < ApplicationController
 
   before_filter  :authorize
   def index
     # @list = Organisation.option_list
-    @list=[]
+    @org = @cz_org
+    # @org = Organisation.find(3)
+  end
+  
+  def edit
+    if request.get?
+    elsif request.post?
+      @org = Organisation.find(params[:id])
+      render :partial => "edit"
+    end
+  end
+  
+  def update
+    if org = Organisation.find(params[:id])  and
+      org.update_attributes(:name=>params[:name], :description=>params[:description], 
+      :address=>params[:address], :tel=>params[:tel], :website=>params[:website], 
+      :abbr=>params[:abbr], :contact=>params[:contact], :email=>params[:email])
+      render :json=>{flag:true,msg:"修改成功"}
+    else
+      render :json=>{flag:false,msg:"修改失败"}
+    end
   end
 
   def search
@@ -41,23 +63,6 @@ class OrganisationManagerController < ApplicationController
 
   end
 
-  def add_supplier
-    if params[:orgId] && params[:name] && params[:orgId].size>0  && params[:name].size>0
-      @cz_org.add_supplier( params[:orgId], params[:name] )
-    else
-      flash[:notice]="Can't be blank !"
-    end
-    redirect_to organisation_manager_path
-  end
-
-  def add_client
-    if params[:orgId] && params[:name] && params[:orgId].size>0  && params[:name].size>0
-      @cz_org.add_client( params[:orgId], params[:name] )
-    else
-      flash[:notice]="Can't be blank !"
-    end
-    redirect_to organisation_manager_path
-  end
 
   #################  for Fuzzy Search
   def redis_search
@@ -67,16 +72,16 @@ class OrganisationManagerController < ApplicationController
     end
     params[:term].gsub!(/'/,'')
     if session[:orgOpeType]==OrgOperateType::Client
-      @search = Redis::Search.complete("OrgRel", params[:term], :conditions=>{:cs_key=>@cz_org.s_key} )
+      @search = Redis::Search.complete("OrganisationRelation", params[:term], :conditions=>{:origin_client_id=>@cz_org.id} )
     else
-      @search = Redis::Search.complete("OrgRel", params[:term], :conditions=>{:cs_key=>@cz_org.c_key} )
+      @search = Redis::Search.complete("OrganisationRelation", params[:term], :conditions=>{:origin_supplier_id=>@cz_org.id} )
     end
     if params[:getId]
       lines = @search.collect{|item| {:csNr=>item['title'],:org=>item['id']}}
+    elsif session[:orgOpeType]==OrgOperateType::Client
+      lines = @search.collect{|item|item['clientNr'] }
     else
-      lines = @search.collect do |item|
-        item['title']
-      end
+      lines = @search.collect{|item|item['supplierNr'] }
     end
     respond_to do |format|
       format.xml {render  xml:lines}

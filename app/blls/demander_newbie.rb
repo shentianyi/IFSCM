@@ -24,14 +24,14 @@ module DemanderNewbie
     when 'T'   then  DemanderType::Plan
     when ''
       total = $redis.zcard( kesKey )
-      $redis.zrange( kesKey, page.to_i*NumPer, (page.to_i+1)*NumPer-1 ).each do |item|
+      $redis.zrange( kesKey, page.to_i*$DEPSIZE, (page.to_i+1)*$DEPSIZE-1 ).each do |item|
         demands << Demander.rfind( item )
         $redis.zrem( kesKey, item )
       end
       return demands, total
     end
     total = $redis.zcount( kesKey, score, score )
-    $redis.zrangebyscore( kesKey, score, score, :limit=>[(page.to_i)*NumPer, NumPer] ).each do |item|
+    $redis.zrangebyscore( kesKey, score, score, :limit=>[(page.to_i)*$DEPSIZE, $DEPSIZE] ).each do |item|
       demands << Demander.rfind( item )
       $redis.zrem( kesKey, item )
     end

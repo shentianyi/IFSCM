@@ -1,0 +1,42 @@
+
+	<table class="upData">
+		<tr class="lineone">
+			<% if session[:orgOpeType]==OrgOperateType::Client %>
+				<th link="supplier_float" >供应商号</th>
+			<% else %>
+				<th link="client_float" >客户号</th>
+			<% end %>
+			<th link="partNr_float" >零件号</th>
+			<th link="date_float" >日期</th>
+			<th link="amount_float" >数量</th>
+			<th link="type_float">预测类型</th>
+		</tr>
+		<tr class="divide" style="display: none">
+			<th class="nordvd"></th>
+			<th class="nordvd"></th>
+			<th class="nordvd"></th>
+			<th class="nordvd"></th>
+			<th class="nordvd"></th>
+			<th class="lastdvd"></th>
+		</tr>
+		<% @demands.each do |d|
+	      img,thisLineWidth,lastLineWidth=DemanderHelper::generate_demand_bar(d)
+		%>
+		  <tr class="norline hoverable">
+			<% if session[:orgOpeType]==OrgOperateType::Client %>
+				<th><%= d.supplierNr %></th>
+				<th><%= d.cpartNr%></th>
+			<% else %>
+				<th><%= d.clientNr %></th>
+				<th><%= d.spartNr%></th>
+			<% end %>
+			
+			<th><%= d.date%></th>
+			<th><%= d.amount%></th>
+			<th><%= d.type%></th>
+		  </tr>
+		<% end %>
+	</table>
+	<hr/>
+	<div class="census">共 <%= @total %> 条</div>
+	<%=bri_pager options={:class=>"pagination",:pages=>@totalPages,:current=>@currentPage,:action=>'demand_search',:target=>@options}%>

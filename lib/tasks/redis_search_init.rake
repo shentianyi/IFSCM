@@ -1,4 +1,3 @@
-# coding: utf-8
 require "redis-search"
 namespace :redis_search do
   desc "Redis-Search index data to Redis"
@@ -15,16 +14,16 @@ namespace :redis_search do
         klass.find_in_batches(:batch_size => 1000) do |items|
           items.each do |item|
             item.redis_search_index_create
-      			item = nil
-      			count += 1
+            item = nil
+            count += 1
             print "."
           end
         end
       elsif klass.included_modules.collect { |m| m.to_s }.include?("Mongoid::Document")
         klass.all.each do |item|
           item.redis_search_index_create
-    			item = nil
-    			count += 1
+          item = nil
+          count += 1
           print "."
         end
       else
