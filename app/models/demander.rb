@@ -1,4 +1,4 @@
-#coding:utf-8
+#encoding: utf-8
 require "base_class"
 class Demander < ActiveRecord::Base
   attr_accessible :id, :created_at, :updated_at

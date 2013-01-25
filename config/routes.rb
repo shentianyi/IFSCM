@@ -66,9 +66,17 @@ Demand::Application.routes.draw do
       post :cancel_staff_dn
       post :count_dn_queue
       post :clean_dn_queue
-     post :search_dn
-     get :redis_search_dn
-     match :gen_dn_pdf
+      post :search_dn
+      get :redis_search_dn
+      match :gen_dn_pdf
+    end
+  end
+
+  namespace :api,defaults:{format:'json'} do
+    # scope  constraints:ApiConstraints.new do
+      controller :auth do
+        match 'login'=>:login
+      # end
     end
   end
 

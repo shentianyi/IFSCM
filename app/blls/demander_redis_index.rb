@@ -1,4 +1,4 @@
-#coding:utf-8
+#encoding: utf-8
 module DemanderRedisIndex
 
   def save_to_send

@@ -1,3 +1,4 @@
+#encoding: utf-8
 class Part < ActiveRecord::Base
   attr_accessible :partNr
   belongs_to :organisation

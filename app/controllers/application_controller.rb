@@ -1,7 +1,6 @@
-#coding:utf-8
+#encoding: utf-8
 class ApplicationController < ActionController::Base
   # protect_from_forgery
-  
   protected
   def authorize
     unless Staff.find(session[:staff_id])

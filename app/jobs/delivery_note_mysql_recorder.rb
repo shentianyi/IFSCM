@@ -1,3 +1,4 @@
+#encoding: utf-8
 class DeliveryNoteMysqlRecorder
   @queue='delivery_queue'
   def self.perform dnKey

@@ -1,4 +1,4 @@
-#coding:utf-8
+#encoding: utf-8
 module DemanderBll
   # ws : generate batch file index
   def self.generate_batchFile_index(files)

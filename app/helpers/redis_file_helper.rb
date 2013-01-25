@@ -1,5 +1,5 @@
+#encoding: utf-8
 module RedisFileHelper
-  
   # ws : clean batch files data in redis
   def self.clean_batch_files_data batchId
     m=['normal','error']
