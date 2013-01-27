@@ -10,12 +10,4 @@ class DeliveryPackage < ActiveRecord::Base
   has_many :delivery_items,:dependent=>:destroy
   include CZ::BaseModule
   include CZ::DeliveryBase
-#
-# def packAmount t=nil
-# return FormatHelper::get_number @packAmount,t
-# end
-#
-# def perPackAmount t=nil
-# return FormatHelper::get_number @perPackAmount,t
-# end
 end

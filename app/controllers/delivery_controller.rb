@@ -96,7 +96,7 @@ class DeliveryController < ApplicationController
       msg.result=valiMsg.result
       if valiMsg.result
         dit=DeliveryItemTemp.new(:packAmount=>packAmount,:perPackAmount=>per,:partRelId=>metaKey,
-         :total=>FormatHelper.string_multiply(per,packAmount))
+        :total=>FormatHelper.string_multiply(per,packAmount))
         dit.save
         dit.add_to_staff_cache session[:staff_id]
       msg.object=dit
@@ -280,7 +280,7 @@ class DeliveryController < ApplicationController
   # - string : 文件地址
   def gen_dn_pdf
     if request.post?
-      msg=ReturnMsg.new(:result=>false,:content=>'')
+      msg=ReturnMsg.new
       type=params[:printType]
       fileName= if type=='dn'
         DeliveryBll.generate_dn_label_pdf params[:dnKey],params[:destination],params[:sendDate]
@@ -290,6 +290,21 @@ class DeliveryController < ApplicationController
       if fileName
         msg.result=true
         msg.content= AliBucket.url_for(fileName)
+      end
+      render :json=>msg
+    end
+  end
+
+  def add_to_print
+    if request.post?
+      msg=ReturnMsg.new
+      if dn=DeliveryNote.single_or_default(params[:dnKey])
+        if dn.add_to_staff_print_queue
+          msg.result=true
+          msg.content="已添加到打印队列，使用客户端打印"
+        else
+          msg.content="添加打印队列失败，请重试"
+        end
       end
       render :json=>msg
     end

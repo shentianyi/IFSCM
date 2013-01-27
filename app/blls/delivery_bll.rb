@@ -62,7 +62,7 @@ module DeliveryBll
           pack.save_to_redis
           pack.add_to_parent
         end
-      dn.add_to_staff_cache staffId
+      dn.add_to_staff_cache
       dn.save_to_redis
       msg.object=dn.key
       msg.result=true

@@ -1,6 +1,5 @@
- 
 #encoding: utf-8
- 
+
 class OrganisationManagerController < ApplicationController
 
   before_filter  :authorize
