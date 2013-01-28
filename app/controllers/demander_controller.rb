@@ -454,9 +454,9 @@ class DemanderController<ApplicationController
               conditions[:relpartId] = Part.where(organisation_id:@cz_org.id, partNr:p).joins(:supplier_part_rels).select("part_rels.id").map{|rel|rel.id}  if p.present?
             end
             if tstart.present? && tend.blank?
-                conditions[:date] = tstart..$Infin.to_s
+                conditions[:date] = tstart.."3000/12/12"
             elsif tstart.blank? && tend.present?
-                conditions[:date] = (-$Infin).to_s..tend
+                conditions[:date] = "1000/1/1"..tend
             elsif tstart.present? && tend.present?
                 conditions[:date] = tstart..tend
             end
