@@ -1,3 +1,4 @@
+#encoding: utf-8
 class DemandUploadDataDiscarder
   include RedisFileHelper
   @queue='demand_queue'

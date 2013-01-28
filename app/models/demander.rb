@@ -1,4 +1,4 @@
-#coding:utf-8
+#encoding: utf-8
 require "base_class"
 class Demander < ActiveRecord::Base
   set_inheritance_column :not_used_type

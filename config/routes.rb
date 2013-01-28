@@ -69,10 +69,26 @@ Demand::Application.routes.draw do
       post :cancel_staff_dn
       post :count_dn_queue
       post :clean_dn_queue
-     post :search_dn
-     get :redis_search_dn
-     match :gen_dn_pdf
+      post :search_dn
+      get :redis_search_dn
+      post :add_to_print
+      match :gen_dn_pdf
     end
+  end
+
+  namespace :api,defaults:{format:'json'} do
+    # scope  constraints:ApiConstraints.new do
+      controller :auth do
+        match 'login'=>:login
+     end
+     controller :delivery do
+       match 'delivery/print_queue_list'=>:print_queue_list
+       match 'delivery/remove_from_print_queue'=>:remove_from_print_queue
+       match 'delivery/package_list'=>:package_list
+       match 'delivery/item_list/'=>:item_list
+       match 'delivery/item_print_data' => :item_print_data
+     end
+    #end
   end
 
   mount Resque::Server.new, :at=>"/admin/resque"

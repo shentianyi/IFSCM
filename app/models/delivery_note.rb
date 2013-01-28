@@ -1,4 +1,4 @@
-#coding:utf-8
+#encoding: utf-8
 require 'base_class'
 require 'base_delivery'
 
@@ -26,8 +26,8 @@ class DeliveryNote < ActiveRecord::Base
   # - int : staffId
   # 返回值：
   # - 无
-  def add_to_staff_cache staffId
-    zset_key=DeliveryNote.generate_staff_zset_key staffId
+  def add_to_staff_cache
+    zset_key=DeliveryNote.generate_staff_zset_key self.staff_id
     $redis.zadd zset_key,Time.now.to_i,self.key
   end
 
@@ -40,6 +40,7 @@ class DeliveryNote < ActiveRecord::Base
   def delete_from_staff_cache
     zset_key=DeliveryNote.generate_staff_zset_key self.staff_id
     $redis.zrem zset_key,self.key
+    del_from_staff_print_queue
   end
 
   # ws
@@ -148,7 +149,19 @@ class DeliveryNote < ActiveRecord::Base
     end
     return nil
   end
-
+  
+  def add_to_staff_print_queue
+    key=DeliveryNote.generate_staff_print_set_key self.staff_id
+    $redis.sadd key,self.key
+  end
+  def del_from_staff_print_queue
+        key=DeliveryNote.generate_staff_print_set_key self.staff_id
+        $redis.srem key,self.key
+  end
+  def self.get_all_print_dnKey staffId
+    key= generate_staff_print_set_key staffId
+    $redis.smembers key
+  end
   private
   
   def self.find_from_redis key
@@ -165,5 +178,9 @@ class DeliveryNote < ActiveRecord::Base
 
   def self.generate_org_new_queue_zset_key orgId,orgOpeType
     "orgId:#{orgId}:orgOpeType:#{orgOpeType}:newDNqueue"
+  end
+  
+  def self.generate_staff_print_set_key staffId
+    "staff:#{staffId}:deliverynote:print:set"
   end
 end

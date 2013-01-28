@@ -1,0 +1,4 @@
+start resque :
+rake resque:work QUEUE=* COUNT=5 BACKGROUND=yes PIDFILE=tmp/pids/resque.pid
+stop resque :
+kill -9 ***

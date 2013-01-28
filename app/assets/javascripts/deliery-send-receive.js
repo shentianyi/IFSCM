@@ -653,3 +653,17 @@ function generate_dn_label_pdf(type) {
 		});
 	}
 }
+
+function add_dn_to_print_queue() {
+	$.ajax({
+		url : "../delivery/add_to_print",
+		type : 'post',
+		data : {
+			dnKey : $("#dnkey-hidden").val()
+		},
+		dataType : 'json',
+		success : function(data) {
+			alert(data.content);
+		}
+	});
+}

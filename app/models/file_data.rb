@@ -1,3 +1,5 @@
+#encoding: utf-8
+
 require 'base_class'
 
 class FileData<CZ::BaseClass

@@ -1,4 +1,4 @@
-#coding:utf-8
+#encoding: utf-8
 class Organisation < ActiveRecord::Base
   attr_accessible :name, :description, :address, :tel, :website, :abbr, :contact, :email
   has_many :clients, :class_name=>"OrganisationRelation", :foreign_key=>"origin_supplier_id"

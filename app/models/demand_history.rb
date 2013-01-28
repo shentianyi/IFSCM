@@ -1,4 +1,4 @@
-#coding:utf-8
+#encoding: utf-8
 require 'base_class'
 
 # the score of histoty is Time.to_i

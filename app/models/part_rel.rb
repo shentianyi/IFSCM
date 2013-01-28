@@ -1,4 +1,4 @@
-#coding:utf-8
+#encoding: utf-8
 class PartRel < ActiveRecord::Base
   attr_accessible :saleNo, :purchaseNo
   attr_accessible :client_part_id, :supplier_part_id, :organisation_relation_id

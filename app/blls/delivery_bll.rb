@@ -1,5 +1,4 @@
-#coding:utf-8
-
+#encoding: utf-8
 module DeliveryBll
   # ws
   # [功能：] 验证包装箱数和单位数量是否合法
@@ -63,7 +62,7 @@ module DeliveryBll
           pack.save_to_redis
           pack.add_to_parent
         end
-      dn.add_to_staff_cache staffId
+      dn.add_to_staff_cache
       dn.save_to_redis
       msg.object=dn.key
       msg.result=true
@@ -267,7 +266,7 @@ module DeliveryBll
       if dn.wayState.nil?
         dn.rupdate(:destination=>destination,:sendDate=>sendDate)
       end
-      result=TPrinter.print_dn_pdf(dnKey,"leoni_nbtp_dn","Leoni_Nbtp_DNTemplete.tff")
+      result=TPrinter.print_dn_pdf(dnKey)
       if result[:result]
         fileName=result[:content]
       end

@@ -1,5 +1,4 @@
-#coding:utf-8
-
+#encoding: utf-8
 module PartRelBll
   # ws redis search by conditions
   def  self.redis_search_by_conditions q,options=nil

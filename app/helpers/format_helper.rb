@@ -1,3 +1,4 @@
+#encoding: utf-8
 module FormatHelper
   # parse string to date
   # string like '0000/00/00' is valid
