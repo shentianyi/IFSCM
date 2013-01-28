@@ -8,7 +8,7 @@ class CreateDemanders < ActiveRecord::Migration
       t.string :type
       t.float :amount
       t.float :oldamount
-      t.string :date
+      t.datetime :date
       t.float :rate
       t.timestamps
     end
