@@ -3,10 +3,8 @@ require 'org_rel_info'
 
 module TPrinter
   def self.print_dn_pdf dnKey
-    puts '__________________________'
-    printer,dataset=generate_dn_print_data(dnKey)
-    puts "printer:#{printer.to_json}"
-    return Wcfer::PdfPrinter.generate_dn_pdf("Leoni_Nbtp_DNTemplete.tff",dataset.to_json,dnKey)
+    printer,dataset=generate_dn_print_data(dnKey) 
+    return Wcfer::PdfPrinter.generate_dn_pdf(printer.template,dataset.to_json,dnKey)
   end
 
   def self.print_dn_item_pdf dnKey

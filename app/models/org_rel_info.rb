@@ -54,11 +54,6 @@ class OrgRelContactBase<CZ::BaseClass
   def self.find_by_orid orid
     zkey=g_or_contact_zset_key orid
      type=class_type_converter(self.name)
-    puts '---------------------'
-    puts self.name
-    puts type
-    puts '---------------------'
-   
     return find($redis.zrangebyscore(zkey,type,type)[0])
   end
   
