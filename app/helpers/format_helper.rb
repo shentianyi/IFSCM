@@ -1,3 +1,4 @@
+#encoding: utf-8
 module FormatHelper
   # parse string to date
   # string like '0000/00/00' is valid
@@ -58,7 +59,7 @@ module FormatHelper
     return ""
   end
 
-  def self.demand_date_to_date date,type
+  def self.demand_date_inside date,type
     if date
       if type=='D' or type=='T'
         return  Time.parse(date)
@@ -75,6 +76,21 @@ module FormatHelper
       end
     end
     return nil
+  end
+  
+ def self.demand_date_outside date,type
+    if date
+      if type=='D' or type=='T'
+        return  "#{date.year}/#{date.month}/#{date.day}"
+      elsif type=='W'
+        return  "#{date.year}/#{date.cweek}"
+      elsif type=='M'
+        return  "#{date.year}/#{date.month}"
+      elsif type=='Y'
+        return  "#{date.year}"
+      end
+    end
+    return ""
   end
 
   # ws : get os name
@@ -129,5 +145,8 @@ module FormatHelper
     return n1.to_i*n2.to_i
     end
   end
-
+  
+  def self.string_to_int str
+   return str.sub(/(\.0)$/,'')
+  end
 end

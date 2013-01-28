@@ -1,4 +1,4 @@
-#coding:utf-8
+#encoding: utf-8
 class DemanderController<ApplicationController
 
   before_filter  :authorize
@@ -9,27 +9,26 @@ class DemanderController<ApplicationController
 
   # ws upload demands from csv -- support muti files
   def upload_files
-    if request.get?
-      else
+    if request.post?
       files=params[:files]
       begin
-        msg=ReturnMsg.new(:result=>false,:content=>'')
+        msg=ReturnMsg.new
         hfiles=[]
         if files.count>0
           files.each do |f|
-            dcsv=FileData.new(:data=>f,:type=>FileDataType::CSVDemand,:oriName=>f.original_filename,:uuidName=>UUID.generate,:path=>$DECSVP)
+            dcsv=FileData.new(:data=>f,:type=>FileDataType::CSVDemand,:oriName=>f.original_filename,:path=>$DECSVP)
             dcsv.saveFile
             hfiles<<dcsv
           end
-          batchIndex=DemanderHelper::generate_batchFile_index(hfiles)
+            batchIndex=DemanderBll.generate_batchFile_index(hfiles)
             msg.result=true
             msg.object=batchIndex
-            #Resque.enqueue(DemandUpfilesDeler,batch_file.key)
         else
           msg.content='未选择文件'
         end
       rescue Exception => e
-        msg.content=e.message+'//'+ e.backtrace.inspect
+        # msg.content=e.message+'//'+ e.backtrace.inspect
+        msg.content="上传失败，请重试"
       end
       respond_to do |format|
         format.xml {render :xml=>JSON.parse(msg.to_json).to_xml(:root=>'filesInfo')}
@@ -43,14 +42,14 @@ class DemanderController<ApplicationController
   def handle_batch
     if request.post?
       batchFileId=params[:batchFileId]
-      msg=DemanderHelper::handle_batchFile_from_csv(batchFileId,session[:org_id])
+      msg=DemanderBll.handle_batchFile_from_csv(batchFileId,session[:org_id])
       if !msg.result
         Resque.enqueue(DemandUploadCanceler,batchFileId)
       else
           msg.object.add_to_staff_zset session[:staff_id]
         Resque.enqueue(DemandUpfilesDeler,batchFileId)
       end
-        respond_to do |format|
+      respond_to do |format|
         format.xml {render :xml=>JSON.parse(msg.to_json).to_xml(:root=>'filesInfo')}
         format.json { render json: msg }
         format.html {render partial:'upfile_items',:locals=>{:msg=>msg}}
@@ -62,23 +61,16 @@ class DemanderController<ApplicationController
   def get_tempdemand_items
     if request.post?
       fileId=params[:fileId]
-      demands=nil
-      file=RedisFile.find(fileId)
-      type='error'
-      if file
-        demands=[]
-        type=file.errorCount.to_i>0 ? 'error':'normal'
         @currentPage=pageIndex=params[:pageIndex].to_i
         startIndex,endIndex=PageHelper::generate_page_index(pageIndex,$DEPSIZE)
-        demands,@totalCount= DemanderHelper::get_file_demands fileId,startIndex,endIndex,type
+        demands,type,@totalCount= DemanderBll.get_file_demands fileId,startIndex,endIndex
         if demands.items.nil? # for error
               @currentPage=pageIndex=params[:pageIndex].to_i-1
               startIndex,endIndex=PageHelper::generate_page_index(pageIndex,$DEPSIZE)
-             demands,@totalCount= DemanderHelper::get_file_demands fileId,startIndex,endIndex,type
+             demands,type,@totalCount= DemanderBll.get_file_demands fileId,startIndex,endIndex
         end
         @totalPages=PageHelper::generate_page_count @totalCount,$DEPSIZE
-        @finished=file.finished
-      end
+        @finished=demands.finished
       respond_to do |format|
         format.xml {render :xml=>JSON.parse(demands.to_json).to_xml(:root=>'demands')}
         format.json { render json: demands }
@@ -91,11 +83,9 @@ class DemanderController<ApplicationController
   def correct_error
     if request.post?
       clientId=session[:org_id]
-      msg=ReturnMsg.new(:result=>false,:content=>'')
+      msg=ReturnMsg.new
       bf,sf,od=RedisFile.find(params[:batchId]),RedisFile.find(params[:fileId]),DemanderTemp.find(params[:uuid])
-
       if bf and sf and od
-
         nd= DemanderTemp.new(:key=>od.key,:cpartNr=>params[:partNr],:clientId=>clientId,:supplierNr=>params[:supplierNr],
         :filedate=>params[:filedate],:date=>(FormatHelper::demand_date_by_str_type(params[:filedate],params[:type])),
         :type=>params[:type],:amount=>params[:amount],:lineNo=>od.lineNo,:source=>od.source)
@@ -104,9 +94,8 @@ class DemanderController<ApplicationController
         if okey!=nkey
         bf.del_repeat_item(od.gen_md5_repeat_key,od.key)
         end
-        vmsg=DemanderHelper::demand_field_validate(nd,bf)
+        vmsg=DemanderBll.demand_field_validate(nd,bf)
         nd.vali=vmsg.result
-
         if vmsg.result
           nd.rate,nd.oldamount=DemandHistory.compare_rate(nd)
           if od.vali=='false'
@@ -146,8 +135,7 @@ class DemanderController<ApplicationController
       end
       respond_to do |format|
         format.xml {render :xml=>JSON.parse(msg.to_json).to_xml(:root=>'validInfo')}
-        format.json { render json: msg }
-      
+        format.json { render json: msg }      
       end
     end
   end
@@ -155,7 +143,7 @@ class DemanderController<ApplicationController
   # ws cancel upload
   def cancel_upload
     if request.post?
-      msg=ReturnMsg.new(:result=>false,:content=>'')
+      msg=ReturnMsg.new
       if batchFile=RedisFile.find(params[:batchId])
         if batchFile.finished=='false'
           RedisFile.remove_staff_cache_file session[:staff_id],batchFile.key
@@ -245,7 +233,7 @@ class DemanderController<ApplicationController
   # download up demand files as zip
   def download
     if request.post?
-      msg=DemanderHelper::zip_demand_cvs params[:batchFileId], request.user_agent
+      msg=DemanderBll.zip_demand_cvs params[:batchFileId], request.user_agent
       if msg.result
         send_file msg.content,:type => 'application/zip', :filename => "#{UUID.generate}.zip"
         File.delete(msg.content)
@@ -260,29 +248,30 @@ class DemanderController<ApplicationController
   # rewrite: ws
   def send_demand
     if request.post?
-      msg=ReturnMsg.new(:result=>false,:content=>'')
+      msg=ReturnMsg.new
       batchId=params[:batchFileId]
       if bf=RedisFile.find(batchId)
         if bf.errorCount.to_i==0
           if bf.finished=='false'
             sfKeys,scount=bf.get_normal_item_keys 0,-1
             if scount>0
-
               sfKeys.each do |sk|
                 if sf=RedisFile.find(sk) and sf.finished=='false'
-                  nds,ncount=DemanderHelper::get_file_demands sf.key,0,-1,'normal'
+                  nds,type,ncount=DemanderBll.get_file_demands sf.key,0,-1
                   if ncount>0
                     nds.items.each do |nd|
-                      if tempKey = DemandHistory.exists( nd.clientId,nd.supplierId,nd.relpartId,nd.type,nd.date )
-                        demand = Demander.find(tempKey)
-                        demand.update( :clientId=>nd.clientId, :supplierId=>nd.supplierId, :relpartId=>nd.relpartId, :type=>nd.type, :date=>nd.date,
+                      puts nd.to_json
+                      d= FormatHelper::demand_date_inside( nd.date, nd.type )
+                      if tempKey = DemandHistory.exists( nd.clientId,nd.supplierId,nd.relpartId,nd.type, d )
+                        demand = Demander.rfind(tempKey)
+                        demand.rupdate( :clientId=>nd.clientId, :supplierId=>nd.supplierId, :relpartId=>nd.relpartId, :type=>nd.type, :date=>d,
                         :amount=>nd.amount, :oldamount=>nd.oldamount, :rate=>nd.rate)
                         demand.save_to_send_update
                       else
                         demand = Demander.new(
-                        :clientId=>nd.clientId, :supplierId=>nd.supplierId, :relpartId=>nd.relpartId, :type=>nd.type, :date=>nd.date,
+                        :clientId=>nd.clientId, :supplierId=>nd.supplierId, :relpartId=>nd.relpartId, :type=>nd.type, :date=>d,
                         :amount=>nd.amount, :oldamount=>nd.oldamount, :rate=>nd.rate)
-                        demand.save
+                        demand.save_to_redis
                         demand.save_to_send
                       end
                       demand.update_cf_record
@@ -345,27 +334,43 @@ class DemanderController<ApplicationController
             ######  判断类型 C or S ， 将session[:id]赋值给 id
         
             if session[:orgOpeType]==OrgOperateType::Client
-              supplierId = @cz_org.search_supplier_byNr( s ) if s && s.size>0
+              if s.blank?
+                  supplierId = nil
+              else
+                  supplierId = @cz_org.suppliers.where( supplierNr:s ).map{|o|o.origin_supplier_id}
+                  supplierId = "none" if supplierId.blank?
+              end
               clientId = @cz_org.id
-              partRelMetaKey = PartRel.get_all_partRelMetaKey_by_partNr( clientId, p, PartRelType::Client ) if p && p.size>0
+              if p.blank?
+                  partRelId = nil
+              else
+                  partRelId = Part.where(organisation_id:@cz_org.id, partNr:p).joins(:client_part_rels).select("part_rels.id").map{|rel|rel.id}
+                  partRelId = "none"  if partRelId.blank?
+              end
             else
-              clientId = @cz_org.search_client_byNr( c ) if c && c.size>0
+              if c.blank?
+                  clientId = nil
+              else
+                  clientId = @cz_org.clients.where( clientNr:c ).map{|o|o.origin_client_id}
+                  clientId = "none" if clientId.blank?
+              end
               supplierId = @cz_org.id
-              partRelMetaKey = PartRel.get_all_partRelMetaKey_by_partNr( supplierId, p, PartRelType::Supplier ) if p && p.size>0
+              if p.blank?
+                  partRelId = nil
+              else
+                  partRelId = Part.where(organisation_id:@cz_org.id, partNr:p).joins(:supplier_part_rels).select("part_rels.id").map{|rel|rel.id}
+                  partRelId = "none"  if partRelId.blank?
+              end
             end
-            partRelMetaKey = 'none' if partRelMetaKey && partRelMetaKey.size==0
             @demands = []
             @demands, @total = Demander.search( :clientId=>clientId, :supplierId=>supplierId,
-            :rpartNr=>partRelMetaKey, :start=>tstart, :end=>tend,
+            :rpartNr=>partRelId, :start=>tstart, :end=>tend,
             :type=>params[:type],  :amount=>params[:amount],
             :page=>params[:page] )
             @totalPages=@total/Demander::NumPer+(@total%Demander::NumPer==0 ? 0:1)
             @currentPage=params[:page].to_i
             @options = params[:options]?params[:options]:{}
     end
-    # @totalPages=@total/Demander::NumPer+(@total%Demander::NumPer==0 ? 0:1)
-    # @currentPage=params[:page].to_i
-    # @options = params[:options]?params[:options]:{}
 
     respond_to do |format|
       format.html {render :partial=>"table" }
@@ -383,28 +388,92 @@ class DemanderController<ApplicationController
             tend = Time.parse(params[:end]).to_i if params[:end] && params[:end].size>0
         
             ######  判断类型 C or S ， 将session[:id]赋值给 id
-        
             if session[:orgOpeType]==OrgOperateType::Client
-              supplierId = @cz_org.search_supplier_byNr( s.split(',') ) if s && s.size>0
+              if s.blank?
+                  supplierId = nil
+              else
+                  supplierId = @cz_org.suppliers.where( supplierNr:s.split(',') ).map{|o|o.origin_supplier_id}
+                  supplierId = "none" if supplierId.blank?
+              end
               clientId = @cz_org.id
-              partRelMetaKey = PartRel.get_all_partRelMetaKey_by_partNr( clientId, p.split(','), PartRelType::Client ) if p && p.size>0
+              if p.blank?
+                  partRelId = nil
+              else
+                  partRelId = Part.where(organisation_id:@cz_org.id, partNr:p.split(',')).joins(:client_part_rels).select("part_rels.id").map{|rel|rel.id}
+                  partRelId = "none"  if partRelId.blank?
+              end
             else
-              clientId = @cz_org.search_client_byNr( c.split(',') ) if c && c.size>0
+              if c.blank?
+                  clientId = nil
+              else
+                  clientId = @cz_org.clients.where( clientNr:c.split(',') ).map{|o|o.origin_client_id}
+                  clientId = "none" if clientId.blank?
+              end
               supplierId = @cz_org.id
-              partRelMetaKey = PartRel.get_all_partRelMetaKey_by_partNr( supplierId, p.split(','), PartRelType::Supplier ) if p && p.size>0
+              if p.blank?
+                  partRelId = nil
+              else
+                  partRelId = Part.where(organisation_id:@cz_org.id, partNr:p.split(',')).joins(:supplier_part_rels).select("part_rels.id").map{|rel|rel.id}
+                  partRelId = "none"  if partRelId.blank?
+              end
             end
-            partRelMetaKey = 'none' if partRelMetaKey && partRelMetaKey.size==0
+            
               demands = []
             demands = Demander.search( :clientId=>clientId, :supplierId=>supplierId,
-            :rpartNr=>partRelMetaKey, :start=>tstart, :end=>tend,
+            :rpartNr=>partRelId, :start=>tstart, :end=>tend,
             :type=>params[:type].nil? ? nil : params[:type].split(',') ,  :amount=>params[:amount].nil? ? nil : params[:amount].split(','))[0]
             
-              msg=DemanderHelper::down_load_demand demands,session[:orgOpeType],request.user_agent
+              msg=DemanderBll.down_load_demand demands,session[:orgOpeType],request.user_agent
       if msg.result
         send_file msg.content,:type => 'application/csv', :filename => "#{UUID.generate}.csv"
         File.delete(msg.content)
       end
             
+    end
+  end
+  
+  def search_expired
+    if request.get?
+    elsif request.post?
+            c = params[:client]
+            s = params[:supplier]
+            p = params[:partNr]
+            tstart = Time.parse(params[:start]) if params[:start].present?
+            tend = Time.parse(params[:end]) if params[:end].present?
+            astart = (params[:amount][0].present?) ? params[:amount][0].to_f : 0
+            aend = (params[:amount][1].present?) ? params[:amount][1].to_f : 999999999
+        
+            ######  判断类型 C or S ， 将session[:id]赋值给 id
+            conditions = {}
+            if session[:orgOpeType]==OrgOperateType::Client
+              conditions[:supplierId] = @cz_org.suppliers.where( supplierNr:s ).map{|o|o.origin_supplier_id}  if s.present?
+              conditions[:clientId] = @cz_org.id
+              conditions[:relpartId] = Part.where(organisation_id:@cz_org.id, partNr:p).joins(:client_part_rels).select("part_rels.id").map{|rel|rel.id}  if p.present?
+            else
+              conditions[:clientId] = @cz_org.clients.where( clientNr:c ).map{|o|o.origin_client_id} if c.present?
+              conditions[:supplierId] = @cz_org.id
+              conditions[:relpartId] = Part.where(organisation_id:@cz_org.id, partNr:p).joins(:supplier_part_rels).select("part_rels.id").map{|rel|rel.id}  if p.present?
+            end
+            if tstart.present? && tend.blank?
+                conditions[:date] = tstart..Time.parse("3000/12/12")
+            elsif tstart.blank? && tend.present?
+                conditions[:date] = Time.parse("1000/1/1")..tend
+            elsif tstart.present? && tend.present?
+                conditions[:date] = tstart..tend
+            end
+            conditions[:type] = params[:type] if params[:type].present?
+            conditions[:amount] = astart..aend
+            des = Demander.where( conditions )
+            @demands =  des.offset( Demander::NumPer*params[:page].to_i ).limit( Demander::NumPer )
+            @total = des.count
+            @totalPages=@total/Demander::NumPer+(@total%Demander::NumPer==0 ? 0:1)
+            @currentPage=params[:page].to_i
+            @options = params[:options]?params[:options]:{}
+            
+            respond_to do |format|
+              format.html {render :partial=>"expired_table" }
+              format.json { render json: @demands }
+            end
     end
   end
 
@@ -441,8 +510,6 @@ class DemanderController<ApplicationController
       batchId=params[:batchFileId]
       result=false
       if bf=RedisFile.find(batchId)
-        puts 'check key:'+batchId
-        puts 'fin:'+bf.finished
         if bf.finished=='false'
         result=true
         end
@@ -454,7 +521,7 @@ class DemanderController<ApplicationController
   # ws : check cache file after page load
   def check_staff_cache_file
     if request.post?
-      msg=ReturnMsg.new(:result=>false)
+      msg=ReturnMsg.new
       if batchFileId=RedisFile.check_staff_cache_file(session[:staff_id])
       msg.result=true
       msg.object=batchFileId
@@ -476,8 +543,8 @@ class DemanderController<ApplicationController
   # ws : get cache file info
   def get_cache_file_info
     if request.post?
-      msg=ReturnMsg.new(:result=>false)
-      if bf=DemanderHelper::get_batch_file_info(params[:batchFileId],0,-1)[0]
+      msg=ReturnMsg.new
+      if bf=DemanderBll.get_batch_file_info(params[:batchFileId],0,-1)[0]
       msg.result=true
       msg.object=bf
       end

@@ -1,9 +1,12 @@
+#encoding: utf-8
+
 require 'base_class'
 
 class FileData<CZ::BaseClass
-
   attr_accessor :type,:oriName,:size,:path,:pathName,:data,:extention,:uuidName
-
+  def default
+    {:uuidName=>UUID.generate}
+  end
   def saveFile
     @extention=File.extname(@oriName).downcase
     @pathName=@uuidName+@extention

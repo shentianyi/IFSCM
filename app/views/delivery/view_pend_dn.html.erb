@@ -8,26 +8,27 @@
 	});
 </script>
 <%if @msg.result%>
+<% dn=@msg.object%>
 <div class="fillindestinations">
 	<p>
-		运单发送预览数据: <%= @msg.object.key%>
+		运单发送预览数据: <%= dn.key%>
 	</p>
 	<span class="errparts" style="display:none;">*请先填写正确的送货地址或送货时间</span></br>
 	<div class="fillind">
 		<input type="text" class="fillindest"id="client-text" autocomplete="off" disabled="false"  style="width: 150px"
-		value="<%= Organisation.find_by_id(@msg.object.orgId).search_client_byId(@msg.object.desiOrgId.to_i)%>"
+		value="<%= DeliveryHelper.get_clientNr_by_orgId(dn.organisation_id,dn.rece_org_id)%>"
 		disabled/>
 		<form method="post" id="gen_dn_pdf_form" action="../delivery/gen_dn_pdf">
-			<input type="hidden" value="<%= @msg.object.key%>" id="dnkey-hidden" name="dnKey">
-			<input type="text" class="fillindest fillindestlonger" name="destination" value="<%=@msg.object.destination%>"
+			<input type="hidden" value="<%= dn.key%>" id="dnkey-hidden" name="dnKey">
+			<input type="text" class="fillindest fillindestlonger" name="destination" value="<%=dn.destination%>"
 			placeholder="请您填写送货地址-必填" id="destination-text" style="width: 250px">
 			<input type="text" class="fillindest fillindestlonger" name="sendDate"
-			placeholder="请您填写送货日期-必填" id="sendDate-text"  style="width: 150px" value="<%=@msg.object.sendDate%>">
+			placeholder="请您填写送货日期-必填" id="sendDate-text"  style="width: 150px" value="<%=dn.sendDate.nil? ? "":Time.at(dn.sendDate.to_i).strftime('%Y/%m/%d')%>">
 		</form>
 	</div>
 </div>
 <div id='delivery-items-div'>
-	<%= render :partial=>'dn_pend_items',:locals=>{:dnItems=>@msg.object.items}%>
+	<%= render :partial=>'dn_pend_items',:locals=>{:dnItems=>dn.items}%>
 </div>
 <div class="botbts">
 	<div class="btsave botbtn" onclick="generate_dn_label_pdf('dn');">
@@ -35,7 +36,8 @@
 			打印运单
 		</p>
 	</div>
-        <div class="btsave botbtn" onclick="alert('开发中，暂不可用');">
+       <!--  <div class="btsave botbtn" onclick="add_dn_to_print_queue();"> -->
+       	 <div class="btsave botbtn" onclick="alert('in developing...');">
 		<p>
 			打印包装箱
 		</p>

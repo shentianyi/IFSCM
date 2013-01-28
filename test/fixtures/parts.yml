@@ -1,0 +1,56 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+# This model initially had no columns defined.  If you add columns to the
+# model remove the '{}' from the fixture names and add the columns immediately
+# below each fixture, per the syntax in the comments below
+#
+pOne:
+  id: 1
+  partNr: leoni001
+  organisation_id: 1
+# column: value
+#
+pTwo:
+  id: 2
+  partNr: nl001
+  organisation_id: 2
+#  column: value
+pThree:
+  id: 3
+  partNr: leoni002
+  organisation_id: 1
+
+pFour:
+  id: 4
+  partNr: nl002
+  organisation_id: 2
+
+pFive:
+  id: 5
+  partNr: leoni003
+  organisation_id: 1
+
+pSix:
+  id: 6
+  partNr: nl003
+  organisation_id: 2
+
+pOOne:
+  id: 11
+  partNr: leoni011
+  organisation_id: 1
+
+pOTwo:
+  id: 12
+  partNr: chl011
+  organisation_id: 3
+
+pOThree:
+  id: 13
+  partNr: leoni012
+  organisation_id: 1
+
+pOFour:
+  id: 14
+  partNr: chl012
+  organisation_id: 3

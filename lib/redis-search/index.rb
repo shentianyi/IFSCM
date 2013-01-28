@@ -27,15 +27,14 @@ class Redis
         # 将原始数据存入 hashes
         res = Redis::Search.config.redis.hset(self.type, self.id, data.to_json)
 
-        # 将目前的编号保存到条件(conditions)字段所创立的索引上面
+         # 将目前的编号保存到条件(conditions)字段所创立的索引上面
         self.condition_fields.each do |field|
-        # Redis::Search.config.redis.sadd(Search.mk_condition_key(self.type,field,data[field.to_sym]), self.id)
-          if data[field.to_sym].is_a?(String)
-            Redis::Search.config.redis.sadd(Search.mk_condition_key(self.type,field,data[field.to_sym]), self.id)
-          elsif data[field.to_sym].is_a?(Array)
+          if data[field.to_sym].is_a?(Array)
             data[field.to_sym].each do |f|
               Redis::Search.config.redis.sadd(Search.mk_condition_key(self.type,field,f), self.id)
             end
+          else
+            Redis::Search.config.redis.sadd(Search.mk_condition_key(self.type,field,data[field.to_sym]), self.id)
           end
         end
 
@@ -69,53 +68,47 @@ class Redis
       end
 
       private
-
-      def self.split_words_for_index(title)
-        words = Search.split(title)
-        if Search.config.pinyin_match
-          # covert Chinese to pinyin to as an index
-          pinyin_full = Search.split_pinyin(title)
-          pinyin_first = pinyin_full.collect { |p| p[0] }.join("")
-          words += pinyin_full
-          words << pinyin_first
-          pinyin_full = nil
-          pinyin_first = nil
-        end
-        words.uniq
-      end
-
-      def incrscore
-        Redis::Search.config.redis.incr "redis-search-incr"
-      end
-
-      def save_prefix_index
-        i=incrscore
-        self.aliases.each do |val|
-          words = []
-          words << val.downcase
-          Redis::Search.config.redis.sadd(Search.mk_sets_key(self.type,val), self.id)
+        def self.split_words_for_index(title)
+          words = Search.split(title)
           if Search.config.pinyin_match
-            pinyin_full = Search.split_pinyin(val.downcase)
+            # covert Chinese to pinyin to as an index
+            pinyin_full = Search.split_pinyin(title)
             pinyin_first = pinyin_full.collect { |p| p[0] }.join("")
-            pinyin = pinyin_full.join("")
-            words << pinyin
+            words += pinyin_full
             words << pinyin_first
-            Redis::Search.config.redis.sadd(Search.mk_sets_key(self.type,pinyin), self.id)
             pinyin_full = nil
             pinyin_first = nil
-            pinyin = nil
           end
+          words.uniq
+        end
 
-          words.each do |word|
-            key = Search.mk_complete_key(self.type)
-            (1..(word.length)).each do |l|
-              prefix = word[0...l]
-              Redis::Search.config.redis.zadd(key, 0, prefix)
+        def save_prefix_index
+          self.aliases.each do |val|
+            words = []
+            words << val.downcase
+            Redis::Search.config.redis.sadd(Search.mk_sets_key(self.type,val), self.id)
+            if Search.config.pinyin_match
+              pinyin_full = Search.split_pinyin(val.downcase)
+              pinyin_first = pinyin_full.collect { |p| p[0] }.join("")
+              pinyin = pinyin_full.join("")
+              words << pinyin
+              words << pinyin_first
+              Redis::Search.config.redis.sadd(Search.mk_sets_key(self.type,pinyin), self.id)
+              pinyin_full = nil
+              pinyin_first = nil
+              pinyin = nil
             end
-            Redis::Search.config.redis.zadd(key, 0, word + "*")
+
+            words.each do |word|
+              key = Search.mk_complete_key(self.type)
+              (1..(word.length)).each do |l|
+                prefix = word[0...l]
+                Redis::Search.config.redis.zadd(key, 0, prefix)
+              end
+              Redis::Search.config.redis.zadd(key, 0, word + "*")
+            end
           end
         end
-      end
     end
   end
 end

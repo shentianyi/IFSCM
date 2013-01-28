@@ -1,5 +1,4 @@
-#coding:utf-8
-
+#encoding: utf-8
 # ws
 # 生成可辨识的唯一键
 module ClassKeyHelper
@@ -18,7 +17,9 @@ module ClassKeyHelper
     :PartRelMeta=>:generate_redis_incr_key,
     :PartRel=>:generate_redis_incr_key,
     :Part=>:generate_redis_incr_key,
-    :RedisFile=>:generate_uuid_key
+    :RedisFile=>:generate_uuid_key,
+    :OrgRelPrinter=>:generate_redis_incr_key,
+    :DnContact=>:generate_redis_incr_key
   }
 
   def self.gen_key className

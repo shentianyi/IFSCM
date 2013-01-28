@@ -1,51 +1,66 @@
-require 'base_class'
-
-class Part<CZ::BaseClass
-  attr_accessor :orgId,:partNr
-
-  # redis search -----------------------------
-  include Redis::Search
-
-  redis_search_index(:title_field => :partNr,
-                     :alias_field => :alias,
-                     :prefix_index_enable => true,
-                     :condition_fields=>[:orgId],
-                    :score_field=>:created_at,
-                     :ext_fields =>  [:key,:partNr])
-
-  def alias
-    [self.partNr]
-  end
-  # -------------------------------------------------
+#encoding: utf-8
+class Part < ActiveRecord::Base
+  attr_accessible :partNr
+  belongs_to :organisation
+  has_many :client_part_rels, :class_name=>"PartRel", :foreign_key=>"client_part_id" # org is client
+  has_many :supplier_part_rels, :class_name=>"PartRel", :foreign_key=>"supplier_part_id" # org is supplier
  
-  def self.find_by_partNr orgId,partNr
-    Part.find(Part.find_partKey_by_orgId_partNr(orgId,partNr))
-  end
-  
-  def self.find_partKey_by_orgId_partNr orgId,partNr
-    hash_key=generate_org_part_hash_key orgId
-    $redis.hget hash_key,partNr
-  end
-  
-  def self.find_all_parts_by_orgId orgId
-     hash_key=generate_org_part_hash_key orgId
-     parts=[]
-     $redis.hgetall(hash_key).each do |k,v|
-       parts<<Part.find(v)
-     end
-     return parts.count>0 ? parts : nil
-  end
+  after_save :add_or_update_redis_index
+  after_destroy :del_redis_index
 
-  def add_to_org orgId
-    hash_key=Part.generate_org_part_hash_key orgId
-    $redis.hset hash_key,@partNr,@key
+  include Redis::Search
+  redis_search_index(:title_field => :partNr,
+                     :prefix_index_enable => true,
+                     :condition_fields=>[:organisation_id],
+                     :ext_fields => [:partNr])
+  
+  def self.get_id orgId,partNr
+    find_id_from_redis(orgId,partNr)
   end
   
-
+    
+  def self.get_partNr orgId,partId
+   find_nr_from_redis(orgId,partId) 
+  end
+  
   private
 
-  def self.generate_org_part_hash_key orgId
-    "orgId:#{orgId}:parts"
+  def self.find_id_from_redis orgId,partNr
+    if id=$redis.zscore(generate_org_part_zset_key(orgId),partNr)
+    id=id.to_i
+    end
+    return id
   end
   
+  def self.find_nr_from_redis orgId,partId
+    $redis.zrangebyscore(generate_org_part_zset_key(orgId),partId,partId)[0]
+  end
+
+  def add_or_update_redis_index
+    if self.partNr_change
+      if self.partNr_was.nil?
+        add_redis_index
+      else
+        update_redis_index
+      end
+    end
+  end
+
+  def self.generate_org_part_zset_key orgId
+    "org:#{orgId}:parts:zset"
+  end
+
+  def add_redis_index
+    $redis.zadd Part.generate_org_part_zset_key(self.organisation_id),self.id,self.partNr
+  end
+
+  def del_redis_index
+    $redis.zrem Part.generate_org_part_zset_key(self.organisation_id),self.partNr
+  end
+
+  def update_redis_index
+    del_redis_index
+    add_redis_index
+  end
 end
+

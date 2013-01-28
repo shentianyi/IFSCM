@@ -1,0 +1,43 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+# This model initially had no columns defined.  If you add columns to the
+# model remove the '{}' from the fixture names and add the columns immediately
+# below each fixture, per the syntax in the comments below
+#
+pMetaOne:
+  id: 1
+  saleNo: SaleNing001
+  purchaseNo: PurchaseLeoni001
+  client_part_id: 1
+  supplier_part_id: 2
+# column: value
+#
+pMetaTwo:
+  id: 2
+  saleNo: SaleNing002
+  purchaseNo: PurchaseLeoni002
+  client_part_id: 3
+  supplier_part_id: 4
+
+pMetaThree:
+  id: 3
+  saleNo: SaleNing003
+  purchaseNo: PurchaseLeoni003
+  client_part_id: 5
+  supplier_part_id: 6
+
+
+pMetaFour:
+  id: 4
+  saleNo: SaleChang011
+  purchaseNo: PurchaseLeoni011
+  client_part_id: 11
+  supplier_part_id: 12
+
+pMetaFive:
+  id: 5
+  saleNo: SaleChang012
+  purchaseNo: PurchaseLeoni012
+  client_part_id: 13
+  supplier_part_id: 14
+

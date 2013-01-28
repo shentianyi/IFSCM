@@ -1,19 +1,18 @@
-#coding:utf-8
-module LeoniNbtpDn  
+#encoding:utf-8
+module LeoniNbtpDn
   @@head_keys=["DnNr","SendDate","SupplierOrgName","SupplierOrgAddress","ClientOrgName","ClientOrgAddress","DnDestination",
     "SupplierNr","ClientNr","ReceiverName","ContactWay"]
   @@body_keys=["CPartNr","SPartNr","PerPackNum","PackNum","TotalQuantity"]
 
-  def self.gen_data dnKey
+  def self.gen_data dn,orl
     dataset=[]
-    dn=DeliveryNote.find(dnKey)
-    sendOrg=Organisation.find_by_id(dn.orgId)
-    receOrg=Organisation.find_by_id(dn.desiOrgId)
+    sendOrg=Organisation.find(dn.organisation_id)
+    receOrg=Organisation.find(dn.rece_org_id)
 
-    if dn.items=DeliveryBase.get_children(dn.key,0,-1)[0]
+    if dn.items=DeliveryNote.get_children(dn.key,0,-1)[0]
       dn.items.each do |p|
-        record=gen_head(dn,sendOrg,receOrg)
-        record=gen_body(p,dn.wayState,record)
+        record=gen_head(dn,sendOrg,receOrg,orl)
+        record=gen_body(p,record)
         dataset<<record
       end
     end
@@ -21,12 +20,12 @@ module LeoniNbtpDn
   end
 
   private
-   
-  def self.gen_head dn,sendOrg,receOrg
+
+  def self.gen_head dn,sendOrg,receOrg,orl
     record=[]
     data={}
     data[:DnNr]=dn.key
-    data[:SendDate]=dn.sendDate
+    data[:SendDate]=Time.at(dn.sendDate.to_i).strftime('%Y/%m/%d')
     data[:SupplierOrgName]=sendOrg.name
     data[:SupplierOrgAddress]=sendOrg.address
     data[:ClientOrgName]=receOrg.name
@@ -34,29 +33,25 @@ module LeoniNbtpDn
     data[:DnDestination]=dn.destination
     ## still no:
     # supplierNr, clientNr , receStaffName, receStaffContact
-    data[:SupplierNr]="0314CN"
-    data[:ClientNr]="TECSM1044"
-    data[:ReceiverName]="原材料仓库"
-    data[:ContactWay]="39939591"
+    data[:SupplierNr]= orl.supplierNr
+    data[:ClientNr]=orl.clientNr
+    contact=DnContact.find_by_orid(orl.id)
+    data[:ReceiverName]=contact.recer_name
+    data[:ContactWay]=contact.recer_contact
     @@head_keys.each do |key|
       record<<{:Key=>key,:Value=>data[key.to_sym]}
     end
     return record
   end
 
-  def self.gen_body pack,sent,record
+  def self.gen_body pack,record
     data={}
     data[:PerPackNum]=pack.perPackAmount
     data[:PackNum]=pack.packAmount
     data[:TotalQuantity]=FormatHelper.string_multiply(pack.perPackAmount,pack.packAmount)
-    if sent
-      data[:CPartNr]=pack.cpartNr
-      data[:SPartNr]=pack.spartNr
-    else
-      prm=PartRelMeta.find(pack.partRelMetaKey)
-      data[:CPartNr]=Part.find(prm.cpartId).partNr
-      data[:SPartNr]=Part.find(prm.spartId).partNr
-    end
+    data[:CPartNr]=pack.cpartNr
+    data[:SPartNr]=pack.spartNr
+
     @@body_keys.each do |key|
       record<<{:Key=>key,:Value=>data[key.to_sym]}
     end

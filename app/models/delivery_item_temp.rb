@@ -1,7 +1,8 @@
-#coding:utf-8
-class DeliveryItemTemp<DeliveryPackage
-  # attr_accessor :packAmount,:perPackAmount,:total
+#encoding: utf-8
+require 'base_class'
 
+class DeliveryItemTemp<CZ::BaseClass
+   attr_accessor :cpartNr, :key,:parentKey,:packAmount, :partRelId, :perPackAmount, :purchaseNo, :saleNo, :spartNr, :total
   # ws
   # [功能：] 将临时运单项加入用户 ZSet
   # 参数：
@@ -37,8 +38,8 @@ class DeliveryItemTemp<DeliveryPackage
       temps=[]
       keys.each do |k|
         if t=DeliveryItemTemp.find(k)
-          t.spartNr=Part.find(PartRelMeta.find(t.partRelMetaKey).spartId).partNr
-        temps<<t
+          t.spartNr=Part.find(PartRel.find(t.partRelId).supplier_part_id).partNr
+          temps<<t
         end
       end
       return temps.count>0 ? temps:nil
@@ -57,8 +58,15 @@ class DeliveryItemTemp<DeliveryPackage
     $redis.remrangebyrank zset_key,0,-1
   end
 
- 
+ def packAmount t=nil
+    return FormatHelper::get_number @packAmount,t
+  end
 
+  def perPackAmount t=nil
+    return FormatHelper::get_number @perPackAmount,t
+  end
+  
+  
   private
 
   def self.generate_staff__zset_key staffId

@@ -32,7 +32,7 @@
 				<th><%= d.spartNr%></th>
 			<% end %>
 			
-			<th><%= d.date%></th>
+			<th><%= FormatHelper::demand_date_outside( d.date, d.type )%></th>
 			<th><%= d.amount%></th>
 			<th><%= d.type%></th>
 			<th>  

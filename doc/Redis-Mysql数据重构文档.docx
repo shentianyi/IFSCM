@@ -1,0 +1,25 @@
+﻿Redis-Mysql数据重构文档
+-WS 2013.01.17
+一、更改概要
+1. redis数据根据ActiveRecord建立，使用Observer模式（callback）保持数据一致性
+2. 模糊查询（redis-search）根据ActiveRecord建立，修改RS符合AR
+3. 复杂数据验证结构（需求上传的Part结构），临时数据（临时需求，临时运单）仍放在Redis中
+二、Redis数据结构更改
+1. Redis Part 结构
+“Org:Part:Hash”=>{:partNr=>partId}
+“Org:Supplier:ZSet”=>{(supplierNr,orgId)}
+“Org:PartID:PartRel:Set”=>{partRelId}
+三、架构更改
+   1.建立C(Controller)与M(Model)中间层：DAL（Data Access Layer）
+复杂查询
+Redis 和Mysql同时存储的数据，先检查Redis数据再检查Mysql，获取数据
+四、更改计划
+   1.确认Redis、Mysql数据
+   2.建立MysqlModel,完成Callback（同步Redis数据），完成RedisSearch更改
+   3.将Helper函数划分到Controller和DAL层编写
+   4.测试
+五、实施  
+   1.Redis 数据-保持原状
+    DemandType, DemandHistory, DemanderTemp, RedisFile
+   2.Mysql 数据
+    Organisation, Part, Staff, Demander, DeliveryNote, DeliveryPackage, DeliveryItem

@@ -1,10 +1,9 @@
-#coding:utf-8
-#encoding=UTF-8
+#encoding: utf-8
 require 'csv'
 
 module InitDataCsvHelper
   @@path='initData/initOri'
-  @@bakpath='initData/initBak'
+  
   # ws : init org from csv
   def self.initOrgByCSV fileName
     orgs=[]
@@ -15,74 +14,37 @@ module InitDataCsvHelper
       org.save
       orgs<<org
     end
-    #writeBak fileName,orgs
     return orgs
-  end
-
-  # init cs Rel
-  def self.initCsRelByCSV fileName
-    CSV.foreach(File.join(@@path,fileName+'.csv'),:headers=>true,:col_sep=>$CSVSP) do |row|
-      puts "----- init Cs Rel : #{row["ClientKey"]}<-->#{row["SupplierKey"]}----------------------------"
-      c=Organisation.find(row["ClientKey"])
-      s=Organisation.find(row["SupplierKey"])
-      c.add_supplier(s.id,row["SupplierNr"])
-      s.add_client(c.id,row["ClientNr"])
-    end
   end
 
   # init cs rel by orgs
   def self.initCsRelByOrgFile orgs,fileName
     i=0
     CSV.foreach(File.join(@@path,fileName+'.csv'),:headers=>true,:col_sep=>$CSVSP) do |row|
-      orgs[i].add_supplier(orgs[i+1].id,row["SupplierNr"])
-      orgs[i+1].add_client(orgs[i].id,row["ClientNr"])
+      OrganisationRelation.create(:clientNr=>row["ClientNr"], :supplierNr=>row["SupplierNr"], :origin_supplier_id=>orgs[i+1].id, :origin_client_id=>orgs[i].id)
       i+=2
     end
   end
 
   # init part and cs part rel
   def self.initPartAndCsPartRel c,s,fileName
-    i=0
+    orgRel = OrganisationRelation.where("origin_client_id = ? and origin_supplier_id = ? ", c.id, s.id).first
+    
     CSV.foreach(File.join(@@path,fileName+'.csv'),:headers=>true,:col_sep=>$CSVSP) do |row|
-   
-      puts "--------CPartNr:#{row["CpartNr"]}---SPartNr:#{row["SpartNr"]}--------------------"
       cp=sp=nil
-      if !cp=Part.find(Part.find_partKey_by_orgId_partNr(c.id,row["CpartNr"]))
-        puts '------------ save client part-------------'
-        cp=Part.new(:orgId=>c.id,:partNr=>row["CpartNr"])
-        cp.save
-       cp.add_to_org c.id
+      if !cp= Part.where("organisation_id = ? and partNr = ?", c.id, row["CpartNr"]).first
+        cp=Part.new(:partNr=>row["CpartNr"])
+        c.parts<<cp
       end
-
-      if !sp= Part.find(Part.find_partKey_by_orgId_partNr(s.id,row["SpartNr"]))
-        puts '------------ save supplier part-------------'
-        sp=Part.new(:orgId=>s.id,:partNr=>row["SpartNr"])
-       sp.save
-       sp.add_to_org s.id
+      if !sp= Part.where("organisation_id = ? and partNr = ?", s.id, row["SpartNr"]).first
+        sp=Part.new(:partNr=>row["SpartNr"])
+        s.parts<<sp
       end
-
-   #   if !PartRel.get_single_part_cs_parts c.id,s.id,cp.key,PartRelType::Client
-        #PartRel.generate_cs_part_relation cp,sp,row["SaleNo"]||"",row["PurchaseNo"]||""
-         PartRelHelper::generate_cs_part_relation({:cpart=>cp,:spart=>sp,:saleNo=>row["SaleNo"]||"",:purchaseNo=>row["PurchaseNo"]||""})
-   #   end
+      PartRel.create(:saleNo=>row["SaleNo"]||"", :purchaseNo=>row["PurchaseNo"]||"",
+                                                          :client_part_id=>cp.id, :supplier_part_id=>sp.id, :organisation_relation_id=>orgRel.id)
     end
+    
   end
 
-  # write bak -- contain key
-  def self.writeBak fileName,objs
-    File.open(File.join(@@bakpath ,fileName+'--'+UUID.generate+'.csv'),'w+') do |f|
-    # puts title
-      if objs.count>0
-        f.puts objs[0].instance_variables.collect! {|x| x.to_s.sub(/@/,'').capitalize}.join($CSVSP)
-      end
-      objs.each do |o|
-        attrs=[]
-        o.instance_variables.each do |attr|
-          attrs<< o.instance_variable_get(attr)
-        end
-        f.puts attrs.join($CSVSP)
-      end
-    end
-  end
 
 end

@@ -1,3 +1,4 @@
+#encoding: utf-8
 class DeliveryStaffCacheDiscarder
   @queue='delivery_queue'
   def self.perform staffId,dnKey

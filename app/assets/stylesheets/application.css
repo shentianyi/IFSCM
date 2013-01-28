@@ -15,3 +15,8 @@
  * = require jquery.ui/jquery.ui.datepicker.min
  * = require jquery.ui/jquery.ui.theme
 */
+
+
+
+	tr:hover {background-color: #B0E0E6;}
+	tr:hover td{background:none;}

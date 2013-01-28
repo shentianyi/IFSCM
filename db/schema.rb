@@ -13,59 +13,65 @@
 
 ActiveRecord::Schema.define(:version => 20130117032759) do
 
-  create_table "m_delivery_items", :force => true do |t|
+  create_table "delivery_items", :force => true do |t|
     t.string   "key"
     t.integer  "state"
-    t.integer  "amount"
     t.string   "parentKey"
-    t.string   "saleNo"
-    t.string   "purchaseNo"
-    t.string   "cpartNr"
-    t.string   "spartNr"
-    t.string   "partRelMetaKey"
-    t.integer  "m_delivery_note_id"
-    t.datetime "created_at",         :null => false
-    t.datetime "updated_at",         :null => false
+    t.integer  "delivery_package_id"
+    t.datetime "created_at",          :null => false
+    t.datetime "updated_at",          :null => false
   end
 
-  add_index "m_delivery_items", ["m_delivery_note_id"], :name => "index_m_delivery_items_on_m_delivery_note_id"
+  add_index "delivery_items", ["delivery_package_id"], :name => "index_delivery_items_on_delivery_package_id"
 
-  create_table "m_delivery_notes", :force => true do |t|
+  create_table "delivery_notes", :force => true do |t|
     t.string   "key"
     t.integer  "wayState"
-    t.integer  "orgId"
-    t.integer  "sender"
-    t.integer  "desiOrgId"
+    t.integer  "rece_org_id"
     t.string   "destination"
     t.integer  "state"
-    t.datetime "created_at",  :null => false
-    t.datetime "updated_at",  :null => false
     t.datetime "sendDate"
+    t.datetime "created_at",      :null => false
+    t.datetime "updated_at",      :null => false
+    t.integer  "staff_id"
+    t.integer  "organisation_id"
   end
 
-  create_table "m_delivery_packages", :force => true do |t|
+  add_index "delivery_notes", ["organisation_id"], :name => "index_delivery_notes_on_organisation_id"
+  add_index "delivery_notes", ["staff_id"], :name => "index_delivery_notes_on_staff_id"
+
+  create_table "delivery_packages", :force => true do |t|
     t.string   "key"
     t.string   "saleNo"
     t.string   "purchaseNo"
     t.string   "cpartNr"
     t.string   "spartNr"
     t.string   "parentKey"
-    t.string   "partRelMetaKey"
+    t.integer  "partRelId"
     t.integer  "packAmount"
     t.float    "perPackAmount"
-    t.integer  "m_delivery_note_id"
-    t.datetime "created_at",         :null => false
-    t.datetime "updated_at",         :null => false
+    t.integer  "delivery_note_id"
+    t.datetime "created_at",       :null => false
+    t.datetime "updated_at",       :null => false
   end
 
-  add_index "m_delivery_packages", ["m_delivery_note_id"], :name => "index_m_delivery_packages_on_m_delivery_note_id"
+  add_index "delivery_packages", ["delivery_note_id"], :name => "index_delivery_packages_on_delivery_note_id"
 
-  create_table "m_demanders", :force => true do |t|
+  create_table "demanders", :force => true do |t|
+    t.string   "key"
+    t.integer  "clientId"
+    t.integer  "supplierId"
+    t.integer  "relpartId"
+    t.string   "type"
+    t.float    "amount"
+    t.float    "oldamount"
+    t.datetime "date"
+    t.float    "rate"
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
   end
 
-  create_table "m_organisation_relations", :force => true do |t|
+  create_table "organisation_relations", :force => true do |t|
     t.string   "supplierNr"
     t.string   "clientNr"
     t.integer  "origin_supplier_id"
@@ -74,7 +80,7 @@ ActiveRecord::Schema.define(:version => 20130117032759) do
     t.datetime "updated_at",         :null => false
   end
 
-  create_table "m_organisations", :force => true do |t|
+  create_table "organisations", :force => true do |t|
     t.string   "name"
     t.string   "description"
     t.string   "address"
@@ -87,22 +93,26 @@ ActiveRecord::Schema.define(:version => 20130117032759) do
     t.datetime "updated_at",  :null => false
   end
 
-  create_table "m_part_rel_meta", :force => true do |t|
+  create_table "part_rels", :force => true do |t|
     t.string   "saleNo"
     t.string   "purchaseNo"
     t.integer  "client_part_id"
     t.integer  "supplier_part_id"
-    t.datetime "created_at",       :null => false
-    t.datetime "updated_at",       :null => false
+    t.integer  "organisation_relation_id"
+    t.datetime "created_at",               :null => false
+    t.datetime "updated_at",               :null => false
   end
 
-  create_table "m_parts", :force => true do |t|
-    t.string   "type"
+  add_index "part_rels", ["organisation_relation_id"], :name => "index_part_rels_on_organisation_relation_id"
+
+  create_table "parts", :force => true do |t|
     t.string   "partNr"
-    t.integer  "m_organisation_relation_id"
-    t.datetime "created_at",                 :null => false
-    t.datetime "updated_at",                 :null => false
+    t.integer  "organisation_id"
+    t.datetime "created_at",      :null => false
+    t.datetime "updated_at",      :null => false
   end
+
+  add_index "parts", ["organisation_id"], :name => "index_parts_on_organisation_id"
 
   create_table "staffs", :force => true do |t|
     t.string   "staffNr"
@@ -110,8 +120,11 @@ ActiveRecord::Schema.define(:version => 20130117032759) do
     t.integer  "orgId"
     t.string   "salt"
     t.string   "pwd"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+    t.integer  "organisation_id"
+    t.datetime "created_at",      :null => false
+    t.datetime "updated_at",      :null => false
   end
+
+  add_index "staffs", ["organisation_id"], :name => "index_staffs_on_organisation_id"
 
 end
