@@ -16,9 +16,13 @@ class OrganisationRelation < ActiveRecord::Base
   
   include Redis::Search
   redis_search_index(:title_field => :clientNr,
+                     :alias => :alias,
                      :prefix_index_enable => true,
                      :condition_fields=>[:origin_client_id, :origin_supplier_id],
                      :ext_fields => [:clientNr, :supplierNr, :id])
+  def alias
+    [self.supplierNr, self.origin_supplier.name, self.origin_client.name]
+  end
   
   def self.get_partnerid args
    find_partnerid_from_redis args
