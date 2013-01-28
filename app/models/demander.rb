@@ -11,7 +11,7 @@ class Demander < ActiveRecord::Base
   extend  DemanderNewbie
   # ws : add demand history
   def add_to_history history_key
-    zset_key=DemandHistory.generate_zset_key @clientId,@supplierId,@relpartId,@type,@date
+    zset_key=DemandHistory.generate_zset_key self.clientId,self.supplierId,self.relpartId,self.type,self.date
     $redis.zadd(zset_key,Time.now.to_i,history_key)
   end
 
@@ -41,7 +41,7 @@ class Demander < ActiveRecord::Base
   def update_cf_record
     zsetKey=Demander.generate_org_part_cf_zset_key(self.clientId,self.relpartId,self.supplierId,self.type)
     if !$redis.zscore zsetKey,self.key
-      $redis.zadd zsetKey,Time.parse(self.date).strftime('%Y%m%d').to_i,self.key
+      $redis.zadd zsetKey,self.date.strftime('%Y%m%d').to_i,self.key
     end
   end
 

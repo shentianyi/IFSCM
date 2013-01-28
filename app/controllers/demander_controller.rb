@@ -261,14 +261,15 @@ class DemanderController<ApplicationController
                   if ncount>0
                     nds.items.each do |nd|
                       puts nd.to_json
-                      if tempKey = DemandHistory.exists( nd.clientId,nd.supplierId,nd.relpartId,nd.type,nd.date )
+                      d= FormatHelper::demand_date_inside( nd.date, nd.type )
+                      if tempKey = DemandHistory.exists( nd.clientId,nd.supplierId,nd.relpartId,nd.type, d )
                         demand = Demander.rfind(tempKey)
-                        demand.rupdate( :clientId=>nd.clientId, :supplierId=>nd.supplierId, :relpartId=>nd.relpartId, :type=>nd.type, :date=>nd.date,
+                        demand.rupdate( :clientId=>nd.clientId, :supplierId=>nd.supplierId, :relpartId=>nd.relpartId, :type=>nd.type, :date=>d,
                         :amount=>nd.amount, :oldamount=>nd.oldamount, :rate=>nd.rate)
                         demand.save_to_send_update
                       else
                         demand = Demander.new(
-                        :clientId=>nd.clientId, :supplierId=>nd.supplierId, :relpartId=>nd.relpartId, :type=>nd.type, :date=>nd.date,
+                        :clientId=>nd.clientId, :supplierId=>nd.supplierId, :relpartId=>nd.relpartId, :type=>nd.type, :date=>d,
                         :amount=>nd.amount, :oldamount=>nd.oldamount, :rate=>nd.rate)
                         demand.save_to_redis
                         demand.save_to_send
@@ -437,8 +438,8 @@ class DemanderController<ApplicationController
             c = params[:client]
             s = params[:supplier]
             p = params[:partNr]
-            tstart = Time.parse(params[:start]).to_s if params[:start].present?
-            tend = Time.parse(params[:end]).to_s if params[:end].present?
+            tstart = Time.parse(params[:start]) if params[:start].present?
+            tend = Time.parse(params[:end]) if params[:end].present?
             astart = (params[:amount][0].present?) ? params[:amount][0].to_f : 0
             aend = (params[:amount][1].present?) ? params[:amount][1].to_f : 999999999
         
@@ -454,9 +455,9 @@ class DemanderController<ApplicationController
               conditions[:relpartId] = Part.where(organisation_id:@cz_org.id, partNr:p).joins(:supplier_part_rels).select("part_rels.id").map{|rel|rel.id}  if p.present?
             end
             if tstart.present? && tend.blank?
-                conditions[:date] = tstart..$Infin.to_s
+                conditions[:date] = tstart..Time.parse("3000/12/12")
             elsif tstart.blank? && tend.present?
-                conditions[:date] = (-$Infin).to_s..tend
+                conditions[:date] = Time.parse("1000/1/1")..tend
             elsif tstart.present? && tend.present?
                 conditions[:date] = tstart..tend
             end

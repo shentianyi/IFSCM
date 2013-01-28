@@ -5,8 +5,7 @@ module DemanderRedisIndex
     $redis.sadd( "#{Rns::C}:#{clientId}", key )
     $redis.sadd( "#{Rns::S}:#{supplierId}", key )
     $redis.sadd( "#{Rns::RP}:#{relpartId}", key )
-    d = FormatHelper::demand_date_to_date( date,type )
-    $redis.zadd( Rns::Date, d.to_i, key )
+    $redis.zadd( Rns::Date, date.to_i, key )
     $redis.zadd( Rns::Amount, amount, key )
     $redis.sadd( "#{Rns::T}:#{type}", key )
   end
