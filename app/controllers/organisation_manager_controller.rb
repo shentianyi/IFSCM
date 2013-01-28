@@ -32,19 +32,13 @@ class OrganisationManagerController < ApplicationController
       cs = params[:csNr]
       @organs = []
       if session[:orgOpeType]==OrgOperateType::Client
-        if cs && cs.size>0
-          id = @cz_org.search_supplier_byNr( cs )
-          @organs<<[cs,Organisation.find_by_id(id)] if id.to_i!=0
-        else
-          @organs = @cz_org.list( @cz_org.s_key )
-        end
+          cs = cs.present? ?  cs : "none" 
+          @search = Redis::Search.complete("OrganisationRelation", cs, :conditions=>{:origin_client_id=>@cz_org.id} )  ||[]
+          @organs = @search.collect{|item| [ item["supplierNr"], Organisation.find_by_id(item['origin_supplier_id'].to_i) ]  }
       else
-        if cs && cs.size>0
-          id = @cz_org.search_client_byNr( cs )
-          @organs<<[cs,Organisation.find_by_id(id)] if id.to_i!=0
-        else
-          @organs = @cz_org.list( @cz_org.c_key )
-        end
+          cs = cs.present? ?  cs : "none" 
+          @search = Redis::Search.complete("OrganisationRelation", cs, :conditions=>{:origin_supplier_id=>@cz_org.id} ) ||[]
+          @organs = @search.collect{|item| [ item["clientNr"], Organisation.find_by_id(item['origin_client_id'].to_i) ]  }
       end
       @total = @organs.size
       s = params[:page].to_i*Demander::NumPer
@@ -77,9 +71,9 @@ class OrganisationManagerController < ApplicationController
     if params[:getId]
       lines = @search.collect{|item| {:csNr=>item['title'],:org=>item['id']}}
     elsif session[:orgOpeType]==OrgOperateType::Client
-      lines = @search.collect{|item|item['clientNr'] }
-    else
       lines = @search.collect{|item|item['supplierNr'] }
+    else
+      lines = @search.collect{|item|item['clientNr'] }
     end
     respond_to do |format|
       format.xml {render  xml:lines}
