@@ -1,3 +1,4 @@
+#encoding: utf-8
 require 'enum/part_rel_type'
 
 class InitCSVDataScript
