@@ -20,12 +20,12 @@ end
 
 orl = OrganisationRelation.where(:origin_client_id=>1,:origin_supplier_id=>3).first
 # add dn printer
-pargs={:org_rel_id=>orl.id,:template=>"Leoni_Nbtp_DNTemplete.tff",
+pargs={:org_rel_id=>orl.id,:template=>"Leoni_Nbtp_DNTemplate.tff",
   :moduleName=>"leoni_nbtp_dn",:type=> OrgRelPrinterType::DNPrinter}
 
 AddOrgRelInfos.add_printer pargs
 # add dpack printer
-pargs={:org_rel_id=>orl.id,:template=>"Leoni_Nbtp_DPackTemplete.tff",
+pargs={:org_rel_id=>orl.id,:template=>"Leoni_Nbtp_DPackTemplate.tff",
   :moduleName=>"leoni_nbtp_dpack",:type=> OrgRelPrinterType::DPackPrinter}
 AddOrgRelInfos.add_printer pargs
 

@@ -8,7 +8,7 @@ module CZ
     end
 
     def remove_from_parent
-      key=generate_child_zset_key self.parentKey
+      key=eval(self.class.name).generate_child_zset_key self.parentKey
       $redis.zrem key,self.key
     end
 

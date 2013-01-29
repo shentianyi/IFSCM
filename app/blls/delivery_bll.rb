@@ -167,23 +167,23 @@ module DeliveryBll
   # 返回值：
   # - 无
   def self.cancel_staff_dn staffId,dnKey
-    if dn=DeliveryNote.find(dnKey)
-      if dn.sender.to_i==staffId
+    if dn=DeliveryNote.single_or_default(dnKey)
+      if dn.staff_id.to_i==staffId
         # dn.get_children 0,-1
-        if dn.items=DeliveryBase.get_children(dn.key,0,-1)[0]
+        if dn.items=DeliveryNote.get_children(dn.key,0,-1)[0]
           dn.items.each do |i|
-            if i.items=DeliveryBase.get_children(i.key,0,-1)[0]
+            if i.items=DeliveryPackage.get_children(i.key,0,-1)[0]
               i.items.each do |ii|
                 puts "pack item key:#{ii.key}"
                 ii.remove_from_parent
-                ii.destroy
+                ii.rdestroy
               end
             end
             puts "pack key:#{i.key}"
             i.remove_from_parent
-            i.destroy
+            i.rdestroy
           end
-        dn.destroy
+        dn.rdestroy
         end
       end
     end
