@@ -4,6 +4,9 @@ require 'org_rel_info'
 module TPrinter
   def self.print_dn_pdf dnKey
     printer,dataset=generate_dn_print_data(dnKey) 
+    puts '---------'
+      puts dataset.to_json
+          puts '---------'
     return Wcfer::PdfPrinter.generate_dn_pdf(printer.template,dataset.to_json,dnKey)
   end
 

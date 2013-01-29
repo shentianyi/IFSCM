@@ -303,7 +303,7 @@ class DeliveryController < ApplicationController
           msg.result=true
           msg.content="已添加到打印队列，使用客户端打印"
         else
-          msg.content="添加打印队列失败，请重试"
+          msg.content="已经添加到打印队列，不可重复添加"
         end
       end
       render :json=>msg

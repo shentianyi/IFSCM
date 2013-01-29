@@ -30,14 +30,23 @@ module Api
         dn.items=DeliveryNote.get_children(dn.key,0,-1)[0]
         dn.items.each do |pack|
           pack.items=DeliveryPackage.get_children(pack.key,0,-1)[0]
-          items+=pack.items
+          pack.items.each do |item|
+            i=Class.new
+            i.instance_variable_set :@key,item.key
+            i.instance_variable_set :@cpartNr,pack.cpartNr
+            i.instance_variable_set :@spartNr,pack.spartNr
+            i.instance_variable_set :@perPackAmount,pack.perPackAmount
+            items<<i
+          end
         end
       end
+      puts items.to_json
       render :json=>items
     end
     
     def item_print_data
       printer,dataset=TPrinter.generate_dn_item_print_data(params[:dnKey])
+    
       data=Class.new
       data.instance_variable_set :@template,printer.template
       data.instance_variable_set :@dataset,dataset
