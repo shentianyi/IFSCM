@@ -45,9 +45,9 @@ module LeoniNbtpDpack
 
   def self.gen_body pack,record
     data={}
-    data[:PerPackNum]=pack.perPackAmount
+    data[:PerPackNum]= FormatHelper.string_to_int(pack.perPackAmount.to_s)
     data[:PackNum]=pack.packAmount
-    data[:TotalQuantity]=FormatHelper.string_multiply(pack.perPackAmount,pack.packAmount)
+    data[:TotalQuantity]=FormatHelper.string_multiply(data[:PerPackNum],pack.packAmount)
     data[:CPartNr]=pack.cpartNr
     data[:SPartNr]=pack.spartNr
 
