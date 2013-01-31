@@ -34,7 +34,6 @@ module PartRelMetaHelper
         elsif part=Part.find_by_partNr(orgId,partNr)
           offset=startIndex
           count=startIndex.nil? ? nil:(endIndex-startIndex)
-          puts "8888888#{part.key}"
           return get_part_rel_metas_by_parterId_partId orgId,partnerId,orgOpeType,part.id,offset,count
         end
       end

@@ -37,7 +37,7 @@ class DeliveryController < ApplicationController
   def get_dit_dn_cache
     if request.post?
       cache={}
-      cache[:dit]=DeliveryItemTemp.get_all_staff_cache session[:staff_id]
+      cache[:dit]=DeliveryItemTemp.get_staff_cache(session[:staff_id])[0]
       cache[:dn]=DeliveryNote.get_all_staff_cache session[:staff_id]
       respond_to do |format|
         format.xml {render :xml=>JSON.parse(cache.to_json).to_xml(:root=>'cache')}
@@ -54,7 +54,7 @@ class DeliveryController < ApplicationController
   # - DeliveryItem : 运单项对象数组
   def get_di_temp
     if request.post?
-      temps=DeliveryItemTemp.get_all_staff_cache session[:staff_id]
+      temps=DeliveryItemTemp.get_staff_cache(session[:staff_id])[0]
       respond_to do |format|
         format.xml {render :xml=>JSON.parse(temps.to_json).to_xml(:root=>'temps')}
         format.json { render json: temps }
@@ -92,10 +92,10 @@ class DeliveryController < ApplicationController
       per=params[:perPackAmount]
       metaKey=params[:metaKey]
       msg=ReturnMsg.new
-      valiMsg= DeliveryBll.vali_di_temp(metaKey,packAmount,per)
+      valiMsg= DeliveryBll.vali_di_temp(metaKey,packAmount,per,session[:staff_id])
       msg.result=valiMsg.result
       if valiMsg.result
-        dit=DeliveryItemTemp.new(:packAmount=>packAmount,:perPackAmount=>per,:partRelId=>metaKey,
+        dit=DeliveryItemTemp.new(:packAmount=>packAmount,:perPackAmount=>per,:partRelId=>metaKey,:spartNr=>params[:partNr],
         :total=>FormatHelper.string_multiply(per,packAmount))
         dit.save
         dit.add_to_staff_cache session[:staff_id]
@@ -118,11 +118,12 @@ class DeliveryController < ApplicationController
   # - ReturnMsg : JSON
   def delete_dit
     if request.post?
-      msg=ReturnMsg.new(:result=>false,:content=>'')
+      msg=ReturnMsg.new
       tempKey=params[:tempKey]
       if dit=DeliveryItemTemp.find(tempKey)
         dit.delete_from_staff_cache session[:staff_id]
-      msg.result=true
+        dit.destroy
+        msg.result=true
       else
         msg.content='运单缓存项不存在'
       end
@@ -295,6 +296,12 @@ class DeliveryController < ApplicationController
     end
   end
 
+  # ws
+  # [功能：] 将运单放入客户端打印列表
+  # 参数：
+  # - string ： dnKey
+  # 返回值：
+  # - ReturnMsg : JSON
   def add_to_print
     if request.post?
       msg=ReturnMsg.new
@@ -303,10 +310,63 @@ class DeliveryController < ApplicationController
           msg.result=true
           msg.content="已添加到打印队列，使用客户端打印"
         else
-          msg.content="添加打印队列失败，请重试"
+          msg.content="已经添加到打印队列，不可重复添加"
         end
       end
       render :json=>msg
+    end
+  end
+
+  # ws
+  # [功能：] 更改运单缓存项
+  # 参数：
+  # - string ： dnKey
+  # 返回值：
+  # - ReturnMsg : JSON
+  def update_dit
+    if request.post?    
+      msg=ReturnMsg.new  
+      if dit=DeliveryItemTemp.find(params[:ditkey])
+        per=params[:perPackAmount]
+        packN=params[:packAmount]
+        dit.update(:packAmount=>packN,:perPackAmount=>per,
+        :total=>FormatHelper.string_multiply(per,packN))
+        msg.result=true
+        msg.object=dit
+      else
+        msg.content="运单缓存项不存在"
+      end
+      render :json=>msg
+    end
+  end
+
+  def check_dit_list
+    @clientNr=params[:c]
+    p=0
+    if FormatHelper.str_is_positive_integer(params[:p]||0)
+      p=params[:p].to_i
+    end
+    @currentPage=pageIndex=p
+    startIndex,endIndex=PageHelper::generate_page_index(pageIndex,$DEPSIZE)
+    @temps,@totalCount=DeliveryItemTemp.get_staff_cache(session[:staff_id],startIndex,endIndex)
+    if @temps and @temps.count==0
+       @currentPage=pageIndex=p-1
+       startIndex,endIndex=PageHelper::generate_page_index(pageIndex,$DEPSIZE)
+       @temps,@totalCount=DeliveryItemTemp.get_staff_cache(session[:staff_id],startIndex,endIndex)
+    end
+    @totalPages=PageHelper::generate_page_count @totalCount,$DEPSIZE
+  end
+
+  # ws
+  # [功能：] 清空运单项缓存
+  # 参数：
+  # - 无
+  # 返回值：
+  # - 无
+  def clean_dit
+    if request.post?
+      DeliveryItemTemp.clean_all_staff_cache session[:staff_id]
+      redirect_to :action=>:pick_part
     end
   end
 end

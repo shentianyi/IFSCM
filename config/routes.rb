@@ -72,6 +72,9 @@ Demand::Application.routes.draw do
       get :redis_search_dn
       post :add_to_print
       match :gen_dn_pdf
+      post :update_dit
+      match :check_dit_list
+      post :clean_dit
     end
   end
 

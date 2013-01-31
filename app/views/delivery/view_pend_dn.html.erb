@@ -20,10 +20,11 @@
 		disabled/>
 		<form method="post" id="gen_dn_pdf_form" action="../delivery/gen_dn_pdf">
 			<input type="hidden" value="<%= dn.key%>" id="dnkey-hidden" name="dnKey">
-			<input type="text" class="fillindest fillindestlonger" name="destination" value="<%=dn.destination%>"
+			<input type="text" class="fillindest fillindestlonger" name="destination" 
+			 value="<%= dn.destination.length==0? DeliveryHelper.get_dn_rece_address(dn.organisation_id,dn.rece_org_id):dn.destination%>"
 			placeholder="请您填写送货地址-必填" id="destination-text" style="width: 250px">
 			<input type="text" class="fillindest fillindestlonger" name="sendDate"
-			placeholder="请您填写送货日期-必填" id="sendDate-text"  style="width: 150px" value="<%=dn.sendDate.nil? ? "":Time.at(dn.sendDate.to_i).strftime('%Y/%m/%d')%>">
+			placeholder="请您填写送货日期-必填" id="sendDate-text"  style="width: 150px" value="<%=dn.sendDate.nil? ? Time.now.strftime('%Y/%m/%d'):Time.at(dn.sendDate.to_i).strftime('%Y/%m/%d')%>">
 		</form>
 	</div>
 </div>
@@ -36,7 +37,7 @@
 			打印运单
 		</p>
 	</div>
-        <div class="btsave botbtn" onclick="add_dn_to_print_queue();">
+	 <div class="btsave botbtn" onclick="add_dn_to_print_queue();">
 		<p>
 			打印包装箱
 		</p>

@@ -180,7 +180,7 @@ function demand_search_all(e) {
 
 function download_viewed_demand() {
      var label = get_demand_search_stimulate();
-     var f = $("<form/>").attr("action", "../demander/download_viewed_demand").attr("enctype","text/plain").attr("method", "post");
+     var f = $("<form/>").attr("action", "../demander/download_viewed_demand").attr("method", "post");
      $.each(label, function(k, v) {
           f.append($("<input>").attr("type", "hidden").attr("name", k).val(v));
      });

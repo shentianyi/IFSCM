@@ -86,4 +86,10 @@ module DeliveryHelper
     OrganisationRelation.get_parterNr(:oid=>orgId,:pt=>:s,:pid=>pid)
   end
   
+  def self.get_dn_rece_address supplierId,clientId
+    orl=OrganisationRelation.where(:origin_supplier_id=>supplierId,:origin_client_id=>clientId).first
+    contact=DnContact.find_by_orid(orl.id)
+    return contact.rece_address
+  end
+  
 end

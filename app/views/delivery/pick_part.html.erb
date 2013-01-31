@@ -12,15 +12,15 @@
 		// check user delivery note cache
 		check_staff_dn_cache();
 		$("#pick-part-info-box").draggable();
-		$(".closebt").bind('click',function(){
+		$(".closebt").bind('click', function() {
 			$("#pick-part-info-box").hide();
 		});
 	}); 
 </script>
 <div id="staff-dn-cache-content" style="display: none;width: 400px;" class="abstractblock">
-		<span>有未发运单:</span>
-		<br />
-		<div id="staff-dn-cache-link"  style=" width: 300px; height: 30px;"></div>
+	<span>有未发运单:</span>
+	<br />
+	<div id="staff-dn-cache-link"  style=" width: 300px; height: 30px;"></div>
 </div>
 <div class="fillindestinations">
 	<p>
@@ -35,7 +35,7 @@
 
 </div>
 <div id="pick-part-info-box" style="width: 350px; height: 150px;background-color:
- #EFEFEF;-moz-border-radius:10px;position: absolute; margin-left:20%; margin-top: 10%;
+#EFEFEF;-moz-border-radius:10px;position: absolute; margin-left:20%; margin-top: 10%;
 -webkit-border-radius:10px;
 border-radius:10px;
 border:1px solid ddd;
@@ -50,10 +50,10 @@ padding:10px; display: none;">
 	<input type="hidden" id="selected-part-rel-key"/>
 	<div style="font-size: 15px; text-align: center; margin-top: 8px;">
 		<span style="color: #7C7C7C;">单位量 X 包装量 :</span>
-		<input type="text" id="selected-part-perpack" 
+		<input type="text" id="selected-part-perpack"
 		style="width: 60px;height: 25px;font-size: 17px; font-weight: bold;color: #1297CF;border: 1px solid #DBDBDB;">
 		<span style="color: #7C7C7C;"> X </span>
-		<input type="text" id="selected-part-pack-num" 
+		<input type="text" id="selected-part-pack-num"
 		style="width: 60px;height: 25px;font-size: 17px;color: #1297CF; font-weight: bold;border: 1px solid #DBDBDB;" />
 		<br />
 		<input type="button" value="添 加"  onclick="add_part_to_cart();" class="btupload search-btn" style="margin-top: 17px; width: 75px;"  >
@@ -70,7 +70,7 @@ padding:10px; display: none;">
 
 	</div>
 	<div class="ensurecart">
-		<input type="button" class="checkoutbt" id="build-dn-btn" style="display: none; cursor: pointer;" value="生成订单" onclick="build_delivery_note();" />
+		<input type="button" class="checkoutbt" id="build-dn-btn" style="display: none; cursor: pointer;" value="运单审核" onclick="go_to_check_list();" />
 	</div>
 	<div class="leftcorner"></div>
 	<div class="centercart"></div>
@@ -79,5 +79,17 @@ padding:10px; display: none;">
 		<span class="cartname">预存运单</span>
 	</div>
 </div>
-<%= render :partial => "shared/handling_msg_box", :locals => { :handlemsg => "运单生成中..." } %>
-
+<script type="text/javascript">
+	function go_to_check_list() {
+		var desiOrgNr = document.getElementById('client-search-text').value;
+		if (desiOrgNr == "") {
+			flash_message(".errparts");
+			alert("请先填写正确的客户号");
+			return false;
+		}
+		// var f = $("<form/>").attr("action", "../delivery/check_dit_list").attr("method", "get");
+		// f.append($("<input>").attr("type", "hidden").attr("name", "clientNr").val(desiOrgNr));
+		// f.appendTo("body").submit();
+		window.location = "../delivery/check_dit_list?c=" + desiOrgNr;
+	}
+</script>

@@ -3,6 +3,19 @@ require 'base_class'
 
 class DeliveryItemTemp<CZ::BaseClass
    attr_accessor :cpartNr, :key,:parentKey,:packAmount, :partRelId, :perPackAmount, :purchaseNo, :saleNo, :spartNr, :total
+   
+  # ws
+  # [功能：] 获取第一个运单项缓存
+  # 参数：
+  # - int - staffId
+  # 返回值：
+  # - 无
+  def self.single_or_default staffId
+    zset_key=generate_staff__zset_key staffId
+    find(($redis.zrange zset_key,0,0 )[0])
+  end
+
+
   # ws
   # [功能：] 将临时运单项加入用户 ZSet
   # 参数：
@@ -31,20 +44,21 @@ class DeliveryItemTemp<CZ::BaseClass
   # - int - staffId
   # 返回值：
   # - Array : 运单项缓存数组
-  def self.get_all_staff_cache staffId
+  def self.get_staff_cache staffId,startIndex=0,endIndex=-1
     zset_key=generate_staff__zset_key staffId
-    keys=$redis.zrange zset_key,0,-1
-    if keys.count>0
+    total=$redis.zcard zset_key
+    if total>0
+      keys=$redis.zrange zset_key,startIndex,endIndex
       temps=[]
       keys.each do |k|
         if t=DeliveryItemTemp.find(k)
-          t.spartNr=Part.find(PartRel.find(t.partRelId).supplier_part_id).partNr
+          # t.spartNr=Part.find(PartRel.find(t.partRelId).supplier_part_id).partNr
           temps<<t
         end
       end
-      return temps.count>0 ? temps:nil
+      return temps,total
     end
-    return nil
+    return nil,nil
   end
 
   # ws
@@ -55,8 +69,9 @@ class DeliveryItemTemp<CZ::BaseClass
   # - 无
   def self.clean_all_staff_cache staffId
     zset_key=generate_staff__zset_key staffId
-    $redis.remrangebyrank zset_key,0,-1
+    $redis.zremrangebyrank zset_key,0,-1
   end
+  
 
  def packAmount t=nil
     return FormatHelper::get_number @packAmount,t

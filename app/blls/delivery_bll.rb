@@ -6,14 +6,22 @@ module DeliveryBll
   # - string : metaKey
   # - string : packAmount
   # - string : perPackAmount
+  # - string :staffId
   # 返回值：
   # - ValidMsg : 验证消息
-  def self.vali_di_temp metaKey,packAmount,perPackAmount
+  def self.vali_di_temp metaKey,packAmount,perPackAmount,staffId
     msg=ValidMsg.new(:result=>true,:content_key=>Array.new)
     # vali partRelMetaKey
-    if !PartRel.find(metaKey)
+    if !pr=PartRel.find(metaKey)
       msg.result=false
       msg.content_key<<:partRelMetaNotEx
+    else
+      if dit=DeliveryItemTemp.single_or_default(staffId)
+        if pr.organisation_relation_id!=PartRel.find(dit.partRelId).organisation_relation_id
+          msg.result=false
+          msg.content_key<<:notSameClient
+        end
+      end
     end
     # vali packAmount
     if !FormatHelper::str_is_positive_integer packAmount
@@ -50,7 +58,7 @@ module DeliveryBll
     msg=ReturnMsg.new
     if desiOrgId=OrganisationRelation.get_partnerid(:oid=>orgId,:pt=>:c,:pnr=>desiOrgNr)
       #get di temps
-      if temps=DeliveryItemTemp.get_all_staff_cache(staffId)
+      if temps=DeliveryItemTemp.get_staff_cache(staffId)[0]
         #new delivery note
         dstate=DeliveryObjState::Normal
         dn=DeliveryNote.new(:key=>ClassKeyHelper::gen_key("DeliveryNote"),:state=>dstate,:staff_id=>staffId,:organisation_id=>orgId,:rece_org_id=>desiOrgId)
@@ -154,15 +162,15 @@ module DeliveryBll
     end
     return m
   end
-  
-   def self.delivery_obj_reconverter className
+
+  def self.delivery_obj_reconverter className
     m=case className
     when  "DeliveryNote"
-     DeliveryObjType::Note
+      DeliveryObjType::Note
     when "DeliveryPackage"
       DeliveryObjType::Package
-    when  "DeliveryItem" 
-     DeliveryObjType::Item
+    when  "DeliveryItem"
+      DeliveryObjType::Item
     end
     return m
   end
@@ -175,23 +183,23 @@ module DeliveryBll
   # 返回值：
   # - 无
   def self.cancel_staff_dn staffId,dnKey
-    if dn=DeliveryNote.find(dnKey)
-      if dn.sender.to_i==staffId
+    if dn=DeliveryNote.single_or_default(dnKey)
+      if dn.staff_id.to_i==staffId
         # dn.get_children 0,-1
-        if dn.items=DeliveryBase.get_children(dn.key,0,-1)[0]
+        if dn.items=DeliveryNote.get_children(dn.key,0,-1)[0]
           dn.items.each do |i|
-            if i.items=DeliveryBase.get_children(i.key,0,-1)[0]
+            if i.items=DeliveryPackage.get_children(i.key,0,-1)[0]
               i.items.each do |ii|
                 puts "pack item key:#{ii.key}"
                 ii.remove_from_parent
-                ii.destroy
+                ii.rdestroy
               end
             end
             puts "pack key:#{i.key}"
             i.remove_from_parent
-            i.destroy
+            i.rdestroy
           end
-        dn.destroy
+        dn.rdestroy
         end
       end
     end
@@ -215,7 +223,7 @@ module DeliveryBll
           end
         end
       end
-     dn.save
+    dn.save
     end
   end
 
