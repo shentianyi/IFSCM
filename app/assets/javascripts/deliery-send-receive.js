@@ -166,7 +166,8 @@ function add_part_to_cart() {
 			data : {
 				metaKey : $("#selected-part-rel-key").val(),
 				packAmount : packN.val(),
-				perPackAmount : per.val()
+				perPackAmount : per.val(),
+				partNr : partNr
 			},
 			type : 'post',
 			success : function(msg) { packN
@@ -177,6 +178,8 @@ function add_part_to_cart() {
 					$('#selected-part-rel-key').val("");
 					var t = msg.object;
 					add_dit_to_cart(partNr, t.perPackAmount, t.packAmount, t.total, t.key);
+				} else {
+					alert(msg.content);
 				}
 			}
 		});
@@ -263,18 +266,84 @@ function delete_dit_from_cart(key) {
 }
 
 // ws
+// 功能 ： 清空运单项缓存
+// 参数 ：
+//  - 无
+// 返回 ：
+// - 无
+function clean_staff_dit() {
+	if (confirm('确定放弃运单？')) {
+		var f = $("<form/>").attr("action", "../delivery/clean_dit").attr("method", "post");
+		f.appendTo("body").submit();
+	}
+}
+
+// ws
+// 功能 ： 清空运单项缓存
+// 参数 ：
+//  - 无
+// 返回 ：
+// - 无
+function update_staff_dit(key) {
+	var tr = $("[id='" + key + "']");
+	var per = tr.find('.pernum').val();
+	var packN = tr.find('.packnum').val();
+
+	if (!isPositiveNum(per)) {
+		alert('每包装箱量必须为正数！');
+		return;
+	}
+	if (!isPositiveInt(packN)) {
+		alert('包装箱数必须为正整数！');
+		return;
+	}
+	$.ajax({
+		url : '../delivery/update_dit',
+		dataType : 'json',
+		data : {
+			ditkey : key,
+			packAmount : packN,
+			perPackAmount : per
+		},
+		type : 'post',
+		success : function(msg) {
+			if (msg.result) {
+				tr.find('.total').text(msg.object.total);
+			} else {
+				alert(msg.content);
+			}
+		}
+	});
+}
+
+function delete_dit_from_list(key) {
+	if (confirm('确定删除？')) {
+		$.ajax({
+			url : '../delivery/delete_dit',
+			type : 'post',
+			dataType : 'json',
+			data : {
+				tempKey : key
+			},
+			success : function(data) {
+				if (data.result) {
+					$("[id='" + key + "']").hide();
+				} else {
+					alert(data.content);
+				}
+			}
+		});
+	}
+}
+
+// ws
 // 功能 ： 生成运单
 // 参数 ：
 //  - 无
 // 返回 ：
 // - 无
 function build_delivery_note() {
-	var desiOrgNr = document.getElementById('client-search-text').value;
-	if (desiOrgNr == "") {
-		flash_message(".errparts");
-		alert("请先填写正确的客户号");
-		return;
-	}
+	var desiOrgNr = document.getElementById('clientNr').value;
 	show_handle_dialog();
 	$.ajax({
 		url : '../delivery/build_dn',
@@ -287,6 +356,7 @@ function build_delivery_note() {
 			if (data.result) {
 				window.location = "../delivery/view_pend_dn?dnKey=" + data.object;
 			} else {
+				hide_handle_dialog();
 				alert(data.content);
 			}
 		}

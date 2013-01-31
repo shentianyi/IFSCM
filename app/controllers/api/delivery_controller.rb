@@ -50,8 +50,8 @@ module Api
         data=Class.new
         data.instance_variable_set :@template,printer.template
         data.instance_variable_set :@dataset,dataset
-        puts "data:#{data.to_json}"
       end
+      puts "*********#{data.to_json}"
       render :json=>data
     end
   end

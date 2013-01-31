@@ -30,7 +30,7 @@
 			          <li><a href="../organisation_manager/search">客户信息</a></li>
 				<% end %>
 			</ul>
-			<p class="greeting">早上好！<%= Staff.find(session[:staff_id]).name %>，您现在代表的是：<%= @cz_org.name%>公司&emsp;<a href="/logout">注销</a></p>
+			<p class="greeting">你好！<%= Staff.find(session[:staff_id]).name %>&emsp;<a href="/logout">注销</a></p>
 		</div>
 	</div>
 	
