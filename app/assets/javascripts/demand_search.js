@@ -180,11 +180,24 @@ function demand_search_all(e) {
 
 function download_viewed_demand() {
      var label = get_demand_search_stimulate();
-     var f = $("<form/>").attr("action", "../demander/download_viewed_demand").attr("enctype","text/plain").attr("method", "post");
+     var f = $("<form/>").attr("action", "../demander/download_viewed_demand").attr("method", "post");
      $.each(label, function(k, v) {
           f.append($("<input>").attr("type", "hidden").attr("name", k).val(v));
      });
      f.appendTo("body").submit();
+}
+
+function demand_tansform_delivery(){
+	var label = get_demand_search_stimulate();
+	$.post("../demander/demand_transform_delivery",
+		label,
+		function(data){
+			if (data.flag){
+				alert("转换成功！页面将跳转至‘运单审核’。");
+				window.location = "../delivery/check_dit_list?c="+data.clientNr;
+			}else
+				alert("自动转换失败！客户号多于一个。");
+	},"json");
 }
 
 ///////////////////////////////////////////////////////////////////         charting

@@ -17,7 +17,8 @@ class ValidMsg<BaseMsg
             # for send delivery
             :partRelMetaNotEx=>'供应商-客户零件关系未建立',
             :packAmountIsNotInt=>'包装箱数应为正整数',
-            :perPackAmountIsNotFloat=>'单位包装量应为大于零'
+            :perPackAmountIsNotFloat=>'单位包装量应为大于零',
+            :notSameClient=>'运单项需为同一客户'
             }
             
   def contents

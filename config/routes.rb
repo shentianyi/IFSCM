@@ -16,17 +16,16 @@ Demand::Application.routes.draw do
   controller :organisation_manager do
     get 'organisation_manager' => :index
     match 'organisation_manager/edit' => :edit
-    post 'organisation_manager/update' => :update
     match 'organisation_manager/search' => :search
     get 'organisation_manager/redis_search' => :redis_search
     post 'organisation_manager/add_supplier' => :add_supplier
-    post 'organisation_manager/add_client' => :add_client
   end
 
   resources :demander do
     collection do
       post :search
       match :search_expired
+      post :demand_transform_delivery
       get :demand_upload
       match :upload_files
       post :get_tempdemand_items
@@ -73,6 +72,9 @@ Demand::Application.routes.draw do
       get :redis_search_dn
       post :add_to_print
       match :gen_dn_pdf
+      post :update_dit
+      match :check_dit_list
+      post :clean_dit
     end
   end
 

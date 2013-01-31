@@ -31,7 +31,7 @@ AddOrgRelInfos.add_printer pargs
 
 # add dn contact
 cargs={:org_rel_id=>orl.id,:type=> OrgRelContactType::DContact,
-  :recer_name=>"原材料仓库",:recer_contact=>"39939591",:sender_name=>"王英",:sender_contact=>"0574-86883025"}
+  :recer_name=>"原材料仓库",:recer_contact=>"39939591",:sender_name=>"王英",:sender_contact=>"0574-86883025",:rece_address=>"上海市嘉定区嘉松北路1288号"}
 AddOrgRelInfos.add_dn_contact cargs
 # OrgRelPrinter.find("OrgRelPrinter:1").add_to_dpriter
 # OrgRelPrinter.find("OrgRelPrinter:2").add_to_dpriter

@@ -431,6 +431,11 @@ div #f2 {
      background-repeat: no-repeat;
      background-position: center 8px;
 }
+.bttransform {
+     background-image: url(swirl.png);
+     background-repeat: no-repeat;
+     background-position: center 8px;
+}
 
 /*----------block*/
 .abstractblock {

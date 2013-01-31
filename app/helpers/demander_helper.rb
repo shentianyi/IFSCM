@@ -25,5 +25,15 @@ module DemanderHelper
     end
     return img,thisLineWidth,lastLineWidth
   end
+  
+  def self.pre_work_on_params params
+    c = params[:client]
+    s = params[:supplier]
+    p = params[:partNr]
+    tstart = Time.parse(params[:start]) if params[:start].present?
+    tend = Time.parse(params[:end]) if params[:end].present?
+    
+    return c, s, p, tstart, tend
+  end
 
 end

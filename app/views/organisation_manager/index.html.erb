@@ -1,31 +1,36 @@
 
 <p style="color: red"><%= notice%></p>
 <br/>
-<h1><%= @cz_org.name %></h1>
+<h1><%= @org.name %></h1>
 
 <hr/>
 
 
-<div id="result"></div>
+<div id="result">
 		<div>
 				<label>ID:</label><%= text_field_tag :id, @org.id, :size=>3, :readOnly=>true %>
 		</div>
 		<div>
 				<label>名称:</label><%= @org.name %>
+				<br/>
 				<label>缩写:</label><%= @org.abbr %>
+				<br/>
 				<label>介绍:</label><%= @org.description %>
 		</div>
 		
 		<hr/>
 		<div>
 				<label>联系人:</label><%= @org.contact %>
+				<br/>
 				<label>电子邮箱:</label><%= @org.email %>
 		</div>
 		
 		<hr/>
 		<div>
 				<label>电话:</label><%= @org.tel %>
+				<br/>
 				<label>网站:</label><%= @org.website %>
+				<br/>
 				<label>地址:</label><%= @org.address %>
 		</div>
 		

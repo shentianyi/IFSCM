@@ -1,54 +1,49 @@
 <%if dnItems and dnItems.count>0%>
 <div class="tableview">
-<table class="upData">
-     <tr  class="lineone">
-          <th>&nbsp;</th>
-          <th>内部零件号</th>
-          <th>客户零件号</th>
-          <th>箱单位量</th>
-          <th>箱数</th>
-          <th>总量</th>
-          <th>内部销售订单号</th>
-          <th>客户采购订单号</th>
-          </tr>
-          <tr class="divide" style="display: none">
-               <th class="nordvd">&nbsp;</th>
-               <th class="nordvd"></th>
-               <th class="nordvd"></th>
-               <th class="nordvd"></th>
-               <th class="nordvd"></th>
-               <th class="nordvd"></th>
-               <th class="nordvd"></th>
-               <th class="lastdvd"></th>
-               <th>&nbsp;</th>
-          </tr>
-          <% i=0%>
-          <%
-          dnItems.each do |item|
-          	per=FormatHelper.string_to_int(item.perPackAmount.to_s)
-          %>
-     <tr class="norline">
-          <th><%= (i+=1)%></th>
-          <th style="text-align:left;"><%= item.spartNr%></th>
-          <th><%= item.cpartNr%></th>
-          <th><%= per%></th>
-          <th><%= item.packAmount%></th>
-          <th><%= (FormatHelper.string_multiply(per,item.packAmount))%></th>
-          <th><%= item.saleNo%></th>
-          <th> <%= item.purchaseNo%></th>
-     </tr>
-     <%end%>
-     </tr>
-</table>
-     <div class="census">
-          共 <%= @totalCount%> 条
-     </div> 
-<div class="pagers">
-     <%= bri_pager options={:class=>"pagination",:pages=>@totalPages,:current=>@currentPage,:action=>'get_dn_detail'}%>
+	<table class="upData">
+		<tr  class="lineone">
+			<th>&nbsp;</th>
+			<th>包装箱号</th>
+			<th>内部零件号</th>
+			<th>包装量</th>
+			<th>内部销售订单号</th>
+			<th>客户采购订单号</th>
+		</tr>
+		<tr class="divide" style="display: none">
+			<th class="nordvd">&nbsp;</th>
+			<th class="nordvd"></th>
+			<th class="nordvd"></th>
+			<th class="nordvd"></th>
+			<th class="nordvd"></th>
+			<th class="nordvd"></th>
+			<th class="lastdvd"></th>
+			<th>&nbsp;</th>
+		</tr>
+		<% i=0%>
+		<%
+		dnItems.each do |pack|
+		per=FormatHelper.string_to_int(pack.perPackAmount.to_s)
+		pack.items=DeliveryPackage.get_children(pack.key,0,-1)[0]
+		pack.items.each do |item|
+		%>		
+		<tr class="norline">
+			<th><%= (i+=1)%></th>
+			<th style="text-align:left;"><%= item.key%></th>
+			<th style="text-align:left;"><%= pack.spartNr%></th>
+			<th><%= per%></th>
+			<th><%= pack.saleNo%></th>
+			<th> <%= pack.purchaseNo%></th>
+		</tr>
+		<% end
+		end%>
+		</tr>
+	</table>
+	<div class="pagers">
+		<%= bri_pager options={:class=>"pagination",:pages=>@totalPages,:current=>@currentPage,:action=>'get_dn_detail'}%>
+	</div>
 </div>
- </div>
 <%else%>
 <div class="abstractblock">
-     无运单项
+	无运单项
 </div>
 <%end%>

@@ -1,0 +1,33 @@
+
+<p style="color: red"><%= notice%></p>
+<br/>
+<h1><%= @cz_org.name %></h1>
+<%= form_tag :controller=>"organisation_manager", :action=>"add_supplier" do  %>
+	<div>
+		<label>Supplier List:</label>
+		<%= select_tag :orgId,  options_for_select(@list),  prompt: "All" %>
+	</div>
+    <div>
+	    <%= label_tag :name, "Local Name" %>
+	    <%= text_field_tag :name, nil, :placeholder => "example: Leoni" %>
+    </div>
+    <%= submit_tag "Add Supplier" %>
+<% end %>
+
+<hr/>
+<%= form_tag :controller=>"organisation_manager", :action=>"add_client" do  %>
+	<div>
+		<label>Supplier List:</label>
+		<%= select_tag :orgId,  options_for_select(@list),  prompt: "All" %>
+	</div>
+    <div>
+	    <%= label_tag :name, "Local Name" %>
+	    <%= text_field_tag :name, nil, :placeholder => "example: Leoni" %>
+    </div>
+    <%= submit_tag "Add Client" %>
+<% end %>
+
+<hr/>
+
+
+
