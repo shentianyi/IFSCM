@@ -39,7 +39,7 @@ module DeliveryBll
   end
   
   def self.vali_current_di_temp staffId, orgRelIds
-    temps=DeliveryItemTemp.get_all_staff_cache(staffId) ||[]
+    temps=DeliveryItemTemp.get_staff_cache(staffId).first ||[]
     ids = temps.collect {|t| PartRel.find_by_id(t.partRelId.to_i).organisation_relation_id}
     len = (ids+orgRelIds).uniq.size
     return true  if len==1
