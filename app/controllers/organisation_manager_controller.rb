@@ -3,6 +3,15 @@
 class OrganisationManagerController < ApplicationController
 
   before_filter  :authorize
+  
+  def new
+    if request.post?
+      @org = Organisation.find(params[:id])
+      render :json=>{flag:true,msg:"修改成功"}
+    end
+  end
+  
+  
   def index
     # @list = Organisation.option_list
     @org = @cz_org
@@ -11,21 +20,22 @@ class OrganisationManagerController < ApplicationController
   
   def edit
     if request.get?
-    elsif request.post?
-      @org = Organisation.find(params[:id])
+      @org = @cz_org
       render :partial => "edit"
+    elsif request.post?
+      if org = Organisation.find(@cz_org.id)  and
+        org.update_attributes(:name=>params[:name], :description=>params[:description], 
+        :address=>params[:address], :tel=>params[:tel], :website=>params[:website], 
+        :abbr=>params[:abbr], :contact=>params[:contact], :email=>params[:email])
+        render :json=>{flag:true,msg:"修改成功"}
+      else
+        render :json=>{flag:false,msg:"修改失败"}
+      end
     end
   end
   
-  def update
-    if org = Organisation.find(params[:id])  and
-      org.update_attributes(:name=>params[:name], :description=>params[:description], 
-      :address=>params[:address], :tel=>params[:tel], :website=>params[:website], 
-      :abbr=>params[:abbr], :contact=>params[:contact], :email=>params[:email])
-      render :json=>{flag:true,msg:"修改成功"}
-    else
-      render :json=>{flag:false,msg:"修改失败"}
-    end
+  def add_supplier
+    
   end
 
   def search

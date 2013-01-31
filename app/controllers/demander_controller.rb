@@ -432,14 +432,63 @@ class DemanderController<ApplicationController
     end
   end
   
-  def search_expired
-    if request.get?
-    elsif request.post?
+  def demand_transform_delivery
             c = params[:client]
             s = params[:supplier]
             p = params[:partNr]
-            tstart = Time.parse(params[:start]) if params[:start].present?
-            tend = Time.parse(params[:end]) if params[:end].present?
+            tstart = Time.parse(params[:start]).to_i if params[:start] && params[:start].size>0
+            tend = Time.parse(params[:end]).to_i if params[:end] && params[:end].size>0
+        
+            ######  判断类型 C or S ， 将session[:id]赋值给 id
+        
+            if session[:orgOpeType]==OrgOperateType::Client
+              if s.blank?
+                  supplierId = nil
+              else
+                  supplierId = @cz_org.suppliers.where( supplierNr:s ).map{|o|o.origin_supplier_id}
+                  supplierId = "none" if supplierId.blank?
+              end
+              clientId = @cz_org.id
+              if p.blank?
+                  partRelId = nil
+              else
+                  partRelId = Part.where(organisation_id:@cz_org.id, partNr:p).joins(:client_part_rels).select("part_rels.id").map{|rel|rel.id}
+                  partRelId = "none"  if partRelId.blank?
+              end
+            else
+              if c.blank?
+                  clientId = nil
+              else
+                  clientId = @cz_org.clients.where( clientNr:c ).map{|o|o.origin_client_id}
+                  clientId = "none" if clientId.blank?
+              end
+              supplierId = @cz_org.id
+              if p.blank?
+                  partRelId = nil
+              else
+                  partRelId = Part.where(organisation_id:@cz_org.id, partNr:p).joins(:supplier_part_rels).select("part_rels.id").map{|rel|rel.id}
+                  partRelId = "none"  if partRelId.blank?
+              end
+            end
+            demands = []
+            demands, total = Demander.search( :clientId=>clientId, :supplierId=>supplierId,
+            :rpartNr=>partRelId, :start=>tstart, :end=>tend,
+            :type=>params[:type],  :amount=>params[:amount],
+            :page=>params[:page] )
+            
+            orgRelIds = demands.map {|d| OrganisationRelation.where( :origin_supplier_id=>d.supplierId, :origin_client_id=>d.clientId).first.id }
+            if DeliveryBll::vali_current_di_temp( session[:staff_id], orgRelIds )
+              demands.each { |d|  DeliveryHelper::automake_di_temp( session[:staff_id], d)  }
+              render :json => {:flag=>true, :clientNr=>OrganisationRelation.find(orgRelIds.first).clientNr}
+            else
+              render :json => {:flag=>false}
+            end
+  end
+  
+  def search_expired
+    if request.get?
+    elsif request.post?
+            c,s,p,tstart,tend = DemanderHelper::pre_work_on_params(params)
             astart = (params[:amount][0].present?) ? params[:amount][0].to_f : 0
             aend = (params[:amount][1].present?) ? params[:amount][1].to_f : 999999999
         

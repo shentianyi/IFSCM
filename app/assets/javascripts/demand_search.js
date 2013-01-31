@@ -187,6 +187,19 @@ function download_viewed_demand() {
      f.appendTo("body").submit();
 }
 
+function demand_tansform_delivery(){
+	var label = get_demand_search_stimulate();
+	$.post("../demander/demand_transform_delivery",
+		label,
+		function(data){
+			if (data.flag){
+				alert("转换成功！页面将跳转至‘运单审核’。");
+				window.location = "../delivery/check_dit_list?c="+data.clientNr;
+			}else
+				alert("自动转换失败！客户号多于一个。");
+	},"json");
+}
+
 ///////////////////////////////////////////////////////////////////         charting
 function showTooltip(x, y, contents) {
      $('<div id="tooltip">' + contents + '</div>').css({

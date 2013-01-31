@@ -30,7 +30,23 @@ module DeliveryHelper
     return cssClass
   end
   
-  
+  def self.automake_di_temp staffId, demand
+      num = demand.amount
+      return false unless num.is_a?(Integer)
+      pack = num/10
+      dit=DeliveryItemTemp.new(:packAmount=>pack,:perPackAmount=>10,:partRelId=>demand.relpartId,
+                                                            :total=>FormatHelper.string_multiply(10, pack))
+      dit.save
+      dit.add_to_staff_cache staffId
+      if pack%10 != 0
+        dit=DeliveryItemTemp.new(:packAmount=>1,:perPackAmount=>10,:partRelId=>demand.relpartId,
+                                                              :total=>FormatHelper.string_multiply(10, 1))
+        dit.save
+        dit.add_to_staff_cache staffId
+      end
+      return true
+  end
+                  
     # ws
   # [功能：] 获得运单运输状态
   # 参数：

@@ -29,6 +29,14 @@ module DeliveryBll
     msg.content=msg.contents.join(',') if !msg.result
     return msg
   end
+  
+  def self.vali_current_di_temp staffId, orgRelIds
+    temps=DeliveryItemTemp.get_all_staff_cache(staffId) ||[]
+    ids = temps.collect {|t| PartRel.find_by_id(t.partRelId.to_i).organisation_relation_id}
+    len = (ids+orgRelIds).uniq.size
+    return true  if len==1
+    return false
+  end
 
   # ws
   # [功能：] 生成运单

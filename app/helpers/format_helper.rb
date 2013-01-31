@@ -131,7 +131,9 @@ module FormatHelper
     return num if !t.nil?
     if num.is_a?(String)
       return num.to_f if num.include?('.')
-    return num.to_i
+      return num.to_i
+    elsif num.is_a?(Float)
+      return (string_to_int num.to_s)
     end
     return num
   end

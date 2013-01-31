@@ -19,9 +19,7 @@
 			<th class="nordvd"></th>
 			<th class="lastdvd"></th>
 		</tr>
-		<% @demands.each do |d|
-	      img,thisLineWidth,lastLineWidth=DemanderHelper::generate_demand_bar(d)
-		%>
+		<% @demands.each do |d|	%>
 		  <tr class="norline hoverable">
 			<% if session[:orgOpeType]==OrgOperateType::Client %>
 				<th><%= d.supplierNr %></th>
