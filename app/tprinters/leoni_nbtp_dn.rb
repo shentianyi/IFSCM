@@ -16,6 +16,7 @@ module LeoniNbtpDn
         dataset<<record
       end
     end
+    puts dataset.to_json
     return dataset
   end
 
