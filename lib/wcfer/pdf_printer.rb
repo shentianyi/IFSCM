@@ -38,6 +38,7 @@ class Wcfer
       end
       rescue => e
         result[:content]=e.message.to_s
+        puts e.message.to_s
       end
       return result
     end
