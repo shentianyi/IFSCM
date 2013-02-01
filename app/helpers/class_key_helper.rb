@@ -59,12 +59,12 @@ module ClassKeyHelper
 
   # 生成运单唯一键
   def self.generate_dn_key className=nil
-    "DN#{Time.now.strftime('%Y%m%d%H%M')}#{$redis.incr 'delivery_note_main_key'}"
+    "DN#{Time.now.strftime('%y%m%d')}B#{$redis.incr 'delivery_note_main_key'}"
   end
 
   # 生成包装箱唯一键
   def self.generate_pack_key className=nil
-    "P#{Time.now.strftime('%Y%m%d%H%M')}#{$redis.incr 'delivery_package_main_key'}"
+    "P#{Time.now.strftime('%y%m%d')}B#{$redis.incr 'delivery_package_main_key'}"
   end
 
 end
