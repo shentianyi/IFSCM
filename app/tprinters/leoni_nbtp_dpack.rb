@@ -1,5 +1,5 @@
 module LeoniNbtpDpack
-  @@label_keys=["SupplierNr","CPartNr","Description","Quantity","SendDate","DnPackNr","Destination"]
+  @@label_keys=["SupplierNr","CPartNr","Description","Quantity","DnPackNr","Destination"]
 
   def self.gen_data dn,orl
     dataset=[]
@@ -24,7 +24,7 @@ module LeoniNbtpDpack
     data[:SupplierNr]= orl.supplierNr
     data[:CPartNr]=pack.cpartNr
     data[:Description]=pack.spartNr
-    data[:SendDate]=sendDate
+    # data[:SendDate]=sendDate
     data[:Quantity]=FormatHelper.string_to_int(pack.perPackAmount.to_s)
     data[:Destination]="WE87"
     data[:DnPackNr]=packNr
