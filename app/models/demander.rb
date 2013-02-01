@@ -1,7 +1,7 @@
 #encoding: utf-8
 require "base_class"
 class Demander < ActiveRecord::Base
-  set_inheritance_column :not_used_type
+  self.inheritance_column = "not_used_type"
   attr_accessible :id, :created_at, :updated_at
   attr_accessible :key, :clientId,:relpartId,:supplierId, :type,:amount,:oldamount,:date,:rate
   NumPer=$DEPSIZE

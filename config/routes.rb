@@ -16,9 +16,14 @@ Demand::Application.routes.draw do
   controller :organisation_manager do
     get 'organisation_manager' => :index
     match 'organisation_manager/edit' => :edit
+    match 'organisation_manager/new' => :new
+    get 'organisation_manager/manager' => :manager
+    post 'organisation_manager/create_org_relation' => :create_org_relation
+    post 'organisation_manager/create_relpart' => :create_relpart
+    post 'organisation_manager/create_relpart_package' => :create_relpart_package
+    post 'organisation_manager/create_relpart_check' => :create_relpart_check
     match 'organisation_manager/search' => :search
     get 'organisation_manager/redis_search' => :redis_search
-    post 'organisation_manager/add_supplier' => :add_supplier
   end
 
   resources :demander do

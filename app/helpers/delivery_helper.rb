@@ -33,14 +33,19 @@ module DeliveryHelper
   def self.automake_di_temp staffId, d
       num = d.amount
       return false unless num.is_a?(Integer)
-      pack = num/10
-      dit=DeliveryItemTemp.new(:packAmount=>pack,:perPackAmount=>10,:partRelId=>d.relpartId,:spartNr=>PartRel.find(d.relpartId).supplier_part.partNr,
-                                                            :total=>FormatHelper.string_multiply(10, pack))
+      if pr = PartRel.find_by_id(d.relpartId) and pinfo = pr.package_info
+        least = pinfo.leastAmount
+      else
+        return false
+      end
+      pack = num/least
+      dit=DeliveryItemTemp.new(:packAmount=>pack,:perPackAmount=>least,:partRelId=>d.relpartId,:spartNr=>PartRel.find(d.relpartId).supplier_part.partNr,
+                                                            :total=>FormatHelper.string_multiply(least, pack))
       dit.save
       dit.add_to_staff_cache staffId
-      if pack%10 != 0
-        dit=DeliveryItemTemp.new(:packAmount=>1,:perPackAmount=>10,:partRelId=>d.relpartId,:spartNr=>PartRel.find(d.relpartId).supplier_part.partNr,
-                                                              :total=>FormatHelper.string_multiply(10, 1))
+      if pack%least != 0
+        dit=DeliveryItemTemp.new(:packAmount=>1,:perPackAmount=>least,:partRelId=>d.relpartId,:spartNr=>PartRel.find(d.relpartId).supplier_part.partNr,
+                                                              :total=>FormatHelper.string_multiply(least, 1))
         dit.save
         dit.add_to_staff_cache staffId
       end
