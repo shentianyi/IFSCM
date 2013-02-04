@@ -4,6 +4,32 @@
 <hr/>
 <hr/>
 
+<h4>公司帐号</h4>
+<hr/>
+<%= form_tag( {:controller=>"organisation_manager", :action=>"create_staff"}, id:"formStaff" ) do  %>
+	<div>
+		<label>公司:</label>
+		<%= select_tag :orgId,  options_for_select(@list),  prompt: "All" %>
+	</div>
+	  <div>
+	    <label>员工号:</label>
+	    <%= text_field_tag :staffNr, nil, size:10 %>
+	  </div>
+	  <div >
+	    <label>名称:</label>
+	    <%= text_field_tag :name, nil, size:10 %>
+	  </div>
+	  <div >
+	    <label>密码:</label>
+	    <%= password_field_tag :pass, nil %>
+	  </div>
+	  <div >
+	    <label>确认密码:</label>
+	    <%= password_field_tag :conpass, nil %>
+	  </div>
+    <%= button_tag '新建',:type=>'button',:onclick=>"org_staff_new();"%>
+<% end %>
+
 <h4>公司关系</h4>
 <hr/>
 <%= form_tag( {:controller=>"organisation_manager", :action=>"create_org_relation"}, id:"formRelation" ) do  %>
