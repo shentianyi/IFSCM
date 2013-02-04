@@ -10,4 +10,13 @@ class DeliveryPackage < ActiveRecord::Base
   has_many :delivery_items,:dependent=>:destroy
   include CZ::BaseModule
   include CZ::DeliveryBase
+  
+  def self.single_or_default key
+    find_from_redis key
+  end
+  
+  private
+  def self.find_from_redis key
+    rfind(key)
+  end
 end

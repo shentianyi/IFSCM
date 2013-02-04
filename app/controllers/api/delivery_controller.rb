@@ -44,15 +44,26 @@ module Api
     end
 
     def item_print_data
+      diKeys=params[:diKeys].split(',') if params[:diKeys]
+      dnKey=nil
+      ddn=nil
+      if diKeys
+        if item=DeliveryItem.single_or_default(diKeys[0])
+          pack=DeliveryPackage.single_or_default(item.parentKey)
+          ddn=DeliveryNote.single_or_default(pack.parentKey)
+        end
+      else
+        dnKey=params[:dnKey]
+      end
       data=nil
-      if dn=DeliveryNote.single_or_default(params[:dnKey])
-        printer,dataset=TPrinter.generate_dn_item_print_data(params[:dnKey])
+      if dn=ddn||DeliveryNote.single_or_default(dnKey)
+        printer,dataset=TPrinter.generate_dn_item_print_data(dn.key,diKeys)
         data=Class.new
         data.instance_variable_set :@template,printer.template
         data.instance_variable_set :@dataset,dataset
       end
-      puts "*********#{data.to_json}"
       render :json=>data
     end
+
   end
 end

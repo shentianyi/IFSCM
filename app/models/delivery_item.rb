@@ -8,4 +8,13 @@ class DeliveryItem < ActiveRecord::Base
   belongs_to :delivery_packages
   include CZ::BaseModule
   include CZ::DeliveryBase
+  
+    def self.single_or_default key
+    find_from_redis key
+  end
+  
+  private
+  def self.find_from_redis key
+    rfind(key)
+  end
 end
