@@ -3,7 +3,6 @@ require 'base_class'
 
 class OrgRelPrinter<CZ::BaseClass
   attr_accessor :org_rel_id,:template,:moduleName,:type
-  
   def self.get_default_printer orid,type
     zkey=g_or_dprinter_zset_key orid
     return find($redis.zrangebyscore(zkey,type,type)[0])
@@ -12,7 +11,7 @@ class OrgRelPrinter<CZ::BaseClass
   def add_to_dpriter
     zkey=OrgRelPrinter.g_or_dprinter_zset_key(self.org_rel_id)
     if $redis.zscore(zkey,self.key).nil?
-     $redis.remrangebyscore(zkey,self.type,self.type) if $redis.zcount(zkey,self.type,self.type)>0
+    $redis.remrangebyscore(zkey,self.type,self.type) if $redis.zcount(zkey,self.type,self.type)>0
     return $redis.zadd(zkey,self.type,self.key)
     end
     return false
@@ -37,6 +36,16 @@ class OrgRelPrinter<CZ::BaseClass
     super
     del_from_printer
   end
+
+  def self.all orid,type
+    skey=g_or_printer_set_key orid,type
+    printers=[]
+    ($redis.smembers skey).each do |key|
+      printers<<find(key)
+    end
+    return printers
+  end
+
   private
 
   def self.g_or_dprinter_zset_key orid
@@ -50,26 +59,24 @@ end
 
 class OrgRelContactBase<CZ::BaseClass
   attr_accessor :org_rel_id,:type
-    
   def self.find_by_orid orid
     zkey=g_or_contact_zset_key orid
-     type=class_type_converter(self.name)
+    type=class_type_converter(self.name)
     return find($redis.zrangebyscore(zkey,type,type)[0])
   end
-  
+
   def add_to_contact
     zkey=OrgRelContactBase.g_or_contact_zset_key(self.org_rel_id)
     if $redis.zscore(zkey,self.key).nil?
-     $redis.remrangebyscore(zkey,self.type,self.type) if $redis.zcount(zkey,self.type,self.type)>0
-     return $redis.zadd(zkey,self.type,self.key)
+    $redis.zremrangebyscore(zkey,self.type,self.type) if $redis.zcount(zkey,self.type,self.type)>0
+    return $redis.zadd(zkey,self.type,self.key)
     end
     return false
   end
-  
-  
+
   def del_from_contact
-    skey=OrgRelPrinter.g_or_printer_set_key(self.org_rel_id,self.type)
-    $redis.srem(skey,self.key)
+    skey=OrgRelContactBase.g_or_contact_zset_key(self.org_rel_id)
+    $redis.zrem(skey,self.key)
   end
 
   def destroy
@@ -77,22 +84,30 @@ class OrgRelContactBase<CZ::BaseClass
     del_from_contact
   end
 
-  private
-  def self.g_or_contact_zset_key orid
-    "orgrel:#{orid}:contact:zset"
-  end
-  
   def self.class_type_converter className
     type=case className
     when  "DnContact"
-     OrgRelContactType::DContact
+      OrgRelContactType::DContact
     end
     return type
   end
+
+  def self.class_name_converter type
+    className=case type
+    when OrgRelContactType::DContact
+      "DnContact"
+    end
+    return className
+  end
+  private
+
+  def self.g_or_contact_zset_key orid
+    "orgrel:#{orid}:contact:zset"
+  end
+
 end
 
 class DnContact<OrgRelContactBase
   attr_accessor :recer_name,:recer_contact,:sender_name,:sender_contact,:rece_address,:send_address
 end
-
 
