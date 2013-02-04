@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130117032759) do
+ActiveRecord::Schema.define(:version => 20130201133248) do
 
   create_table "delivery_items", :force => true do |t|
     t.string   "key"
@@ -92,6 +92,15 @@ ActiveRecord::Schema.define(:version => 20130117032759) do
     t.datetime "created_at",  :null => false
     t.datetime "updated_at",  :null => false
   end
+
+  create_table "package_infos", :force => true do |t|
+    t.integer  "leastAmount"
+    t.integer  "part_rel_id"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
+  end
+
+  add_index "package_infos", ["part_rel_id"], :name => "index_package_infos_on_part_rel_id"
 
   create_table "part_rels", :force => true do |t|
     t.string   "saleNo"

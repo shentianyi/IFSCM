@@ -1,0 +1,77 @@
+
+<br/>
+<h1>Operator : <%= @cz_org.abbr %></h1>
+<hr/>
+<hr/>
+
+<h4>公司帐号</h4>
+<hr/>
+<%= form_tag( {:controller=>"organisation_manager", :action=>"create_staff"}, id:"formStaff" ) do  %>
+	<div>
+		<label>公司:</label>
+		<%= select_tag :orgId,  options_for_select(@list),  prompt: "All" %>
+	</div>
+	  <div>
+	    <label>员工号:</label>
+	    <%= text_field_tag :staffNr, nil, size:10 %>
+	  </div>
+	  <div >
+	    <label>名称:</label>
+	    <%= text_field_tag :name, nil, size:10 %>
+	  </div>
+	  <div >
+	    <label>密码:</label>
+	    <%= password_field_tag :pass, nil %>
+	  </div>
+	  <div >
+	    <label>确认密码:</label>
+	    <%= password_field_tag :conpass, nil %>
+	  </div>
+    <%= button_tag '新建',:type=>'button',:onclick=>"org_staff_new();"%>
+<% end %>
+
+<h4>公司关系</h4>
+<hr/>
+<%= form_tag( {:controller=>"organisation_manager", :action=>"create_org_relation"}, id:"formRelation" ) do  %>
+	<div>
+		<label>Client:</label>
+		<%= select_tag :clientId,  options_for_select(@list),  prompt: "All" %>
+		<%= text_field_tag :clientNr, nil, :placeholder => "example: Leoni" %>
+	</div>
+	<div>
+		<label>Supplier:</label>
+		<%= select_tag :supplierId,  options_for_select(@list),  prompt: "All" %>
+		<%= text_field_tag :supplierNr, nil, :placeholder => "example: nbtp" %>
+	</div>
+    <%= button_tag '新建',:type=>'button',:onclick=>"org_rel_new();"%>
+<% end %>
+
+
+<h4>公司关系 > 关系零件</h4>
+<hr/>
+	<p>Client;Supplier;CpartNr;SpartNr;SaleNo;PurchaseNo</p>
+	<input id="relpartFile" type="file" name="files[]" data-url="../organisation_manager/create_relpart" >
+	<div class="abstractblock" id="relpartFile-preview" style="display:none;">	</div>
+
+<h4>公司关系 > 关系零件 > 零件装箱</h4>
+<hr/>
+	<p>Client;Supplier;CpartNr;SpartNr;Least</p>
+	<input id="relpartPackageFile" type="file" name="files[]" data-url="../organisation_manager/create_relpart_package" >
+	<div class="abstractblock" id="relpartPackageFile-preview" style="display:none;">	</div>
+
+<h4>公司关系 > 关系零件 > 零件检验</h4>
+<hr/>
+	<input id="relpartCheckFile" type="file" name="files[]" data-url="../organisation_manager/create_relpart_check" >
+	<div class="abstractblock" id="relpartCheckFile-preview" style="display:none;">	</div>
+
+
+
+
+
+<hr/>
+<hr/>
+
+<script src="/assets/jquery.file.upload/jquery.fileupload.js" type="text/javascript"></script>
+<script src="/assets/organisation_edit.js" type="text/javascript"></script>
+
+
