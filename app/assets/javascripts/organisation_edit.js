@@ -54,6 +54,20 @@ function org_rel_new(){
 					}, "json");
 }
 
+function org_staff_new(){
+	eles = document.getElementById('formStaff').elements;
+	var hash={};
+	for (var i=0; i<eles.length; i++)
+		hash[eles[i].name]=eles[i].value;
+	$.post("../organisation_manager/create_staff",hash,
+					function(data){
+					  	if (data.flag){
+					  		alert(data.msg);
+					  	}else
+					  		alert(data.msg);
+					}, "json");
+}
+
 function organisation_manager(idStr){
       var vali = true;
       var lock = false;

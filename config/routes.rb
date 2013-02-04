@@ -18,6 +18,7 @@ Demand::Application.routes.draw do
     match 'organisation_manager/edit' => :edit
     match 'organisation_manager/new' => :new
     get 'organisation_manager/manager' => :manager
+    post 'organisation_manager/create_staff' => :create_staff
     post 'organisation_manager/create_org_relation' => :create_org_relation
     post 'organisation_manager/create_relpart' => :create_relpart
     post 'organisation_manager/create_relpart_package' => :create_relpart_package

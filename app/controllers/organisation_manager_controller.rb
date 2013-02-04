@@ -48,6 +48,20 @@ class OrganisationManagerController < ApplicationController
     @list = Organisation.all.map {|o| [o.name, o.id] }
   end
   
+  def create_staff
+        if !s=Staff.where(:staffNr=>params[:staffNr],:orgId=>params[:orgId],:organisation_id=>params[:orgId]).first
+          st=Staff.new(:staffNr => params[:staffNr], :name=>params[:name], :orgId=>params[:orgId],:password => params[:pass], :organisation_id=>params[:orgId],
+           :password_confirmation => params[:conpass])
+          if st.save
+            render :json=>{flag:true,msg:"新建成功！"}
+          else
+            render :json=>{flag:false,msg:"失败！"}
+          end
+        else
+          render :json=>{flag:false,msg:"失败！此号已存在。"}
+        end
+  end
+  
   def create_org_relation
     orgrel = OrganisationRelation.new(:clientNr=>params[:clientNr], :supplierNr=>params[:supplierNr],
                                                                     :origin_supplier_id=>params[:supplierId], :origin_client_id=>params[:clientId])
