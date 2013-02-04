@@ -4,6 +4,6 @@ require_relative 'enum'
 
 class OrgRelPrinterType
   include Enum
-  OrgRelPrinterType.define :DNPrinter,100,'print delivery note'
-  OrgRelPrinterType.define :DPackPrinter,200,'print delivery package'
+  OrgRelPrinterType.define :DNPrinter,100,'delivery note printer'
+  OrgRelPrinterType.define :DPackPrinter,200,'delivery package printer'
 end
