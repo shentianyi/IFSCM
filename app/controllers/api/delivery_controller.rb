@@ -1,4 +1,5 @@
 #encoding: utf-8
+require 'org_rel_info'
 module Api
   class DeliveryController<AppController
     def print_queue_list
@@ -64,6 +65,22 @@ module Api
       end
       render :json=>data
     end
-
+    
+    def updated_template
+      templates=[]
+      orgId=params[:orgId]
+      OrganisationRelation.where(:origin_supplier_id=>orgId).each do |orgrel|
+        [OrgRelPrinterType::DNPrinter,OrgRelPrinterType::DPackPrinter].each do |type|
+          if printer=OrgRelPrinter.get_default_printer(orgrel.id,type) and printer.updated="true"         
+              templates<<printer.template
+              printer.update(:updated=>false)           
+          end
+        end
+      end
+      puts templates.to_json
+      render :json=>templates
+    end
+    
+    
   end
 end

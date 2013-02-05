@@ -2,7 +2,7 @@
 require 'base_class'
 
 class OrgRelPrinter<CZ::BaseClass
-  attr_accessor :org_rel_id,:template,:moduleName,:type
+  attr_accessor :org_rel_id,:template,:moduleName,:type,:updated
   def self.get_default_printer orid,type
     zkey=g_or_dprinter_zset_key orid
     return find($redis.zrangebyscore(zkey,type,type)[0])
