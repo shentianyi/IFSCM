@@ -198,7 +198,8 @@ module DemanderBll
                 f.puts $DECSVT.join($CSVSP)
                 mt=['normal','error']
                 mt.each do |m|
-                  nds,ncount=get_file_demands sf.key,0,-1,m
+                  nds,type,ncount=get_file_demands sf.key,0,-1,m
+                  puts "######{ncount}"
                   if ncount>0
                     nds.items.each do |nd|
                       f.puts [nd.cpartNr,nd.supplierNr,nd.filedate,nd.type,nd.amount].join($CSVSP)
