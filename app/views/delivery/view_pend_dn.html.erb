@@ -1,4 +1,5 @@
 <link rel="stylesheet"  type="text/css" href="/assets/delivery/supWaybill.css" />
+<link rel="stylesheet" type="text/css" href="/assets/delivery/supCheckbill.css"/>
 <script src="/assets/deliery-send-receive.js" type="text/javascript"></script>
 <script type="text/javascript">
 	$(document).ready(function () {
@@ -9,6 +10,7 @@
 </script>
 <%if @msg.result%>
 <% dn=@msg.object%>
+ 
 <div class="fillindestinations">
 	<p>
 		运单发送预览数据: <%= dn.key%>
