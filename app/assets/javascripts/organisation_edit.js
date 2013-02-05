@@ -62,10 +62,10 @@ function org_staff_new() {
 function organisation_manager(idStr) {
 	var vali = true;
 	var lock = false;
-	var csvReg = /(\.|\/)(csv)$/i;
+	var csvReg = /(\.|\/)(csv|tff)$/i;
 	$(idStr).fileupload({
 		singleFileUploads : false,
-		acceptFileTypes : /(\.|\/)(csv)$/i,
+		acceptFileTypes : /(\.|\/)(csv|tff)$/i,
 		dataType : 'json',
 		change : function(e, data) {
 			vali = true;
@@ -73,7 +73,7 @@ function organisation_manager(idStr) {
 			$.each(data.files, function(index, file) {
 				var msg = "上传中 ... ...";
 				if (!csvReg.test(file.name)) {
-					msg = '格式错误，只允许csv文件';
+					msg = '格式错误';
 					vali = false;
 				}
 				$(idStr + '-preview').show().append("<span>文件：" + file.name + "</span><br/><span info>处理：" + msg + "</span>");
@@ -104,12 +104,8 @@ $(function() {
 	organisation_manager("#relpartFile");
 	organisation_manager("#relpartPackageFile");
 	organisation_manager("#relpartCheckFile");
+	organisation_manager("#dn-printer-template-uploader");
 	$(".toggle_container").hide();
-	// $(".expand_heading").toggle(function(){
-	// $(this).addClass("active");
-	// }, function () {
-	// $(this).removeClass("active");
-	// });
 	$(".expand_heading").click(function() {
 		$(this).next(".toggle_container").slideToggle("slow");
 	});
@@ -153,6 +149,15 @@ function del_orl_printer() {
 function add_orl_defalut_printer() {
 	$.post('../organisation_manager/add_default_printer', {
 		printerKey : $("#printerKey").val()
+	}, function(data) {
+		alert(data.msg);
+	});
+}
+
+function update_orl_default_printer() {
+	$.post('../organisation_manager/update_default_printer', {
+		printerKey : $("#printerKey").val(),
+		updated:$("#updatedcheck").attr('checked')=="checked"
 	}, function(data) {
 		alert(data.msg);
 	});

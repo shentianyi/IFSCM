@@ -7,7 +7,7 @@ path:
  :demand_csv_path: 'uploadfiles/demands/csv'
  :demand_tmp_path: 'uploadfiles/demands/tmp'
  :dn_pdf_label_path: 'uploadfiles/dnLabelPdf'
-  
+ :printer_template_path: 'uploadfiles/printerTemplate'
 page:
  :demand_page_size: 10
 

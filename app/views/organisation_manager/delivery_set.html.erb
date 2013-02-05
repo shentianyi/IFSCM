@@ -32,15 +32,22 @@
 			Module Name:
 			<input id="moduleName" type="text" />
 		</div>
+		<div>
+			UPLOAD PRINTER TEMPLATE：
+			<input id="dn-printer-template-uploader" type="file" name="files[]" data-url="../organisation_manager/upload_printer_template" >
+	<div class="abstractblock" id="dn-printer-template-uploader-preview" style="display:none;">	</div>
+		</div>
 	</div>
 	<div style=" border: 1px solid grey;">
-		ADD DEFAULT PRINTER:
+		OPERATE PRINTER:
 		<input type="button" onclick=" add_orl_defalut_printer();" value=".add default."/>
 		<input type="button" onclick=" del_orl_printer();" value=".delete."/>
+	    <input type="button" onclick=" update_orl_default_printer();" value=".update default."/>
 		<br>
 		<div>
 			PRINTER KEY:
 			<input id="printerKey" type="text" />
+			<input id="updatedcheck" type="checkbox" checked/>已更新
 		</div>
 	</div>
 </div>

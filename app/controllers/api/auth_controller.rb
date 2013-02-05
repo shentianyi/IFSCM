@@ -8,6 +8,8 @@ module Api
         org=staff.organisation
         msg.object={:staffNr=>staff.staffNr,:staffName=>staff.name,:staffId=>staff.id,
           :orgId=>org.id,:orgName=>org.name}
+      else
+        msg.content="用户信息错误"
       end
       render :json=> msg
     end

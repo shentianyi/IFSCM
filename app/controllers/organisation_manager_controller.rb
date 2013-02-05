@@ -241,7 +241,7 @@ class OrganisationManagerController < ApplicationController
     end
   # render :text => lines
   end
-
+  #**********************************************************************************************
   #__________________________________________delivery info set__________________________________
   def delivery_set
     @list = Organisation.all.map {|o| [o.name, o.id] }
@@ -264,7 +264,7 @@ class OrganisationManagerController < ApplicationController
     orl= OrganisationRelation.where("origin_client_id = ? and origin_supplier_id = ? ", cli.id, sup.id).first
     type=params[:ptype]
     printer=OrgRelPrinter.new(:org_rel_id=>orl.id,:template=>params[:template],
-    :moduleName=>params[:moduleName],:type=> type)
+    :moduleName=>params[:moduleName],:type=> type,:updated=>true)
     printer.add_to_printer
     printer.save
     render :json=>{:msg=>"DONE!!!"+printer.key}
@@ -275,6 +275,12 @@ class OrganisationManagerController < ApplicationController
     printer.destroy
     render :json=>{:msg=>"DONE!!!"+printer.key}
   end
+  
+  def update_default_printer
+     printer=OrgRelPrinter.find(params[:printerKey])
+    printer.update(:updated=>params[:updated])
+    render :json=>{:msg=>"DONE!!!"+printer.key}
+  end
 
   def add_default_printer
     printer=OrgRelPrinter.find(params[:printerKey])
@@ -282,6 +288,27 @@ class OrganisationManagerController < ApplicationController
     render :json=>{:msg=>"DONE!!!"+printer.key}
   end
 
+  def upload_printer_template
+    files=params[:files]
+    msg=ReturnMsg.new
+    begin
+    if files.size==1
+      f = files.first
+      template=FileData.new(:data=>f,:oriName=>f.original_filename,:path=>$PRINTERTEMPLATEPATH,:pathName=>f.original_filename)
+      template.saveFile      
+      path=File.join($PRINTERTEMPLATEPATH,template.pathName)
+      AliDnPrintTemplateBuket.store(template.pathName,open(path))
+      msg.result=true
+      msg.content=f.original_filename+"，上传成功"
+    else
+      msg.content = "文件数量只可为1！"
+    end
+    rescue Exception=>e
+      msg.content=e.message
+    end
+    render :json=>{:flag=>msg.result,:msg=>msg.content}
+  end
+  
   def get_dncontact
     cli=Organisation.find(params[:cid])
     sup=Organisation.find(params[:sid])
