@@ -18,13 +18,13 @@ module TPrinter
     return printer,dataset
   end
 
-  def self.generate_dn_item_print_data dnKey
+  def self.generate_dn_item_print_data dnKey,diKeys=nil
     dn,orl=get_dn_orl(dnKey)
     printer = OrgRelPrinter.get_default_printer(orl.id,OrgRelPrinterType::DPackPrinter)
-    dataset = eval(printer.moduleName.camelize).send :gen_data,dn,orl
+    dataset = eval(printer.moduleName.camelize).send :gen_data,dn,orl,diKeys
     return printer,dataset
   end
-
+   
   private
 
   def self.get_dn_orl dnKey

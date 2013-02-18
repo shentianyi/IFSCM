@@ -25,6 +25,16 @@ Demand::Application.routes.draw do
     post 'organisation_manager/create_relpart_check' => :create_relpart_check
     match 'organisation_manager/search' => :search
     get 'organisation_manager/redis_search' => :redis_search
+    match 'organisation_manager/delivery_set'=>:delivery_set
+    match 'organisation_manager/get_printer'=>:get_printer
+    match 'organisation_manager/add_printer'=>:add_printer
+     match 'organisation_manager/del_printer'=>:del_printer
+    match 'organisation_manager/add_default_printer'=>:add_default_printer
+      match 'organisation_manager/update_default_printer'=>:update_default_printer
+      match 'organisation_manager/get_dncontact'=>:get_dncontact
+        match 'organisation_manager/add_dncontact'=>:add_dncontact
+     match 'organisation_manager/del_dncontact'=>:del_dncontact
+      match 'organisation_manager/upload_printer_template'=>:upload_printer_template
   end
 
   resources :demander do
@@ -85,18 +95,19 @@ Demand::Application.routes.draw do
   end
 
   namespace :api,defaults:{format:'json'} do
-    # scope  constraints:ApiConstraints.new do
-      controller :auth do
-        match 'login'=>:login
-     end
-     controller :delivery do
-       match 'delivery/print_queue_list'=>:print_queue_list
-       match 'delivery/remove_from_print_queue'=>:remove_from_print_queue
-       match 'delivery/package_list'=>:package_list
-       match 'delivery/item_list/'=>:item_list
-       match 'delivery/item_print_data' => :item_print_data
-     end
-    #end
+  # scope  constraints:ApiConstraints.new do
+    controller :auth do
+      match 'login'=>:login
+    end
+    controller :delivery do
+      match 'delivery/print_queue_list'=>:print_queue_list
+      match 'delivery/remove_from_print_queue'=>:remove_from_print_queue
+      match 'delivery/package_list'=>:package_list
+      match 'delivery/item_list/'=>:item_list
+      match 'delivery/item_print_data' => :item_print_data
+      match 'delivery/updated_template' =>:updated_template
+    end
+  #end
   end
 
   mount Resque::Server.new, :at=>"/admin/resque"

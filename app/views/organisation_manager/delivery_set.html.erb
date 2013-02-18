@@ -1,0 +1,103 @@
+<style type="text/css">
+	.expand_heading{
+		cursor:pointer;
+	}
+</style>
+<h4>选择客户-供应商</h4>
+<div>
+	<label>Client:</label>
+	<%= select_tag :clientId,  options_for_select(@list)%>
+</div>
+<div>
+	<label>Supplier:</label>
+	<%= select_tag :supplierId,  options_for_select(@list)%>
+</div>
+
+<h4 class="expand_heading">@公司关系 > 运单信息 > 打印模板设置</h4>
+<div class="toggle_container">
+	Printer Type: <%= select_tag :printerType,  options_for_select(@priterTypes)%>
+	<input type="button" onclick=" get_orl_printers()" value="查 询"／>
+	<div id="printer_result">
+
+	</div>
+	<div style=" border: 1px solid grey;">
+		ADD PRINTER:
+		<input type="button" onclick=" add_orl_printer();" value=".add."/>
+		<br>
+		<div>
+			Template:
+			<input id="template" type="text" />
+		</div>
+		<div>
+			Module Name:
+			<input id="moduleName" type="text" />
+		</div>
+		<div>
+			UPLOAD PRINTER TEMPLATE：
+			<input id="dn-printer-template-uploader" type="file" name="files[]" data-url="../organisation_manager/upload_printer_template" >
+	<div class="abstractblock" id="dn-printer-template-uploader-preview" style="display:none;">	</div>
+		</div>
+	</div>
+	<div style=" border: 1px solid grey;">
+		OPERATE PRINTER:
+		<input type="button" onclick=" add_orl_defalut_printer();" value=".add default."/>
+		<input type="button" onclick=" del_orl_printer();" value=".delete."/>
+	    <input type="button" onclick=" update_orl_default_printer();" value=".update default."/>
+		<br>
+		<div>
+			PRINTER KEY:
+			<input id="printerKey" type="text" />
+			<input id="updatedcheck" type="checkbox" checked/>已更新
+		</div>
+	</div>
+</div>
+<hr />
+
+<h4 class="expand_heading">@公司关系 > 运单信息 > 联系人设置</h4>
+<div class="toggle_container">
+	Contact Type: <%= select_tag :contactType,  options_for_select(@contactType)%>
+	<input type="button" onclick=" get_orl_dncontact()" value="查 询"／>
+	<div id="contact_result">
+
+	</div>
+	<div style=" border: 1px solid grey;">
+		ADD DN CONTACT
+		<input type="button" onclick="add_orl_dncontact();" value=".add." />
+		<input type="button" onclick="del_orl_dncontact();" value=".delete."/>
+		<br>
+		<div>
+			dn contact key:
+			<input id="dncontactKey" type="text" />
+		</div>
+		<div>
+			recer_name:
+			<input id="recer_name" type="text" />
+		</div>
+		<div>
+			recer_contact:
+			<input id="recer_contact" type="text" />
+		</div>
+		<div>
+			rece_address:
+			<input id="rece_address" type="text" />
+		</div>
+		<div>
+			sender_name:
+			<input id="sender_name" type="text" />
+		</div>
+		<div>
+			sender_contact:
+			<input id="sender_contact" type="text" />
+		</div>
+		<div>
+			send_address:
+			<input id="send_address" type="text" />
+		</div>
+
+	</div>
+</div>
+<hr />
+
+<script src="/assets/jquery.file.upload/jquery.fileupload.js" type="text/javascript"></script>
+<script src="/assets/organisation_edit.js" type="text/javascript"></script>
+
