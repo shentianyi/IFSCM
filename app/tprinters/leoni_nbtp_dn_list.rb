@@ -1,8 +1,8 @@
 #encoding:utf-8
-module LeoniNbtpDn
+module LeoniNbtpDnList
   @@head_keys=["DnNr","SendDate","SupplierOrgName","SupplierOrgAddress","ClientOrgName","ClientOrgAddress","DnDestination",
     "SupplierNr","ClientNr","ReceiverName","ContactWay"]
-  @@body_keys=["CPartNr","SPartNr","PerPackNum","PackNum","TotalQuantity"]
+  @@body_keys=["CPartNr","SPartNr","PerPackNum","PackNr"]
 
   def self.gen_data dn,orl
     dataset=[]
@@ -11,12 +11,15 @@ module LeoniNbtpDn
 
     if dn.items=DeliveryNote.get_children(dn.key,0,-1)[0]
       dn.items.each do |p|
-        record=gen_head(dn,sendOrg,receOrg,orl)
-        record=gen_body(p,record)
-        dataset<<record
+        hrecord=gen_head(dn,sendOrg,receOrg,orl)
+        if p.items=DeliveryPackage.get_children(p.key,0,-1)[0]
+          p.items.each do |i|
+            brecord=gen_body(p,i.key)
+            dataset<<(hrecord+brecord)
+          end 
+        end
       end
     end
-       puts "%%#{dataset.to_json}"
     return dataset
   end
 
@@ -45,14 +48,13 @@ module LeoniNbtpDn
     return record
   end
 
-  def self.gen_body pack,record
+  def self.gen_body pack,pkey
+    record=[]
     data={}
     data[:PerPackNum]= FormatHelper.string_to_int(pack.perPackAmount.to_s)
-    data[:PackNum]=pack.packAmount
-    data[:TotalQuantity]=FormatHelper.string_multiply(data[:PerPackNum],pack.packAmount)
+    data[:PackNr]=pkey
     data[:CPartNr]=pack.cpartNr
     data[:SPartNr]=pack.spartNr
-
     @@body_keys.each do |key|
       record<<{:Key=>key,:Value=>data[key.to_sym]}
     end

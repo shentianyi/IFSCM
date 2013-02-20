@@ -3,11 +3,11 @@
 	<table class="upData">
 		<tr  class="lineone">
 			<th>&nbsp;</th>
-			<th>包装箱号</th>
-			<th>内部零件号</th>
+			<th>供应商零件号</th>
+			<th>客户零件号</th>
 			<th>包装量</th>
-			<th>内部销售订单号</th>
-			<th>客户采购订单号</th>
+			<th>包装数量</th>
+			<th>总量</th>
 		</tr>
 		<tr class="divide" style="display: none">
 			<th class="nordvd">&nbsp;</th>
@@ -21,18 +21,16 @@
 		<%
 		dnItems.each do |pack|
 		per=FormatHelper.string_to_int(pack.perPackAmount.to_s)
-		pack.items=DeliveryPackage.get_children(pack.key,0,-1)[0]
-		pack.items.each do |item|
 		%>		
 		<tr class="norline">
 			<th><%= (i+=1)%></th>
-			<th style="text-align:left;"><%= item.key%></th>
 			<th style="text-align:left;"><%= pack.spartNr%></th>
+			<th style="text-align:left;"><%= pack.cpartNr%></th>
 			<th><%= per%></th>
-			<th><%= pack.saleNo%></th>
-			<th> <%= pack.purchaseNo%></th>
+			<th><%= pack.packAmount%></th>
+			<th> <%= FormatHelper.string_multiply(per,pack.packAmount)%></th>
 		</tr>
-		<% end
+		<%
 		end%>
 		</tr>
 	</table>

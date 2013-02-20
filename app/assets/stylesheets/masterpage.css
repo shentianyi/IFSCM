@@ -382,7 +382,7 @@ div #f2 {
 .botbts {
      width: 110px;
      right: 0px;
-     height: 480px;
+/*     height: 480px;*/
      position: fixed;
      bottom: 20px;
      margin-top: 20px;
