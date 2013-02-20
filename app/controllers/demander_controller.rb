@@ -169,7 +169,7 @@ class DemanderController<ApplicationController
       demandId=params[:demandId]
       nt = Time.parse(params[:endIndex])
       if nt.hour+nt.min+nt.sec>0 
-        if demander=Demander.find(demandId)
+        if demander=Demander.rfind(demandId)
           nt = Time.at(DemandHistory.get_two_ends(demander).last.created_at.to_i)
           endIndex=Time.local(nt.year, nt.mon, nt.day).to_i + 1.day.to_i
           startIndex=endIndex - 3.day.to_i
@@ -182,7 +182,7 @@ class DemanderController<ApplicationController
       # chart = [[startIndex,0],nil,[endIndex,0]]
       chart = []
       msg=ReturnMsg.new(:result=>false,:content=>'')
-      if demander=Demander.find(demandId)
+      if demander=Demander.rfind(demandId)
         if hs = DemandHistory.get_demander_hitories(demander,startIndex,endIndex)
           msg.result=true
           msg.object=hs
