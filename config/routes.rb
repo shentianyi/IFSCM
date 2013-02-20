@@ -28,13 +28,13 @@ Demand::Application.routes.draw do
     match 'organisation_manager/delivery_set'=>:delivery_set
     match 'organisation_manager/get_printer'=>:get_printer
     match 'organisation_manager/add_printer'=>:add_printer
-     match 'organisation_manager/del_printer'=>:del_printer
+    match 'organisation_manager/del_printer'=>:del_printer
     match 'organisation_manager/add_default_printer'=>:add_default_printer
-      match 'organisation_manager/update_default_printer'=>:update_default_printer
-      match 'organisation_manager/get_dncontact'=>:get_dncontact
-        match 'organisation_manager/add_dncontact'=>:add_dncontact
-     match 'organisation_manager/del_dncontact'=>:del_dncontact
-      match 'organisation_manager/upload_printer_template'=>:upload_printer_template
+    match 'organisation_manager/update_default_printer'=>:update_default_printer
+    match 'organisation_manager/get_dncontact'=>:get_dncontact
+    match 'organisation_manager/add_dncontact'=>:add_dncontact
+    match 'organisation_manager/del_dncontact'=>:del_dncontact
+    match 'organisation_manager/upload_printer_template'=>:upload_printer_template
   end
 
   resources :demander do
@@ -80,7 +80,6 @@ Demand::Application.routes.draw do
       post :add_di_temp
       post :delete_dit
       post :build_dn
-      match :view_pend_dn
       post :cancel_staff_dn
       post :count_dn_queue
       post :clean_dn_queue
@@ -91,6 +90,7 @@ Demand::Application.routes.draw do
       post :update_dit
       match :check_dit_list
       post :clean_dit
+      get :dn_detail
     end
   end
 

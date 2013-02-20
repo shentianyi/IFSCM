@@ -276,36 +276,17 @@ module DeliveryBll
   # - string : sendDate
   # 返回值：
   # - string : fileName
-  def self.generate_dn_label_pdf dnKey,destination,sendDate
+  def self.generate_dn_label_pdf dnKey,destination,sendDate,type
     fileName=nil
     if dn=DeliveryNote.single_or_default(dnKey)
       if dn.wayState.nil?
         dn.rupdate(:destination=>destination,:sendDate=>sendDate)
       end
-      result=TPrinter.print_dn_pdf(dnKey)
+      result=TPrinter.print_dn_pdf(dnKey,type)
       if result[:result]
         fileName=result[:content]
       end
     end
     return fileName
   end
-
-  # ws
-  # [功能：] 生成运单包装箱标签PDF文件
-  # 参数：
-  # - string : dnKey
-  # 返回值：
-  # - string : fileName
-  def self.generate_dn_pack_label_pdf dnKey
-    fileName=nil
-    if dn=DeliveryNote.single_or_default(dnKey)
-      dn.items=DeliveryBase.get_children dn.key,0,-1
-      result=Wcfer::PdfPrinter.generate_dn_pack_pdf dn.items.to_json
-      if result[:result]
-        fileName=result[:content]
-      end
-    end
-    return fileName
-  end
-
 end
