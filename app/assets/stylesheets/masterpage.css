@@ -437,6 +437,26 @@ div #f2 {
      background-position: center 8px;
 }
 
+.btprintdn{
+	 background-image: url(deliver-printer.png);
+     background-repeat: no-repeat;
+     background-position: center 8px;
+}
+
+.btprintdnbox{
+	 background-image: url(box-printer.png);
+     background-repeat: no-repeat;
+     background-position: center 8px;
+}
+
+.btprintdnboxlist{
+	 background-image: url(list-printer.png);
+     background-repeat: no-repeat;
+     background-position: center 8px;
+}
+
+
+
 /*----------block*/
 .abstractblock {
      padding: 3px 10px 3px 10px;

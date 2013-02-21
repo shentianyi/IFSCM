@@ -335,9 +335,8 @@ class DeliveryController < ApplicationController
   # - ReturnMsg : JSON
   def dn_detail
     msg=ReturnMsg.new(:result=>false,:content=>'')
-    if dn=DeliveryNote.rfind(params[:dnKey])
-      st=Staff.find(dn.staff_id.to_i)
-      if (st=Staff.find(dn.staff_id.to_i)) and st.orgId==session[:org_id]
+    if dn=DeliveryNote.single_or_default(params[:dnKey])
+      if dn.organisation_id==session[:org_id] or dn.rece_org_id==session[:org_id]
         @currentPage=pageIndex=params[:p].nil? ? 0 : params[:p].to_i
         startIndex,endIndex=PageHelper::generate_page_index(pageIndex,$DEPSIZE)
         dn.items,@totalCount=DeliveryBll.get_delivery_detail dn.key,startIndex,endIndex
