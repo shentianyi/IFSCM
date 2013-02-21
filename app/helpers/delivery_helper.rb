@@ -59,7 +59,7 @@ module DeliveryHelper
   # 返回值：
   # - string : description
   def self.get_dn_wayState code
-    DeliveryNoteWayState.get_desc_by_value code
+    DeliveryObjWayState.get_desc_by_value code
   end
   
    # ws
@@ -70,11 +70,11 @@ module DeliveryHelper
   # - string : css class
   def self.get_dn_wayState_css code
     cssClass=case code
-    when DeliveryNoteWayState::Intransit
+    when DeliveryObjWayState::Intransit
       'instransit'
-    when DeliveryNoteWayState::Received
+    when DeliveryObjWayState::Received
       'received'
-    when DeliveryNoteWayState::Returned
+    when DeliveryObjWayState::Returned
       'returned'
     else
     'instransit'

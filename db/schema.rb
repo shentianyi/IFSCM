@@ -11,15 +11,16 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130201133248) do
+ActiveRecord::Schema.define(:version => 20130221135320) do
 
   create_table "delivery_items", :force => true do |t|
     t.string   "key"
-    t.integer  "state"
+    t.integer  "state",               :default => 100
     t.string   "parentKey"
     t.integer  "delivery_package_id"
-    t.datetime "created_at",          :null => false
-    t.datetime "updated_at",          :null => false
+    t.datetime "created_at",                           :null => false
+    t.datetime "updated_at",                           :null => false
+    t.integer  "wayState",            :default => 100
   end
 
   add_index "delivery_items", ["delivery_package_id"], :name => "index_delivery_items_on_delivery_package_id"
@@ -29,10 +30,10 @@ ActiveRecord::Schema.define(:version => 20130201133248) do
     t.integer  "wayState"
     t.integer  "rece_org_id"
     t.string   "destination"
-    t.integer  "state"
+    t.integer  "state",           :default => 100
     t.datetime "sendDate"
-    t.datetime "created_at",      :null => false
-    t.datetime "updated_at",      :null => false
+    t.datetime "created_at",                       :null => false
+    t.datetime "updated_at",                       :null => false
     t.integer  "staff_id"
     t.integer  "organisation_id"
   end

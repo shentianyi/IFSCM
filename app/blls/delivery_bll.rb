@@ -61,7 +61,8 @@ module DeliveryBll
       if temps=DeliveryItemTemp.get_staff_cache(staffId)[0]
         #new delivery note
         dstate=DeliveryObjState::Normal
-        dn=DeliveryNote.new(:key=>ClassKeyHelper::gen_key("DeliveryNote"),:state=>dstate,:staff_id=>staffId,:organisation_id=>orgId,:rece_org_id=>desiOrgId)
+        dn=DeliveryNote.new(:key=>ClassKeyHelper::gen_key("DeliveryNote"),
+        :state=>dstate,:staff_id=>staffId,:organisation_id=>orgId,:rece_org_id=>desiOrgId)
         temps.each do |t|
           packcount=t.packAmount
           pl=PartRel.find(t.partRelId)
@@ -69,7 +70,8 @@ module DeliveryBll
           :perPackAmount=>t.perPackAmount,:partRelId=>t.partRelId,:saleNo=>pl.saleNo,:purchaseNo=>pl.purchaseNo,
           :cpartNr=>Part.get_partNr(desiOrgId,pl.client_part_id),:spartNr=>Part.get_partNr(orgId,pl.supplier_part_id))
           for i in 0...packcount
-            item=DeliveryItem.new(:key=>ClassKeyHelper::gen_key("DeliveryItem"),:parentKey=>pack.key,:state=>dstate)
+            item=DeliveryItem.new(:key=>ClassKeyHelper::gen_key("DeliveryItem"),
+             :parentKey=>pack.key,:state=>dstate,:wayState=>DeliveryObjWayState::Intransit)
             item.save_to_redis
             item.add_to_parent
             t.destroy
@@ -125,7 +127,7 @@ module DeliveryBll
             i.rupdate(:cpartNr=>Part.get_partNr(dn.rece_org_id,pl.client_part_id),
             :spartNr=>Part.get_partNr(dn.organisation_id,pl.supplier_part_id),:saleNo=>pl.saleNo,:purchaseNo=>pl.purchaseNo)
           end
-          dn.rupdate(:wayState=>DeliveryNoteWayState::Intransit,:destination=>destiStr,:sendDate=>sendDate)
+          dn.rupdate(:wayState=>DeliveryObjWayState::Intransit,:destination=>destiStr,:sendDate=>sendDate)
           dn.add_to_orgs
           dn.delete_from_staff_cache
           # DelieveryNote & DeliveryItem 写入Mysql
@@ -220,7 +222,7 @@ module DeliveryBll
           p.save
           if p.items=DeliveryPackage.get_children(p.key,0,-1)[0]
             p.items.each do |item|
-              p.delivery_items.build(:key=>item.key,:state=>item.state,:parentKey=>item.parentKey).save
+              p.delivery_items.build(:key=>item.key,:parentKey=>item.parentKey).save
             end
           end
         end
