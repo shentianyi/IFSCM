@@ -1,15 +1,21 @@
 #encoding: utf-8
+
 module CZ
   module DeliveryBase 
     attr_accessor :items
+        
     def add_to_parent
       key=eval(self.class.name).generate_child_zset_key self.parentKey
       $redis.zadd key,DeliveryBll.delivery_obj_reconverter(self.class.name),self.key
     end
-
+    
     def remove_from_parent
       key=eval(self.class.name).generate_child_zset_key self.parentKey
       $redis.zrem key,self.key
+    end
+    
+    def update_redis_id
+      self.rupdate(:id=>self.id)
     end
 
     def self.included(base)      

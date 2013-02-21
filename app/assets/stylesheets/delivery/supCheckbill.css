@@ -1,51 +1,22 @@
 .subicons{
 	z-index:11
 }
-.progress-bar{
-	background-image:url("../progress-bar.png");
-	background-repeat:no-repeat;
-	background-position:center left;
-	position:absolute;
-	top:40px;
-	left:830px;
-	width:320px;
-	height:100px;
 
-}
-.progress-bar p{
-  position:absolute;
-  top:47px;
-  display:inline;
-  font-size:15px;
-  color:#9D9D9D;
-  z-index:10;
-}
-.progress-bar p:nth-child(2){
-	left:-22px
-}
-.progress-bar p:nth-child(3){
-	left:119px
-}
-.progress-bar p:nth-child(4){
-	left:260px
-}
-.img-position{
-	position:absolute;
-	left:143px;
-}
+ 
 .abandon-btn{
 	border: 1px solid #E6E6E6;
-	position:absolute;
+	position:fixed;
 	background-repeat:no-repeat;
     background-position:center center;
-    top:140px;
-    left:1085px;
+    bottom:120px;
+   right:50px;
     width:70px;
     height:25px;
-    font-family:"微软雅黑";
+    font-family:"Î¢ÈíÑÅºÚ";
     font-size:12px;
     color:#999;
-}
+} 
+
 .abandon-btn:hover{
 	box-shadow:-1px -1px 3px #E6E6E6;
 	-webkit-box-shadow:-1px -1px 3px #E6E6E6;
@@ -57,10 +28,10 @@
 }
 .fixed-btn{
     border: 1px solid #E6E6E6;
-    position: absolute;
+    position: relative;
     background-repeat:no-repeat;
     background-position:center center;
-    top: 710px;
+    top: 40px;
     height:52px;
     border-radius: 10px 10px 10px 10px;
 	-webkit-border-radius:10px 10px 10px 10px;
@@ -75,13 +46,13 @@
 }
 .generate-btn{
 	background-image:url("../fixed-btn.png");
-   left: 980px;
+   left: 500px;
     width: 180px;
    
 }
 .add-btn{
 	background-image:url("../add-btn.png");
-    left:800px;
+    left:450px;
     width: 160px;
 
 }

@@ -2,16 +2,17 @@
 <script src="/assets/deliery-send-receive.js" type="text/javascript"></script>
 <link rel="stylesheet" type="text/css" href="/assets/delivery/supCheckbill.css"/>
 <div class="progress-bar">
-	<img src="/assets/progress-bar-ball.png" class="img-position"/>
-	<p>
-		运单添加
-	</p>
-	<p>
-		运单审核
-	</p>
-	<p>
-		生成运单
-	</p>
+	<ul>
+		<li>
+			运单添加
+		</li>
+		<li class="choosen">
+			运单审核
+		</li>
+		<li>
+			运单生成
+		</li>
+	</ul>
 </div>
 <h3>运单审核</h3>
 <input type="hidden" name="clientNr" id="clientNr" value="<%= @clientNr%>"/>
@@ -24,8 +25,8 @@
 				<tr class="titline">
 					<th>&nbsp;</th>
 					<th>零件号</th>
-					<th>包装量</th>
-					<th>包装数量</th>
+					<th>箱单位量</th>
+					<th>箱数</th>
 					<th>总量</th>
 					<th>&nbsp;</th>
 				</tr>

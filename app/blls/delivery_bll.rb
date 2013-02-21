@@ -214,7 +214,9 @@ module DeliveryBll
   def self.record_dn_into_mysql dnKey
     if dn=DeliveryNote.single_or_default(dnKey)
       if  dn.items=DeliveryNote.get_children(dn.key,0,-1)[0]
+        dn.save
         dn.items.each do |p|
+          p.delivery_note_id=dn.id
           p.save
           if p.items=DeliveryPackage.get_children(p.key,0,-1)[0]
             p.items.each do |item|
@@ -223,7 +225,7 @@ module DeliveryBll
           end
         end
       end
-    dn.save
+    # dn.save
     end
   end
 
