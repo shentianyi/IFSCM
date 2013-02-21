@@ -11,7 +11,17 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130201133248) do
+ActiveRecord::Schema.define(:version => 20130221103510) do
+
+  create_table "delivery_item_states", :force => true do |t|
+    t.string   "state"
+    t.string   "desc"
+    t.integer  "delivery_item_id"
+    t.datetime "created_at",       :null => false
+    t.datetime "updated_at",       :null => false
+  end
+
+  add_index "delivery_item_states", ["delivery_item_id"], :name => "index_delivery_item_states_on_delivery_item_id"
 
   create_table "delivery_items", :force => true do |t|
     t.string   "key"
@@ -93,15 +103,6 @@ ActiveRecord::Schema.define(:version => 20130201133248) do
     t.datetime "updated_at",  :null => false
   end
 
-  create_table "package_infos", :force => true do |t|
-    t.integer  "leastAmount"
-    t.integer  "part_rel_id"
-    t.datetime "created_at",  :null => false
-    t.datetime "updated_at",  :null => false
-  end
-
-  add_index "package_infos", ["part_rel_id"], :name => "index_package_infos_on_part_rel_id"
-
   create_table "part_rels", :force => true do |t|
     t.string   "saleNo"
     t.string   "purchaseNo"
@@ -123,6 +124,16 @@ ActiveRecord::Schema.define(:version => 20130201133248) do
 
   add_index "parts", ["organisation_id"], :name => "index_parts_on_organisation_id"
 
+  create_table "positions", :force => true do |t|
+    t.string   "nr"
+    t.integer  "capacity"
+    t.integer  "warehouse_id"
+    t.datetime "created_at",   :null => false
+    t.datetime "updated_at",   :null => false
+  end
+
+  add_index "positions", ["warehouse_id"], :name => "index_positions_on_warehouse_id"
+
   create_table "staffs", :force => true do |t|
     t.string   "staffNr"
     t.string   "name"
@@ -135,5 +146,36 @@ ActiveRecord::Schema.define(:version => 20130201133248) do
   end
 
   add_index "staffs", ["organisation_id"], :name => "index_staffs_on_organisation_id"
+
+  create_table "storages", :force => true do |t|
+    t.decimal  "stock",       :precision => 10, :scale => 0
+    t.integer  "position_id"
+    t.integer  "part_id"
+    t.datetime "created_at",                                 :null => false
+    t.datetime "updated_at",                                 :null => false
+  end
+
+  add_index "storages", ["part_id"], :name => "index_storages_on_part_id"
+  add_index "storages", ["position_id"], :name => "index_storages_on_position_id"
+
+  create_table "strategies", :force => true do |t|
+    t.integer  "leastAmount"
+    t.integer  "part_rel_id"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
+    t.string   "needCheck"
+  end
+
+  add_index "strategies", ["part_rel_id"], :name => "index_strategies_on_part_rel_id"
+
+  create_table "warehouses", :force => true do |t|
+    t.string   "nr"
+    t.string   "name"
+    t.integer  "organisation_id"
+    t.datetime "created_at",      :null => false
+    t.datetime "updated_at",      :null => false
+  end
+
+  add_index "warehouses", ["organisation_id"], :name => "index_warehouses_on_organisation_id"
 
 end
