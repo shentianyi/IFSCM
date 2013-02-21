@@ -19,7 +19,8 @@
           <th class="nordvd"></th>
           <th class="nordvd"></th>
           <th class="nordvd"></th>
-          <th class="lastdvd"></th>
+           <th class="nordvd"></th>
+            <th class="nordvd"></th>
           <th class="lastdvd"></th>
      </tr>
      <% i=0
@@ -32,7 +33,7 @@
      %>
      <tr class="norline hoverable">
           <th><%= (i+=1)%></th>
-          <th><%= dn.key%></th>
+          <th><a href="../delivery/dn_detail?dnKey=<%=dn.key%>&t=d" target="blank"><%= dn.key%></a></th>
           <th><%= partnerNr%></th>
           <th><%= Time.at(dn.sendDate.to_i).strftime('%Y/%m/%d') %></th>
           <th><%= dn.destination%></th>

@@ -2,18 +2,20 @@
 require 'org_rel_info'
 
 module TPrinter
-  def self.print_dn_pdf dnKey
-    printer,dataset=generate_dn_print_data(dnKey)
+  def self.print_dn_pdf dnKey,type
+    printer,dataset=generate_dn_print_data(dnKey,type)
     return Wcfer::PdfPrinter.generate_dn_pdf(printer.template,dataset.to_json,dnKey)
   end
 
-  def self.print_dn_item_pdf dnKey
-
+  def self.print_dn_pack_list_pdf dnKey
+    printer,dataset=generate_dn_pack_list_print_data dnKey
+    return Wcfer::PdfPrinter.generate_dn_pdf(printer.template,dataset.to_json,dnKey)
   end
+  
 
-  def self.generate_dn_print_data dnKey
+  def self.generate_dn_print_data dnKey,type
     dn,orl=get_dn_orl(dnKey)
-    printer=OrgRelPrinter.get_default_printer(orl.id,OrgRelPrinterType::DNPrinter)
+    printer=OrgRelPrinter.get_default_printer(orl.id,type)
     dataset = eval(printer.moduleName.camelize).send :gen_data,dn,orl
     return printer,dataset
   end

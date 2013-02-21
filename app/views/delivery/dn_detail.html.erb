@@ -1,0 +1,43 @@
+<link rel="stylesheet"  type="text/css" href="/assets/delivery/supWaybill.css" />
+<link rel="stylesheet" type="text/css" href="/assets/delivery/supCheckbill.css"/>
+<script src="/assets/deliery-send-receive.js" type="text/javascript"></script>
+<%if @msg.result%>
+<% dn=@msg.object%>
+
+<div class="fillindestinations">
+	<p>
+		运单内容: <%= dn.key%>
+	</p>
+	<div class="fillind">
+		<form method="post" id="gen_dn_pdf_form" action="../delivery/gen_dn_pdf">
+			<input type="hidden" value="<%= dn.key%>" id="dnkey-hidden" name="dnKey">
+			<input type="text" class="fillindest fillindestlonger" name="destination"
+			value="<%= dn.destination.length==0? DeliveryHelper.get_dn_rece_address(dn.organisation_id,dn.rece_org_id):dn.destination%>"
+			placeholder="请您填写送货地址-必填" id="destination-text" style="width: 250px" disabled/>
+			<input type="text" class="fillindest fillindestlonger" name="sendDate"
+			placeholder="请您填写送货日期-必填" id="sendDate-text"  style="width: 150px" 
+			value="<%= dn.sendDate.nil? ? Time.now.strftime('%Y/%m/%d'):Time.at(dn.sendDate.to_i).strftime('%Y/%m/%d')%>" disabled/>	   
+		</form>
+	</div>
+</div>
+<div id='delivery-items-div'>
+	<%= render :partial=>'dn_detail_items',:locals=>{:dnItems=>dn.items}%>
+</div>
+<div class="botbts">
+	<div class="btprintdn botbtn" onclick="generate_dn_label_pdf(100);">
+		<p>
+			打印运单
+		</p>
+	</div>
+	<div class="btprintdnboxlist botbtn" onclick="generate_dn_label_pdf(300);">
+		<p>
+			打印清单
+		</p>
+	</div>	
+</div>
+<%= render :partial => "shared/handling_msg_box", :locals => { :handlemsg => "正在处理中，请稍后..." } %>
+<%else%>
+<div class="abstractblock">
+	<%= @msg.content%>
+</div>
+<%end%>

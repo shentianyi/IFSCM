@@ -11,6 +11,9 @@ class DeliveryPackage < ActiveRecord::Base
   include CZ::BaseModule
   include CZ::DeliveryBase
   
+  
+  after_save :update_redis_id
+    
   def self.single_or_default key
     find_from_redis key
   end

@@ -382,7 +382,7 @@ div #f2 {
 .botbts {
      width: 110px;
      right: 0px;
-     height: 480px;
+/*     height: 480px;*/
      position: fixed;
      bottom: 20px;
      margin-top: 20px;
@@ -436,6 +436,26 @@ div #f2 {
      background-repeat: no-repeat;
      background-position: center 8px;
 }
+
+.btprintdn{
+	 background-image: url(deliver-printer.png);
+     background-repeat: no-repeat;
+     background-position: center 8px;
+}
+
+.btprintdnbox{
+	 background-image: url(box-printer.png);
+     background-repeat: no-repeat;
+     background-position: center 8px;
+}
+
+.btprintdnboxlist{
+	 background-image: url(list-printer.png);
+     background-repeat: no-repeat;
+     background-position: center 8px;
+}
+
+
 
 /*----------block*/
 .abstractblock {

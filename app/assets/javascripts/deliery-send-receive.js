@@ -63,7 +63,7 @@ function check_staff_dn_cache() {
 				var block = $("#staff-dn-cache-content");
 				$.each(cache.dn, function(i, v) {
 					// var link=
-					linker = $("<div/>").html("<a class='dn-linker' href='../delivery/view_pend_dn?dnKey=" + v.key + "'>" + v.key + "</a>").attr('class', 'dn-linker-div');
+					linker = $("<div/>").html("<a class='dn-linker' href='../delivery/dn_detail?t=p&dnKey=" + v.key + "'>" + v.key + "</a>").attr('class', 'dn-linker-div');
 					del = $("<span/>").attr('class', 'closebt').attr('id', v.key).attr('title', '取消');
 					del.appendTo(linker);
 					linker.appendTo(pane);
@@ -354,7 +354,7 @@ function build_delivery_note() {
 		},
 		success : function(data) {
 			if (data.result) {
-				window.location = "../delivery/view_pend_dn?dnKey=" + data.object;
+					window.location="../delivery/dn_detail?dnKey="+data.object+"&t=p";
 			} else {
 				hide_handle_dialog();
 				alert(data.content);
@@ -370,20 +370,10 @@ function build_delivery_note() {
 // - int : pageIndex
 // 返回 ：
 // - 无
-function get_dn_detail(pageIndex) {
-	$.ajax({
-		url : '../delivery/view_pend_dn',
-		type : 'post',
-		dataType : 'html',
-		data : {
-			dnKey : $('#dnkey-hidden').val(),
-			pageIndex : pageIndex
-		},
-		success : function(data) {
-			$('#delivery-items-div').html(data);
-		}
-	});
+function get_dn_detail(type,pageIndex) {
+		window.location="../delivery/dn_detail?dnKey="+$('#dnkey-hidden').val()+"&t="+type+"&p="+pageIndex;
 }
+
 
 // ws
 // 功能 ： 发送运单

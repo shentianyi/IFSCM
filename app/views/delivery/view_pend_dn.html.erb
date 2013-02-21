@@ -34,12 +34,12 @@
 	<%= render :partial=>'dn_pend_items',:locals=>{:dnItems=>dn.items}%>
 </div>
 <div class="botbts">
-	<div class="btsave botbtn" onclick="generate_dn_label_pdf('dn');">
+	<div class="btprintdn botbtn" onclick="generate_dn_label_pdf(100);">
 		<p>
 			打印运单
 		</p>
 	</div>
-	 <div class="btsave botbtn" onclick="add_dn_to_print_queue();">
+	 <div class="btprintdnbox botbtn" onclick="add_dn_to_print_queue();">
 		<p>
 			打印包装箱
 		</p>

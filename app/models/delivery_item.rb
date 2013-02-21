@@ -11,12 +11,14 @@ class DeliveryItem < ActiveRecord::Base
   
   include CZ::BaseModule
   include CZ::DeliveryBase
-  
-    def self.single_or_default key
+
+  after_save :update_redis_id
+  def self.single_or_default key
     find_from_redis key
   end
-  
+
   private
+
   def self.find_from_redis key
     rfind(key)
   end

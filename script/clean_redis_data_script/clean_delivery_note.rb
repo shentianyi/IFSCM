@@ -6,37 +6,46 @@ class CleanDN
       c=0
       keys.each do |key|
         puts "#{(c+=1)}.clean dn: #{key}"
-        if dn=DeliveryNote.find(key)
-          if  dn.items=DeliveryBase.get_children(dn.key,0,-1)[0]
+        if dn=DeliveryNote.single_or_default(key)
+          if  dn.items=DeliveryNote.get_children(dn.key,0,-1)
+            dn.items=dn.items[0]
             dn.items.each do |i|
-              if result=DeliveryBase.get_children(i.key,0,-1)
+              cc=0
+              if result=DeliveryPackage.get_children(i.key,0,-1)
                 i.items=result[0]
                 i.items.each do |ii|
-                  puts "pack item key:#{ii.key}"
+                  puts "#{(cc+=1)}.clean pack item key:#{ii.key}"
                   ii.remove_from_parent
-                  ii.destroy
+                  ii.rdestroy
                 end
               end
               puts "pack key:#{i.key}"
               i.remove_from_parent
-              i.destroy
+              i.rdestroy
             end
-          dn.destroy
+          dn.rdestroy
           end
         end
+        $redis.del key
       end
     end
 
-    keys=$redis.keys("P2013*")
+    keys=$redis.keys("P13*")
     keys.each do |key|
-      puts "rubish key :#{key}"
+      puts "rubish package key :#{key}"
+      $redis.del key
+    end
+
+    keys=$redis.keys("staff:*:deliverynote:cache:zset")
+    keys.each do |key|
+      puts "rubish staff::deliverynote:cache:zset key :#{key}"
       $redis.del key
     end
 
     # mysql
     c=0
-    MDeliveryNote.all.each do |mdn|
-      puts "#{(c+=1)}.clean: #{mdn.key}"
+    DeliveryNote.all.each do |mdn|
+      puts "#{(c+=1)}.clean: #{mdn.id}-#{mdn.key}"
       mdn.destroy
     end
   end

@@ -173,44 +173,6 @@ class DeliveryController < ApplicationController
   end
 
   # ws
-  # [功能：] 浏览待发运单
-  # 参数：
-  # - string ： dnKey
-  # 返回值：
-  # - ReturnMsg : JSON
-  def view_pend_dn
-    msg=ReturnMsg.new(:result=>false,:content=>'')
-    if dn=DeliveryNote.rfind(params[:dnKey])
-      st=Staff.find(dn.staff_id.to_i)
-      if (st=Staff.find(dn.staff_id.to_i)) and st.orgId==session[:org_id]
-        @currentPage=pageIndex=params[:pageIndex].nil? ? 0 : params[:pageIndex].to_i
-        startIndex,endIndex=PageHelper::generate_page_index(pageIndex,$DEPSIZE)
-        dn.items,@totalCount=DeliveryBll.get_delivery_detail dn.key,startIndex,endIndex
-        if @totalCount
-          @totalPages=PageHelper::generate_page_count @totalCount,$DEPSIZE
-        msg.object=dn
-        msg.result=true
-        else
-          msg.content="运单无内容"
-        end
-      else
-        msg.content='此运单无权限查看'
-      end
-    else
-      msg.content='运单不存在，请重新操作'
-    end
-    @msg=msg
-    if request.post?
-      dnItems=dn.nil? ? nil : dn.items
-      respond_to do |format|
-        format.xml {render :xml=>dnItems}
-        format.json { render json: dnItems }
-        format.html {render partial:'dn_pend_items',:locals=>{:dnItems=>dnItems}}
-      end
-    end
-  end
-
-  # ws
   # [功能：] 查看组织新运单数量
   # 参数：
   # - 无
@@ -282,12 +244,7 @@ class DeliveryController < ApplicationController
   def gen_dn_pdf
     if request.post?
       msg=ReturnMsg.new
-      type=params[:printType]
-      fileName= if type=='dn'
-        DeliveryBll.generate_dn_label_pdf params[:dnKey],params[:destination],params[:sendDate]
-      elsif type=="pack"
-        DeliveryBll.generate_dn_pack_label_pdf params[:dnKey]
-      end
+      fileName=DeliveryBll.generate_dn_label_pdf params[:dnKey],params[:destination],params[:sendDate],params[:printType].to_i
       if fileName
         msg.result=true
         msg.content= AliBucket.url_for(fileName)
@@ -367,6 +324,40 @@ class DeliveryController < ApplicationController
     if request.post?
       DeliveryItemTemp.clean_all_staff_cache session[:staff_id]
       redirect_to :action=>:pick_part
+    end
+  end
+  
+    # ws
+  # [功能：] 浏览待发运单
+  # 参数：
+  # - string ： dnKey
+  # 返回值：
+  # - ReturnMsg : JSON
+  def dn_detail
+    msg=ReturnMsg.new(:result=>false,:content=>'')
+    if dn=DeliveryNote.single_or_default(params[:dnKey])
+      if dn.organisation_id==session[:org_id] or dn.rece_org_id==session[:org_id]
+        @currentPage=pageIndex=params[:p].nil? ? 0 : params[:p].to_i
+        startIndex,endIndex=PageHelper::generate_page_index(pageIndex,$DEPSIZE)
+        dn.items,@totalCount=DeliveryBll.get_delivery_detail dn.key,startIndex,endIndex
+        if @totalCount
+          @totalPages=PageHelper::generate_page_count @totalCount,$DEPSIZE
+        msg.object=dn
+        msg.result=true
+        else
+          msg.content="运单无内容"
+        end
+      else
+        msg.content='此运单无权限查看'
+      end
+    else
+      msg.content='运单不存在'
+    end
+    @msg=msg    
+    if params[:t]=="p"
+      render "view_pend_dn"
+    elsif params[:t]=="d"
+      render "dn_detail"
     end
   end
 end
