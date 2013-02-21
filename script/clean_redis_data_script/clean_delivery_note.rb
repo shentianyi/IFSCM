@@ -30,18 +30,6 @@ class CleanDN
       end
     end
 
-    keys=$redis.keys("P13*")
-    keys.each do |key|
-      puts "rubish package key :#{key}"
-      $redis.del key
-    end
-
-    keys=$redis.keys("staff:*:deliverynote:cache:zset")
-    keys.each do |key|
-      puts "rubish staff::deliverynote:cache:zset key :#{key}"
-      $redis.del key
-    end
-
     # mysql
     c=0
     DeliveryNote.all.each do |mdn|
