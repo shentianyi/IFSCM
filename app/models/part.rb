@@ -4,6 +4,7 @@ class Part < ActiveRecord::Base
   belongs_to :organisation
   has_many :client_part_rels, :class_name=>"PartRel", :foreign_key=>"client_part_id" # org is client
   has_many :supplier_part_rels, :class_name=>"PartRel", :foreign_key=>"supplier_part_id" # org is supplier
+  has_many :storages
  
   after_save :add_or_update_redis_index
   after_destroy :del_redis_index

@@ -33,7 +33,7 @@ module DeliveryHelper
   def self.automake_di_temp staffId, d
       num = d.amount
       return false unless num.is_a?(Integer)
-      if pr = PartRel.find_by_id(d.relpartId) and pinfo = pr.package_info
+      if pr = PartRel.find_by_id(d.relpartId) and pinfo = pr.strategy
         least = pinfo.leastAmount
       else
         return false
