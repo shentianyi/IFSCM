@@ -31,6 +31,8 @@ ActiveRecord::Schema.define(:version => 20130221135320) do
     t.datetime "created_at",                           :null => false
     t.datetime "updated_at",                           :null => false
     t.integer  "wayState",            :default => 100
+    t.boolean  "checked",             :default => false
+    t.boolean  "stored",              :default => false
   end
 
   add_index "delivery_items", ["delivery_package_id"], :name => "index_delivery_items_on_delivery_package_id"

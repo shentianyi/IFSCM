@@ -142,7 +142,7 @@ class DeliveryController < ApplicationController
   # - ReturnMsg : JSON
   def cancel_staff_dn
     if request.post?
-      msg=ReturnMsg.new(:result=>false,:content=>'')
+      msg=ReturnMsg.new
       if DeliveryNote.exist_in_staff_cache(session[:staff_id],params[:dnKey])
         if dn=DeliveryNote.single_or_default(params[:dnKey])
           dn.delete_from_staff_cache
@@ -192,7 +192,7 @@ class DeliveryController < ApplicationController
   # - ReturnMsg : JSON
   def clean_dn_queue
     if request.post?
-      msg=ReturnMsg.new(:result=>false,:content=>'')
+      msg=ReturnMsg.new
       msg.result=DeliveryNote.clean_org_dn_queue(session[:org_id],session[:orgOpeType])
       render :json=>msg
     end
@@ -334,7 +334,7 @@ class DeliveryController < ApplicationController
   # 返回值：
   # - ReturnMsg : JSON
   def dn_detail
-    msg=ReturnMsg.new(:result=>false,:content=>'')
+    msg=ReturnMsg.new
     if dn=DeliveryNote.single_or_default(params[:dnKey])
       if dn.organisation_id==session[:org_id] or dn.rece_org_id==session[:org_id]
         @currentPage=pageIndex=params[:p].nil? ? 0 : params[:p].to_i
@@ -360,4 +360,6 @@ class DeliveryController < ApplicationController
       render "dn_detail"
     end
   end
+  
+  
 end
