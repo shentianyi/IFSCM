@@ -3,9 +3,12 @@ require 'base_class'
 require 'base_delivery'
 
 class DeliveryItem < ActiveRecord::Base
-  attr_accessible :key,  :parentKey,:state
+  attr_accessible :key,  :parentKey,:state,:wayState
   attr_accessible :id, :created_at, :updated_at,:delivery_package_id
+  
   belongs_to :delivery_packages
+  has_one :delivery_item_state
+  
   include CZ::BaseModule
   include CZ::DeliveryBase
 

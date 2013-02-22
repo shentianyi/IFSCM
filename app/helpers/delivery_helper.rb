@@ -33,7 +33,7 @@ module DeliveryHelper
   def self.automake_di_temp staffId, d
       num = d.amount
       return false unless num.is_a?(Integer)
-      if pr = PartRel.find_by_id(d.relpartId) and pinfo = pr.package_info
+      if pr = PartRel.find_by_id(d.relpartId) and pinfo = pr.strategy
         least = pinfo.leastAmount
       else
         return false
@@ -59,7 +59,7 @@ module DeliveryHelper
   # 返回值：
   # - string : description
   def self.get_dn_wayState code
-    DeliveryNoteWayState.get_desc_by_value code
+    DeliveryObjWayState.get_desc_by_value code
   end
   
    # ws
@@ -70,11 +70,11 @@ module DeliveryHelper
   # - string : css class
   def self.get_dn_wayState_css code
     cssClass=case code
-    when DeliveryNoteWayState::Intransit
+    when DeliveryObjWayState::Intransit
       'instransit'
-    when DeliveryNoteWayState::Received
+    when DeliveryObjWayState::Received
       'received'
-    when DeliveryNoteWayState::Returned
+    when DeliveryObjWayState::Returned
       'returned'
     else
     'instransit'
