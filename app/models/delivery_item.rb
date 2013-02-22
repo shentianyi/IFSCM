@@ -6,7 +6,7 @@ class DeliveryItem < ActiveRecord::Base
   attr_accessible :key,  :parentKey,:state,:wayState,:checked,:stored
   attr_accessible :id, :created_at, :updated_at,:delivery_package_id
   
-  belongs_to :delivery_packages
+  belongs_to :delivery_package
   has_one :delivery_item_state
   
   include CZ::BaseModule
