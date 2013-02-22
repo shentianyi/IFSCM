@@ -71,7 +71,7 @@ module DeliveryBll
           :cpartNr=>Part.get_partNr(desiOrgId,pl.client_part_id),:spartNr=>Part.get_partNr(orgId,pl.supplier_part_id))
           for i in 0...packcount
             item=DeliveryItem.new(:key=>ClassKeyHelper::gen_key("DeliveryItem"),
-             :parentKey=>pack.key,:state=>dstate,:wayState=>DeliveryObjWayState::Intransit)
+             :parentKey=>pack.key,:state=>dstate,:wayState=>DeliveryObjWayState::Intransit,:tested=>0)
             item.save_to_redis
             item.add_to_parent
             t.destroy
