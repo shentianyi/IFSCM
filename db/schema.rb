@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130222070925) do
+ActiveRecord::Schema.define(:version => 20130221135320) do
 
   create_table "delivery_item_states", :force => true do |t|
     t.string   "state"
@@ -28,10 +28,9 @@ ActiveRecord::Schema.define(:version => 20130222070925) do
     t.integer  "state",               :default => 100
     t.string   "parentKey"
     t.integer  "delivery_package_id"
-    t.datetime "created_at",                             :null => false
-    t.datetime "updated_at",                             :null => false
+    t.datetime "created_at",                           :null => false
+    t.datetime "updated_at",                           :null => false
     t.integer  "wayState",            :default => 100
-    t.boolean  "tested",              :default => false
   end
 
   add_index "delivery_items", ["delivery_package_id"], :name => "index_delivery_items_on_delivery_package_id"
