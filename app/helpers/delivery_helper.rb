@@ -39,12 +39,12 @@ module DeliveryHelper
         return false
       end
       pack = num/least
-      dit=DeliveryItemTemp.new(:packAmount=>pack,:perPackAmount=>least,:partRelId=>d.relpartId,:spartNr=>PartRel.find(d.relpartId).supplier_part.partNr,
+      dit=DeliveryItemTemp.new(:packAmount=>pack,:perPackAmount=>least,:part_rel_id=>d.relpartId,:spartNr=>PartRel.find(d.relpartId).supplier_part.partNr,
                                                             :total=>FormatHelper.string_multiply(least, pack))
       dit.save
       dit.add_to_staff_cache staffId
       if pack%least != 0
-        dit=DeliveryItemTemp.new(:packAmount=>1,:perPackAmount=>least,:partRelId=>d.relpartId,:spartNr=>PartRel.find(d.relpartId).supplier_part.partNr,
+        dit=DeliveryItemTemp.new(:packAmount=>1,:perPackAmount=>least,:part_rel_id=>d.relpartId,:spartNr=>PartRel.find(d.relpartId).supplier_part.partNr,
                                                               :total=>FormatHelper.string_multiply(least, 1))
         dit.save
         dit.add_to_staff_cache staffId

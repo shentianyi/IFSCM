@@ -91,6 +91,7 @@ Demand::Application.routes.draw do
       match :check_dit_list
       post :clean_dit
       get :dn_detail
+      match :accept
     end
   end
 

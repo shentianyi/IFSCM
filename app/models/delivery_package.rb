@@ -3,10 +3,11 @@ require 'base_class'
 require 'base_delivery'
 
 class DeliveryPackage < ActiveRecord::Base
-  attr_accessible :cpartNr, :key,:parentKey,:packAmount, :partRelId, :perPackAmount, :purchaseNo, :saleNo, :spartNr, :total
-  attr_accessible :id, :created_at, :updated_at,:delivery_note_id
+  attr_accessible :cpartNr, :key,:parentKey,:packAmount,  :perPackAmount, :purchaseNo, :saleNo, :spartNr, :total
+  attr_accessible :id, :created_at, :updated_at,:delivery_note_id,:part_rel_id
   
   belongs_to :delivery_note
+  belongs_to :part_rel
   has_many :delivery_items,:dependent=>:destroy
   include CZ::BaseModule
   include CZ::DeliveryBase

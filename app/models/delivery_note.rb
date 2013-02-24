@@ -16,6 +16,7 @@ class DeliveryNote < ActiveRecord::Base
   include CZ::DeliveryBase
   
   after_save :update_redis_id
+  after_update :update_state_wayState
     
   def self.single_or_default key
     find_from_redis key
@@ -155,16 +156,19 @@ class DeliveryNote < ActiveRecord::Base
     key=DeliveryNote.generate_staff_print_set_key self.staff_id
     $redis.sadd key,self.key
   end
+  
   def del_from_staff_print_queue
         key=DeliveryNote.generate_staff_print_set_key self.staff_id
         $redis.srem key,self.key
   end
+  
   def self.get_all_print_dnKey staffId
     key= generate_staff_print_set_key staffId
     $redis.smembers key
   end
-  private
   
+  private
+
   def self.find_from_redis key
     rfind(key)
   end

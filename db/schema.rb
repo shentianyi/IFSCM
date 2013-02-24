@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130222070925) do
+ActiveRecord::Schema.define(:version => 20130224151331) do
 
   create_table "delivery_item_states", :force => true do |t|
     t.string   "state"
@@ -60,7 +60,7 @@ ActiveRecord::Schema.define(:version => 20130222070925) do
     t.string   "cpartNr"
     t.string   "spartNr"
     t.string   "parentKey"
-    t.integer  "partRelId"
+    t.integer  "part_rel_id"
     t.integer  "packAmount"
     t.float    "perPackAmount"
     t.integer  "delivery_note_id"
@@ -69,6 +69,7 @@ ActiveRecord::Schema.define(:version => 20130222070925) do
   end
 
   add_index "delivery_packages", ["delivery_note_id"], :name => "index_delivery_packages_on_delivery_note_id"
+  add_index "delivery_packages", ["part_rel_id"], :name => "index_delivery_packages_on_part_rel_id"
 
   create_table "demanders", :force => true do |t|
     t.string   "key"

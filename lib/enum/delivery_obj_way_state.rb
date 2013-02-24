@@ -9,4 +9,5 @@ class DeliveryObjWayState
   DeliveryObjWayState.define :Rejected,500,"已拒收"
   DeliveryObjWayState.define :Returned,600,"已退货"
   DeliveryObjWayState.define :Received,700,"已到达"
+  DeliveryObjWayState.define :InAccept,800,"接收中"
 end
