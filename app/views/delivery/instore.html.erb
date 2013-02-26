@@ -1,22 +1,9 @@
 <link rel="stylesheet"  type="text/css" href="/assets/delivery/supWaybill.css" />
 <link rel="stylesheet" type="text/css" href="/assets/delivery/investory-receive.css"/>
 <script src="/assets/deliery-send-receive.js" type="text/javascript"></script>
-<script type="text/javascript">
-	$(document).ready(function() {
-		$("#pick-part-info-box").draggable();
-		$(".closebt").bind('click', function() {
-			hide_inspect_box();
-		});
-	}); 
-	function hide_inspect_box () {
-	  $("#pick-part-info-box").hide();
-	  $("#check-desc-input").val("");
-	  $("#pack-return-checkbox").attr("checked",false);
-	}
-</script>
 <div class="input-mix">
 	<input type="text" name="delivery-up-tx" class="uploadfile" id="dnKey" value="<%= @msg.object[0].key if @msg and @msg.result%>"/>
-	<input type="button" name="delivery-up-btn" class="btupload" value="提交" onclick="redirect_delivery_action('inspect');"  >
+	<input type="button" name="delivery-up-btn" class="btupload" value="提交" onclick="redirect_delivery_action('instore');"  >
 </div>
 <div id="accept-list-div">
 	<%if @msg
@@ -46,7 +33,7 @@
 			<th><%= (i+=1)%></th>
 			<th style="text-align:left;" id="pack-key-th-<%= pack.id%>"><%= pack.key%></th>
 			<th style="text-align:center;"><%= pack.cpartNr%></th>
-			<th> <%= DeliveryHelper::get_pack_check_inspect(pack.needCheck)%> </th>
+			<th>  &nbsp;</th>
 			<th><%= per%></th>
 			<th>
 			<div class="<%= DeliveryHelper::get_dn_wayState_css(pack.wayState)%>"  id="waystate-th-<%= pack.id%>">
@@ -73,20 +60,6 @@
 	</div>
 
 	<%= render :partial => "shared/handling_msg_box", :locals => { :handlemsg => "正在处理中，请稍后..." } %>
-	
-<div id="pick-part-info-box" class="info-box inspect-input-box">
-	<div class="closebt"></div>
-	<div class="info-box-title">
-		<span>质检数据填写</span>
-	</div>
-	<div class="info-box-body">		
-		 <span>质检类型：<%= select_tag :inspect_type,options_for_select(@inspects)%></span>
-		 <span>执行退货：<input type="checkbox" id="pack-return-checkbox" no-all-check="true"/></span>
-		 <span>质检备注：<textarea id="check-desc-input"/></textarea></span>
-		<input type="button" value="确 定"  onclick="abnormal_pack_inpect();" 
-		class="btupload search-btn"/>
-	</div>
-</div>
 
 	<%else%>
 	<div class="abstractblock">

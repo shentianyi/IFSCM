@@ -740,7 +740,7 @@ function add_dn_to_print_queue() {
 // 返回 ：
 // - 无
 function redirect_delivery_action(action) {
-	window.location = "../delivery/"+action+"?dnKey=" + $("#dnKey").val()
+	window.location = "../delivery/" + action + "?dnKey=" + $("#dnKey").val()
 }
 
 function get_dn_obj_state_css(state) {
@@ -774,8 +774,8 @@ function check_all() {
 	var cbs = document.getElementsByTagName('input');
 	var check = document.getElementById('check-all');
 	for (var i = 0; i < cbs.length; i++) {
-		if (cbs[i].type == "checkbox") {
-			cbs[i].checked = check.className == 1 ? true : false;
+		if (cbs[i].type == "checkbox" && $("#"+cbs[i].id).attr("no-all-check")==null) {
+			 cbs[i].checked = check.className == 1 ? true : false;
 		}
 	}
 	check.className = check.className == 1 ? 0 : 1;
@@ -785,7 +785,7 @@ function checked_ids() {
 	var cbs = document.getElementsByTagName('input');
 	var ids = "";
 	for (var i = 0; i < cbs.length; i++) {
-		if (cbs[i].type == "checkbox") {
+		if (cbs[i].type == "checkbox" && $("#"+cbs[i].id).attr("no-all-check")==null) {
 			if (cbs[i].checked) {
 				ids += cbs[i].id + ",";
 			}
@@ -843,7 +843,85 @@ function delivery_arrived() {
 	}, 'json');
 }
 
-function pack_check(type){
-	var ids=checked_ids();
+function pack_inspect(type,action,pdata,call) {
+	var actions = {
+		1 : "doinspect",
+		2 : "doreturn"
+	};
+	var ids = checked_ids();
+	if (ids.length > 0) {
+		var data = {
+			dnKey : $("#dnkey-hidden").val(),
+			ids : ids,
+			type : type
+		};
+		if(pdata!=null){
+			for(var v in pdata){
+				data[v]=pdata[v];
+			}
+		}
+		if (confirm("确认此操作？")) {
+			show_handle_dialog();
+			$.ajax({
+				url : "../delivery/" + actions[action],
+				type : 'post',
+				data : data,
+				dataType : 'json',
+				success : function(msg) {
+					hide_handle_dialog();
+					if (msg.result) {
+						alert("操作成功！");
+						ids = ids.split(",");
+						if (action == 1) {
+							var checked=$("#pack-return-checkbox").attr("checked");
+							for (var i = 0; i < ids.length; i++) {
+								$("#check-th-" + ids[i]).html("是");
+								$("#operate-th-"+ids[i]).html("");
+								$("#state-th-" + ids[i]).attr('class', get_dn_obj_state_css(msg.object)).html(msg.content);
+								if(checked!=null){
+							    	$("#waystate-th-" + ids[i]).attr('class', get_dn_obj_waystate_css(msg.wayStateCode)).html(msg.wayState);
+								}
+							}
+							if(call!=null){
+								call();
+							}
+						} else if (action == 2) {
+							
+						}
+					} else {
+						if(msg.content){
+						  alert(msg.content);
+						}else
+						{
+							var mess="下列包装箱不可退货：\n";
+							for(var i=0;i<msg.object.length;i++){
+								mess+=$("#pack-key-th-"+msg.object[i]).html()+";\n";
+							}
+							alert(mess);
+						}
+					}
+				}
+			});
+			
+		}
+	}
 }
 
+function pop_pack_inspect(){
+	if(checked_ids().length>0){
+		$("#pick-part-info-box").show();
+	}
+}
+function abnormal_pack_inpect(){
+	if(checked_ids().length>0){
+	var data={
+	 	desc:$("#check-desc-input").val(),
+	 	type:$("#inspect_type").val(),
+	 	"return":$("#pack-return-checkbox").attr("checked")
+	 };
+	  pack_inspect($("#inspect_type").val(),1,data,hide_inspect_box);
+	}else{
+		alert("请选择包装箱！");
+		hide_inspect_box();
+	}
+}

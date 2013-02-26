@@ -6,7 +6,7 @@ module LeoniNbtpDnInStoreList
 
   def self.gen_data dn,orl
     dataset=[]
-    items=DeliveryBll.get_dn_check_list(dn.key,false)
+    items=DeliveryBll.get_dn_check_list_from_mysql({:dnKey=>dn.key,:needCheck=>false})
     if items.length>0
       sendOrg=Organisation.find(dn.organisation_id)
       receOrg=Organisation.find(dn.rece_org_id)
