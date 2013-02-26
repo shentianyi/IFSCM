@@ -15,7 +15,7 @@
 	}
 </script>
 <div class="input-mix">
-	<input type="text" name="delivery-up-tx" class="uploadfile" id="dnKey" value="<%= @msg.object[0].key if @msg and @msg.result%>"/>
+	<input type="text" name="delivery-up-tx" class="uploadfile" id="dnKey" value="<%= @params[:dnKey]%>"/>
 	<input type="button" name="delivery-up-btn" class="btupload" value="提交" onclick="redirect_delivery_action('inspect');"  >
 </div>
 <div id="accept-list-div">

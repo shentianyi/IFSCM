@@ -20,6 +20,7 @@ class DeliveryItem < ActiveRecord::Base
   @@can_acc_rej_waystates=[DeliveryObjWayState::Intransit,DeliveryObjWayState::Arrived]
   @@can_inspect_waystates=[DeliveryObjWayState::Received]
   @@inspect_states=[DeliveryObjInspect::SamInspect,DeliveryObjInspect::FullInspect]
+  @@can_instore_waystate=[DeliveryObjWayState::Received]
   
   def self.single_or_default key   
     return find_from_redis key
@@ -33,6 +34,9 @@ class DeliveryItem < ActiveRecord::Base
     @@can_inspect_waystates.include?(self.wayState)
   end
   
+  def can_instore
+     (@@can_instore_waystate.include?(self.wayState) and ((@@inspect_states.include?(self.needCheck) and self.checked) or !@@inspect_states.include?(self.needCheck)))
+  end
   private
 
   def update_delivery_note_state

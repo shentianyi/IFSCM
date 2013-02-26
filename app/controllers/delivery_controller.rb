@@ -366,6 +366,7 @@ class DeliveryController < ApplicationController
   # 返回值：
   # - html
   def accept        
+      @params={:dnKey=>params[:dnKey]}
      if @msg and @msg.result
        if @dn.can_accept
        @msg.object=[]
@@ -460,6 +461,7 @@ class DeliveryController < ApplicationController
   # 返回值：
   # - html
   def inspect
+      @params={:dnKey=>params[:dnKey]}
       if @msg and @msg.result
         if @dn.can_inspect
        @msg.object=[]
@@ -496,7 +498,7 @@ class DeliveryController < ApplicationController
         elsif type!=DeliveryObjInspectState::Normal
           @msg.object=DeliveryObjState::Abnormal
           if params[:return]
-            denied=nil
+            denied=Storage.return_denied(ids)
             if denied              
               @msg.result=false
               @msg.object=denied
@@ -521,12 +523,14 @@ class DeliveryController < ApplicationController
       end
   end 
   
-  def instore
+  def instore    
+    @wares=Warehouse.selection_list(@cz_org)
+    @params={:dnKey=>params[:dnKey],:type=>params[:type],:ware=>params[:ware]}
     if @msg and @msg.result
       if @dn.can_instore
        @msg.object=[]
        @msg.object[0]=@dn
-       @msg.object[1]=DeliveryBll.get_dn_list params[:dnKey]
+       @msg.object[1]=DeliveryBll.get_dn_check_list_from_mysql({:dnKey=>@dn.key,:needCheck=>false})
        else
          @msg.result=false
          @msg.content="运单：#{DeliveryObjWayState.get_desc_by_value(@dn.wayState)}，不可入库"
