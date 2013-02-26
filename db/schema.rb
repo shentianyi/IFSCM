@@ -22,7 +22,7 @@ ActiveRecord::Schema.define(:version => 20130221135320) do
   end
 
   add_index "delivery_item_states", ["delivery_item_id"], :name => "index_delivery_item_states_on_delivery_item_id"
-  
+
   create_table "delivery_items", :force => true do |t|
     t.string   "key"
     t.integer  "state",               :default => 100

@@ -1,0 +1,86 @@
+
+Warehouse 编号:<%= text_field_tag :whNr %>
+<br/>
+Warehouse 名称:<%= text_field_tag :whName %>
+<br/>
+<%= button_tag '新建仓库',:name=>"new_warehouse",:type=>'button',:onclick=>"new_warehouse();"%>
+<br/>
+Position 编号:<%= text_field_tag :posiNr %>
+<br/>
+Position 容量:<%= text_field_tag :capacity %>
+<br/>
+<%= button_tag '新建库位',:name=>"new_position",:type=>'button',:onclick=>"new_position();"%>
+<div id="result"></div>
+<hr/>
+
+<div id="warehouses_list">
+	<%= render :partial => "warehouses_list"%>	
+</div>
+
+<hr/>
+
+<div id="positions_list"></div>
+
+
+<script type="text/javascript">
+function new_warehouse(){
+	$.post("../warehouse/primary_warehouse",
+		{
+			whNr: $('#whNr').val(),
+			whName: $('#whName').val()
+		},
+		function(data){
+			if (data.flag)
+				$('#warehouses_list').html(data.txt);
+			$('#result').html(data.msg);
+		},
+		'json'		
+	);
+}
+
+function delete_warehouse(whid){
+	$.post("../warehouse/delete_warehouse",
+		{ whId:whid },
+		function(data){
+			if (data.flag)
+				$('#warehouses_list').html(data.txt);
+			$('#result').html(data.msg);
+		},
+		'json'		
+	);
+}
+
+function position_list(whid){
+	$.get("../warehouse/primary_position?whId="+whid,	function(data){
+			$('#positions_list').html(data);
+	});
+}
+
+function new_position(){
+	$.post("../warehouse/primary_position",
+		{
+			whId: $('#positions_list_id').attr('whid'),
+			posiNr: $('#posiNr').val(),
+			capacity: $('#capacity').val()
+		},
+		function(data){
+			if (data.flag)
+				$('#positions_list').html(data.txt);
+			$('#result').html(data.msg);
+		},
+		'json'		
+	);
+}
+
+function delete_position(posiid){
+	$.post("../warehouse/delete_position",
+		{ posiId: posiid	},
+		function(data){
+			if (data.flag)
+				$('#positions_list').html(data.txt);
+			$('#result').html(data.msg);
+		},
+		'json'		
+	);
+}
+</script>

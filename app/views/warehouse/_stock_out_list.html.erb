@@ -1,0 +1,25 @@
+
+
+	<table class="upData" id="positions_list_id" whid=<%= @whid %> >
+		<tr class="lineone">
+			<th></th>
+			<th>编号</th>
+			<th>容量</th>
+		</tr>
+		<tr class="divide" style="display: none">
+			<th class="nordvd"></th>
+			<th class="nordvd"></th>
+			<th class="nordvd"></th>
+			<th class="nordvd"></th>
+			<th class="nordvd"></th>
+			<th class="lastdvd"></th>
+		</tr>
+		<% i=0 ; @posilist.each do |d|	%>
+		  <tr class="norline hoverable" >
+			<th><%= i+=1%></th>
+			<th><%= d.nr%></th>
+			<th><%= d.capacity%></th>
+			<th><%= button_tag '删除',:name=>"delete_position",:type=>'button',:onclick=>"delete_position(#{d.id});"%></th>
+		  </tr>
+		<% end %>
+	</table>
