@@ -99,6 +99,17 @@ Demand::Application.routes.draw do
       match :instore
     end
   end
+  
+  controller :warehouse do
+    match "warehouse/stock_out" => :stock_out
+    post "warehouse/stock_out_list" => :stock_out_list
+    match "warehouse/primary_warehouse" => :primary_warehouse
+    post "warehouse/delete_warehouse" => :delete_warehouse
+    match "warehouse/primary_position" => :primary_position
+    post "warehouse/delete_position" => :delete_position
+    match "warehouse/search_state" => :search_state
+    match "warehouse/search_op_history" => :search_op_history
+  end
 
   namespace :api,defaults:{format:'json'} do
   # scope  constraints:ApiConstraints.new do

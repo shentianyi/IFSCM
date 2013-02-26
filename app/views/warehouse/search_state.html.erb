@@ -1,0 +1,30 @@
+
+Warehouse:<%= select_tag :whId,  options_for_select(@whlist),  prompt: "请选择仓库..." %>
+<br/>
+Position 编号:<%= text_field_tag :posiNr %>
+<br/>
+Position 容量:<%= text_field_tag :capacity %>
+<br/>
+<%= button_tag '搜索',:name=>"search_state",:type=>'button',:onclick=>"search_state(0);"%>
+<hr/>
+<hr/>
+
+<div id="result"></div>
+
+<script type="text/javascript">
+function search_state( page ){
+	$.post("../warehouse/search_state",
+		{
+			whId: $('#whId').val(),
+			posiNr: $('#posiNr').val(),
+			capacity: $('#capacity').val(),
+			page: page
+		},
+		function(data){
+				$('#result').html(data);
+		},
+		'html'		
+	);
+}
+
+</script>

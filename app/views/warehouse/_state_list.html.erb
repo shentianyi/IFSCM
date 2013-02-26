@@ -1,0 +1,30 @@
+
+	<table class="upData" id="positions_list_id" >
+		<tr class="lineone">
+			<th></th>
+			<th>仓库</th>
+			<th>库位</th>
+			<th>零件号</th>
+			<th>存量</th>
+		</tr>
+		<tr class="divide" style="display: none">
+			<th class="nordvd"></th>
+			<th class="nordvd"></th>
+			<th class="nordvd"></th>
+			<th class="nordvd"></th>
+			<th class="nordvd"></th>
+			<th class="lastdvd"></th>
+		</tr>
+		<% i=0 ; @positions.each do |d|	%>
+		  <tr class="norline hoverable" >
+			<th><%= i+=1%></th>
+			<th><%= d.whNr %></th>
+			<th><%= d.nr %></th>
+			<th><%= d.partNr %></th>
+			<th><%= d.amount %></th>
+		  </tr>
+		<% end %>
+	</table>
+
+	<div class="census" style="clear: left">共 <%= @total %> 条</div>
+	<%=bri_pager options={:class=>"pagination",:pages=>@totalPages,:current=>@currentPage,:action=>'search_state'}%>
