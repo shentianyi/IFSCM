@@ -3,7 +3,7 @@ require 'base_class'
 require 'base_delivery'
 
 class DeliveryItem < ActiveRecord::Base
-  attr_accessible :key,  :parentKey,:state,:wayState,:checked,:stored
+  attr_accessible :key,  :parentKey,:state,:wayState,:checked,:stored,:posi
   attr_accessible :id, :created_at, :updated_at,:delivery_package_id
 
   belongs_to :delivery_package
@@ -35,7 +35,7 @@ class DeliveryItem < ActiveRecord::Base
   end
   
   def can_instore
-     (@@can_instore_waystate.include?(self.wayState) and ((@@inspect_states.include?(self.needCheck) and self.checked) or !@@inspect_states.include?(self.needCheck)))
+    !self.stored and (@@can_instore_waystate.include?(self.wayState) and ((@@inspect_states.include?(self.needCheck) and self.checked) or !@@inspect_states.include?(self.needCheck)))
   end
   private
 

@@ -21,8 +21,7 @@
 <div id="accept-list-div">
 	<%if @msg
 	if @msg.result%>
-	<% items=@msg.object[1]%>
-	<input type="hidden" value="<%= @msg.object[0].key%>" id="dnkey-hidden" name="dnKey">
+	<input type="hidden" value="<%= @dn.key%>" id="dnkey-hidden" name="dnKey">
 	<table class="delivery-check">
 		<tr  class="lineone">
 			<th>&nbsp;</th>
@@ -37,9 +36,8 @@
 			<input type="button" class="1" id="check-all"  name="all-chosen" onclick="check_all();" value="全选"/>
 			</th>
 		</tr>
-		<% i=0%>
-		<%
-		items.each do |pack|
+		<%i=0
+		@list.each do |pack|
 		per=FormatHelper.string_to_int(pack.perPackAmount.to_s)
 		%>
 		<tr class="norline">

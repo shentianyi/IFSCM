@@ -1,6 +1,6 @@
 class Position < ActiveRecord::Base
   attr_accessible :nr, :capacity
-  
+  attr_accessible :warehouse_id
   belongs_to :warehouse
   has_many :storages
   has_many :storage_histories

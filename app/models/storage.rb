@@ -1,6 +1,6 @@
 class Storage < ActiveRecord::Base
   attr_accessible :stock, :state
-  attr_accessible :delivery_item_id
+  attr_accessible :delivery_item_id,:part_id,:position_id
   
   belongs_to :part
   belongs_to :position
