@@ -2,13 +2,14 @@
 <link rel="stylesheet" type="text/css" href="/assets/delivery/investory-receive.css"/>
 <script src="/assets/deliery-send-receive.js" type="text/javascript"></script>
 <div class="input-mix">
-	<input type="text" name="delivery-up-tx" class="uploadfile" id="dnKey" value="<%= @params[:dnKey]%>"/>
-	<select id="type">
+	<span class="uploadfile">运单号：</span>
+	<input type="text" name="delivery-up-tx" class="uploadfile delivery-up-tx" id="dnKey" value="<%= @params[:dnKey]%>"/>
+	<select id="type" class="uploadfile select" >
 		<option value="0">全部</option>
 		<option value="1">入库单</option>
 		<option value="2">质检单</option>
 	</select>
-	仓库：<%= select_tag :wares,options_for_select(@wares)%>
+	<span class="uploadfile">仓库：</span><%= select_tag :wares,options_for_select(@wares),{:class=>'uploadfile select'}%>
 	<input type="button" name="delivery-up-btn" class="btupload" value="提交" onclick="redirect_delivery_action('instore',{'type':document.getElementById('type').selectedIndex,'ware':document.getElementById('wares').value});"  >
 </div>
 <div id="accept-list-div">
@@ -54,7 +55,7 @@
 			<th id="operate-th-<%= pack.id%>"> <%if pack.stored%>
 			 <%= pack.posi%>
 			<%elsif pack.can_instore%>
-			<input id="<%= pack.id%>" type="input" class="position"/>
+			<input id="<%= pack.id%>" type="input" class="position uploadfile" />
 			<%end%> </th>
 		</tr>
 		<%
