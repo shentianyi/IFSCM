@@ -321,17 +321,103 @@ module DeliveryBll
     condi={}
     condi["delivery_notes.key"]=params[:dnKey]
     if !params[:needCheck].nil?
-    condi["strategies.needCheck"]=if params[:needCheck]
-      [DeliveryObjInspect::SamInspect,DeliveryObjInspect::FullInspect]
-    else
-      DeliveryObjInspect::ExemInspect
-    end
+      condi["strategies.needCheck"]=if params[:needCheck]
+        [DeliveryObjInspect::SamInspect,DeliveryObjInspect::FullInspect]
+      else
+        DeliveryObjInspect::ExemInspect
+      end
     end
     return DeliveryItem.joins(:delivery_package=>{:part_rel=>:strategy}).joins(:delivery_package=>:delivery_note).find(:all,:select=>select,:conditions=>condi)
   end
-  
+
+  # ws
+  # [功能：] 获取包装箱
+  # 参数：
+  # - integer : id
+  # 返回值：
+  # - object : delivery item
   def self.get_dn_instore_item id
-    select= "delivery_items.*,delivery_packages.perPackAmount as 'amount',part_rels.client_part_id as 'part_id'"    
-    return DeliveryItem.joins(:delivery_package=>:part_rel).find(:first,:select=>select,:conditions=>{:id=>id,:stored=>false})          
+    select= "delivery_items.*,delivery_packages.perPackAmount as 'amount',part_rels.client_part_id as 'part_id'"
+    return DeliveryItem.joins(:delivery_package=>:part_rel).find(:first,:select=>select,:conditions=>{:id=>id,:stored=>false})
+  end
+
+  # ws
+  # [功能：] 接收运单
+  # 参数：
+  # - ids : 包装箱号
+  # - dn : 运单
+  # - type : 接收/拒收
+  # 返回值：
+  # - 无
+  def self.delivery_item_accept ids,dn_id,type
+    begin
+    attrs={:wayState=>type}
+    delivery_item_update_all(100,ids,attrs)
+    dn=DeliveryNote.find(dn_id)
+    if type==DeliveryObjWayState::Rejected
+      if dn.state==DeliveryObjState::Normal
+        dn.update_attributes(:state=>DeliveryObjState::Abnormal,:wayState=>DeliveryObjWayState::InAccept)
+      end
+      total=dn.delivery_packages.sum('packAmount')
+      rejected=dn.delivery_items.where(:wayState=>DeliveryObjWayState::Rejected).count
+      if total==rejected
+        dn.update_attributes(:wayState=>DeliveryObjWayState::Rejected)
+      else
+        rece_reje=dn.delivery_items.where(:wayState=>[DeliveryObjWayState::Rejected,DeliveryObjWayState::Received]).count
+        if total==rece_reje
+          dn.update_attributes(:wayState=>DeliveryObjWayState::Received)
+        end
+      end
+    elsif type==DeliveryObjWayState::Received
+      if dn.wayState==DeliveryObjWayState::Intransit or  dn.wayState==DeliveryObjWayState::Arrived
+        dn.update_attributes(:wayState=>DeliveryObjWayState::InAccept)
+      end
+      if dn.delivery_packages.sum('packAmount')==dn.delivery_items.where(:wayState=>[DeliveryObjWayState::Rejected,DeliveryObjWayState::Received]).count
+        dn.update_attributes(:wayState=>DeliveryObjWayState::Received)
+      end
+    end
+    rescue Exception=>e
+   puts e.message
+      puts e.backtrace
+    end
+  end
+
+  # ws
+  # [功能：] 包装箱退货
+  # 参数：
+  # - ids : 包装箱号
+  # - dn : 运单
+  # 返回值：
+  # - 无
+  
+  def self.delivery_item_return ids,dn_id
+     dn=DeliveryNote.find(dn_id)
+    delivery_item_update_all(100,ids,{:checked=>true,:state=>DeliveryObjState::Abnormal,:wayState=>DeliveryObjWayState::Returned})
+    if dn.delivery_packages.sum('packAmount')==dn.delivery_items.where(:wayState=>[DeliveryObjWayState::Returned]).count
+      dn.update_attributes(:wayState=>DeliveryObjWayState::Returned)
+    end
+  end
+
+  # ws
+  # [功能：] 更新包装箱状态，同时更新redis数据，保持同步
+  # 参数：
+  # - integer : 更新类型，用以判断id或key
+  # - ids : 包装箱id或key
+  # - attrs : 需要更新的属性
+  # 返回值：
+  # - array : delivery items
+  def self.delivery_item_update_all type,ids,attrs
+    if type==100
+      DeliveryItem.where(:id=>ids).update_all(attrs)
+      DeliveryItem.where(:id=>ids).all.each do |item|
+        item.rupdate(attrs)
+      end
+    elsif type==200
+      ids.each do |key|
+        if item=DeliveryItem.single_or_default(key)
+        item.rupdate(attrs)
+        end
+      end
+    end
   end
 end

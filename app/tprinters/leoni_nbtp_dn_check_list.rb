@@ -11,7 +11,7 @@ module LeoniNbtpDnCheckList
       sendOrg=Organisation.find(dn.organisation_id)
       receOrg=Organisation.find(dn.rece_org_id)
       hrecord=gen_head(dn,sendOrg,receOrg,orl)
-            data={}
+      data={}
       items.each do |item|
         record=[]
         data[:PerPackNum]=FormatHelper.string_to_int(item.perPackAmount.to_s)

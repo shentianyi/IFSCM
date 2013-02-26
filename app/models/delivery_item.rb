@@ -16,7 +16,7 @@ class DeliveryItem < ActiveRecord::Base
   after_save :update_redis_id
   after_update :update_state_wayState,:update_delivery_note_state
   before_create :build_item_state
-  
+    
   @@can_acc_rej_waystates=[DeliveryObjWayState::Intransit,DeliveryObjWayState::Arrived]
   @@can_inspect_waystates=[DeliveryObjWayState::Received]
   @@inspect_states=[DeliveryObjInspect::SamInspect,DeliveryObjInspect::FullInspect]
@@ -40,6 +40,19 @@ class DeliveryItem < ActiveRecord::Base
   private
 
   def update_delivery_note_state
+    attr={}
+    if self.checked_change
+      attr[:checked]=self.checked
+    end
+    if self.posiNr_change
+      attr[:posiNr]=self.posiNr
+    end
+    if self.stored_change
+      attr[:stored]=self.stored
+    end
+    if attr.length>0
+      self.rupdate(attr)
+    end
     if self.wayState_change
       dn=self.delivery_package.delivery_note      
       if self.wayState==DeliveryObjWayState::Rejected
@@ -66,9 +79,7 @@ class DeliveryItem < ActiveRecord::Base
   end
   
   def build_item_state
-   if @@inspect_states.include?(part_rel.strategy.needCheck)
     build_delivery_item_state(:desc=>"未检验")
-   end
   end
   
   def self.find_from_redis key
