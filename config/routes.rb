@@ -91,6 +91,11 @@ Demand::Application.routes.draw do
       match :check_dit_list
       post :clean_dit
       get :dn_detail
+      match :accept      
+      post :doaccept
+      match :inspect
+      post :doinspect      
+      post :mark_abnormal
     end
   end
   

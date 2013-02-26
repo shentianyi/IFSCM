@@ -19,9 +19,9 @@
 		</tr>
 		<% i=0%>
 		<%
-		dnItems.each do |pack|
-		per=FormatHelper.string_to_int(pack.perPackAmount.to_s)
-		%>		
+		 dnItems.each do |pack|
+		 per=FormatHelper.string_to_int(pack.perPackAmount.to_s)
+		%>
 		<tr class="norline">
 			<th><%= (i+=1)%></th>
 			<th style="text-align:left;"><%= pack.spartNr%></th>

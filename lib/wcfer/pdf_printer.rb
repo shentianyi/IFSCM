@@ -20,6 +20,7 @@ class Wcfer
     def self.generate_dn_pdf(template,dataset,dnKey)
       result={:result=>false}
        begin
+         if dataset.length>0
        client = Savon.client do |wsdl,http|
        wsdl.document=@@wsdlPath
        end
@@ -27,7 +28,7 @@ class Wcfer
       soap.input = ["GenerateDnPdf", {xmlns: "http://tempuri.org/"}]
       soap.body={
         :template=>template,
-        :dataJson=>dataset,
+        :dataJson=>dataset.to_json,
         :dnKey=>dnKey
       }  
     end 
@@ -36,8 +37,12 @@ class Wcfer
         result[:result]=resResult[:result]
         result[:content]=resResult[:content]
       end
+      else
+         result[:content]="无打印数据"
+      end
       rescue => e
         result[:content]=e.message.to_s
+        puts e.message.to_s
       end
       return result
     end

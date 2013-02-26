@@ -2,6 +2,8 @@
 class DeliveryController < ApplicationController
 
   before_filter  :authorize
+  before_filter :auth_dn,:only=>[:gen_dn_pdf,:accept,:receive,:mark_abnormal,:doaccept,:inspect,:doinspect]
+  before_filter :redis_auth_dn,:only=>[:dn_detail]
   # ws
   # 运单列表
   def index
@@ -95,7 +97,7 @@ class DeliveryController < ApplicationController
       valiMsg= DeliveryBll.vali_di_temp(metaKey,packAmount,per,session[:staff_id])
       msg.result=valiMsg.result
       if valiMsg.result
-        dit=DeliveryItemTemp.new(:packAmount=>packAmount,:perPackAmount=>per,:partRelId=>metaKey,:spartNr=>params[:partNr],
+        dit=DeliveryItemTemp.new(:packAmount=>packAmount,:perPackAmount=>per,:part_rel_id=>metaKey,:spartNr=>params[:partNr],
         :total=>FormatHelper.string_multiply(per,packAmount))
         dit.save
         dit.add_to_staff_cache session[:staff_id]
@@ -142,7 +144,7 @@ class DeliveryController < ApplicationController
   # - ReturnMsg : JSON
   def cancel_staff_dn
     if request.post?
-      msg=ReturnMsg.new(:result=>false,:content=>'')
+      msg=ReturnMsg.new
       if DeliveryNote.exist_in_staff_cache(session[:staff_id],params[:dnKey])
         if dn=DeliveryNote.single_or_default(params[:dnKey])
           dn.delete_from_staff_cache
@@ -192,7 +194,7 @@ class DeliveryController < ApplicationController
   # - ReturnMsg : JSON
   def clean_dn_queue
     if request.post?
-      msg=ReturnMsg.new(:result=>false,:content=>'')
+      msg=ReturnMsg.new
       msg.result=DeliveryNote.clean_org_dn_queue(session[:org_id],session[:orgOpeType])
       render :json=>msg
     end
@@ -243,13 +245,15 @@ class DeliveryController < ApplicationController
   # - string : 文件地址
   def gen_dn_pdf
     if request.post?
-      msg=ReturnMsg.new
-      fileName=DeliveryBll.generate_dn_label_pdf params[:dnKey],params[:destination],params[:sendDate],params[:printType].to_i
-      if fileName
-        msg.result=true
-        msg.content= AliBucket.url_for(fileName)
+      if @msg.result
+      msg=DeliveryBll.generate_dn_label_pdf params[:dnKey],params[:printType].to_i,params[:destination],params[:sendDate]
+      if msg.result
+        @msg.content= AliBucket.url_for(msg.content)
+      else
+        @msg=msg
+      end      
       end
-      render :json=>msg
+      render :json=>@msg
     end
   end
 
@@ -327,37 +331,196 @@ class DeliveryController < ApplicationController
     end
   end
   
-    # ws
+  # ws
   # [功能：] 浏览待发运单
   # 参数：
   # - string ： dnKey
   # 返回值：
   # - ReturnMsg : JSON
   def dn_detail
-    msg=ReturnMsg.new(:result=>false,:content=>'')
-    if dn=DeliveryNote.single_or_default(params[:dnKey])
-      if dn.organisation_id==session[:org_id] or dn.rece_org_id==session[:org_id]
-        @currentPage=pageIndex=params[:p].nil? ? 0 : params[:p].to_i
+    if @msg.result
+      @currentPage=pageIndex=params[:p].nil? ? 0 : params[:p].to_i
         startIndex,endIndex=PageHelper::generate_page_index(pageIndex,$DEPSIZE)
-        dn.items,@totalCount=DeliveryBll.get_delivery_detail dn.key,startIndex,endIndex
+        @dn.items,@totalCount=DeliveryBll.get_delivery_detail @dn.key,startIndex,endIndex
         if @totalCount
           @totalPages=PageHelper::generate_page_count @totalCount,$DEPSIZE
-        msg.object=dn
-        msg.result=true
+        @msg.object=@dn
+        @msg.result=true
         else
-          msg.content="运单无内容"
+          @msg.result=false
+          @msg.content="运单无内容"
         end
-      else
-        msg.content='此运单无权限查看'
-      end
-    else
-      msg.content='运单不存在'
     end
-    @msg=msg    
     if params[:t]=="p"
       render "view_pend_dn"
     elsif params[:t]=="d"
       render "dn_detail"
     end
   end
+  
+  ##-----------------------------------delivery accept----------------------
+  # ws
+  # [功能：] 显示运单接收页＆接收或拒收
+  # 参数：
+  # - string ： dnKey
+  # 返回值：
+  # - html
+  def accept        
+     if @msg and @msg.result
+       @msg.object=[]
+       @msg.object[0]=@dn
+       @msg.object[1]=DeliveryBll.get_dn_list params[:dnKey]
+       end
+  end
+  
+  # ws
+  # [功能：] 执行运单接收
+  # 参数：
+  # - string ： dnKey
+  # 返回值：
+  # - html
+  def doaccept
+     if request.post?
+      if @msg.result
+      itemIds=params[:ids].split(',')
+      accept_type=params[:type].to_i
+      DeliveryItem.where(:id=>itemIds).update_all(:wayState=>accept_type)       
+       if accept_type==DeliveryObjWayState::Rejected
+         
+        if @dn.state==DeliveryObjState::Normal
+          @dn.update_attributes(:state=>DeliveryObjState::Abnormal,:wayState=>DeliveryObjWayState::InAccept)
+        end
+        total=@dn.delivery_packages.sum('packAmount')
+        rejected=@dn.delivery_items.where(:wayState=>DeliveryObjWayState::Rejected).count
+        if total==rejected
+          @dn.update_attributes(:wayState=>DeliveryObjWayState::Rejected)
+        else
+          rece_reje=@dn.delivery_items.where(:wayState=>[DeliveryObjWayState::Rejected,DeliveryObjWayState::Received]).count
+          if total==rece_reje
+            @dn.update_attributes(:wayState=>DeliveryObjWayState::Received)
+          end
+        end
+      elsif accept_type==DeliveryObjWayState::Received
+        if @dn.wayState==DeliveryObjWayState::Intransit or  @dn.wayState==DeliveryObjWayState::Arrived
+          @dn.update_attributes(:wayState=>DeliveryObjWayState::InAccept)
+        end
+        if @dn.delivery_packages.sum('packAmount')==@dn.delivery_items.where(:wayState=>[DeliveryObjWayState::Rejected,DeliveryObjWayState::Received]).count
+          @dn.update_attributes(:wayState=>DeliveryObjWayState::Received)
+        end        
+      end  
+      @msg.object=DeliveryObjWayState.get_desc_by_value(accept_type)
+      @msg.content="已操作"
+      end
+      render :json=>@msg      
+    end
+  end
+  # ws
+  # [功能：] 标记包装箱异常
+  # 参数：
+  # - string : ids
+  # 返回值：
+  # - html
+  def mark_abnormal
+    if request.post?
+      if @msg.result
+       itemIds=params[:ids].split(',')
+        DeliveryItem.where(:id=>itemIds).update_all(:state=>DeliveryObjState::Abnormal) 
+        DeliveryNote.find(@dn.id).update_attributes(:state=>DeliveryObjState::Abnormal)        
+      end
+      render :json=>@msg
+    end
+  end
+  
+  # ws
+  # [功能：] 将运单置为“已到达”
+  # 参数：
+  # - string ： dnKey
+  # 返回值：
+  # - ReturnMsg : JSON
+  def arrive
+    if @msg.result
+      if @dn.wayState==DeliveryObjWayState::Intransit
+        @dn.update_attributes(:wayState=>DeliveryObjWayState::Arrived)        
+      else
+        @msg.result=false
+        @msg.content="运单已到达"
+      end
+    end
+    render :json=>@msg
+  end
+  
+  # ws
+  # [功能：] 显示运单质检页
+  # 参数：
+  # - string ： dnKey
+  # 返回值：
+  # - html
+  def inspect
+      if @msg and @msg.result
+        if @dn.can_inspect
+       @msg.object=[]
+       @msg.object[0]=@dn
+       @msg.object[1]=DeliveryBll.get_dn_check_list(@dn.key)
+       else
+         @msg.result=false
+         @msg.content="<div>运单状态为:#{DeliveryHelper.get_dn_wayState(@dn.wayState)},处于不可质检状态。</br>只有运单处于:<span class='received'>#{DeliveryHelper.get_can_inspect_states.join('、')}</span>后才可质检。</div>"
+       end
+      end
+  end
+ 
+  # ws
+  # [功能：] 执行运单质检
+  # 参数：
+  # - string ： dnKey
+  # 返回值：
+  # - html
+  def doinspect
+     if request.post?
+      if @msg.result
+        type=params[:type].to_i
+        ids=params[:ids].split(',')
+        if type==DeliveryObjInspectState::Normal
+          DeliveryItem.where(:id=>ids).update_all(:checked=>true)
+          ids.each do |id|
+          DeliveryItemState.find_or_create_by_delivery_item_id(:delivery_item_id=>id){
+            |i|
+            i.state=type
+            i.desc="检验正常"
+          }
+          end
+        end
+      end
+      render :json=>@msg
+      end
+  end 
+  
+  private 
+  def auth_dn
+    if params[:dnKey]
+    @msg=ReturnMsg.new
+    if @dn=DeliveryNote.single_or_default(params[:dnKey],true)
+      if @dn.organisation_id==session[:org_id] or @dn.rece_org_id==session[:org_id]       
+        @msg.result=true
+      else
+        @msg.content='此运单无权限查看'
+      end
+    else
+      @msg.content='运单不存在'
+    end
+    end
+  end
+  
+    def redis_auth_dn
+    @msg=ReturnMsg.new
+        if @dn=DeliveryNote.single_or_default(params[:dnKey])
+      if @dn.organisation_id==session[:org_id] or @dn.rece_org_id==session[:org_id]       
+        @msg.result=true
+      else
+        @msg.content='此运单无权限查看'
+      end
+    else
+      @msg.content='运单不存在'
+    end
+  end
+  
 end

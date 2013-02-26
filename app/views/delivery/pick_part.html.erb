@@ -89,9 +89,6 @@ padding:10px; display: none;">
 			alert("请先填写正确的客户号");
 			return false;
 		}
-		// var f = $("<form/>").attr("action", "../delivery/check_dit_list").attr("method", "get");
-		// f.append($("<input>").attr("type", "hidden").attr("name", "clientNr").val(desiOrgNr));
-		// f.appendTo("body").submit();
 		window.location = "../delivery/check_dit_list?c=" + desiOrgNr;
 	}
 </script>

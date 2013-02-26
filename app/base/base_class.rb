@@ -1,6 +1,6 @@
 #encoding: utf-8
 # require 'active_support'
-## 888888888888888888
+# ws
 module CZ
   module BaseModule
     def save_to_redis

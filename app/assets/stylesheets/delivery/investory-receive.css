@@ -1,0 +1,86 @@
+.input-mix{
+	margin-left:160px;
+	margin-top:50px;
+}
+.btupload{
+	font-family:"微软雅黑";
+}
+.delivery-check{
+	float:left;
+	margin-top:35px;
+	border-collapse:collapse;
+	font-size:18px;
+}
+.delivery-check .norline th{
+	padding:10px 2px;
+}
+.norline .font-blue{
+	color:#1297CF
+}
+.norline .font-green{
+	color:#49ba5c
+}
+.norline .font-red{
+	color:#ec7171
+}
+
+.pagination{
+	margin:20px;
+	clear:both;
+}
+.button-group{
+    float:right;
+	width:100px;
+	margin-right:230px;
+	margin-top:160px
+}
+.button-group input{
+	background-image:url("../btn-big.png");
+	background-position:center;
+	margin-bottom:20px;
+	width:120px;
+	height:50px;
+	font-size:16px;
+	color:white;
+	font-size:18px;
+	border-radius:5px;
+	-moz-border-radius:5px;
+	-webkit-border-radius:5px;
+	border:none;
+}
+.fixed-print{
+	background-color:#E6E6E6;
+	position:fixed;
+	bottom:0;
+	right:10px;
+	width:180px;
+	height:120px;
+   border-radius:10px 10px 0 0;
+}
+.fixed-print input{
+	background-color:#E6E6E6;
+	border:none;
+	width:160px;
+	height:30px;
+	margin-top:18px;
+	color:#333;
+	font-size:16px;
+	margin-left:15px;
+	font-family:"微软雅黑";
+		cursor:pointer;
+}
+.fixed-print input:hover{
+	color:#1297CF;
+
+}
+.fixed-print input:first-child{
+	background-image:url("../check-print.png");
+	background-position:left;
+	background-repeat:no-repeat;
+
+}
+.fixed-print input:nth-child(2){
+	background-image:url("../enter-print.png");
+	background-position:left;
+	background-repeat:no-repeat;
+}
