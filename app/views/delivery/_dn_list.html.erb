@@ -1,62 +1,62 @@
 <% if dns and dns.count>0%>
 <table class="upData">
-     <tr class="lineone">
-          <th>&nbsp;</th>
-          <th onclick="pop_box(this);"  style="cursor: pointer"  box="dn-search-box">运单号</th>
-          <% if session[:orgOpeType]==OrgOperateType::Client %>
-          <th onclick="pop_box(this);"  box="sender-search-box"  style="cursor: pointer" >供应商号</th>
-          <% elsif session[:orgOpeType]==OrgOperateType::Supplier %>
-          <th  onclick="pop_box(this);"  box="rece-search-box"  style="cursor: pointer" >客户号</th>
-          <%end%>
-          <th onclick="pop_box(this);"  box="date-search-box"  style="cursor: pointer" >发货日期</th>
-          <th>收货地点</th>
-          <th>运单状态</th>
-          <th>是否异常</th>
-     </tr>
-     <tr class="divide" style="display: none">
-          <th>&nbsp;</th>
-          <th class="nordvd"></th>
-          <th class="nordvd"></th>
-          <th class="nordvd"></th>
-          <th class="nordvd"></th>
-           <th class="nordvd"></th>
-            <th class="nordvd"></th>
-          <th class="lastdvd"></th>
-     </tr>
-     <% i=0
-     dns.each do |dn|
-     partnerNr=if session[:orgOpeType]==OrgOperateType::Client
-      DeliveryHelper.get_supplierNr_by_orgId(dn.rece_org_id,dn.organisation_id)
-     else
-      DeliveryHelper.get_clientNr_by_orgId(dn.organisation_id,dn.rece_org_id)
-     end
-     %>
-     <tr class="norline hoverable">
-          <th><%= (i+=1)%></th>
-          <th><a href="../delivery/dn_detail?dnKey=<%=dn.key%>&t=d" target="blank"><%= dn.key%></a></th>
-          <th><%= partnerNr%></th>
-          <th><%= Time.at(dn.sendDate.to_i).strftime('%Y/%m/%d') %></th>
-          <th><%= dn.destination%></th>
-          <th>
-          <div class="<%= DeliveryHelper::get_dn_wayState_css(dn.wayState.to_i)%>">
-               <%= DeliveryHelper::get_dn_wayState(dn.wayState.to_i)%>
-          </div></th>
-          <th>
-          <div class="<%= DeliveryHelper::get_delivery_obj_state_css(dn.state.to_i)%>">
-               <%= DeliveryHelper::get_delivery_obj_state(dn.state.to_i)%>
-          </div></th>
-     </tr>
-     <%end%>
+	<tr class="lineone">
+		<th>&nbsp;</th>
+		<th onclick="pop_box(this);"  style="cursor: pointer"  box="dn-search-box">运单号</th>
+		<% if session[:orgOpeType]==OrgOperateType::Client %>
+		<th onclick="pop_box(this);"  box="sender-search-box"  style="cursor: pointer" >供应商号</th>
+		<% elsif session[:orgOpeType]==OrgOperateType::Supplier %>
+		<th  onclick="pop_box(this);"  box="rece-search-box"  style="cursor: pointer" >客户号</th>
+		<%end%>
+		<th onclick="pop_box(this);"  box="date-search-box"  style="cursor: pointer" >发货日期</th>
+		<th>收货地点</th>
+		<th>运单状态</th>
+		<th>是否异常</th>
+	</tr>
+	<tr class="divide" style="display: none">
+		<th>&nbsp;</th>
+		<th class="nordvd"></th>
+		<th class="nordvd"></th>
+		<th class="nordvd"></th>
+		<th class="nordvd"></th>
+		<th class="nordvd"></th>
+		<th class="nordvd"></th>
+		<th class="lastdvd"></th>
+	</tr>
+	<% i=0
+	dns.each do |dn|
+	partnerNr=if session[:orgOpeType]==OrgOperateType::Client
+	DeliveryHelper.get_supplierNr_by_orgId(dn.rece_org_id,dn.organisation_id)
+	else
+	DeliveryHelper.get_clientNr_by_orgId(dn.organisation_id,dn.rece_org_id)
+	end
+	%>
+	<tr class="norline hoverable">
+		<th><%= (i+=1)%></th>
+		<th><a href="../delivery/dn_detail?dnKey=<%= dn.key%>&t=d" target="blank"><%= dn.key%></a></th>
+		<th><%= partnerNr%></th>
+		<th><%= Time.at(dn.sendDate.to_i).strftime('%Y/%m/%d') %></th>
+		<th><%= dn.destination%></th>
+		<th>
+		<div class="<%= DeliveryHelper::get_dn_wayState_css(dn.wayState)%>">
+			<%= DeliveryHelper::get_dn_wayState(dn.wayState)%>
+		</div></th>
+		<th>
+		<div class="<%= DeliveryHelper::get_delivery_obj_state_css(dn.state)%>">
+			<%= DeliveryHelper::get_delivery_obj_state(dn.state)%>
+		</div></th>
+	</tr>
+	<%end%>
 </table>
 <div class="census">
-     共 <%= @totalCount%> 条
+	共 <%= @totalCount%> 条
 </div>
 <!-- pager -->
 <div class="pagers">
-     <%= bri_pager options={:class=>"pagination",:pages=>@totalPages,:current=>@currentPage,:action=>'search_dn',:target=>@condition}%>
+	<%= bri_pager options={:class=>"pagination",:pages=>@totalPages,:current=>@currentPage,:action=>'search_dn',:target=>@condition}%>
 </div>
 <%else%>
 <div class="abstractblock">
-     无运单
+	无运单
 </div>
 <%end%>

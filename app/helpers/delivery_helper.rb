@@ -52,7 +52,7 @@ module DeliveryHelper
       return true
   end
                   
-    # ws
+  # ws
   # [功能：] 获得运单运输状态
   # 参数：
   # - code : 状态码
@@ -95,6 +95,30 @@ module DeliveryHelper
     orl=OrganisationRelation.where(:origin_supplier_id=>supplierId,:origin_client_id=>clientId).first
     contact=DnContact.find_by_orid(orl.id)
     return contact.rece_address
+  end
+  
+  # ws
+  # [功能：] 获得包装箱检验策略名称
+  # 参数：
+  # - code : 状态码
+  # 返回值：
+  # - string : description
+  def self.get_pack_check_inspect code
+    DeliveryObjInspect.get_desc_by_value code
+  end
+  
+  # ws
+  # [功能：] 获得运单可以质检状态
+  # 参数：
+  # - 无
+  # 返回值：
+  # - string : description
+  def self.get_can_inspect_states
+    descs=[]
+    DeliveryNote.get_can_inspect_codes.each do |code|
+     descs<<get_dn_wayState(code)
+    end
+    descs
   end
   
 end

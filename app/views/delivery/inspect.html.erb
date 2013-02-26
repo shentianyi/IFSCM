@@ -1,0 +1,102 @@
+<link rel="stylesheet"  type="text/css" href="/assets/delivery/supWaybill.css" />
+<link rel="stylesheet" type="text/css" href="/assets/delivery/investory-receive.css"/>
+<script src="/assets/deliery-send-receive.js" type="text/javascript"></script>
+<script type="text/javascript">
+	$(document).ready(function() {
+		$("#pick-part-info-box").draggable();
+		$(".closebt").bind('click', function() {
+			$("#pick-part-info-box").hide();
+		});
+		$("#pick-part-info-box").show();
+	}); 
+</script>
+<div class="input-mix">
+	<input type="text" name="delivery-up-tx" class="uploadfile" id="dnKey" value="<%= @msg.object[0].key if @msg and @msg.result%>"/>
+	<input type="button" name="delivery-up-btn" class="btupload" value="提交" onclick="redirect_delivery_action('inspect');"  >
+</div>
+<div id="accept-list-div">
+	<%if @msg
+	if @msg.result%>
+	<% items=@msg.object[1]%>
+	<input type="hidden" value="<%= @msg.object[0].key%>" id="dnkey-hidden" name="dnKey">
+	<table class="delivery-check">
+		<tr  class="lineone">
+			<th>&nbsp;</th>
+			<th>箱号</th>
+			<th>客户零件号</th>
+			<th>箱单位量</th>
+			<th>是否异常</th>
+			<th>检验策略</th>
+			<th>检验完成</th>
+			<th>
+			<input type="button" class="1" id="check-all"  name="all-chosen" onclick="check_all();" value="全选"/>
+			</th>
+		</tr>
+		<% i=0%>
+		<%
+		items.each do |pack|
+		per=FormatHelper.string_to_int(pack.perPackAmount.to_s)
+		%>
+		<tr class="norline">
+			<th><%= (i+=1)%></th>
+			<th style="text-align:left;"><%= pack.key%></th>
+			<th style="text-align:center;"><%= pack.cpartNr%></th>
+			<th><%= per%></th>
+			<th>
+			<div class="<%= DeliveryHelper::get_delivery_obj_state_css(pack.state)%>" id="state-th-<%= pack.id%>">
+				<%= DeliveryHelper::get_delivery_obj_state(pack.state)%>
+			</div></th>
+			<th> <%= DeliveryHelper::get_pack_check_inspect(pack.needCheck)%> </th>
+			<th> <%= pack.checked ? "是":"否"%> </th>
+			 <%if !pack.checked%>
+			 <th id="operate-th-<%= pack.id%>">
+			<input class="id-check" id="<%= pack.id%>" type="checkbox"/>
+			<%else%>
+			<th>&nbsp;
+			<%end%> </th>
+		</tr>
+		<%
+		end%>
+		</tr>
+	</table>
+	<div class="button-group">
+		<input type="button" value="通过" onclick="pack_inspect(true,1);">
+		<input type="button" value="未通过" onclick="pack_inspect(false,1);">
+		<input type="button" value="退货" onclick="pack_inspect(false,2);">
+	</div>
+
+	<%= render :partial => "shared/handling_msg_box", :locals => { :handlemsg => "正在处理中，请稍后..." } %>
+	<%else%>
+	<div class="abstractblock">
+		<%= @msg.content.html_safe%>
+	</div>
+	<%end
+	end%>
+</div>
+
+<div id="pick-part-info-box" style="width: 350px; height: 150px;background-color:
+#EFEFEF;-moz-border-radius:10px;position: absolute; margin-left:20%; margin-top: 10%;
+-webkit-border-radius:10px;
+border-radius:10px;
+border:1px solid ddd;
+cursor: pointer;
+-webkit-box-shadow:0 0 10px #1297CF;
+-moz-box-shadow:0 0 10px #1297CF;
+padding:10px; display: none;">
+	<div class="closebt"></div>
+	<div  style="font-size:16px;color: #1297CF; text-align: center; height: 30px; margin-top: 15px;">
+		<span id="selected-spart-nr" style=" font-weight: bold;"></span>
+	</div>
+	<input type="hidden" id="selected-part-rel-key"/>
+	<div style="font-size: 15px; text-align: center; margin-top: 8px;">
+		<span style="color: #7C7C7C;">单位量 X 包装量 :</span>
+		<input type="text" id="selected-part-perpack"
+		style="width: 60px;height: 25px;font-size: 17px; font-weight: bold;color: #1297CF;border: 1px solid #DBDBDB;">
+		<span style="color: #7C7C7C;"> X </span>
+		<input type="text" id="selected-part-pack-num"
+		style="width: 60px;height: 25px;font-size: 17px;color: #1297CF; font-weight: bold;border: 1px solid #DBDBDB;" />
+		<br />
+		<input type="button" value="添 加"  onclick="add_part_to_cart();" class="btupload search-btn" style="margin-top: 17px; width: 75px;"  >
+	</div>
+</div>
+

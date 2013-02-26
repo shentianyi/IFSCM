@@ -354,7 +354,7 @@ function build_delivery_note() {
 		},
 		success : function(data) {
 			if (data.result) {
-					window.location="../delivery/dn_detail?dnKey="+data.object+"&t=p";
+				window.location = "../delivery/dn_detail?dnKey=" + data.object + "&t=p";
 			} else {
 				hide_handle_dialog();
 				alert(data.content);
@@ -370,10 +370,9 @@ function build_delivery_note() {
 // - int : pageIndex
 // 返回 ：
 // - 无
-function get_dn_detail(type,pageIndex) {
-		window.location="../delivery/dn_detail?dnKey="+$('#dnkey-hidden').val()+"&t="+type+"&p="+pageIndex;
+function get_dn_detail(type, pageIndex) {
+	window.location = "../delivery/dn_detail?dnKey=" + $('#dnkey-hidden').val() + "&t=" + type + "&p=" + pageIndex;
 }
-
 
 // ws
 // 功能 ： 发送运单
@@ -686,7 +685,7 @@ function pop_cancel(e) {
 function generate_dn_label_pdf(type) {
 	var desi = $("#destination-text").val();
 	var sendDate = $("#sendDate-text").val();
-	if ((desi == "" || sendDate == "") && type == "dn") {
+	if ((desi == "" || sendDate == "") && type == 100) {
 		flash_message(".errparts");
 	} else {
 		show_handle_dialog();
@@ -707,13 +706,19 @@ function generate_dn_label_pdf(type) {
 					window.open(data.content, '_blank');
 					window.focus();
 				} else {
-					alert("打印失败，请重试");
+					alert(data.content);
 				}
 			}
 		});
 	}
 }
 
+// ws
+// 功能 ： 将运单添加到客户端打印列表
+// 参数 ：
+// - 调用者 : 无
+// 返回 ：
+// - 无
 function add_dn_to_print_queue() {
 	$.ajax({
 		url : "../delivery/add_to_print",
@@ -727,3 +732,118 @@ function add_dn_to_print_queue() {
 		}
 	});
 }
+
+// ws
+// 功能 ： 获取运单接收列表
+// 参数 ：
+// - 调用者 : 无
+// 返回 ：
+// - 无
+function redirect_delivery_action(action) {
+	window.location = "../delivery/"+action+"?dnKey=" + $("#dnKey").val()
+}
+
+function get_dn_obj_state_css(state) {
+	switch(state) {
+		case 100:
+			return 'normal';
+		case 200:
+			return 'abnorm'
+	}
+}
+
+function get_dn_obj_waystate_css(state) {
+	switch(state) {
+		case 100:
+			return "instransit";
+		case 400:
+			return "received";
+		case 600:
+			return "returned";
+		default :
+			return "instransit"
+	}
+}
+
+function trimEnd(str) {
+	var reg = /,$/gi;
+	return str.replace(reg, "");
+}
+
+function check_all() {
+	var cbs = document.getElementsByTagName('input');
+	var check = document.getElementById('check-all');
+	for (var i = 0; i < cbs.length; i++) {
+		if (cbs[i].type == "checkbox") {
+			cbs[i].checked = check.className == 1 ? true : false;
+		}
+	}
+	check.className = check.className == 1 ? 0 : 1;
+}
+
+function checked_ids() {
+	var cbs = document.getElementsByTagName('input');
+	var ids = "";
+	for (var i = 0; i < cbs.length; i++) {
+		if (cbs[i].type == "checkbox") {
+			if (cbs[i].checked) {
+				ids += cbs[i].id + ",";
+			}
+		}
+	}
+	return trimEnd(ids);
+}
+
+function pack_rece_reje(type, action) {
+	var actions = {
+		1 : "doaccept",
+		2 : "mark_abnormal"
+	};
+	var ids = checked_ids();
+	if (ids.length > 0) {
+		if (confirm("确认执行此操作？")) {
+			show_handle_dialog();
+			$.ajax({
+				url : "../delivery/" + actions[action],
+				type : 'post',
+				data : {
+					dnKey : $("#dnkey-hidden").val(),
+					ids : ids,
+					type : type
+				},
+				dataType : 'json',
+				success : function(msg) {
+					hide_handle_dialog();
+					if (msg.result) {
+						alert("操作成功！");
+						ids = ids.split(",");
+						if (action == 1) {
+							for (var i = 0; i < ids.length; i++) {
+								$("#waystate-th-" + ids[i]).attr('class', get_dn_obj_waystate_css(type)).html(msg.object);
+							}
+						} else if (action == 2) {
+							for (var i = 0; i < ids.length; i++) {
+								$("#state-th-" + ids[i]).attr('class', get_dn_obj_state_css(type)).html("异常");
+							}
+						}
+					} else {
+						alert(msg.content);
+					}
+				}
+			});
+		}
+	}
+}
+
+function delivery_arrived() {
+	$.post('../delivery/arrived', function(data) {
+		if (data.result) {
+			$('.notifyNewForcast').remove();
+		}
+	}, 'json');
+}
+
+function pack_check(type){
+	var ids=checked_ids();
+}
+

@@ -65,7 +65,7 @@ module DeliveryBll
         :state=>dstate,:staff_id=>staffId,:organisation_id=>orgId,:rece_org_id=>desiOrgId)
         temps.each do |t|
           packcount=t.packAmount
-          pl=PartRel.find(t.partRelId)
+          pl=PartRel.find(t.part_rel_id)
           pack=DeliveryPackage.new(:key=>ClassKeyHelper::gen_key("DeliveryPackage"),:parentKey=>dn.key,:packAmount=>packcount,
           :perPackAmount=>t.perPackAmount,:part_rel_id=>t.part_rel_id,:saleNo=>pl.saleNo,:purchaseNo=>pl.purchaseNo,
           :cpartNr=>Part.get_partNr(desiOrgId,pl.client_part_id),:spartNr=>Part.get_partNr(orgId,pl.supplier_part_id))
@@ -281,19 +281,20 @@ module DeliveryBll
   # 返回值：
   # - string : fileName
   def self.generate_dn_label_pdf dnKey,type,destination=nil,sendDate=nil
-    fileName=nil
+    msg=ReturnMsg.new
     if dn=DeliveryNote.single_or_default(dnKey)
       if !destination.nil?
        if dn.wayState.nil?
          dn.rupdate(:destination=>destination,:sendDate=>sendDate)
        end
       end
-      result=TPrinter.print_dn_pdf(dnKey,type)
-      if result[:result]
-        fileName=result[:content]
+        result=TPrinter.print_dn_pdf(dnKey,type)
+        msg.result= result[:result]
+        msg.content=result[:content]  
+      else
+        msg.content="运单不存在"
       end
-    end
-    return fileName
+    return msg
   end
   
   
@@ -310,4 +311,20 @@ module DeliveryBll
    return DeliveryItem.joins(:delivery_package=>:delivery_note).find(:all,:select=>select,:conditions=>condi)
   end
   
+  # ws
+  # [功能：] 根据运单需要质检或不要质检的包装箱
+  # 参数：
+  # - string : dnKey
+  # 返回值：
+  # - array : delivery items
+  def self.get_dn_check_list dnKey,needCheck=true
+    select="delivery_items.*,delivery_packages.perPackAmount,delivery_packages.packAmount,delivery_packages.cpartNr,delivery_packages.spartNr,strategies.needCheck"
+    if needCheck
+     return DeliveryItem.joins(:delivery_package=>{:part_rel=>:strategy}).joins(:delivery_package=>:delivery_note).find(:all,:select=>select,
+    :conditions=>{"strategies.needCheck"=>[DeliveryObjInspect::SamInspect,DeliveryObjInspect::FullInspect],"delivery_notes.key"=>dnKey})
+    else
+      return DeliveryItem.joins(:delivery_package=>{:part_rel=>:strategy}).joins(:delivery_package=>:delivery_note).find(:all,:select=>select,
+     :conditions=>{"strategies.needCheck"=>DeliveryObjInspect::ExemInspect,"delivery_notes.key"=>dnKey})
+    end
+  end
 end

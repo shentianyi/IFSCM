@@ -9,6 +9,7 @@ class DeliveryPackage < ActiveRecord::Base
   belongs_to :delivery_note
   belongs_to :part_rel
   has_many :delivery_items,:dependent=>:destroy
+  
   include CZ::BaseModule
   include CZ::DeliveryBase
   

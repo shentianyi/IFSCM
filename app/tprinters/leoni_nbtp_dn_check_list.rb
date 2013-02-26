@@ -5,10 +5,24 @@ module LeoniNbtpDnCheckList
   @@body_keys=["CPartNr","PerPackNum","PackNr"]
 
   def self.gen_data dn,orl
-    sendOrg=Organisation.find(dn.organisation_id)
-    receOrg=Organisation.find(dn.rece_org_id)
-    hrecord=gen_head(dn,sendOrg,receOrg,orl)
-    dataset=(gen_body dn.key,hrecored)
+    dataset=[]
+    items=DeliveryBll.get_dn_check_list(dn.key)
+    if items.length>0
+      sendOrg=Organisation.find(dn.organisation_id)
+      receOrg=Organisation.find(dn.rece_org_id)
+      hrecord=gen_head(dn,sendOrg,receOrg,orl)
+            data={}
+      items.each do |item|
+        record=[]
+        data[:PerPackNum]=FormatHelper.string_to_int(item.perPackAmount.to_s)
+        data[:PackNr]=item.key
+        data[:CPartNr]=item.cpartNr
+        @@body_keys.each do |key|
+          record<<{:Key=>key,:Value=>data[key.to_sym]}
+        end
+        dataset<<(record+hrecord)
+      end
+    end
     return dataset
   end
 
@@ -35,23 +49,5 @@ module LeoniNbtpDnCheckList
       record<<{:Key=>key,:Value=>data[key.to_sym]}
     end
     return record
-  end
-
-  def self.gen_body dnKey,hrecored
-    records=[]
-    select="delivery_items.*,delivery_packages.perPackAmount,delivery_packages.packAmount,delivery_packages.cpartNr,delivery_packages.spartNr"
-    items=DeliveryItem.joins(:delivery_package=>:part_rel,:part_rel=>:strategy,:delivery_package=>:delivery_note).find(:all,:select=>select,
-    :conditions=>{"strategies.needCheck"=>true,"delivery_notes.key"=>dnKey})
-    items.each do |item|
-      record=[]
-      data[:PerPackNum]=item.perPackAmount
-      data[:PackNr]=item.key
-      data[:CPartNr]=item.cpartNr
-      @@body_keys.each do |key|
-        record<<{:Key=>key,:Value=>data[key.to_sym]}
-      end
-      records<<(record+hrecord)
-    end
-    return records
   end
 end
