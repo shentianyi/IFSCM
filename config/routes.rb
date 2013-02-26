@@ -108,6 +108,8 @@ Demand::Application.routes.draw do
     match "warehouse/primary_warehouse" => :primary_warehouse
     post "warehouse/delete_warehouse" => :delete_warehouse
     match "warehouse/primary_position" => :primary_position
+    post "warehouse/new_position_range" => :new_position_range
+    post "warehouse/new_position_single" => :new_position_single
     post "warehouse/delete_position" => :delete_position
     match "warehouse/search_state" => :search_state
     match "warehouse/search_op_history" => :search_op_history

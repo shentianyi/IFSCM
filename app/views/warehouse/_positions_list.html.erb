@@ -1,24 +1,48 @@
 
-	<table class="upData" id="positions_list_id" whid=<%= @whid %> >
-		<tr class="lineone">
-			<th></th>
-			<th>编号</th>
-			<th>容量</th>
-		</tr>
-		<tr class="divide" style="display: none">
-			<th class="nordvd"></th>
-			<th class="nordvd"></th>
-			<th class="nordvd"></th>
-			<th class="nordvd"></th>
-			<th class="nordvd"></th>
-			<th class="lastdvd"></th>
-		</tr>
-		<% i=0 ; @positions.each do |d|	%>
-		  <tr class="norline hoverable" >
-			<th><%= i+=1%></th>
-			<th><%= d.nr%></th>
-			<th><%= d.capacity%></th>
-			<th><%= button_tag '删除',:name=>"delete_position",:type=>'button',:onclick=>"delete_position(#{d.id});"%></th>
-		  </tr>
-		<% end %>
-	</table>
+ 	<div class="wareposition"  id="positions_list_id" whid=<%= @whid %> >
+ 		<p class="ware-p">库位</p>
+ 		<ul class="ware-ul">
+ 		    <% @positions.each do |d|	%>
+ 		    	<li class="ware-li li-big">
+ 		    		<%= text_field_tag nil, d.nr, :readOnly=>true, :style=>"cursor:default" %>
+ 		    		<p><%= d.capacity %></p>
+ 		    		<div class="wh-del del-big" onclick="delete_position(<%= d.id%>, this);"></div>
+ 		    	</li>
+ 		    <% end %>
+ 		    <% @newposi.each do |d|	%>
+ 		    	<li class="ware-li li-big">
+ 		    		<% if d.errors.any? %>
+ 		    			<%= text_field_tag nil, d.nr, :class=>"err-add", :readOnly=>true, :style=>"cursor:default" %>
+ 		    		<% else %>
+ 		    			<%= text_field_tag nil, d.nr, :class=>"new-add", :readOnly=>true, :style=>"cursor:default" %>
+ 		    		<% end %>
+ 		    		<p><%= d.capacity %></p>
+ 		    		<div class="wh-del del-big" onclick="remove_position(this);"></div>
+ 		    	</li>
+ 		    <% end %>
+ 		</ul>
+ 		<div class="wh-add" onclick="save_position();"></div>   		
+ 	</div>
+ 	<div class="toggle-btn"></div>
+ 	<div class="toggle-list" style="display: none">
+ 		<p class="toggle-p">库位范围</p>
+ 		<%= text_field_tag :posiStart %>
+ 		<h1>-</h1>
+ 		<%= text_field_tag :posiEnd %>
+ 		<p class="toggle-p">容量</p>
+ 		<%= text_field_tag :capa %>
+ 		<button class="btn-normal">删除</button>
+ 		<button class="btn-normal" onclick="new_position_range();">添加</button>
+ 		<br /><br />
+ 		<p class="toggle-p">库位</p>
+ 		<%= text_field_tag :posiNr %>
+ 		<p class="toggle-p">容量</p>
+ 		<%= text_field_tag :capacity %>
+ 		<button class="btn-normal" onclick="new_position_single();">添加</button>
+ 	</div>
+
+<script type="text/javascript">
+$("document").ready(function() {
+	$("div.toggle-btn").click(openfuncright);
+});
+</script>

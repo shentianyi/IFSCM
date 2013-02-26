@@ -30,12 +30,14 @@ class WarehouseController < ApplicationController
     else
       begin
         raise( ArgumentError, "格式错误：库位ID！" )  unless params[:posiId].is_a?(String)
+        raise( ArgumentError, "格式错误：零件号！" )  unless params[:partNr].is_a?(String)
         raise( ArgumentError, "格式错误：出库量！" )  unless params[:amount].is_a?(String)
         posiId = params[:posiId].strip
+        partNr = params[:partNr].strip
         amount = params[:amount].strip
         raise( ArgumentError, "参数错误：库位ID无效！" )  unless FormatHelper.str_is_positive_integer( posiId )
         raise( ArgumentError, "参数错误：出库量无效！" )  unless FormatHelper.str_is_positive_float( amount )
-        msg = WarehouseBll.position_out( posiId.to_i, amount.to_f )
+        msg = WarehouseBll.position_out( posiId.to_i, partNr, amount.to_f )
         if msg.result
           render :json => {:flag=>true, :msg=>"出库成功。"}
         else
@@ -52,7 +54,7 @@ class WarehouseController < ApplicationController
       @warehouses = @cz_org.warehouses
     else
       begin
-        raise( ArgumentError, "格式错误：仓库编号！" )  unless params[:whNr].is_a?(String)
+        raise( ArgumentError, "格式错误：仓库编号！" )  unless params[:whNr].present? and params[:whNr].is_a?(String)
         raise( ArgumentError, "格式错误：仓库名称！" )  unless params[:whName].is_a?(String)
         whNr = params[:whNr].strip
         whName = params[:whName].strip
@@ -95,7 +97,8 @@ class WarehouseController < ApplicationController
         raise( ArgumentError, "参数错误：仓库ID无效！" )  unless FormatHelper.str_is_positive_integer( whId )
         if wh = Warehouse.find_by_id(whId)
           @whid = whId
-          @positions = wh.positions
+          @positions = wh.positions.order("nr desc")
+          @newposi = []
           render :partial => "positions_list"
         else
           render :text => "没有找到相关库位！"
@@ -105,28 +108,71 @@ class WarehouseController < ApplicationController
       end
     else
       begin
-        raise( ArgumentError, "格式错误：仓库ID！" )  unless params[:whId].is_a?(String)
-        raise( ArgumentError, "格式错误：库位编号！" )  unless params[:posiNr].is_a?(String)
-        raise( ArgumentError, "格式错误：库位容量！" )  unless params[:capacity].is_a?(String)
-        whId = params[:whId].strip
-        posiNr = params[:posiNr].strip
-        capacity = params[:capacity].strip
+        raise( ArgumentError, "格式错误：仓库ID！" )  unless params[:whId].is_a?(String) and whId = params[:whId].strip
+        raise( RuntimeError, "没有新库位需要添加！" )  unless params[:posiHash].present? and posiHash = params[:posiHash]
+        raise( ArgumentError, "参数错误：仓库ID无效！" )  unless FormatHelper.str_is_positive_integer( whId )
+        raise( RuntimeError, "仓库不存在！" )  unless wh = @cz_org.warehouses.find_by_id(whId)
+        @newposi = []
+        posiHash.each do |k,v|
+          posi = Position.new( :nr=>k, :capacity=>v )
+          posi.errors[:temp]="错误"  unless FormatHelper.str_is_positive_integer( v )
+          posi.errors[:temp]="重复"  if posi.errors.blank? and wh.positions.where( :nr=>k ).first
+          if posi.errors.blank? and wh.positions << posi
+          else
+            posi.errors[:temp]="错误"  if posi.errors.blank?
+            @newposi << posi
+          end
+        end
+        @whid = whId
+        @positions = wh.positions.order("nr desc")
+        render :json => {:flag=>true, :msg=>"新建库位成功。", :txt=>render_to_string(:partial=>"positions_list") }
+      rescue Exception => e
+        render :json => {:flag=>false, :msg=>e.to_s}
+      end
+    end
+  end
+  
+  def new_position_range
+      begin
+        raise( ArgumentError, "格式错误：仓库ID！" )  unless params[:whId].is_a?(String) and whId = params[:whId].strip
+        raise( ArgumentError, "格式错误：库位起点！" )  unless params[:posiStart].is_a?(String) and posiStart=params[:posiStart].strip and posiStart.present?
+        raise( ArgumentError, "格式错误：库位终点！" )  unless params[:posiEnd].is_a?(String) and posiEnd=params[:posiEnd].strip and posiEnd.present?
+        raise( ArgumentError, "格式错误：库位容量！" )  unless params[:capa].is_a?(String) and capa=params[:capa].strip
+        raise( ArgumentError, "参数错误：仓库ID无效！" )  unless FormatHelper.str_is_positive_integer( whId )
+        raise( ArgumentError, "参数错误：容量无效！" )  unless FormatHelper.str_is_positive_integer( capa )
+        raise( RuntimeError, "仓库不存在！" )  unless wh = @cz_org.warehouses.find_by_id(whId)
+        @whid = whId
+        @positions = wh.positions.order("nr desc")
+        @newposi = []
+        (posiStart..posiEnd).each do |p|
+          posi = Position.new( :nr=>p, :capacity=>capa )
+          posi.errors[:temp]="重复"  if wh.positions.where( :nr=>p ).first
+          @newposi << posi
+        end
+          render :json => {:flag=>true, :msg=>"新建库位成功。", :txt=>render_to_string(:partial=>"positions_list") }
+      rescue Exception => e
+        render :json => {:flag=>false, :msg=>e.to_s}
+      end
+  end
+  
+  def new_position_single
+      begin
+        raise( ArgumentError, "格式错误：仓库ID！" )  unless params[:whId].is_a?(String) and whId = params[:whId].strip
+        raise( ArgumentError, "格式错误：库位！" )  unless params[:posiNr].is_a?(String) and posiNr = params[:posiNr].strip and posiNr.present?
+        raise( ArgumentError, "格式错误：库位容量！" )  unless params[:capacity].is_a?(String) and capacity = params[:capacity].strip
         raise( ArgumentError, "参数错误：仓库ID无效！" )  unless FormatHelper.str_is_positive_integer( whId )
         raise( ArgumentError, "参数错误：容量无效！" )  unless FormatHelper.str_is_positive_integer( capacity )
         raise( RuntimeError, "仓库不存在！" )  unless wh = @cz_org.warehouses.find_by_id(whId)
         raise( RuntimeError, "库位已存在，不可重建！" )  if wh.positions.where( :nr=>posiNr ).first
         posi = Position.new( :nr=>posiNr, :capacity=>capacity )
-        if wh.positions << posi
-          @whid = whId
-          @positions = wh.positions
-          render :json => {:flag=>true, :msg=>"新建库位成功。", :txt=>render_to_string(:partial=>"positions_list") }
-        else
-          render :json => {:flag=>false, :msg=>"失败！"}
-        end
+        @whid = whId
+        @positions = wh.positions.order("nr desc")
+        @newposi ||= []
+        @newposi << posi
+        render :json => {:flag=>true, :msg=>"新建库位成功。", :txt=>render_to_string(:partial=>"positions_list") }
       rescue Exception => e
         render :json => {:flag=>false, :msg=>e.to_s}
       end
-    end
   end
   
   def delete_position
@@ -138,13 +184,14 @@ class WarehouseController < ApplicationController
       raise( RuntimeError, "不可删除，必须先清空其所有库存量！" )  if posi.stock>0
       if posi.destroy
         @whid = posi.warehouse.id
-        @positions = posi.warehouse.positions
+        @positions = posi.warehouse.positions.order("nr desc")
+        @newposi = []
         render :json => {:flag=>true, :msg=>"删除库位成功。", :txt=>render_to_string(:partial=>"positions_list") }
       else
         render :json => {:flag=>false, :msg=>"失败！"}
       end
-    rescue Exception => e
-      render :json => {:flag=>false, :msg=>e.to_s}
+    # rescue Exception => e
+      # render :json => {:flag=>false, :msg=>e.to_s}
     end
   end
   

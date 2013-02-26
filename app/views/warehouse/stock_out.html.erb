@@ -17,10 +17,11 @@ function stock_out(){
 	$.post("../warehouse/stock_out",
 		{
 			posiId: $('#posiId').val(),
+			partNr: $('#partNr').val(),
 			amount: $('#amount').val()
 		},
 		function(data){
-				$('#result').html(data.msg);
+				MessageBox(data.msg);
 		},
 		'json'		
 	);

@@ -10,4 +10,8 @@ class Position < ActiveRecord::Base
   def stock
     self.storages.sum(:stock)
   end
+    
+  def stock_by_part( partNr )
+    self.storages.by_part(partNr).sum(:stock)
+  end
 end
