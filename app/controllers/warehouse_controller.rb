@@ -26,6 +26,7 @@ class WarehouseController < ApplicationController
   
   def stock_out
     if request.get?
+      @whlist = @cz_org.warehouses.map {|o| [o.nr, o.id] }
     else
       begin
         raise( ArgumentError, "格式错误：库位ID！" )  unless params[:posiId].is_a?(String)
@@ -144,6 +145,93 @@ class WarehouseController < ApplicationController
       end
     rescue Exception => e
       render :json => {:flag=>false, :msg=>e.to_s}
+    end
+  end
+  
+  def search_state
+    if request.get?
+      @whlist = @cz_org.warehouses.map {|o| [o.nr, o.id] }
+    else
+      begin
+        puts params[:page].class
+        raise( ArgumentError, "格式错误：仓库ID！" )  unless params[:whId].is_a?(String)
+        whId = params[:whId].strip
+        raise( ArgumentError, "参数错误：仓库ID无效！" )  unless FormatHelper.str_is_positive_integer( whId )
+        raise( RuntimeError, "仓库不存在！" )  unless wh = @cz_org.warehouses.find_by_id(whId)
+        
+        raise( ArgumentError, "格式错误：库位编号！" )  unless params[:posiNr].is_a?(String)
+        raise( ArgumentError, "格式错误：库位容量！" )  unless params[:capacity].is_a?(String)
+        posiNr = params[:posiNr].strip
+        capacity = params[:capacity].strip
+        raise( ArgumentError, "参数错误：容量无效！" )  if capacity.present? and !FormatHelper.str_is_positive_integer( capacity )
+        
+        @positions = wh.positions.joins(:warehouse, :storages=>:part)
+                                  .select('warehouses.nr as whNr, positions.nr, parts.partNr, sum(storages.stock) as amount')
+                                  .group('positions.id')
+                                  .having("sum(storages.stock) > ?", 0)
+                                  .limit($DEPSIZE).offset($DEPSIZE*params[:page].to_i)
+        @total = @positions.length
+        @totalPages = @total / $DEPSIZE + (@total%$DEPSIZE==0 ? 0:1)
+        @currentPage=params[:page].to_i
+        render :partial=>"state_list"
+      rescue Exception => e
+        render :text => e.to_s
+      end
+    end
+  end
+  
+  def search_op_history
+    if request.get?
+      @whlist = @cz_org.warehouses.map {|o| [o.nr, o.id] }
+      @opType = StorageOpType.all.map { |t| [t.desc, t.value] }
+    else
+      begin
+        puts params[:page].class
+        conditions = {}
+        raise( ArgumentError, "格式错误：仓库ID！" )  unless params[:whId].is_a?(String)
+        whId = params[:whId].strip
+        if params[:posiNr].present?
+          raise( ArgumentError, "格式错误：库位！" )  unless params[:posiNr].is_a?(String)
+          posiNr = params[:posiNr].strip
+          conditions['positions.nr']=posiNr
+        end
+        if params[:partNr].present?
+          raise( ArgumentError, "格式错误：零件号！" )  unless params[:partNr].is_a?(String)
+          partNr = params[:partNr].strip
+          conditions['parts.partNr']=partNr
+        end
+        if params[:opType].present?
+          raise( ArgumentError, "格式错误：操作类型！" )  unless params[:opType].is_a?(String)
+          opType = params[:opType].strip
+          conditions[:opType]=opType
+        end
+        if params[:amountStart].present?
+          raise( ArgumentError, "格式错误：数量！" )  unless params[:amountStart].is_a?(String)
+          amountStart = params[:amountStart].strip
+          raise( ArgumentError, "参数错误：起始数量无效！" )  unless FormatHelper.str_is_positive_float( amountStart )
+        end
+        if params[:amountEnd].present?
+          raise( ArgumentError, "格式错误：数量！" )  unless params[:amountEnd].is_a?(String)
+          amountEnd = params[:amountEnd].strip
+          raise( ArgumentError, "参数错误：终止数量无效！" )  unless FormatHelper.str_is_positive_float( amountEnd )
+        end
+        astart = amountStart ? amountStart.to_f : 0.0
+        aend = amountEnd ? amountEnd.to_f : 99999999.0
+        conditions[:amount] = astart..aend
+        raise( ArgumentError, "参数错误：仓库ID无效！" )  unless FormatHelper.str_is_positive_integer( whId )
+        raise( RuntimeError, "仓库不存在！" )  unless wh = @cz_org.warehouses.find_by_id(whId)
+        
+        @operations = wh.storage_histories.joins(:part, :position=>:warehouse)
+                                  .where( conditions )
+                                  .select('warehouses.nr as whNr, positions.nr, parts.partNr, storage_histories.*')
+                                  .limit($DEPSIZE).offset($DEPSIZE*params[:page].to_i)
+        @total = @operations.length
+        @totalPages = @total / $DEPSIZE + (@total%$DEPSIZE==0 ? 0:1)
+        @currentPage=params[:page].to_i
+        render :partial=>"op_history_list"
+      rescue Exception => e
+        render :text => e.to_s
+      end
     end
   end
   

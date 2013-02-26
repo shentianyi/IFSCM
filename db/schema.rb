@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130225102437) do
+ActiveRecord::Schema.define(:version => 20130226063043) do
 
   create_table "delivery_item_states", :force => true do |t|
     t.integer  "state",            :default => 100
@@ -151,12 +151,23 @@ ActiveRecord::Schema.define(:version => 20130225102437) do
 
   add_index "staffs", ["organisation_id"], :name => "index_staffs_on_organisation_id"
 
-  create_table "storages", :force => true do |t|
-    t.decimal  "stock",       :precision => 10, :scale => 0
+  create_table "storage_histories", :force => true do |t|
+    t.integer  "opType"
+    t.decimal  "amount",      :precision => 15, :scale => 2
     t.integer  "position_id"
     t.integer  "part_id"
     t.datetime "created_at",                                 :null => false
     t.datetime "updated_at",                                 :null => false
+  end
+
+  create_table "storages", :force => true do |t|
+    t.decimal  "stock",            :precision => 10, :scale => 0
+    t.integer  "position_id"
+    t.integer  "part_id"
+    t.datetime "created_at",                                                       :null => false
+    t.datetime "updated_at",                                                       :null => false
+    t.integer  "delivery_item_id"
+    t.integer  "state",                                           :default => 100
   end
 
   add_index "storages", ["part_id"], :name => "index_storages_on_part_id"

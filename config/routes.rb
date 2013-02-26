@@ -106,6 +106,8 @@ Demand::Application.routes.draw do
     post "warehouse/delete_warehouse" => :delete_warehouse
     match "warehouse/primary_position" => :primary_position
     post "warehouse/delete_position" => :delete_position
+    match "warehouse/search_state" => :search_state
+    match "warehouse/search_op_history" => :search_op_history
   end
 
   namespace :api,defaults:{format:'json'} do

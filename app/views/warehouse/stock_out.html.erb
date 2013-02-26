@@ -28,7 +28,7 @@ function stock_out(){
 	
 </script>
 
-Warehouse:<%= text_field_tag :whId %>
+Warehouse:<%= select_tag :whId,  options_for_select(@whlist),  prompt: "请选择仓库..." %>
 <br/>
 partNr:<%= text_field_tag :partNr %>
 <br/>

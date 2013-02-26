@@ -1,8 +1,7 @@
 class ChangeStringToInteger < ActiveRecord::Migration
-  def up
-    change_column :delivery_notes,:state,:integer,:default=>DeliveryObjState::Normal
+  def change
+    add_column :storages, :delivery_item_id, :integer
+    add_column :storages, :state, :integer, :default=>StorageState::In
   end
 
-  def down
-  end
 end
