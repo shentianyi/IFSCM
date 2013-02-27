@@ -5,5 +5,8 @@ class Warehouse < ActiveRecord::Base
   has_many :positions
   has_many :storage_histories, :through=>:positions
   
+  def self.selection_list( org )
+    org.warehouses.map {|o| [o.nr, o.id] }
+  end
   
 end

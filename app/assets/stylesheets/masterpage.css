@@ -499,3 +499,39 @@ input.uploadfile {
      border-color: #b1b1b1;
      color: #7c7c7c;
 }
+
+/**************message--box****************************/
+	.message-box{	
+		font-size:17px;
+		position:fixed;
+		margin:auto;
+		left:0;
+		right:0;
+		top:0;
+		bottom:0;
+		width:480px;
+		height:150px;
+		border-radius:5px;
+		-moz-border-radius: :5px;
+		-webkit-border-radius: 5px;
+		box-shadow:2px 2px 10px #999;
+		-moz-box-shawdow:2px 2px 10px #999;
+		-webkit-box-shawdow:2px 2px 10px #999;
+	}
+	.message-box h2,.message-box p{
+		color:#696D72;
+		margin:2px 23px;
+	}
+	.message-box p{
+		margin-top:8px;
+	}
+	.close-logo{
+		width:20px;
+		height:20px;
+		position:relative;
+		left:450px;
+		top:8px;
+       background:url("close-bt.png");
+       background-position:center;
+       background-repeat:no-repeat;
+	}

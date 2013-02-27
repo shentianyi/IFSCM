@@ -26,7 +26,7 @@ class WarehouseController < ApplicationController
   
   def stock_out
     if request.get?
-      @whlist = @cz_org.warehouses.map {|o| [o.nr, o.id] }
+      @whlist = Warehouse.selection_list(@cz_org)
     else
       begin
         raise( ArgumentError, "格式错误：库位ID！" )  unless params[:posiId].is_a?(String)
@@ -150,25 +150,50 @@ class WarehouseController < ApplicationController
   
   def search_state
     if request.get?
-      @whlist = @cz_org.warehouses.map {|o| [o.nr, o.id] }
+      @whlist = Warehouse.selection_list(@cz_org)
     else
       begin
-        puts params[:page].class
-        raise( ArgumentError, "格式错误：仓库ID！" )  unless params[:whId].is_a?(String)
-        whId = params[:whId].strip
-        raise( ArgumentError, "参数错误：仓库ID无效！" )  unless FormatHelper.str_is_positive_integer( whId )
+        conditions = {}
+        if params[:whId].present?
+          whId = params[:whId].is_a?(String) ? params[:whId].strip : params[:whId]
+          raise( ArgumentError, "参数错误：仓库ID无效！" )  unless FormatHelper.str_is_positive_integer( whId )
+        else
+          raise( ArgumentError, "条件缺失：请选择仓库！" )
+        end
+        if params[:posiNr].present?
+          raise( ArgumentError, "格式错误：库位！" )  unless params[:posiNr].is_a?(String)
+          posiNr = params[:posiNr].strip
+          conditions['positions.nr']=posiNr
+        end
+        if params[:partNr].present?
+          raise( ArgumentError, "格式错误：零件号！" )  unless params[:partNr].is_a?(String)
+          partNr = params[:partNr].strip
+          conditions['parts.partNr']=partNr
+        end
+        if params[:stockStart].present?
+          stockStart = params[:stockStart].is_a?(String) ?  params[:stockStart].strip :  params[:stockStart]
+          raise( ArgumentError, "参数错误：起始数量无效！" )  unless FormatHelper.str_is_positive_float( stockStart )
+        end
+        if params[:stockEnd].present?
+          stockEnd = params[:stockEnd].is_a?(String) ?  params[:stockEnd].strip :  params[:stockEnd]
+          raise( ArgumentError, "参数错误：终止数量无效！" )  unless FormatHelper.str_is_positive_float( stockEnd )
+        end
+        if stockStart.present? and stockEnd.present?
+          aggregations = "sum(storages.stock) > " + stockStart + "and sum(storages.stock) < " + stockEnd
+        elsif stockStart.blank? and stockEnd.present?
+          aggregations = "sum(storages.stock) > " + 0.to_s + " and sum(storages.stock) < " + stockEnd
+        elsif stockStart.present? and stockEnd.blank?
+          aggregations = "sum(storages.stock) > " + stockStart
+        else
+          aggregations = ""
+        end
         raise( RuntimeError, "仓库不存在！" )  unless wh = @cz_org.warehouses.find_by_id(whId)
         
-        raise( ArgumentError, "格式错误：库位编号！" )  unless params[:posiNr].is_a?(String)
-        raise( ArgumentError, "格式错误：库位容量！" )  unless params[:capacity].is_a?(String)
-        posiNr = params[:posiNr].strip
-        capacity = params[:capacity].strip
-        raise( ArgumentError, "参数错误：容量无效！" )  if capacity.present? and !FormatHelper.str_is_positive_integer( capacity )
-        
         @positions = wh.positions.joins(:warehouse, :storages=>:part)
-                                  .select('warehouses.nr as whNr, positions.nr, parts.partNr, sum(storages.stock) as amount')
+                                  .where( conditions )
+                                  .select('warehouses.nr as whNr, positions.nr, parts.partNr, sum(storages.stock) as stock')
                                   .group('positions.id')
-                                  .having("sum(storages.stock) > ?", 0)
+                                  .having(aggregations)
                                   .limit($DEPSIZE).offset($DEPSIZE*params[:page].to_i)
         @total = @positions.length
         @totalPages = @total / $DEPSIZE + (@total%$DEPSIZE==0 ? 0:1)
@@ -182,14 +207,17 @@ class WarehouseController < ApplicationController
   
   def search_op_history
     if request.get?
-      @whlist = @cz_org.warehouses.map {|o| [o.nr, o.id] }
+      @whlist = Warehouse.selection_list(@cz_org)
       @opType = StorageOpType.all.map { |t| [t.desc, t.value] }
     else
       begin
-        puts params[:page].class
         conditions = {}
-        raise( ArgumentError, "格式错误：仓库ID！" )  unless params[:whId].is_a?(String)
-        whId = params[:whId].strip
+        if params[:whId].present?
+          whId = params[:whId].is_a?(String) ? params[:whId].strip : params[:whId]
+          raise( ArgumentError, "参数错误：仓库ID无效！" )  unless FormatHelper.str_is_positive_integer( whId )
+        else
+          raise( ArgumentError, "条件缺失：请选择仓库！" )
+        end
         if params[:posiNr].present?
           raise( ArgumentError, "格式错误：库位！" )  unless params[:posiNr].is_a?(String)
           posiNr = params[:posiNr].strip
@@ -206,19 +234,16 @@ class WarehouseController < ApplicationController
           conditions[:opType]=opType
         end
         if params[:amountStart].present?
-          raise( ArgumentError, "格式错误：数量！" )  unless params[:amountStart].is_a?(String)
-          amountStart = params[:amountStart].strip
+          amountStart = params[:amountStart].is_a?(String) ?  params[:amountStart].strip :  params[:amountStart]
           raise( ArgumentError, "参数错误：起始数量无效！" )  unless FormatHelper.str_is_positive_float( amountStart )
         end
         if params[:amountEnd].present?
-          raise( ArgumentError, "格式错误：数量！" )  unless params[:amountEnd].is_a?(String)
-          amountEnd = params[:amountEnd].strip
+          amountEnd = params[:amountEnd].is_a?(String) ?  params[:amountEnd].strip :  params[:amountEnd]
           raise( ArgumentError, "参数错误：终止数量无效！" )  unless FormatHelper.str_is_positive_float( amountEnd )
         end
         astart = amountStart ? amountStart.to_f : 0.0
         aend = amountEnd ? amountEnd.to_f : 99999999.0
         conditions[:amount] = astart..aend
-        raise( ArgumentError, "参数错误：仓库ID无效！" )  unless FormatHelper.str_is_positive_integer( whId )
         raise( RuntimeError, "仓库不存在！" )  unless wh = @cz_org.warehouses.find_by_id(whId)
         
         @operations = wh.storage_histories.joins(:part, :position=>:warehouse)

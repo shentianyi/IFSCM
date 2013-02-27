@@ -1,9 +1,12 @@
 
-Warehouse:<%= select_tag :whId,  options_for_select(@whlist),  prompt: "请选择仓库..." %>
+仓库:<%= select_tag :whId,  options_for_select(@whlist),  prompt: "请选择仓库..." %>
 <br/>
-Position 编号:<%= text_field_tag :posiNr %>
+库位:<%= text_field_tag :posiNr %>
+<br />
+零件号:<%= text_field_tag :partNr %>
 <br/>
-Position 容量:<%= text_field_tag :capacity %>
+存量:<%= text_field_tag :stockStart, nil,:size=>5 %>
+至<%= text_field_tag :stockEnd, nil,:size=>5 %>
 <br/>
 <%= button_tag '搜索',:name=>"search_state",:type=>'button',:onclick=>"search_state(0);"%>
 <hr/>
@@ -17,7 +20,9 @@ function search_state( page ){
 		{
 			whId: $('#whId').val(),
 			posiNr: $('#posiNr').val(),
-			capacity: $('#capacity').val(),
+			partNr: $('#partNr').val(),
+			stockStart: $('#stockStart').val(),
+			stockEnd: $('#stockEnd').val(),
 			page: page
 		},
 		function(data){
