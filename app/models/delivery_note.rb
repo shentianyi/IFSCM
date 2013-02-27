@@ -6,28 +6,30 @@ class DeliveryNote < ActiveRecord::Base
   attr_accessible :rece_org_id, :destination, :key, :state, :wayState,:sendDate
   attr_accessible :staff_id,:organisation_id
   attr_accessible :id, :created_at, :updated_at
-  
+
   has_many :delivery_packages,:dependent=>:destroy
   has_many :delivery_items,:through=>:delivery_packages
   belongs_to :organisation
   belongs_to :staff
-  
+
   include CZ::BaseModule
   include CZ::DeliveryBase
-  
+
   after_save :update_redis_id
   after_update :update_state_wayState,:update_wayState
-    
-  @@inspect_waystate=[DeliveryObjWayState::Received]
+
+  @@can_inspect_waystate=[DeliveryObjWayState::Received]
+  @@can_accept_waystate=[DeliveryObjWayState::Intransit,DeliveryObjWayState::Arrived,DeliveryObjWayState::InAccept]
+  @@can_instore_waystate=[DeliveryObjWayState::Received]
   
   def self.single_or_default key,mysql=false
     if mysql
       where(:key=>key).first
-    else      
+    else
       return find_from_redis key
     end
   end
-  
+
   # ws
   # [功能：] 将运单加入用户 ZSet
   # 参数：
@@ -157,36 +159,43 @@ class DeliveryNote < ActiveRecord::Base
     end
     return nil
   end
-  
+
   def add_to_staff_print_queue
     key=DeliveryNote.generate_staff_print_set_key self.staff_id
     $redis.sadd key,self.key
   end
-  
+
   def del_from_staff_print_queue
-        key=DeliveryNote.generate_staff_print_set_key self.staff_id
-        $redis.srem key,self.key
+    key=DeliveryNote.generate_staff_print_set_key self.staff_id
+    $redis.srem key,self.key
   end
-  
+
   def self.get_all_print_dnKey staffId
     key= generate_staff_print_set_key staffId
     $redis.smembers key
-  end  
-  
-  def can_inspect 
-    @@inspect_waystate.include?(self.wayState)
   end
-  
+
+  def can_inspect
+    @@can_inspect_waystate.include?(self.wayState)
+  end
+
   def self.get_can_inspect_codes
-    @@inspect_waystate
+    @@can_inspect_waystate
   end
   
+  def can_accept
+    @@can_accept_waystate.include?(self.wayState)
+  end
+  
+  def can_instore
+    @@can_instore_waystate.include?(self.wayState)
+  end
   private
 
   def self.find_from_redis key
     rfind(key)
   end
-  
+
   def update_wayState
     if self.wayState_change
       if self.wayState==DeliveryObjWayState::Arrived
@@ -194,8 +203,7 @@ class DeliveryNote < ActiveRecord::Base
       end
     end
   end
-  
-  
+
   def self.generate_staff_zset_key staffId
     "staff:#{staffId}:deliverynote:cache:zset"
   end
@@ -207,7 +215,7 @@ class DeliveryNote < ActiveRecord::Base
   def self.generate_org_new_queue_zset_key orgId,orgOpeType
     "orgId:#{orgId}:orgOpeType:#{orgOpeType}:newDNqueue"
   end
-  
+
   def self.generate_staff_print_set_key staffId
     "staff:#{staffId}:deliverynote:print:set"
   end

@@ -37,7 +37,7 @@ module DeliveryBll
     msg.content=msg.contents.join(',') if !msg.result
     return msg
   end
-  
+
   def self.vali_current_di_temp staffId, orgRelIds
     temps=DeliveryItemTemp.get_staff_cache(staffId).first ||[]
     ids = temps.collect {|t| PartRel.find_by_id(t.partRelId.to_i).organisation_relation_id}
@@ -71,7 +71,7 @@ module DeliveryBll
           :cpartNr=>Part.get_partNr(desiOrgId,pl.client_part_id),:spartNr=>Part.get_partNr(orgId,pl.supplier_part_id))
           for i in 0...packcount
             item=DeliveryItem.new(:key=>ClassKeyHelper::gen_key("DeliveryItem"),
-             :parentKey=>pack.key,:state=>dstate,:wayState=>DeliveryObjWayState::Intransit,:checked=>0,:stored=>0)
+            :parentKey=>pack.key,:state=>dstate,:wayState=>DeliveryObjWayState::Intransit,:checked=>0,:stored=>0)
             item.save_to_redis
             item.add_to_parent
             t.destroy
@@ -284,20 +284,19 @@ module DeliveryBll
     msg=ReturnMsg.new
     if dn=DeliveryNote.single_or_default(dnKey)
       if !destination.nil?
-       if dn.wayState.nil?
-         dn.rupdate(:destination=>destination,:sendDate=>sendDate)
-       end
+        if dn.wayState.nil?
+          dn.rupdate(:destination=>destination,:sendDate=>sendDate)
+        end
       end
-        result=TPrinter.print_dn_pdf(dnKey,type)
-        msg.result= result[:result]
-        msg.content=result[:content]  
-      else
-        msg.content="运单不存在"
-      end
+      result=TPrinter.print_dn_pdf(dnKey,type)
+      msg.result= result[:result]
+      msg.content=result[:content]
+    else
+      msg.content="运单不存在"
+    end
     return msg
   end
-  
-  
+
   # ws
   # [功能：] 根据运单号获取清单
   # 参数：
@@ -308,23 +307,25 @@ module DeliveryBll
     select="delivery_items.*,delivery_packages.cpartNr,delivery_packages.spartNr,delivery_packages.perPackAmount"
     condi={}
     condi["delivery_notes.key"]=dnKey
-   return DeliveryItem.joins(:delivery_package=>:delivery_note).find(:all,:select=>select,:conditions=>condi)
+    return DeliveryItem.joins(:delivery_package=>:delivery_note).find(:all,:select=>select,:conditions=>condi)
   end
-  
+
   # ws
   # [功能：] 根据运单需要质检或不要质检的包装箱
   # 参数：
   # - string : dnKey
   # 返回值：
   # - array : delivery items
-  def self.get_dn_check_list dnKey,needCheck=true
+  def self.get_dn_check_list_from_mysql params
     select="delivery_items.*,delivery_packages.perPackAmount,delivery_packages.packAmount,delivery_packages.cpartNr,delivery_packages.spartNr,strategies.needCheck"
-    if needCheck
-     return DeliveryItem.joins(:delivery_package=>{:part_rel=>:strategy}).joins(:delivery_package=>:delivery_note).find(:all,:select=>select,
-    :conditions=>{"strategies.needCheck"=>[DeliveryObjInspect::SamInspect,DeliveryObjInspect::FullInspect],"delivery_notes.key"=>dnKey})
+    condi={}
+    condi["delivery_notes.key"]=params[:dnKey]
+    condi["strategies.needCheck"]=if params[:needCheck]
+     [DeliveryObjInspect::SamInspect,DeliveryObjInspect::FullInspect]
     else
-      return DeliveryItem.joins(:delivery_package=>{:part_rel=>:strategy}).joins(:delivery_package=>:delivery_note).find(:all,:select=>select,
-     :conditions=>{"strategies.needCheck"=>DeliveryObjInspect::ExemInspect,"delivery_notes.key"=>dnKey})
+      DeliveryObjInspect::ExemInspect
     end
+    return DeliveryItem.joins(:delivery_package=>{:part_rel=>:strategy}).joins(:delivery_package=>:delivery_note).find(:all,:select=>select,:conditions=>condi)
   end
+
 end

@@ -8,24 +8,35 @@ class DeliveryItem < ActiveRecord::Base
 
   belongs_to :delivery_package
   has_one :delivery_item_state
-  
+  delegate :part_rel,:to=>:delivery_package
+   
   include CZ::BaseModule
   include CZ::DeliveryBase
 
   after_save :update_redis_id
   after_update :update_state_wayState,:update_delivery_note_state
+  before_create :build_item_state
   
-  
-  @@acc_rej_states=[DeliveryObjWayState::Intransit,DeliveryObjWayState::Arrived]
+  @@can_acc_rej_waystates=[DeliveryObjWayState::Intransit,DeliveryObjWayState::Arrived]
+  @@can_inspect_waystates=[DeliveryObjWayState::Received]
+  @@inspect_states=[DeliveryObjInspect::SamInspect,DeliveryObjInspect::FullInspect]
+  @@can_instore_waystate=[DeliveryObjWayState::Received]
   
   def self.single_or_default key   
     return find_from_redis key
   end
 
   def can_accept_or_reject
-    @@acc_rej_states.include?(self.wayState)
+    @@can_acc_rej_waystates.include?(self.wayState)
   end
   
+  def can_inspect
+    @@can_inspect_waystates.include?(self.wayState)
+  end
+  
+  def can_instore
+     (@@can_instore_waystate.include?(self.wayState) and ((@@inspect_states.include?(self.needCheck) and self.checked) or !@@inspect_states.include?(self.needCheck)))
+  end
   private
 
   def update_delivery_note_state
@@ -53,7 +64,13 @@ class DeliveryItem < ActiveRecord::Base
       end
     end
   end
-
+  
+  def build_item_state
+   if @@inspect_states.include?(part_rel.strategy.needCheck)
+    build_delivery_item_state(:desc=>"未检验")
+   end
+  end
+  
   def self.find_from_redis key
     rfind(key)
   end

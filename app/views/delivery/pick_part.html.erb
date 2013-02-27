@@ -36,29 +36,19 @@
 	</div>
 
 </div>
-<div id="pick-part-info-box" style="width: 350px; height: 150px;background-color:
-#EFEFEF;-moz-border-radius:10px;position: absolute; margin-left:20%; margin-top: 10%;
--webkit-border-radius:10px;
-border-radius:10px;
-border:1px solid ddd;
-cursor: pointer;
--webkit-box-shadow:0 0 10px #1297CF;
--moz-box-shadow:0 0 10px #1297CF;
-padding:10px; display: none;">
+<div id="pick-part-info-box" class="info-box">
 	<div class="closebt"></div>
-	<div  style="font-size:16px;color: #1297CF; text-align: center; height: 30px; margin-top: 15px;">
-		<span id="selected-spart-nr" style=" font-weight: bold;"></span>
+	<div class="info-box-title">
+		<span id="selected-spart-nr"></span>
 	</div>
 	<input type="hidden" id="selected-part-rel-key"/>
-	<div style="font-size: 15px; text-align: center; margin-top: 8px;">
-		<span style="color: #7C7C7C;">单位量 X 包装量 :</span>
-		<input type="text" id="selected-part-perpack"
-		style="width: 60px;height: 25px;font-size: 17px; font-weight: bold;color: #1297CF;border: 1px solid #DBDBDB;">
-		<span style="color: #7C7C7C;"> X </span>
-		<input type="text" id="selected-part-pack-num"
-		style="width: 60px;height: 25px;font-size: 17px;color: #1297CF; font-weight: bold;border: 1px solid #DBDBDB;" />
+	<div class="info-box-body">
+		<span >单位量 X 包装量 :</span>
+		<input type="text" id="selected-part-perpack"/>
+		<span> X </span>
+		<input type="text" id="selected-part-pack-num"/>
 		<br />
-		<input type="button" value="添 加"  onclick="add_part_to_cart();" class="btupload search-btn" style="margin-top: 17px; width: 75px;"  >
+		<input type="button" value="添 加"  onclick="add_part_to_cart();" class="btupload search-btn"/>
 	</div>
 </div>
 <script type="text/javascript"></script>

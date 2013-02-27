@@ -2,7 +2,7 @@
 class DeliveryController < ApplicationController
 
   before_filter  :authorize
-  before_filter :auth_dn,:only=>[:gen_dn_pdf,:accept,:receive,:mark_abnormal,:doaccept,:inspect,:doinspect]
+  before_filter :auth_dn,:only=>[:gen_dn_pdf,:accept,:receive,:mark_abnormal,:doaccept,:inspect,:doinspect,:instore]
   before_filter :redis_auth_dn,:only=>[:dn_detail]
   # ws
   # 运单列表
@@ -366,10 +366,16 @@ class DeliveryController < ApplicationController
   # 返回值：
   # - html
   def accept        
+      @params={:dnKey=>params[:dnKey]}
      if @msg and @msg.result
+       if @dn.can_accept
        @msg.object=[]
        @msg.object[0]=@dn
        @msg.object[1]=DeliveryBll.get_dn_list params[:dnKey]
+       else
+         @msg.result=false
+         @msg.content="运单：#{DeliveryObjWayState.get_desc_by_value(@dn.wayState)}，不可接收"
+       end
        end
   end
   
@@ -385,8 +391,7 @@ class DeliveryController < ApplicationController
       itemIds=params[:ids].split(',')
       accept_type=params[:type].to_i
       DeliveryItem.where(:id=>itemIds).update_all(:wayState=>accept_type)       
-       if accept_type==DeliveryObjWayState::Rejected
-         
+       if accept_type==DeliveryObjWayState::Rejected         
         if @dn.state==DeliveryObjState::Normal
           @dn.update_attributes(:state=>DeliveryObjState::Abnormal,:wayState=>DeliveryObjWayState::InAccept)
         end
@@ -456,11 +461,19 @@ class DeliveryController < ApplicationController
   # 返回值：
   # - html
   def inspect
+      @params={:dnKey=>params[:dnKey]}
       if @msg and @msg.result
         if @dn.can_inspect
        @msg.object=[]
        @msg.object[0]=@dn
-       @msg.object[1]=DeliveryBll.get_dn_check_list(@dn.key)
+       list=DeliveryBll.get_dn_check_list_from_mysql({:dnKey=>@dn.key,:needCheck=>true})
+       if list.count>0
+          @msg.object[1]=list
+          @inspects=DeliveryObjInspectState.all.collect{|r| [r.desc,r.value]}[1..-1]
+        else
+          @msg.result=false
+          @msg.content="此运单不存在需质检零件"
+       end
        else
          @msg.result=false
          @msg.content="<div>运单状态为:#{DeliveryHelper.get_dn_wayState(@dn.wayState)},处于不可质检状态。</br>只有运单处于:<span class='received'>#{DeliveryHelper.get_can_inspect_states.join('、')}</span>后才可质检。</div>"
@@ -476,23 +489,54 @@ class DeliveryController < ApplicationController
   # - html
   def doinspect
      if request.post?
-      if @msg.result
+      if @msg.result        
         type=params[:type].to_i
         ids=params[:ids].split(',')
         if type==DeliveryObjInspectState::Normal
-          DeliveryItem.where(:id=>ids).update_all(:checked=>true)
-          ids.each do |id|
-          DeliveryItemState.find_or_create_by_delivery_item_id(:delivery_item_id=>id){
-            |i|
-            i.state=type
-            i.desc="检验正常"
-          }
+          DeliveryItem.where(:id=>ids).update_all(:checked=>true,:state=>DeliveryObjState::Normal)
+          @msg.object=DeliveryObjState::Normal          
+        elsif type!=DeliveryObjInspectState::Normal
+          @msg.object=DeliveryObjState::Abnormal
+          if params[:return]
+            denied=Storage.return_denied(ids)
+            if denied              
+              @msg.result=false
+              @msg.object=denied
+            else              
+               DeliveryItem.where(:id=>ids).update_all(:checked=>true,:state=>DeliveryObjState::Abnormal,:wayState=>DeliveryObjWayState::Returned)
+               if @dn.delivery_packages.sum('packAmount')==@dn.delivery_items.where(:wayState=>[DeliveryObjWayState::Returned]).count
+                 @dn.update_attributes(:wayState=>DeliveryObjWayState::Returned)
+               end    
+               @msg.instance_variable_set "@wayState",DeliveryObjWayState.get_desc_by_value(DeliveryObjWayState::Returned)
+               @msg.instance_variable_set "@wayStateCode",DeliveryObjWayState::Returned
+            end
+            else              
+            DeliveryItem.where(:id=>ids).update_all(:checked=>true,:state=>DeliveryObjState::Abnormal)
           end
-        end
+        end      
+        if @msg.result         
+          @msg.content=DeliveryObjState.get_desc_by_value(@msg.object)      
+          DeliveryItemState.where(:delivery_item_id=>ids).update_all(:state=>type,:desc=>params[:desc]||"检验通过")    
+          end     
       end
       render :json=>@msg
       end
   end 
+  
+  def instore    
+    @wares=Warehouse.selection_list(@cz_org)
+    @params={:dnKey=>params[:dnKey],:type=>params[:type],:ware=>params[:ware]}
+    if @msg and @msg.result
+      if @dn.can_instore
+       @msg.object=[]
+       @msg.object[0]=@dn
+       @msg.object[1]=DeliveryBll.get_dn_check_list_from_mysql({:dnKey=>@dn.key,:needCheck=>false})
+       else
+         @msg.result=false
+         @msg.content="运单：#{DeliveryObjWayState.get_desc_by_value(@dn.wayState)}，不可入库"
+       end
+    end
+  end
   
   private 
   def auth_dn
