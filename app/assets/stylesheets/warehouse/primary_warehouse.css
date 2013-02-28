@@ -94,6 +94,9 @@
     .new-add{
     	background-color:#72c869;
     }
+    .err-add{
+    	background-color:#FF0000;
+    }
     .toggle-btn{
     	margin-top:10px;
     	background-color:#DADADA;

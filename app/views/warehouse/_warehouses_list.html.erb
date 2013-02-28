@@ -6,8 +6,8 @@
  			<% i=0 ; @warehouses.each do |d|	%>
  				<li class="ware-li li-small" onclick="position_list(<%= d.id %>);">
  					<div><%= i+=1%></div>
- 					<%= text_field_tag nil, d.nr %>
- 					<%= text_field_tag nil, d.name %>
+ 					<%= text_field_tag nil, d.nr, :readOnly=>true, :style=>"cursor:default" %>
+ 					<%= text_field_tag nil, d.name, :readOnly=>true, :style=>"cursor:default" %>
  					<div class="wh-del del-small" onclick="delete_warehouse(<%= d.id %>);"></div>
  				</li>
  			<% end %>
