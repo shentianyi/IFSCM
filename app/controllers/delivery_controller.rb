@@ -4,6 +4,7 @@ class DeliveryController < ApplicationController
   before_filter  :authorize
   before_filter :auth_dn,:only=>[:arrive,:mark_abnormal,:return_dn]
   before_filter :redis_auth_dn,:only=>[:dn_detail,:gen_dn_pdf,:accept,:doaccept,:receive,:inspect,:doinspect,:instore,:doinstore]
+  ##
   # ws
   # 运单列表
   def index
