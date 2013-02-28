@@ -743,12 +743,11 @@ function redirect_delivery_action(action, params) {
 	if (params == null) {
 		window.location = "../delivery/" + action + "?dnKey=" + $("#dnKey").val();
 	} else {
-		var p="";
-		for(var h in params){
-			p+="&"+h+"="+params[h];
+		var p = "";
+		for (var h in params) {
+			p += "&" + h + "=" + params[h];
 		}
-	    // p=p.replace(/&$/gi, "");
-	   window.location = "../delivery/" + action + "?dnKey=" + $("#dnKey").val()+p;
+		window.location = "../delivery/" + action + "?dnKey=" + $("#dnKey").val() + p;
 	}
 }
 
@@ -932,5 +931,30 @@ function abnormal_pack_inpect() {
 	} else {
 		alert("请选择包装箱！");
 		hide_inspect_box();
+	}
+}
+
+function pack_in_store(dnKey, id, posiNr, ware) {
+	if (posiNr.length > 0) {
+		$.ajax({
+			url : "../delivery/doinstore",
+			type : 'post',
+			data : {
+				dnKey : dnKey,
+				id : id,
+				posiNr : posiNr,
+				ware : ware
+			},
+			dataType : 'json',
+			success : function(msg) {
+				if (msg.result) {
+					$("#operate-th-" + id).html(posiNr);
+					$("#store-th-" + id).html("是");
+					$(".position:eq(" + ($(".position").index($("#" + id)) + 1) + ")").focus();
+				} else {
+					alert(msg.content);
+				}
+			}
+		});
 	}
 }

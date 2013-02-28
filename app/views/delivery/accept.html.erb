@@ -3,14 +3,14 @@
 <script src="/assets/deliery-send-receive.js" type="text/javascript"></script>
 
 <div class="input-mix">
-    <input type="text" name="delivery-up-tx" class="uploadfile" id="dnKey" value="<%= @params[:dnKey]%>"/>
+  	<span class="uploadfile">运单号：</span> 
+	<input type="text" name="delivery-up-tx" class="uploadfile delivery-up-tx"  id="dnKey" value="<%= @params[:dnKey]%>"/>
 	<input type="button" name="delivery-up-btn" class="btupload" value="提交" onclick="redirect_delivery_action('accept');"  >
 </div>
 <div id="accept-list-div">
 	<%if @msg
 	if @msg.result%>
-	<% items=@msg.object[1]%>
-	<input type="hidden" value="<%= @msg.object[0].key%>" id="dnkey-hidden" name="dnKey">
+	<input type="hidden" value="<%= @dn.key%>" id="dnkey-hidden" name="dnKey">
 	<table class="delivery-check">
 		<tr  class="lineone">
 			<th>&nbsp;</th>
@@ -23,9 +23,8 @@
 			<input type="button" class="1" id="check-all"  name="all-chosen" onclick="check_all();" value="全选"/>
 			</th>
 		</tr>
-		<% i=0%>
-		<%
-		items.each do |pack|
+		<%i=0
+		@list.each do |pack|
 		per=FormatHelper.string_to_int(pack.perPackAmount.to_s)
 		%>
 		<tr class="norline">
@@ -54,7 +53,6 @@
 		<input type="button" value="拒绝" onclick="pack_rece_reje(500,1);">
 		<input type="button" value="标记异常" onclick="pack_rece_reje(200,2);">
 	</div>
-
 	<div class="fixed-print">
 		<input type="button" value="质检单打印" name="check-print" onclick="generate_dn_label_pdf(400);">
 		<input type="button" value="入库单打印" name="enter-print" onclick="generate_dn_label_pdf(500);">

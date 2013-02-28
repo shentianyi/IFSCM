@@ -97,6 +97,7 @@ Demand::Application.routes.draw do
       post :doinspect      
       post :mark_abnormal
       match :instore
+      post :doinstore
     end
   end
   

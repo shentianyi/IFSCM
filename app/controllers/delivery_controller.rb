@@ -2,7 +2,7 @@
 class DeliveryController < ApplicationController
 
   before_filter  :authorize
-  before_filter :auth_dn,:only=>[:gen_dn_pdf,:accept,:receive,:mark_abnormal,:doaccept,:inspect,:doinspect,:instore]
+  before_filter :auth_dn,:only=>[:gen_dn_pdf,:accept,:receive,:mark_abnormal,:doaccept,:inspect,:doinspect,:instore,:doinstore]
   before_filter :redis_auth_dn,:only=>[:dn_detail]
   # ws
   # 运单列表
@@ -369,9 +369,7 @@ class DeliveryController < ApplicationController
       @params={:dnKey=>params[:dnKey]}
      if @msg and @msg.result
        if @dn.can_accept
-       @msg.object=[]
-       @msg.object[0]=@dn
-       @msg.object[1]=DeliveryBll.get_dn_list params[:dnKey]
+       @list=DeliveryBll.get_dn_list params[:dnKey]
        else
          @msg.result=false
          @msg.content="运单：#{DeliveryObjWayState.get_desc_by_value(@dn.wayState)}，不可接收"
@@ -464,11 +462,8 @@ class DeliveryController < ApplicationController
       @params={:dnKey=>params[:dnKey]}
       if @msg and @msg.result
         if @dn.can_inspect
-       @msg.object=[]
-       @msg.object[0]=@dn
-       list=DeliveryBll.get_dn_check_list_from_mysql({:dnKey=>@dn.key,:needCheck=>true})
-       if list.count>0
-          @msg.object[1]=list
+       @list=DeliveryBll.get_dn_check_list_from_mysql({:dnKey=>@dn.key,:needCheck=>true})
+       if @list.count>0
           @inspects=DeliveryObjInspectState.all.collect{|r| [r.desc,r.value]}[1..-1]
         else
           @msg.result=false
@@ -528,13 +523,39 @@ class DeliveryController < ApplicationController
     @params={:dnKey=>params[:dnKey],:type=>params[:type],:ware=>params[:ware]}
     if @msg and @msg.result
       if @dn.can_instore
-       @msg.object=[]
-       @msg.object[0]=@dn
-       @msg.object[1]=DeliveryBll.get_dn_check_list_from_mysql({:dnKey=>@dn.key,:needCheck=>false})
+        p={:dnKey=>@dn.key}
+        t=params[:type].to_i
+        if t==1
+          p[:needCheck]=false
+        elsif t==2
+          p[:needCheck]=true
+        end
+        @list=DeliveryBll.get_dn_check_list_from_mysql(p)
+        if @list.length==0
+          @msg.result=false
+          @msg.content="无需入库包装箱"
+       end
        else
          @msg.result=false
          @msg.content="运单：#{DeliveryObjWayState.get_desc_by_value(@dn.wayState)}，不可入库"
        end
+    end
+  end
+  
+  def doinstore
+    if request.post?
+      if @msg.result   
+        if item=DeliveryBll.get_dn_instore_item(params[:id])
+         @msg=WarehouseBll.position_in(params[:posiNr],params[:ware],item.amount,item.part_id,item.id)
+         if @msg.result
+           item.update_attributes(:posi=>params[:posiNr],:stored=>true)
+         end
+        else
+            @msg.result=false
+            @msg.content="包装箱已入库或不存在"
+        end
+      end
+      render :json=>@msg
     end
   end
   

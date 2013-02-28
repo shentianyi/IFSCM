@@ -320,12 +320,18 @@ module DeliveryBll
     select="delivery_items.*,delivery_packages.perPackAmount,delivery_packages.packAmount,delivery_packages.cpartNr,delivery_packages.spartNr,strategies.needCheck"
     condi={}
     condi["delivery_notes.key"]=params[:dnKey]
+    if !params[:needCheck].nil?
     condi["strategies.needCheck"]=if params[:needCheck]
-     [DeliveryObjInspect::SamInspect,DeliveryObjInspect::FullInspect]
+      [DeliveryObjInspect::SamInspect,DeliveryObjInspect::FullInspect]
     else
       DeliveryObjInspect::ExemInspect
     end
+    end
     return DeliveryItem.joins(:delivery_package=>{:part_rel=>:strategy}).joins(:delivery_package=>:delivery_note).find(:all,:select=>select,:conditions=>condi)
   end
-
+  
+  def self.get_dn_instore_item id
+    select= "delivery_items.*,delivery_packages.perPackAmount as 'amount',part_rels.client_part_id as 'part_id'"    
+    return DeliveryItem.joins(:delivery_package=>:part_rel).find(:first,:select=>select,:conditions=>{:id=>id,:stored=>false})          
+  end
 end

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130226063043) do
+ActiveRecord::Schema.define(:version => 20130226063044) do
 
   create_table "delivery_item_states", :force => true do |t|
     t.integer  "state",            :default => 100
@@ -33,6 +33,7 @@ ActiveRecord::Schema.define(:version => 20130226063043) do
     t.integer  "wayState",            :default => 100
     t.boolean  "checked",             :default => false
     t.boolean  "stored",              :default => false
+    t.string   "posi"
   end
 
   add_index "delivery_items", ["delivery_package_id"], :name => "index_delivery_items_on_delivery_package_id"

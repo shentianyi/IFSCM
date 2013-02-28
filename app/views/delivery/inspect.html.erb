@@ -15,39 +15,35 @@
 	}
 </script>
 <div class="input-mix">
-	<input type="text" name="delivery-up-tx" class="uploadfile" id="dnKey" value="<%= @params[:dnKey]%>"/>
-	<input type="button" name="delivery-up-btn" class="btupload" value="提交" onclick="redirect_delivery_action('inspect');"  >
+	<span class="uploadfile">运单号：</span> 
+	<input type="text" name="delivery-up-tx" class="uploadfile delivery-up-tx"  id="dnKey" value="<%= @params[:dnKey]%>"/>
+	<input type="button" name="delivery-up-btn" class="btupload" value="提交" onclick="redirect_delivery_action('inspect');"/>
 </div>
 <div id="accept-list-div">
 	<%if @msg
 	if @msg.result%>
-	<% items=@msg.object[1]%>
-	<input type="hidden" value="<%= @msg.object[0].key%>" id="dnkey-hidden" name="dnKey">
+	<input type="hidden" value="<%= @dn.key%>" id="dnkey-hidden" name="dnKey">
 	<table class="delivery-check">
 		<tr  class="lineone">
 			<th>&nbsp;</th>
 			<th>箱号</th>
 			<th>客户零件号</th>			
-			<th>检验策略</th>
-			<th>箱单位量</th>
+			<th>质检策略</th>
 		    <th>运输状态</th>
 			<th>是否异常</th>
-			<th>检验完成</th>
+			<th>质检完成</th>
 			<th>
 			<input type="button" class="1" id="check-all"  name="all-chosen" onclick="check_all();" value="全选"/>
 			</th>
 		</tr>
-		<% i=0%>
-		<%
-		items.each do |pack|
-		per=FormatHelper.string_to_int(pack.perPackAmount.to_s)
+		<%i=0
+		@list.each do |pack|
 		%>
 		<tr class="norline">
 			<th><%= (i+=1)%></th>
 			<th style="text-align:left;" id="pack-key-th-<%= pack.id%>"><%= pack.key%></th>
 			<th style="text-align:center;"><%= pack.cpartNr%></th>
 			<th> <%= DeliveryHelper::get_pack_check_inspect(pack.needCheck)%> </th>
-			<th><%= per%></th>
 			<th>
 			<div class="<%= DeliveryHelper::get_dn_wayState_css(pack.wayState)%>"  id="waystate-th-<%= pack.id%>">
 				<%= DeliveryHelper::get_dn_wayState(pack.wayState)%>
