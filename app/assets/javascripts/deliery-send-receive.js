@@ -802,7 +802,7 @@ function checked_ids() {
 	return trimEnd(ids);
 }
 
-function pack_rece_reje(type, action) {
+function pack_rece_reje(type, action, pdata,call) {
 	var actions = {
 		1 : "doaccept",
 		2 : "mark_abnormal"
@@ -810,15 +810,21 @@ function pack_rece_reje(type, action) {
 	var ids = checked_ids();
 	if (ids.length > 0) {
 		if (confirm("确认执行此操作？")) {
+			var data = {
+				dnKey : $("#dnkey-hidden").val(),
+				ids : ids,
+				type : type
+			};
+			if (pdata != null) {
+				for (var v in pdata) {
+					data[v] = pdata[v];
+				}
+			}
 			show_handle_dialog();
 			$.ajax({
 				url : "../delivery/" + actions[action],
 				type : 'post',
-				data : {
-					dnKey : $("#dnkey-hidden").val(),
-					ids : ids,
-					type : type
-				},
+				data : data,
 				dataType : 'json',
 				success : function(msg) {
 					hide_handle_dialog();
@@ -831,15 +837,30 @@ function pack_rece_reje(type, action) {
 							}
 						} else if (action == 2) {
 							for (var i = 0; i < ids.length; i++) {
-								$("#state-th-" + ids[i]).attr('class', get_dn_obj_state_css(type)).html("异常");
+								$("#state-th-" + ids[i]).attr('class', get_dn_obj_state_css(msg.object)).html(msg.content);
 							}
 						}
+						if (call != null) {
+								call();
+							}
 					} else {
 						alert(msg.content);
 					}
 				}
 			});
 		}
+	}
+}
+
+function mark_pack_abnormal(){
+	if (checked_ids().length > 0) {
+		var data = {
+			desc : $("#check-desc-input").val()
+		};
+		pack_rece_reje($("#inspect_type").val(), 2, data, hide_inspect_box);
+	} else {
+		alert("请选择包装箱！");
+		hide_inspect_box();
 	}
 }
 
@@ -858,17 +879,18 @@ function pack_inspect(type, action, pdata, call) {
 	};
 	var ids = checked_ids();
 	if (ids.length > 0) {
-		var data = {
-			dnKey : $("#dnkey-hidden").val(),
-			ids : ids,
-			type : type
-		};
-		if (pdata != null) {
-			for (var v in pdata) {
-				data[v] = pdata[v];
-			}
-		}
 		if (confirm("确认此操作？")) {
+
+			var data = {
+				dnKey : $("#dnkey-hidden").val(),
+				ids : ids,
+				type : type
+			};
+			if (pdata != null) {
+				for (var v in pdata) {
+					data[v] = pdata[v];
+				}
+			}
 			show_handle_dialog();
 			$.ajax({
 				url : "../delivery/" + actions[action],
@@ -924,7 +946,6 @@ function abnormal_pack_inpect() {
 	if (checked_ids().length > 0) {
 		var data = {
 			desc : $("#check-desc-input").val(),
-			type : $("#inspect_type").val(),
 			"return" : $("#pack-return-checkbox").attr("checked")
 		};
 		pack_inspect($("#inspect_type").val(), 1, data, hide_inspect_box);
@@ -953,6 +974,36 @@ function pack_in_store(dnKey, id, posiNr, ware) {
 					$(".position:eq(" + ($(".position").index($("#" + id)) + 1) + ")").focus();
 				} else {
 					alert(msg.content);
+				}
+			}
+		});
+	}
+}
+
+function return_delivery_note() {
+	if (confirm("确认此操作？")) {
+		show_handle_dialog();
+		$.ajax({
+			url : "../delivery/return_dn",
+			type : 'post',
+			data : {
+				dnKey : $("#dnkey-hidden").val()
+			},
+			dataType : 'json',
+			success : function(msg) {
+				hide_handle_dialog();
+				if (msg.result) {
+					$("[id^='waystate-th-']").attr('class', get_dn_obj_waystate_css(msg.wayStateCode)).html(msg.wayState);
+				} else {
+					if (msg.content) {
+						alert(msg.content);
+					} else {
+						var mess = "下列包装箱不可退货：\n";
+						for (var i = 0; i < msg.object.length; i++) {
+							mess += msg.object[i] + ";\n";
+						}
+						alert(mess);
+					}
 				}
 			}
 		});

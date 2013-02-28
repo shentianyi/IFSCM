@@ -50,14 +50,26 @@
 	</table>
 	<div class="button-group">
 		<input type="button" value="接收" onclick="pack_rece_reje(400,1);">
-		<input type="button" value="拒绝" onclick="pack_rece_reje(500,1);">
-		<input type="button" value="标记异常" onclick="pack_rece_reje(200,2);">
+		<input type="button" value="拒收" onclick="pack_rece_reje(500,1);">
+		<input type="button" value="标记异常" onclick="pop_pack_inspect();">
 	</div>
 	<div class="fixed-print">
 		<input type="button" value="质检单打印" name="check-print" onclick="generate_dn_label_pdf(400);">
 		<input type="button" value="入库单打印" name="enter-print" onclick="generate_dn_label_pdf(500);">
 	</div>
 	<%= render :partial => "shared/handling_msg_box", :locals => { :handlemsg => "正在处理中，请稍后..." } %>
+	<div id="pick-part-info-box" class="info-box inspect-input-box">
+	<div class="closebt"></div>
+	<div class="info-box-title">
+		<span>异常标记数据填写</span>
+	</div>
+	<div class="info-box-body">		
+		 <span>异常类型：<%= select_tag :inspect_type,options_for_select(@inspects)%></span>
+		 <span>异常备注：<textarea id="check-desc-input"/></textarea></span>
+		<input type="button" value="确 定"  onclick="mark_pack_abnormal();" 
+		class="btupload search-btn"/>
+	</div>
+</div>
 	<%else%>
 	<div class="abstractblock">
 		<%= @msg.content%>
@@ -65,4 +77,16 @@
 	<%end
 	end%>
 </div>
+<script type="text/javascript">
+	$(document).ready(function() {
+		$("#pick-part-info-box").draggable();
+		$(".closebt").bind('click', function() {
+			hide_inspect_box();
+		});
+	}); 
+	function hide_inspect_box () {
+	  $("#pick-part-info-box").hide();
+	  $("#check-desc-input").val("");
+	}
+</script>
 

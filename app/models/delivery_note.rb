@@ -18,10 +18,10 @@ class DeliveryNote < ActiveRecord::Base
   after_save :update_redis_id
   after_update :update_state_wayState,:update_wayState
 
+   
   @@can_inspect_waystate=[DeliveryObjWayState::Received]
   @@can_accept_waystate=[DeliveryObjWayState::Intransit,DeliveryObjWayState::Arrived,DeliveryObjWayState::InAccept]
   @@can_instore_waystate=[DeliveryObjWayState::Received]
-  
   def self.single_or_default key,mysql=false
     if mysql
       where(:key=>key).first
@@ -151,7 +151,7 @@ class DeliveryNote < ActiveRecord::Base
       dns=[]
       dnKeys=$redis.zrange key,startIndex,endIndex
       dnKeys.each do |dnKey|
-        if dn=DeliveryNote.rfind(dnKey)
+        if dn=single_or_default(dnKey)
         dns<<dn
         end
       end
@@ -187,9 +187,11 @@ class DeliveryNote < ActiveRecord::Base
     @@can_accept_waystate.include?(self.wayState)
   end
   
+  
   def can_instore
     @@can_instore_waystate.include?(self.wayState)
   end
+  
   private
 
   def self.find_from_redis key

@@ -2,8 +2,9 @@
 class DeliveryController < ApplicationController
 
   before_filter  :authorize
-  before_filter :auth_dn,:only=>[:gen_dn_pdf,:accept,:receive,:mark_abnormal,:doaccept,:inspect,:doinspect,:instore,:doinstore]
-  before_filter :redis_auth_dn,:only=>[:dn_detail]
+  before_filter :auth_dn,:only=>[:arrive,:mark_abnormal,:return_dn]
+  before_filter :redis_auth_dn,:only=>[:dn_detail,:gen_dn_pdf,:accept,:doaccept,:receive,:inspect,:doinspect,:instore,:doinstore]
+  ##
   # ws
   # 运单列表
   def index
@@ -369,7 +370,13 @@ class DeliveryController < ApplicationController
       @params={:dnKey=>params[:dnKey]}
      if @msg and @msg.result
        if @dn.can_accept
-       @list=DeliveryBll.get_dn_list params[:dnKey]
+          @list=DeliveryBll.get_dn_list params[:dnKey]
+            if @list.count>0
+          @inspects=DeliveryObjInspectState.all.collect{|r| [r.desc,r.value]}[1..-1]
+        else
+          @msg.result=false
+          @msg.content="此运单不存在需接收零件"
+       end
        else
          @msg.result=false
          @msg.content="运单：#{DeliveryObjWayState.get_desc_by_value(@dn.wayState)}，不可接收"
@@ -386,32 +393,10 @@ class DeliveryController < ApplicationController
   def doaccept
      if request.post?
       if @msg.result
-      itemIds=params[:ids].split(',')
-      accept_type=params[:type].to_i
-      DeliveryItem.where(:id=>itemIds).update_all(:wayState=>accept_type)       
-       if accept_type==DeliveryObjWayState::Rejected         
-        if @dn.state==DeliveryObjState::Normal
-          @dn.update_attributes(:state=>DeliveryObjState::Abnormal,:wayState=>DeliveryObjWayState::InAccept)
-        end
-        total=@dn.delivery_packages.sum('packAmount')
-        rejected=@dn.delivery_items.where(:wayState=>DeliveryObjWayState::Rejected).count
-        if total==rejected
-          @dn.update_attributes(:wayState=>DeliveryObjWayState::Rejected)
-        else
-          rece_reje=@dn.delivery_items.where(:wayState=>[DeliveryObjWayState::Rejected,DeliveryObjWayState::Received]).count
-          if total==rece_reje
-            @dn.update_attributes(:wayState=>DeliveryObjWayState::Received)
-          end
-        end
-      elsif accept_type==DeliveryObjWayState::Received
-        if @dn.wayState==DeliveryObjWayState::Intransit or  @dn.wayState==DeliveryObjWayState::Arrived
-          @dn.update_attributes(:wayState=>DeliveryObjWayState::InAccept)
-        end
-        if @dn.delivery_packages.sum('packAmount')==@dn.delivery_items.where(:wayState=>[DeliveryObjWayState::Rejected,DeliveryObjWayState::Received]).count
-          @dn.update_attributes(:wayState=>DeliveryObjWayState::Received)
-        end        
-      end  
-      @msg.object=DeliveryObjWayState.get_desc_by_value(accept_type)
+      ids=params[:ids].split(',')
+      type=params[:type].to_i
+       Resque.enqueue(DeliveryItemAccepter,ids,@dn.id,type)       
+      @msg.object=DeliveryObjWayState.get_desc_by_value(type)
       @msg.content="已操作"
       end
       render :json=>@msg      
@@ -426,9 +411,13 @@ class DeliveryController < ApplicationController
   def mark_abnormal
     if request.post?
       if @msg.result
-       itemIds=params[:ids].split(',')
-        DeliveryItem.where(:id=>itemIds).update_all(:state=>DeliveryObjState::Abnormal) 
-        DeliveryNote.find(@dn.id).update_attributes(:state=>DeliveryObjState::Abnormal)        
+       ids=params[:ids].split(',')
+        # DeliveryItem.where(:id=>ids).update_all(:state=>DeliveryObjState::Abnormal) 
+        Resque.enqueue(DeliveryItemAllUpdater,100,ids,{:state=>DeliveryObjState::Abnormal})
+        @dn.update_attributes(:state=>DeliveryObjState::Abnormal)   
+        DeliveryItemState.where(:delivery_item_id=>ids).update_all(:state=>params[:type],:desc=>params[:desc]||"检验通过")  
+        @msg.object=DeliveryObjState::Abnormal
+        @msg.content=DeliveryObjState.get_desc_by_value(DeliveryObjState::Abnormal)
       end
       render :json=>@msg
     end
@@ -488,7 +477,7 @@ class DeliveryController < ApplicationController
         type=params[:type].to_i
         ids=params[:ids].split(',')
         if type==DeliveryObjInspectState::Normal
-          DeliveryItem.where(:id=>ids).update_all(:checked=>true,:state=>DeliveryObjState::Normal)
+            Resque.enqueue(DeliveryItemAllUpdater,100,ids,{:checked=>true,:state=>type})
           @msg.object=DeliveryObjState::Normal          
         elsif type!=DeliveryObjInspectState::Normal
           @msg.object=DeliveryObjState::Abnormal
@@ -497,16 +486,12 @@ class DeliveryController < ApplicationController
             if denied              
               @msg.result=false
               @msg.object=denied
-            else              
-               DeliveryItem.where(:id=>ids).update_all(:checked=>true,:state=>DeliveryObjState::Abnormal,:wayState=>DeliveryObjWayState::Returned)
-               if @dn.delivery_packages.sum('packAmount')==@dn.delivery_items.where(:wayState=>[DeliveryObjWayState::Returned]).count
-                 @dn.update_attributes(:wayState=>DeliveryObjWayState::Returned)
-               end    
-               @msg.instance_variable_set "@wayState",DeliveryObjWayState.get_desc_by_value(DeliveryObjWayState::Returned)
-               @msg.instance_variable_set "@wayStateCode",DeliveryObjWayState::Returned
+            else           
+               Resque.enqueue(DeliveryItemReturner,ids,@dn.id)
+               set_way_state_code(DeliveryObjWayState::Returned)
             end
             else              
-            DeliveryItem.where(:id=>ids).update_all(:checked=>true,:state=>DeliveryObjState::Abnormal)
+            Resque.enqueue(DeliveryItemAllUpdater,100,ids,{:checked=>true,:state=>DeliveryObjState::Abnormal})
           end
         end      
         if @msg.result         
@@ -559,25 +544,44 @@ class DeliveryController < ApplicationController
     end
   end
   
-  private 
-  def auth_dn
-    if params[:dnKey]
-    @msg=ReturnMsg.new
-    if @dn=DeliveryNote.single_or_default(params[:dnKey],true)
-      if @dn.organisation_id==session[:org_id] or @dn.rece_org_id==session[:org_id]       
-        @msg.result=true
-      else
-        @msg.content='此运单无权限查看'
-      end
-    else
-      @msg.content='运单不存在'
-    end
+  def return_dn
+    if request.post?
+      if @msg.result
+       if @dn.can_inspect
+        list=@dn.delivery_items
+        items=Hash[list.collect{|i| [i.id,i.key]}]
+        denied=Storage.return_denied(items.keys)
+        if denied              
+           @msg.result=false
+           @msg.object=items.delete_if{|k,v| !denied.include?(k)}
+         else
+           @dn.update_attributes(:wayState=>DeliveryObjWayState::Returned)
+           Resque.enqueue(DeliveryItemAllUpdater,100,items.keys,{:wayState=>DeliveryObjWayState::Returned})
+           set_way_state_code(DeliveryObjWayState::Returned)
+        end
+        else
+          @msg.result=false
+          @msg.content="运单：#{DeliveryObjWayState.get_desc_by_value(@dn.wayState)}，处于不可退货状态"
+        end
+      end      
+    render :json=>@msg
     end
   end
   
-    def redis_auth_dn
-    @msg=ReturnMsg.new
-        if @dn=DeliveryNote.single_or_default(params[:dnKey])
+  private 
+  def auth_dn     
+     @dn=DeliveryNote.single_or_default(params[:dnKey],true)
+     p_auth_dn
+  end
+  
+    def redis_auth_dn       
+      @dn=DeliveryNote.single_or_default(params[:dnKey])
+      p_auth_dn
+     end
+  
+  def p_auth_dn
+      @msg=ReturnMsg.new
+    if @dn
       if @dn.organisation_id==session[:org_id] or @dn.rece_org_id==session[:org_id]       
         @msg.result=true
       else
@@ -586,6 +590,10 @@ class DeliveryController < ApplicationController
     else
       @msg.content='运单不存在'
     end
+  end
+  def set_way_state_code code
+      @msg.instance_variable_set "@wayState",DeliveryObjWayState.get_desc_by_value(code)
+      @msg.instance_variable_set "@wayStateCode",code
   end
   
 end
