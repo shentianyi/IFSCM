@@ -30,12 +30,14 @@ class WarehouseController < ApplicationController
     else
       begin
         raise( ArgumentError, "格式错误：库位ID！" )  unless params[:posiId].is_a?(String)
+        raise( ArgumentError, "格式错误：零件号！" )  unless params[:partNr].is_a?(String)
         raise( ArgumentError, "格式错误：出库量！" )  unless params[:amount].is_a?(String)
         posiId = params[:posiId].strip
+        partNr = params[:partNr].strip
         amount = params[:amount].strip
         raise( ArgumentError, "参数错误：库位ID无效！" )  unless FormatHelper.str_is_positive_integer( posiId )
         raise( ArgumentError, "参数错误：出库量无效！" )  unless FormatHelper.str_is_positive_float( amount )
-        msg = WarehouseBll.position_out( posiId.to_i, amount.to_f )
+        msg = WarehouseBll.position_out( posiId.to_i, partNr, amount.to_f )
         if msg.result
           render :json => {:flag=>true, :msg=>"出库成功。"}
         else
@@ -52,7 +54,7 @@ class WarehouseController < ApplicationController
       @warehouses = @cz_org.warehouses
     else
       begin
-        raise( ArgumentError, "格式错误：仓库编号！" )  unless params[:whNr].is_a?(String)
+        raise( ArgumentError, "格式错误：仓库编号！" )  unless params[:whNr].present? and params[:whNr].is_a?(String)
         raise( ArgumentError, "格式错误：仓库名称！" )  unless params[:whName].is_a?(String)
         whNr = params[:whNr].strip
         whName = params[:whName].strip

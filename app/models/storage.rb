@@ -5,7 +5,9 @@ class Storage < ActiveRecord::Base
   belongs_to :part
   belongs_to :position
   
-  validate :delivery_item_id, :unique=>true
+  scope :by_part, lambda { |partNr| joins(:part).where('parts.partNr'=>partNr) }
+  
+  validates :delivery_item_id, :uniqueness => true
   
   def self.return_denied( list )
     return nil  unless list.is_a?(Array)

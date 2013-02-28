@@ -6,7 +6,9 @@ body {
 	padding: 0px;
 	font-family: "Helvetica Neue", "Hiragino Sans GB", "Segoe UI", "Microsoft Yahei", "微软雅黑", Tahoma, Arial, STHeiti, sans-serif;
 }
-
+h2{
+	color:#9D9D9D;
+}
 /*Another version*/
 .wrapcontent {
 	width: 1000px;
@@ -575,13 +577,13 @@ input.uploadfile {
 	.message-box{	
 		font-size:17px;
 		position:fixed;
+		display:none;
+		background-color:rgb(234, 237, 236);
 		margin:auto;
 		left:0;
 		right:0;
-		top:0;
-		bottom:0;
+		top:200px;
 		width:480px;
-		height:150px;
 		border-radius:5px;
 		-moz-border-radius: :5px;
 		-webkit-border-radius: 5px;
@@ -589,20 +591,31 @@ input.uploadfile {
 		-moz-box-shawdow:2px 2px 10px #999;
 		-webkit-box-shawdow:2px 2px 10px #999;
 	}
-	.message-box h2,.message-box p{
-		color:#696D72;
-		margin:2px 23px;
+		.message-box p{
+			padding:8px 10px 10px;
+			font-size:15px;
+				color:#363636;
+		}
+	.bg-grey{
+		background-color:#E1E1E1;
+		height:36px;
 	}
-	.message-box p{
-		margin-top:8px;
-	}
-	.close-logo{
+.bg-grey div{
+    float;left;
+	color:#363636;
+	font-size:18px;
+	display:inline-block;
+	margin:6px 8px;
+}
+	.close-logo{	
 		width:20px;
 		height:20px;
-		position:relative;
-		left:450px;
-		top:8px;
-       background:url(close-bt.png);
+	   float:right;
+	  margin:8px 10px;
+       background:url(closeiconB.png);
        background-position:center;
        background-repeat:no-repeat;
+	}
+	.close-logo:hover{
+		background-image:url(closeicon.png);
 	}

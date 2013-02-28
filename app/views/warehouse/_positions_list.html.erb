@@ -1,24 +1,32 @@
 
-	<table class="upData" id="positions_list_id" whid=<%= @whid %> >
-		<tr class="lineone">
-			<th></th>
-			<th>编号</th>
-			<th>容量</th>
-		</tr>
-		<tr class="divide" style="display: none">
-			<th class="nordvd"></th>
-			<th class="nordvd"></th>
-			<th class="nordvd"></th>
-			<th class="nordvd"></th>
-			<th class="nordvd"></th>
-			<th class="lastdvd"></th>
-		</tr>
-		<% i=0 ; @positions.each do |d|	%>
-		  <tr class="norline hoverable" >
-			<th><%= i+=1%></th>
-			<th><%= d.nr%></th>
-			<th><%= d.capacity%></th>
-			<th><%= button_tag '删除',:name=>"delete_position",:type=>'button',:onclick=>"delete_position(#{d.id});"%></th>
-		  </tr>
-		<% end %>
-	</table>
+ 	<div class="wareposition"  id="positions_list_id" whid=<%= @whid %> >
+ 		<p class="ware-p">库位</p>
+ 		<ul class="ware-ul">
+ 		    <% i=0 ; @positions.each do |d|	%>
+ 		    	<li class="ware-li li-big">
+ 		    		<%= text_field_tag nil, d.nr, :readOnly=>true, :style=>"cursor:default" %>
+ 		    		<p><%= d.capacity %></p>
+ 		    		<div class="wh-del del-big" onclick="delete_position(<%= d.id%>);"></div>
+ 		    	</li>
+ 		    <% end %>
+ 		    <li class="ware-li li-big "><input type="text" name="wareposition" class="new-add"><div class="wh-del del-big"></div></li>
+ 		    <li class="ware-li li-big"><input type="text" name="wareposition"><div class="wh-del del-big"></div></li>
+ 		</ul>
+ 	</div>
+ 	<div class="toggle-btn"></div>
+ 	<div class="toggle-list">
+ 		<p class="toggle-p">库位范围</p>
+ 		<%= text_field_tag :posiNr %>
+ 		<h1>-</h1>
+ 		<%= text_field_tag :posiNr %>
+ 		<p class="toggle-p">容量</p>
+ 		<%= text_field_tag :capacity %>
+ 		<button class="btn-normal">删除</button>
+ 		<button class="btn-normal">添加</button>
+ 		<br /><br />
+ 		<p class="toggle-p">库位</p>
+ 		<%= text_field_tag :posiNr %>
+ 		<p class="toggle-p">容量</p>
+ 		<%= text_field_tag :capacity %>
+ 		<button class="btn-normal">添加</button>
+ 	</div>
