@@ -100,6 +100,8 @@ Demand::Application.routes.draw do
       match :instore
       post :doinstore
       post :return_dn
+      post :arrive
+      match :link
     end
   end
   

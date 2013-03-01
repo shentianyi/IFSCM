@@ -865,9 +865,13 @@ function mark_pack_abnormal(){
 }
 
 function delivery_arrived() {
-	$.post('../delivery/arrived', function(data) {
-		if (data.result) {
-			$('.notifyNewForcast').remove();
+		show_handle_dialog();
+	$.post('../delivery/arrive', {dnKey : $("#dnkey-hidden").val()},function(msg) {
+		if (msg.result) {
+			$(".arrive-button-group").remove();
+			$(".accept-button-group").show();
+			$("[id^='waystate-th-']").attr('class', get_dn_obj_waystate_css(msg.wayStateCode)).html(msg.wayState);
+			hide_handle_dialog();
 		}
 	}, 'json');
 }

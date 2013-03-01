@@ -1,0 +1,37 @@
+<div>
+	<h4>运单任务列表</h4>
+</div>
+<% if @list and @list.count>0%>
+<link rel="stylesheet"  type="text/css" href="/assets/delivery/supWaybill.css"/>
+<script src="/assets/deliery-send-receive.js" type="text/javascript"></script>
+<table class="upData">
+	<tr class="lineone">
+		<th>&nbsp;</th>
+		<th>运单号</th> 
+		<th>发货日期</th> 
+		<th>运单状态</th>
+		<th>是否异常</th>
+	</tr>
+	<% i=0
+	@list.each do |dn|
+	%>
+	<tr class="norline hoverable">
+		<th><%= (i+=1)%></th>
+		<th><a href="../delivery/<%=@action%>?dnKey=<%= dn.key%>" target="blank"><%= dn.key%></a></th>		 
+		<th><%= Time.at(dn.sendDate.to_i).strftime('%Y/%m/%d') %></th>
+		<th>
+		<div class="<%= DeliveryHelper::get_dn_wayState_css(dn.wayState)%>">
+			<%= DeliveryHelper::get_dn_wayState(dn.wayState)%>
+		</div></th>
+		<th>
+		<div class="<%= DeliveryHelper::get_delivery_obj_state_css(dn.state)%>">
+			<%= DeliveryHelper::get_delivery_obj_state(dn.state)%>
+		</div></th>
+	</tr>
+	<%end%>
+</table>
+<%else%>
+<div class="abstractblock">
+	无运单
+</div>
+<%end%>
