@@ -76,7 +76,7 @@ module PageHelper
   end
   
   def page_concat_prev page,total,current,action,target=nil,last=nil
-    if total!=1
+    if total!=1 and total!=0
       liso={}
       liso[:class]= (current!=0) ? 'disabled':'active'
       page.concat(tag("li",liso,true))
@@ -96,7 +96,7 @@ module PageHelper
     end
   end
   def page_concat_next page,total,current,action,target=nil,last=nil
-    if total!=1
+    if total!=1 and total!=0
       liso={}
       liso[:class]= (current!=total-1) ? 'disabled':'active'
       page.concat(tag("li",liso,true))

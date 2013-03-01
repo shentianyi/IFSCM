@@ -1,10 +1,10 @@
 <link rel="stylesheet"  type="text/css" href="/assets/warehouse/stock_out.css" />
-
+<br /><br />
 仓库:<%= select_tag :whId,  options_for_select(@whlist),  prompt: "请选择仓库..." %>
-<br/>
+<br/><br />
 零件号:<%= text_field_tag :partNr %>
-<br/>
-<%= button_tag '库位列表',:name=>"out_list",:type=>'button',:onclick=>"stock_out_list();"%>
+<br /><br />
+<%= button_tag '库位列表',:class=>"normal-small-btn",:type=>'button',:onclick=>"stock_out_list();"%>
 <hr/>
 <div id="positions_list"></div>
 

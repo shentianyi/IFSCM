@@ -18,10 +18,20 @@
 					 <li><a href="../demander">查看需求</a></li>
 					 <li><a href="../demander/search_expired">过期需求</a></li>
 			          <li><a href="../delivery">查看运单</a></li>
-					<li><a href="../organisation_manager/search">供应商信息</a></li>
+<!-- 					<li><a href="../organisation_manager/search">供应商信息</a></li> -->
 					<li><a href="../delivery/accept">运单接收</a></li>
 					<li><a href="../delivery/inspect">运单质检</a></li>
 					<li><a href="../delivery/instore">运单入库</a></li>
+					<li><a href="../warehouse/search_state">库存查询</a></li>
+					<li><a href="../warehouse/search_op_history">仓库操作历史</a></li>
+					<li><a href="../warehouse/primary_warehouse">仓库维护</a></li>
+<!-- 					<li>
+						<a>功能</a>
+						<dl class="" style="display: none">
+							<dt>
+							<dd>
+						</dl>
+					</li> -->
 				<% elsif session[:orgOpeType]==OrgOperateType::Supplier %>
 					<li><a href="../demander">查看需求</a></li>
 					<li><a href="../demander/search_expired">过期需求</a></li>

@@ -1,4 +1,5 @@
 
+<br /><br />
 仓库:<%= select_tag :whId,  options_for_select(@whlist),  prompt: "请选择仓库..." %>
 <br/>
 库位:<%= text_field_tag :posiNr %>
@@ -7,8 +8,8 @@
 <br/>
 存量:<%= text_field_tag :stockStart, nil,:size=>5 %>
 至<%= text_field_tag :stockEnd, nil,:size=>5 %>
-<br/>
-<%= button_tag '搜索',:name=>"search_state",:type=>'button',:onclick=>"search_state(0);"%>
+<br/><br />
+<%= button_tag '搜索',:class=>"normal-small-btn",:type=>'button',:onclick=>"search_state(0);"%>
 <hr/>
 <hr/>
 

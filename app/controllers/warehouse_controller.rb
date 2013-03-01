@@ -248,10 +248,14 @@ class WarehouseController < ApplicationController
                                   .group('positions.id')
                                   .having(aggregations)
         @total = positions.length
-        @positions = positions.limit($DEPSIZE).offset($DEPSIZE*params[:page].to_i)
-        @totalPages = @total / $DEPSIZE + (@total%$DEPSIZE==0 ? 0:1)
-        @currentPage=params[:page].to_i
-        render :partial=>"state_list"
+         if @total == 0
+          render :text=>"没有搜索到相关数据！"
+        else
+          @positions = positions.limit($DEPSIZE).offset($DEPSIZE*params[:page].to_i)
+          @totalPages = @total / $DEPSIZE + (@total%$DEPSIZE==0 ? 0:1)
+          @currentPage=params[:page].to_i
+          render :partial=>"state_list"
+        end
       rescue Exception => e
         render :text => e.to_s
       end
@@ -303,10 +307,14 @@ class WarehouseController < ApplicationController
                                   .where( conditions )
                                   .select('warehouses.nr as whNr, positions.nr, parts.partNr, storage_histories.*')
         @total = operations.count
-        @operations = operations.limit($DEPSIZE).offset($DEPSIZE*params[:page].to_i)
-        @totalPages = @total / $DEPSIZE + (@total%$DEPSIZE==0 ? 0:1)
-        @currentPage=params[:page].to_i
-        render :partial=>"op_history_list"
+        if @total == 0
+          render :text=>"没有搜索到相关数据！"
+        else
+          @operations = operations.limit($DEPSIZE).offset($DEPSIZE*params[:page].to_i)
+          @totalPages = @total / $DEPSIZE + (@total%$DEPSIZE==0 ? 0:1)
+          @currentPage=params[:page].to_i
+          render :partial=>"op_history_list"
+        end
       rescue Exception => e
         render :text => e.to_s
       end
