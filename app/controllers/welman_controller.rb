@@ -7,4 +7,12 @@ class WelmanController < ApplicationController
     session[:orgOpeType]=nil
   end
   
+  def client
+    session[:orgOpeType] = OrgOperateType::Client
+  end
+  
+  def supplier
+    session[:orgOpeType] =OrgOperateType::Supplier
+  end
+  
 end

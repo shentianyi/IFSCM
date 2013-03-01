@@ -14,6 +14,7 @@ class WarehouseController < ApplicationController
       if posis.present?
         @whid = warehouseId
         @posilist = posis
+        @costcenterlist = CostCenter.selection_list(@cz_org)
         render :partial => "stock_out_list"
       else
         render :text => "没有找到相关库位！"
@@ -31,12 +32,19 @@ class WarehouseController < ApplicationController
         raise( ArgumentError, "格式错误：库位ID！" )  unless params[:posiId].is_a?(String) and posiId = params[:posiId].strip
         raise( ArgumentError, "格式错误：零件号！" )  unless params[:partNr].is_a?(String) and partNr = params[:partNr].strip
         raise( ArgumentError, "格式错误：出库量！" )  unless params[:amount].is_a?(String) and amount = params[:amount].strip
+        raise( ArgumentError, "格式错误：成本中心！" )  unless params[:ccName].is_a?(String) and ccName = params[:ccName].strip
+        ccName = "无"  if ccName.blank?
         raise( ArgumentError, "参数错误：库位ID无效！" )  unless FormatHelper.str_is_positive_integer( posiId )
         raise( ArgumentError, "参数错误：出库量无效！" )  unless FormatHelper.str_is_positive_float( amount )
+        raise( ArgumentError, "出库量应大于0！" )  unless amount.to_f > 0
         raise( RuntimeError, "零件不存在！" )  unless part = @cz_org.parts.find_by_partNr(partNr)
-        msg = WarehouseBll.position_out( posiId.to_i, part.id, amount.to_f )
+        if params[:scrap].present? and params[:scrap]=="true"
+          msg = WarehouseBll.position_out( posiId.to_i, part.id, amount.to_f, ccName, true )
+        else
+          msg = WarehouseBll.position_out( posiId.to_i, part.id, amount.to_f, ccName )
+        end
         if msg.result
-          render :json => {:flag=>true, :msg=>"出库成功。", :obj=>msg.object}
+          render :json => {:flag=>true, :msg=>msg.content, :obj=>msg.object}
         else
           render :json => {:flag=>false, :msg=>msg.content}
         end
@@ -94,7 +102,7 @@ class WarehouseController < ApplicationController
         raise( ArgumentError, "参数错误：仓库ID无效！" )  unless FormatHelper.str_is_positive_integer( whId )
         if wh = Warehouse.find_by_id(whId)
           @whid = whId
-          @positions = wh.positions.order("nr desc")
+          @positions = wh.positions.order("nr asc")
           @newposi = []
           render :partial => "positions_list"
         else
@@ -121,7 +129,7 @@ class WarehouseController < ApplicationController
           end
         end
         @whid = whId
-        @positions = wh.positions.order("nr desc")
+        @positions = wh.positions.order("nr asc")
         render :json => {:flag=>true, :msg=>"新建库位成功。", :txt=>render_to_string(:partial=>"positions_list") }
       rescue Exception => e
         render :json => {:flag=>false, :msg=>e.to_s}
@@ -139,7 +147,7 @@ class WarehouseController < ApplicationController
         raise( ArgumentError, "参数错误：容量无效！" )  unless FormatHelper.str_is_positive_integer( capa )
         raise( RuntimeError, "仓库不存在！" )  unless wh = @cz_org.warehouses.find_by_id(whId)
         @whid = whId
-        @positions = wh.positions.order("nr desc")
+        @positions = wh.positions.order("nr asc")
         @newposi = []
         (posiStart..posiEnd).each do |p|
           posi = Position.new( :nr=>p, :capacity=>capa )
@@ -163,7 +171,7 @@ class WarehouseController < ApplicationController
         raise( RuntimeError, "库位已存在，不可重建！" )  if wh.positions.where( :nr=>posiNr ).first
         posi = Position.new( :nr=>posiNr, :capacity=>capacity )
         @whid = whId
-        @positions = wh.positions.order("nr desc")
+        @positions = wh.positions.order("nr asc")
         @newposi ||= []
         @newposi << posi
         render :json => {:flag=>true, :msg=>"新建库位成功。", :txt=>render_to_string(:partial=>"positions_list") }
@@ -181,14 +189,14 @@ class WarehouseController < ApplicationController
       raise( RuntimeError, "不可删除，必须先清空其所有库存量！" )  if posi.stock>0
       if posi.destroy
         @whid = posi.warehouse.id
-        @positions = posi.warehouse.positions.order("nr desc")
+        @positions = posi.warehouse.positions.order("nr asc")
         @newposi = []
         render :json => {:flag=>true, :msg=>"删除库位成功。", :txt=>render_to_string(:partial=>"positions_list") }
       else
         render :json => {:flag=>false, :msg=>"失败！"}
       end
-    # rescue Exception => e
-      # render :json => {:flag=>false, :msg=>e.to_s}
+    rescue Exception => e
+      render :json => {:flag=>false, :msg=>e.to_s}
     end
   end
   
@@ -233,18 +241,19 @@ class WarehouseController < ApplicationController
         end
         raise( RuntimeError, "仓库不存在！" )  unless wh = @cz_org.warehouses.find_by_id(whId)
         
-        @positions = wh.positions.joins(:warehouse, :storages=>:part)
+        positions = wh.positions.joins(:warehouse, :storages=>:part)
                                   .where( conditions )
                                   .select('warehouses.nr as whNr, positions.nr, parts.partNr, sum(storages.stock) as total')
+                                  .order("positions.nr asc")
                                   .group('positions.id')
                                   .having(aggregations)
-                                  .limit($DEPSIZE).offset($DEPSIZE*params[:page].to_i)
-        @total = @positions.length
+        @total = positions.length
+        @positions = positions.limit($DEPSIZE).offset($DEPSIZE*params[:page].to_i)
         @totalPages = @total / $DEPSIZE + (@total%$DEPSIZE==0 ? 0:1)
         @currentPage=params[:page].to_i
         render :partial=>"state_list"
-      # rescue Exception => e
-        # render :text => e.to_s
+      rescue Exception => e
+        render :text => e.to_s
       end
     end
   end
@@ -290,11 +299,11 @@ class WarehouseController < ApplicationController
         conditions[:amount] = astart..aend
         raise( RuntimeError, "仓库不存在！" )  unless wh = @cz_org.warehouses.find_by_id(whId)
         
-        @operations = wh.storage_histories.joins(:part, :position=>:warehouse)
+        operations = wh.storage_histories.joins(:part, :position=>:warehouse)
                                   .where( conditions )
                                   .select('warehouses.nr as whNr, positions.nr, parts.partNr, storage_histories.*')
-                                  .limit($DEPSIZE).offset($DEPSIZE*params[:page].to_i)
-        @total = @operations.length
+        @total = operations.count
+        @operations = operations.limit($DEPSIZE).offset($DEPSIZE*params[:page].to_i)
         @totalPages = @total / $DEPSIZE + (@total%$DEPSIZE==0 ? 0:1)
         @currentPage=params[:page].to_i
         render :partial=>"op_history_list"

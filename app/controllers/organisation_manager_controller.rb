@@ -60,6 +60,19 @@ class OrganisationManagerController < ApplicationController
       render :json=>{flag:false,msg:"失败！此号已存在。"}
     end
   end
+  
+  def create_costcenter
+    unless cc=CostCenter.where(:name=>params[:ccName],:organisation_id=>params[:orgId]).first
+      st=CostCenter.new(:name=>params[:ccName],:desc=>params[:ccDesc],:organisation_id=>params[:orgId])
+      if st.save
+        render :json=>{flag:true,msg:"新建成功！"}
+      else
+        render :json=>{flag:false,msg:"失败！"}
+      end
+    else
+      render :json=>{flag:false,msg:"失败！不可重复建立。"}
+    end
+  end
 
   def create_org_relation
     orgrel = OrganisationRelation.new(:clientNr=>params[:clientNr], :supplierNr=>params[:supplierNr],

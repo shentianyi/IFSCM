@@ -1,6 +1,6 @@
 
 partId = Part.find_by_partNr("P00116053").id
-(5..8).each do |posi|
+(11..19).each do |posi|
   puts "_"*40
   puts "---Position 编号："
   puts "           "+posi.to_s

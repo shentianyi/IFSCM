@@ -7,6 +7,8 @@
 			<th>零件号</th>
 			<th>操作类型</th>
 			<th>数量</th>
+			<th>成本中心</th>
+			<th>时间</th>
 		</tr>
 		<tr class="divide" style="display: none">
 			<th class="nordvd"></th>
@@ -24,6 +26,8 @@
 			<th><%= d.partNr %></th>
 			<th><%= StorageOpType.get_desc_by_value(d.opType)%></th>
 			<th><%= FormatHelper.string_to_int(d.amount.to_s) %></th>
+			<th><%= d.cost_center_name %></th>
+			<th><%= d.created_at %></th>
 		  </tr>
 		<% end %>
 	</table>

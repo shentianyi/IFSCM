@@ -117,11 +117,11 @@ function delete_position(posiid, e){
 var openRightPanel = false;
 var openfuncright = function openright() {
 	if (openRightPanel == false) {
-		$("div.toggle-list").show();
+		$("div.toggle-list").show("slow");
 		$("div.toggle-btn").attr("style", "background-image:url(/assets/lefticon.png)");
 		openRightPanel = true;
 	} else {
-		$("div.toggle-list").hide();
+		$("div.toggle-list").hide("fast");
 		$("div.toggle-btn").attr("style", "background-image:url(/assets/righticon.png)");
 		openRightPanel = false;
 	}

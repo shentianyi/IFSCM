@@ -14,6 +14,9 @@ module PageHelper
     total=options[:pages]
     current=options[:current]
     action=options[:action]
+    
+    page_concat_prev( page,total,current,action,target )
+    
     page_concat page,0,1,current,action,target
     if total<=list
       page_concat page,1,total-1,current,action,target
@@ -26,7 +29,9 @@ module PageHelper
     end
     if total>1
       page_concat page,total-1,total,current,action,target,true
-    end    
+    end
+    
+    page_concat_next( page,total,current,action,target )
 
     page.concat('</ul>').html_safe
     page.concat('</div>').html_safe
@@ -69,4 +74,46 @@ module PageHelper
       page.concat('</li>').html_safe
     end
   end
+  
+  def page_concat_prev page,total,current,action,target=nil,last=nil
+    if total!=1
+      liso={}
+      liso[:class]= (current!=0) ? 'disabled':'active'
+      page.concat(tag("li",liso,true))
+      so={}
+      if current!=0
+        if target.nil?
+          so[:onclick]="return "+action+"("+(current-1).to_s+")"
+        elsif target.is_a?(String)
+          so[:onclick]="return "+action+"('"+target+"',"+(current-1).to_s+")"
+        else
+          so[:onclick]="return "+action+"(#{target.to_json},"+(current-1).to_s+")"
+        end
+      end
+      so[:href]="#"
+      page.concat(content_tag("a","<",so)) 
+      page.concat('</li>').html_safe
+    end
+  end
+  def page_concat_next page,total,current,action,target=nil,last=nil
+    if total!=1
+      liso={}
+      liso[:class]= (current!=total-1) ? 'disabled':'active'
+      page.concat(tag("li",liso,true))
+      so={}
+      if current!=total-1
+        if target.nil?
+          so[:onclick]="return "+action+"("+(current+1).to_s+")"
+        elsif target.is_a?(String)
+          so[:onclick]="return "+action+"('"+target+"',"+(current+1).to_s+")"
+        else
+          so[:onclick]="return "+action+"(#{target.to_json},"+(current+1).to_s+")"
+        end
+      end
+      so[:href]="#"
+      page.concat(content_tag("a",">",so)) 
+      page.concat('</li>').html_safe
+    end
+  end
+  
 end

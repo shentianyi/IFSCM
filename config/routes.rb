@@ -3,14 +3,14 @@ Demand::Application.routes.draw do
 
   controller :welman do
     get 'welcome' => :index
+    get 'client' => :client
+    get 'supplier' => :supplier
   end
 
   controller :sessions do
     get 'login' => :new
     post 'login' => :create
     get 'logout' => :destroy
-    post 'activate' => :org_type_activate
-    get 'sessions/reload'=> :reload
   end
 
   controller :organisation_manager do
@@ -19,6 +19,7 @@ Demand::Application.routes.draw do
     match 'organisation_manager/new' => :new
     get 'organisation_manager/manager' => :manager
     post 'organisation_manager/create_staff' => :create_staff
+    post 'organisation_manager/create_costcenter' => :create_costcenter
     post 'organisation_manager/create_org_relation' => :create_org_relation
     post 'organisation_manager/create_relpart' => :create_relpart
     post 'organisation_manager/create_relpart_package' => :create_relpart_package
