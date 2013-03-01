@@ -3,14 +3,14 @@ Demand::Application.routes.draw do
 
   controller :welman do
     get 'welcome' => :index
+    get 'client' => :client
+    get 'supplier' => :supplier
   end
 
   controller :sessions do
     get 'login' => :new
     post 'login' => :create
     get 'logout' => :destroy
-    post 'activate' => :org_type_activate
-    get 'sessions/reload'=> :reload
   end
 
   controller :organisation_manager do
@@ -19,6 +19,7 @@ Demand::Application.routes.draw do
     match 'organisation_manager/new' => :new
     get 'organisation_manager/manager' => :manager
     post 'organisation_manager/create_staff' => :create_staff
+    post 'organisation_manager/create_costcenter' => :create_costcenter
     post 'organisation_manager/create_org_relation' => :create_org_relation
     post 'organisation_manager/create_relpart' => :create_relpart
     post 'organisation_manager/create_relpart_package' => :create_relpart_package
@@ -91,7 +92,30 @@ Demand::Application.routes.draw do
       match :check_dit_list
       post :clean_dit
       get :dn_detail
+      match :accept      
+      post :doaccept
+      match :inspect
+      post :doinspect      
+      post :mark_abnormal
+      match :instore
+      post :doinstore
+      post :return_dn
+      post :arrive
+      match :link
     end
+  end
+  
+  controller :warehouse do
+    match "warehouse/stock_out" => :stock_out
+    post "warehouse/stock_out_list" => :stock_out_list
+    match "warehouse/primary_warehouse" => :primary_warehouse
+    post "warehouse/delete_warehouse" => :delete_warehouse
+    match "warehouse/primary_position" => :primary_position
+    post "warehouse/new_position_range" => :new_position_range
+    post "warehouse/new_position_single" => :new_position_single
+    post "warehouse/delete_position" => :delete_position
+    match "warehouse/search_state" => :search_state
+    match "warehouse/search_op_history" => :search_op_history
   end
 
   namespace :api,defaults:{format:'json'} do

@@ -1,0 +1,99 @@
+<link rel="stylesheet"  type="text/css" href="/assets/delivery/supWaybill.css" />
+<link rel="stylesheet" type="text/css" href="/assets/delivery/investory-receive.css"/>
+<script src="/assets/deliery-send-receive.js" type="text/javascript"></script>
+
+<div class="input-mix">
+  	<span class="uploadfile">运单号：</span> 
+	<input type="text" name="delivery-up-tx" class="uploadfile delivery-up-tx"  id="dnKey" value="<%= @params[:dnKey]%>"/>
+	<input type="button" name="delivery-up-btn" class="btupload" value="提交" onclick="redirect_delivery_action('accept');"  >
+</div>
+<div id="accept-list-div">
+	<%if @msg
+	if @msg.result%>
+	<input type="hidden" value="<%= @dn.key%>" id="dnkey-hidden" name="dnKey">
+	<table class="delivery-check">
+		<tr  class="lineone">
+			<th>&nbsp;</th>
+			<th>箱号</th>
+			<th>客户零件号</th>
+			<th>箱单位量</th>
+			<th>运输状态</th>
+			<th>是否异常</th>
+			<th>
+			<input type="button" class="1" id="check-all"  name="all-chosen" onclick="check_all();" value="全选"/>
+			</th>
+		</tr>
+		<%i=0
+		@list.each do |pack|
+		per=FormatHelper.string_to_int(pack.perPackAmount.to_s)
+		%>
+		<tr class="norline">
+			<th><%= (i+=1)%></th>
+			<th style="text-align:left;"><%= pack.key%></th>
+			<th style="text-align:center;"><%= pack.cpartNr%></th>
+			<th><%= per%></th>
+			<th>
+			<div class="<%= DeliveryHelper::get_dn_wayState_css(pack.wayState)%>"  id="waystate-th-<%= pack.id%>">
+				<%= DeliveryHelper::get_dn_wayState(pack.wayState)%>
+			</div></th>
+			<th>
+			<div class="<%= DeliveryHelper::get_delivery_obj_state_css(pack.state)%>" id="state-th-<%= pack.id%>">
+				<%= DeliveryHelper::get_delivery_obj_state(pack.state)%>
+			</div></th>
+			<th id="operate-th-<%= pack.id%>">
+			<input class="id-check" id="<%= pack.id%>" type="checkbox"/>
+			</th>
+		</tr>
+		<%
+		end%>
+		</tr>
+	</table>
+	<div class="button-group">
+		<%if intransit=DeliveryHelper::dn_intransit(@dn.wayState)%>
+		 <div class="arrive-button-group">
+		  	<input type="button" value="运单到达" onclick="delivery_arrived();"/>
+		  </div>
+		<%end%>
+		<div <%="style=display:none;" if intransit%> class="accept-button-group">
+		<input type="button" value="接收" onclick="pack_rece_reje(400,1);"/>
+		<input type="button" value="拒收" onclick="pack_rece_reje(500,1);"/>
+		<input type="button" value="标记异常" onclick="pop_pack_inspect();"/>
+		</div> 
+	</div>
+	<div class="fixed-print" >
+		<input type="button" value="质检单打印" name="check-print" onclick="generate_dn_label_pdf(400);">
+		<input type="button" value="入库单打印" name="enter-print" onclick="generate_dn_label_pdf(500);">
+	</div>
+	<%= render :partial => "shared/handling_msg_box", :locals => { :handlemsg => "正在处理中，请稍后..." } %>
+	<div id="pick-part-info-box" class="info-box inspect-input-box">
+	<div class="closebt"></div>
+	<div class="info-box-title">
+		<span>异常标记数据填写</span>
+	</div>
+	<div class="info-box-body">		
+		 <span>异常类型：<%= select_tag :inspect_type,options_for_select(@inspects)%></span>
+		 <span>异常备注：<textarea id="check-desc-input"/></textarea></span>
+		<input type="button" value="确 定"  onclick="mark_pack_abnormal();" 
+		class="btupload search-btn"/>
+	</div>
+</div>
+	<%else%>
+	<div class="abstractblock">
+		<%= @msg.content%>
+	</div>
+	<%end
+	end%>
+</div>
+<script type="text/javascript">
+	$(document).ready(function() {
+		$("#pick-part-info-box").draggable();
+		$(".closebt").bind('click', function() {
+			hide_inspect_box();
+		});
+	}); 
+	function hide_inspect_box () {
+	  $("#pick-part-info-box").hide();
+	  $("#check-desc-input").val("");
+	}
+</script>
+

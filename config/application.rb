@@ -18,11 +18,11 @@ module Demand
     # Custom directories with classes and modules you want to be autoloadable.
     config.autoload_paths += %W(#{config.root}/lib)
     config.autoload_paths += Dir["#{config.root}/lib/**/"]
-    config.autoload_paths += %W(#{config.root}/blls)
-    config.autoload_paths += Dir["#{config.root}/blls/**/"]
-    config.autoload_paths += %W(#{config.root}/base)
-    config.autoload_paths += %W(#{config.root}/models)
-    config.autoload_paths += %W(#{config.root}/tprinters)
+    config.autoload_paths += %W(#{config.root}/app/blls)
+    config.autoload_paths += Dir["#{config.root}/app/blls/**/"]
+    config.autoload_paths += %W(#{config.root}/app/base)
+    config.autoload_paths += %W(#{config.root}/app/models)
+    config.autoload_paths += %W(#{config.root}/app/tprinters)
     # Only load the plugins named here, in the order given (default is alphabetical).
     # :all can be used as a placeholder for all plugins not explicitly named.
     # config.plugins = [ :exception_notification, :ssl_requirement, :all ]

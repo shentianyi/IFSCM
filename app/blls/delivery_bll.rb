@@ -17,7 +17,7 @@ module DeliveryBll
       msg.content_key<<:partRelMetaNotEx
     else
       if dit=DeliveryItemTemp.single_or_default(staffId)
-        if pr.organisation_relation_id!=PartRel.find(dit.partRelId).organisation_relation_id
+        if pr.organisation_relation_id!=PartRel.find(dit.part_rel_id).organisation_relation_id
           msg.result=false
           msg.content_key<<:notSameClient
         end
@@ -37,7 +37,7 @@ module DeliveryBll
     msg.content=msg.contents.join(',') if !msg.result
     return msg
   end
-  
+
   def self.vali_current_di_temp staffId, orgRelIds
     temps=DeliveryItemTemp.get_staff_cache(staffId).first ||[]
     ids = temps.collect {|t| PartRel.find_by_id(t.partRelId.to_i).organisation_relation_id}
@@ -65,13 +65,13 @@ module DeliveryBll
         :state=>dstate,:staff_id=>staffId,:organisation_id=>orgId,:rece_org_id=>desiOrgId)
         temps.each do |t|
           packcount=t.packAmount
-          pl=PartRel.find(t.partRelId)
+          pl=PartRel.find(t.part_rel_id)
           pack=DeliveryPackage.new(:key=>ClassKeyHelper::gen_key("DeliveryPackage"),:parentKey=>dn.key,:packAmount=>packcount,
-          :perPackAmount=>t.perPackAmount,:partRelId=>t.partRelId,:saleNo=>pl.saleNo,:purchaseNo=>pl.purchaseNo,
+          :perPackAmount=>t.perPackAmount,:part_rel_id=>t.part_rel_id,:saleNo=>pl.saleNo,:purchaseNo=>pl.purchaseNo,
           :cpartNr=>Part.get_partNr(desiOrgId,pl.client_part_id),:spartNr=>Part.get_partNr(orgId,pl.supplier_part_id))
           for i in 0...packcount
             item=DeliveryItem.new(:key=>ClassKeyHelper::gen_key("DeliveryItem"),
-             :parentKey=>pack.key,:state=>dstate,:wayState=>DeliveryObjWayState::Intransit,:checked=>0,:stored=>0)
+            :parentKey=>pack.key,:state=>dstate,:wayState=>DeliveryObjWayState::Intransit,:checked=>0,:stored=>0)
             item.save_to_redis
             item.add_to_parent
             t.destroy
@@ -123,13 +123,14 @@ module DeliveryBll
       if dn=DeliveryNote.single_or_default(dnKey)
         if dn.items=DeliveryNote.get_children(dn.key,0,-1)[0]
           dn.items.each do |i|
-            pl=PartRel.find(i.partRelId)
+            pl=PartRel.find(i.part_rel_id)
             i.rupdate(:cpartNr=>Part.get_partNr(dn.rece_org_id,pl.client_part_id),
             :spartNr=>Part.get_partNr(dn.organisation_id,pl.supplier_part_id),:saleNo=>pl.saleNo,:purchaseNo=>pl.purchaseNo)
           end
           dn.rupdate(:wayState=>DeliveryObjWayState::Intransit,:destination=>destiStr,:sendDate=>sendDate)
-          dn.add_to_orgs
+           
           dn.delete_from_staff_cache
+          dn.add_to_new_queue OrgOperateType::Client
           # DelieveryNote & DeliveryItem 写入Mysql
           Resque.enqueue(DeliveryNoteMysqlRecorder,dn.key)
           #-----
@@ -272,6 +273,15 @@ module DeliveryBll
     end
   end
 
+  # [功能：] 获取全部公司角色需操作运单
+  # 参数：
+  # - int ： orgId
+  # - int : role
+  # 返回值：
+  # - DeliveryNote : 对象数组
+  def self.get_all_org_role_dn orgId,role
+    return DeliveryNote.all_org_role_dn(orgId,role)
+  end
   # ws
   # [功能：] 生成运单标签PDF文件
   # 参数：
@@ -280,17 +290,190 @@ module DeliveryBll
   # - string : sendDate
   # 返回值：
   # - string : fileName
-  def self.generate_dn_label_pdf dnKey,destination,sendDate,type
-    fileName=nil
+  def self.generate_dn_label_pdf dnKey,type,destination=nil,sendDate=nil
+    msg=ReturnMsg.new
     if dn=DeliveryNote.single_or_default(dnKey)
-      if dn.wayState.nil?
-        dn.rupdate(:destination=>destination,:sendDate=>sendDate)
+      if !destination.nil?
+        if dn.wayState.nil?
+          dn.rupdate(:destination=>destination,:sendDate=>sendDate)
+        end
       end
       result=TPrinter.print_dn_pdf(dnKey,type)
-      if result[:result]
-        fileName=result[:content]
+      msg.result= result[:result]
+      msg.content=result[:content]
+    else
+      msg.content="运单不存在"
+    end
+    return msg
+  end
+
+  # ws
+  # [功能：] 根据运单号获取清单
+  # 参数：
+  # - string : dnKey
+  # 返回值：
+  # - array : delivery items
+  def self.get_dn_list dnKey,mysql=true
+    if mysql
+      select="delivery_items.*,delivery_packages.cpartNr,delivery_packages.spartNr,delivery_packages.perPackAmount"
+      condi={}
+      condi["delivery_notes.key"]=dnKey
+      return DeliveryItem.joins(:delivery_package=>:delivery_note).find(:all,:select=>select,:conditions=>condi)
+    else
+      items=nil
+      if dn=DeliveryNote.single_or_default(dnKey)
+        items=[]
+        dn.items=DeliveryNote.get_children(dn.key,0,-1)[0]
+        dn.items.each do |p|
+          p.items=DeliveryPackage.get_children(p.key,0,-1)[0]
+          p.items.each do |item|
+            items<<item
+          end
+        end
+      end
+    return items
+    end
+  end
+
+  # ws
+  # [功能：] 根据运单需要质检或不要质检的包装箱
+  # 参数：
+  # - string : dnKey
+  # 返回值：
+  # - array : delivery items
+  def self.get_dn_check_list_from_mysql params
+    select="delivery_items.*,delivery_packages.perPackAmount,delivery_packages.packAmount,delivery_packages.cpartNr,delivery_packages.spartNr,strategies.needCheck"
+    condi={}
+    condi["delivery_notes.key"]=params[:dnKey]
+    if !params[:needCheck].nil?
+      condi["strategies.needCheck"]=if params[:needCheck]
+        [DeliveryObjInspect::SamInspect,DeliveryObjInspect::FullInspect]
+      else
+        DeliveryObjInspect::ExemInspect
       end
     end
-    return fileName
+    return DeliveryItem.joins(:delivery_package=>{:part_rel=>:strategy}).joins(:delivery_package=>:delivery_note).find(:all,:select=>select,:conditions=>condi)
   end
+
+  # ws
+  # [功能：] 获取包装箱
+  # 参数：
+  # - integer : id
+  # 返回值：
+  # - object : delivery item
+  def self.get_dn_instore_item id
+    select= "delivery_items.*,delivery_packages.perPackAmount as 'amount',part_rels.client_part_id as 'part_id'"
+    return DeliveryItem.joins(:delivery_package=>:part_rel).find(:first,:select=>select,:conditions=>{:id=>id,:stored=>false})
+  end
+
+  # ws
+  # [功能：] 接收运单
+  # 参数：
+  # - ids : 包装箱号
+  # - dn : 运单
+  # - type : 接收/拒收
+  # 返回值：
+  # - 无
+  def self.delivery_item_accept ids,dn_id,type
+    begin
+      attrs={:wayState=>type}
+      delivery_item_update_all(100,ids,attrs)
+      dn=DeliveryNote.find(dn_id)
+      if type==DeliveryObjWayState::Rejected
+        if dn.state==DeliveryObjState::Normal
+          dn.update_attributes(:state=>DeliveryObjState::Abnormal,:wayState=>DeliveryObjWayState::InAccept)
+        end
+        total=dn.delivery_packages.sum('packAmount')
+        rejected=dn.delivery_items.where(:wayState=>DeliveryObjWayState::Rejected).count
+        if total==rejected
+          dn.update_attributes(:wayState=>DeliveryObjWayState::Rejected)
+        else
+          rece_reje=dn.delivery_items.where(:wayState=>[DeliveryObjWayState::Rejected,DeliveryObjWayState::Received]).count
+          if total==rece_reje
+            dn.update_attributes(:wayState=>DeliveryObjWayState::Received)
+          end
+        end
+      elsif type==DeliveryObjWayState::Received
+        if dn.wayState==DeliveryObjWayState::Intransit or  dn.wayState==DeliveryObjWayState::Arrived
+          dn.update_attributes(:wayState=>DeliveryObjWayState::InAccept)
+        end
+        if dn.delivery_packages.sum('packAmount')==dn.delivery_items.where(:wayState=>[DeliveryObjWayState::Rejected,DeliveryObjWayState::Received]).count
+          dn.update_attributes(:wayState=>DeliveryObjWayState::Received)
+        end
+      end
+    rescue Exception=>e
+      puts e.message
+      puts e.backtrace
+    end
+  end
+  
+   # ws
+  # [功能：] 接收运单
+  # 参数：
+  # - ids : 包装箱号
+  # - dn : 运单
+  # - type : 接收/拒收
+  # 返回值：
+  # - 无
+  def self.delivery_item_inspect type,ids,dn_id,attrs
+    delivery_item_update_all 100,ids,attrs
+    Resque.enqueue(DeliveryNoteWayStateRoleMachine,dn_id,DeliveryRoleMachineAction::DoInspect)
+  end
+
+  # ws
+  # [功能：] 包装箱退货
+  # 参数：
+  # - ids : 包装箱号
+  # - dn : 运单
+  # 返回值：
+  # - 无
+  def self.delivery_item_return ids,dn_id
+    dn=DeliveryNote.find(dn_id)
+    delivery_item_update_all(100,ids,{:checked=>true,:state=>DeliveryObjState::Abnormal,:wayState=>DeliveryObjWayState::Returned})
+    if dn.delivery_packages.sum('packAmount')==dn.delivery_items.where(:wayState=>[DeliveryObjWayState::Returned]).count
+      dn.update_attributes(:wayState=>DeliveryObjWayState::Returned)
+    end
+  end
+
+  def self.delivery_note_wayState_state_update id
+    dn=DeliveryNote.find(id)
+    if dn
+      case dn.wayState
+      when DeliveryObjWayState::Arrived
+        dn.delivery_items.update_all(:wayState=>DeliveryObjWayState::Arrived)
+        delivery_item_update_all 300,dn.key,{:wayState=>DeliveryObjWayState::Arrived}
+      when DeliveryObjWayState::Returned
+        dn.delivery_items.update_all(:wayState=>DeliveryObjWayState::Returned)
+        delivery_item_update_all 300,dn.key,{:wayState=>DeliveryObjWayState::Returned}
+      end
+    end
+  end
+
+  # ws
+  # [功能：] 更新包装箱状态，同时更新redis数据，保持同步
+  # 参数：
+  # - integer : 更新类型，用以判断id或key
+  # - ids : 包装箱id或key
+  # - attrs : 需要更新的属性
+  # 返回值：
+  # - array : delivery items
+  def self.delivery_item_update_all type,index,attrs
+    if type==100
+      DeliveryItem.where(:id=>index).update_all(attrs)
+      DeliveryItem.where(:id=>index).all.each do |item|
+        item.rupdate(attrs)
+      end
+    elsif type==200
+      index.each do |key|
+        if item=DeliveryItem.single_or_default(key)
+        item.rupdate(attrs)
+        end
+      end
+    elsif type==300
+      get_dn_list(index,false).each do |item|
+        item.rupdate(attrs)
+      end
+    end
+  end
+
 end

@@ -46,6 +46,16 @@ function org_rel_new() {
 	}, "json");
 }
 
+function org_costcenter_new() {
+	eles = document.getElementById('formCostCenter').elements;
+	var hash = {};
+	for (var i = 0; i < eles.length; i++)
+		hash[eles[i].name] = eles[i].value;
+	$.post("../organisation_manager/create_costcenter", hash, function(data) {
+		MessageBox(data.msg);
+	}, "json");
+}
+
 function org_staff_new() {
 	eles = document.getElementById('formStaff').elements;
 	var hash = {};
@@ -89,7 +99,7 @@ function organisation_manager(idStr) {
 		},
 		success : function(data) {
 			if (data.flag) {
-				$(idStr + '-preview > span').html("处理：" + data.msg);
+				$(idStr + '-preview > span[info]').html("处理：" + data.msg);
 			} else {
 				$(idStr + '-preview > span[info]').html("处理：" + data.msg);
 			}

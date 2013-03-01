@@ -1,0 +1,55 @@
+<link rel="stylesheet"  type="text/css" href="/assets/warehouse/stock_out.css" />
+<br /><br />
+仓库:<%= select_tag :whId,  options_for_select(@whlist),  prompt: "请选择仓库..." %>
+<br/><br />
+零件号:<%= text_field_tag :partNr %>
+<br /><br />
+<%= button_tag '库位列表',:class=>"normal-small-btn",:type=>'button',:onclick=>"stock_out_list();"%>
+<hr/>
+<div id="positions_list"></div>
+
+<div style="clear: left"></div>
+<hr/>
+
+
+<script type="text/javascript">
+function stock_out_list(){
+	$.post("../warehouse/stock_out_list",
+		{
+			whId: $('#whId').val(),
+			partNr: $('#partNr').val()
+		},
+		function(data){
+				$('#positions_list').html(data);
+		},
+		'html'		
+	);
+}
+
+
+function stock_out(e, str){
+	if (str==="scrap")
+		flag = true
+	else
+		flag = {};
+	$.post("../warehouse/stock_out",
+		{
+			posiId: $(e).parent().parent().attr("posiid"),
+			partNr: $(e).parent().parent().children(':nth-child(3)').text(),
+			amount: $(e).parent().parent().children(':nth-child(5)').children().val(),
+			ccName: $(e).parent().parent().children(':nth-child(8)').children().val(),
+			scrap: flag
+		},
+		function(data){
+			if (data.flag){
+				$(e).parent().parent().children(':nth-child(4)').text(data.obj);
+				$(e).parent().parent().children(':nth-child(4)').addClass("new-add");
+				$(e).parent().parent().children(':nth-child(5)').children().val("");
+			}
+			MessageBox(data.msg);
+		},
+		'json'		
+	);
+}
+	
+</script>

@@ -39,12 +39,12 @@ module DeliveryHelper
         return false
       end
       pack = num/least
-      dit=DeliveryItemTemp.new(:packAmount=>pack,:perPackAmount=>least,:partRelId=>d.relpartId,:spartNr=>PartRel.find(d.relpartId).supplier_part.partNr,
+      dit=DeliveryItemTemp.new(:packAmount=>pack,:perPackAmount=>least,:part_rel_id=>d.relpartId,:spartNr=>PartRel.find(d.relpartId).supplier_part.partNr,
                                                             :total=>FormatHelper.string_multiply(least, pack))
       dit.save
       dit.add_to_staff_cache staffId
       if pack%least != 0
-        dit=DeliveryItemTemp.new(:packAmount=>1,:perPackAmount=>least,:partRelId=>d.relpartId,:spartNr=>PartRel.find(d.relpartId).supplier_part.partNr,
+        dit=DeliveryItemTemp.new(:packAmount=>1,:perPackAmount=>least,:part_rel_id=>d.relpartId,:spartNr=>PartRel.find(d.relpartId).supplier_part.partNr,
                                                               :total=>FormatHelper.string_multiply(least, 1))
         dit.save
         dit.add_to_staff_cache staffId
@@ -52,7 +52,7 @@ module DeliveryHelper
       return true
   end
                   
-    # ws
+  # ws
   # [功能：] 获得运单运输状态
   # 参数：
   # - code : 状态码
@@ -97,4 +97,31 @@ module DeliveryHelper
     return contact.rece_address
   end
   
+  # ws
+  # [功能：] 获得包装箱检验策略名称
+  # 参数：
+  # - code : 状态码
+  # 返回值：
+  # - string : description
+  def self.get_pack_check_inspect code
+    DeliveryObjInspect.get_desc_by_value code
+  end
+  
+  # ws
+  # [功能：] 获得运单可以质检状态
+  # 参数：
+  # - 无
+  # 返回值：
+  # - string : description
+  def self.get_can_inspect_states
+    descs=[]
+    DeliveryNote.get_can_inspect_codes.each do |code|
+     descs<<get_dn_wayState(code)
+    end
+    descs
+  end
+  
+  def self.dn_intransit wayState
+    wayState==DeliveryObjWayState::Intransit
+  end
 end

@@ -36,3 +36,13 @@ function hide_handle_dialog(){
        document.getElementById('handle-dialog-modal').style.display='none';
        document.getElementById('dialog-overlay').style.display = 'none';
 }
+
+function MessageBox(str){
+	$('#MessageBox > p').html(str).parent().show();
+}
+
+$(function(){
+	$('#MessageBox  div.close-logo').click(function(){
+		$(this).parent().parent().hide();
+	})
+})

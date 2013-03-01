@@ -1,0 +1,36 @@
+
+	<table class="upData" id="positions_list_id" >
+		<tr class="lineone">
+			<th></th>
+			<th>仓库</th>
+			<th>库位</th>
+			<th>零件号</th>
+			<th>操作类型</th>
+			<th>数量</th>
+			<th>成本中心</th>
+			<th>时间</th>
+		</tr>
+		<tr class="divide" style="display: none">
+			<th class="nordvd"></th>
+			<th class="nordvd"></th>
+			<th class="nordvd"></th>
+			<th class="nordvd"></th>
+			<th class="nordvd"></th>
+			<th class="lastdvd"></th>
+		</tr>
+		<% i=0 ; @operations.each do |d|	%>
+		  <tr class="norline hoverable" >
+			<th><%= i+=1%></th>
+			<th><%= d.whNr %></th>
+			<th><%= d.nr %></th>
+			<th><%= d.partNr %></th>
+			<th><%= StorageOpType.get_desc_by_value(d.opType)%></th>
+			<th><%= FormatHelper.string_to_int(d.amount.to_s) %></th>
+			<th><%= d.cost_center_name %></th>
+			<th><%= d.created_at %></th>
+		  </tr>
+		<% end %>
+	</table>
+
+	<div class="census" style="clear: left">共 <%= @total %> 条</div>
+	<%=bri_pager options={:class=>"pagination",:pages=>@totalPages,:current=>@currentPage,:action=>'search_op_history'}%>

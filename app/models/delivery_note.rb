@@ -6,21 +6,32 @@ class DeliveryNote < ActiveRecord::Base
   attr_accessible :rece_org_id, :destination, :key, :state, :wayState,:sendDate
   attr_accessible :staff_id,:organisation_id
   attr_accessible :id, :created_at, :updated_at
-  
-  has_many :delivery_packages,:dependent=>:destroy
 
+  has_many :delivery_packages,:dependent=>:destroy
+  has_many :delivery_items,:through=>:delivery_packages
   belongs_to :organisation
   belongs_to :staff
-  
+
   include CZ::BaseModule
   include CZ::DeliveryBase
-  
-  after_save :update_redis_id
-    
-  def self.single_or_default key
-    find_from_redis key
+
+  after_create :update_redis_id,:update_wayState_next_role
+  after_update :update_state_wayState ,:update_wayState_next_role
+
+  @@can_inspect_waystate=[DeliveryObjWayState::Received]
+  @@can_accept_waystate=[DeliveryObjWayState::Intransit,DeliveryObjWayState::Arrived,DeliveryObjWayState::InAccept]
+  @@can_doaccept_waystate=[DeliveryObjWayState::Arrived,DeliveryObjWayState::InAccept]
+  @@can_instore_waystate=[DeliveryObjWayState::Received]
+  @@can_arrive_waystate=[DeliveryObjWayState::Intransit]
+
+  def self.single_or_default key,mysql=false
+    if mysql
+      where(:key=>key).first
+    else
+      return find_from_redis key
+    end
   end
-  
+
   # ws
   # [功能：] 将运单加入用户 ZSet
   # 参数：
@@ -45,22 +56,44 @@ class DeliveryNote < ActiveRecord::Base
   end
 
   # ws
-  # [功能：] 将运单Key加入到组织 Zset
+  # [功能：] 将运单Key加入到组织Role Zset
   # 参数：
   # 返回值：
   # - 无
-  def add_to_orgs
-    # add to sender org zset
-    key= DeliveryNote.generate_org_zset_key self.organisation_id,OrgOperateType::Supplier
-    $redis.zadd key,self.organisation_id.to_i,self.key
-    # add to receiver org zset
-    key= DeliveryNote.generate_org_zset_key self.rece_org_id,OrgOperateType::Client
-    $redis.zadd key,self.rece_org_id.to_i,self.key
-
-    # add to queue
-    self.add_to_new_queue OrgOperateType::Client
+  def add_to_org_role orgId,role
+    key= DeliveryNote.generate_org_role_zset_key orgId,role
+    $redis.zadd key,Time.now.to_i,self.key unless $redis.zscore(key,self.key)
   end
 
+  # ws
+  # [功能：] 将运单Key移除组织Role Zset
+  # 参数：
+  # 返回值：
+  # - 无
+  def remove_from_org_role orgId,role
+    key= DeliveryNote.generate_org_role_zset_key orgId,role
+    $redis.zrem key,self.key if $redis.zscore(key,self.key)
+  end
+
+  # ws
+  # [功能：] 获取组织全部Role Zset
+  # 参数：
+  # 返回值：
+  # - 无
+  def self.all_org_role_dn orgId,role
+    zkey= generate_org_role_zset_key orgId,role
+    keys=$redis.zrange zkey,0,-1
+    if keys.count>0
+      dns=[]
+      keys.each do |k|
+        if dn=DeliveryNote.rfind(k)
+        dns<<dn
+        end
+      end
+      return dns.count>0 ? dns:nil
+    end
+    return nil
+  end
   # ws
   # [功能：] 将运单Key加入到接受者组织 Zset
   # 参数：
@@ -142,7 +175,7 @@ class DeliveryNote < ActiveRecord::Base
       dns=[]
       dnKeys=$redis.zrange key,startIndex,endIndex
       dnKeys.each do |dnKey|
-        if dn=DeliveryNote.rfind(dnKey)
+        if dn=single_or_default(dnKey)
         dns<<dn
         end
       end
@@ -150,37 +183,79 @@ class DeliveryNote < ActiveRecord::Base
     end
     return nil
   end
-  
+
   def add_to_staff_print_queue
     key=DeliveryNote.generate_staff_print_set_key self.staff_id
     $redis.sadd key,self.key
   end
+
   def del_from_staff_print_queue
-        key=DeliveryNote.generate_staff_print_set_key self.staff_id
-        $redis.srem key,self.key
+    key=DeliveryNote.generate_staff_print_set_key self.staff_id
+    $redis.srem key,self.key
   end
+
   def self.get_all_print_dnKey staffId
     key= generate_staff_print_set_key staffId
     $redis.smembers key
   end
+
+  def can_inspect
+    @@can_inspect_waystate.include?(self.wayState)
+  end
+
+  def self.get_can_inspect_codes
+    @@can_inspect_waystate
+  end
+
+  def can_accept
+    @@can_accept_waystate.include?(self.wayState)
+  end
+
+  def can_doaccept
+    @@can_doaccept_waystate.include?(self.wayState)
+  end
+
+  def can_instore
+    @@can_instore_waystate.include?(self.wayState)
+  end
+
+  def self.can_arrive code
+    @@can_arrive_waystate.include?(code)
+  end
+
   private
-  
+
   def self.find_from_redis key
     rfind(key)
+  end
+
+  def update_wayState_next_role
+    if self.wayState_change
+      case self.wayState
+      when DeliveryObjWayState::Intransit
+        Resque.enqueue(DeliveryNoteWayStateRoleMachine,self.id,DeliveryRoleMachineAction::DoSend)
+      when DeliveryObjWayState::Rejected
+        Resque.enqueue(DeliveryNoteWayStateRoleMachine,self.id,DeliveryRoleMachineAction::DoReject)
+      when DeliveryObjWayState::Received
+        Resque.enqueue(DeliveryNoteWayStateRoleMachine,self.id,DeliveryRoleMachineAction::DoReceive)
+      when DeliveryObjWayState::Returned
+        Resque.enqueue(DeliveryNoteWayStateRoleMachine,self.id,DeliveryRoleMachineAction::DoReturn)
+      end
+    end
   end
 
   def self.generate_staff_zset_key staffId
     "staff:#{staffId}:deliverynote:cache:zset"
   end
 
-  def self.generate_org_zset_key orgId,orgOpeType
-    "orgId:#{orgId}:orgRelType:#{orgOpeType}:dn:zset"
+  def self.generate_org_role_zset_key orgId,role
+    "orgId:#{orgId}:role:#{role}:dn:zset"
   end
 
   def self.generate_org_new_queue_zset_key orgId,orgOpeType
     "orgId:#{orgId}:orgOpeType:#{orgOpeType}:newDNqueue"
   end
-  
+
   def self.generate_staff_print_set_key staffId
     "staff:#{staffId}:deliverynote:print:set"
   end

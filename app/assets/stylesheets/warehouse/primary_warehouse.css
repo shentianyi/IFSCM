@@ -1,0 +1,144 @@
+
+
+	.warehouse{
+		color:#999;
+		width:210px;
+		margin-left:50px;
+		margin-top:85px;	 
+		float:left;
+		
+	}
+	.ware-p{
+		font-size:18px;
+		margin-bottom:10px;
+		margin-left:10px;
+		font-weight:bold;
+	}
+	.ware-li input{
+		padding:8px;	
+		color:#696D72;
+		margin-bottom:15px;
+		font-size:15px;
+		padding:5px 7px;
+		margin-right:5px;
+		font-family:"Arial";
+		 border:1px solid #B1B1B1;
+		 box-shadow:2px 2px 2px #999;
+	}
+    .li-small input{
+    	width:65px;
+       
+    }
+    .li-big input{
+    	width:175px;
+    }
+    .li-big p{
+    	width:50px;
+    	display:inline;
+    }
+    .ware-ul{
+    	list-style:none;
+    	padding-left:10px;
+    	margin-bottom:0;
+    }
+    .ware-li{
+    	width:290px;   	
+    }
+    .ware-li:hover input{
+    	background:#0E80B0;
+    	color:white;
+    }
+    .ware-li:hover .wh-del{
+    	display:block;
+    }
+    .wh-del{  
+    	display:none;	
+    	float:right;
+    	width:21px;
+		height:21px;
+		background-image:url("../minusp.png");
+		margin-top:5px;
+	}
+	.del-small{
+		margin-right:65px;
+	}
+	.del-big{
+		margin-right:15px;
+	}
+	.wh-del:hover{
+		background-image:url("../minusphover.png");
+	}
+	.wh-add{
+		float:right;		
+		width:21px;
+		height:21px;
+		background-image:url("../plusp.png");
+	}
+    .wh-add:hover{
+    	background-image:url("../plusphover.png");
+    }
+    .wareposition{
+    	color:#999;
+    	float:left;
+    	margin-top:10px;
+    	margin-left:60px;
+    	border:2px solid #DADADA;
+    	border-radius:5px;
+    	-moz-border-radius:5px;
+    	-webkit-border-radius:5px;
+    	padding:10px 0px 10px 10px;
+    	width:325px;
+    	height:490px;
+    	overflow-y:scroll;
+    }
+    .new-add{
+    	background-color:#72c869;
+    }
+    .err-add{
+    	background-color:#FF0000;
+    }
+    .toggle-btn{
+    	margin-top:10px;
+    	background-color:#DADADA;
+    	width:15px;
+    	float:left;
+    	height:514px;
+    	background-image:url("../righticon.png");
+    	background-position:center;
+    	background-repeat:no-repeat;
+    }
+    .toggle-btn:hover{
+    	background-color:#F4F9FE;
+    }
+    .toggle-list{
+    	background:#F2F2F2;
+    	margin-top:10px;
+    	float:left;
+    	height:364px;
+    	width:260px;
+        padding:75px 20px;
+    }
+	.toggle-p{
+		color:#999;
+		font-size:15px;
+		font-weight:bold;
+	}
+    .toggle-list h1:nth-child(3){
+    	display:inline;
+    	margin-left:10px;
+    	margin-right:4px;
+    
+    }
+    .toggle-list input:nth-child(4){
+    	width:200px;
+    }
+    .btn-normal{
+    	background-color: #1297CF;
+        border-width: 0;
+        color: #FFFFFF;
+        font-size: 13px;
+        height: 21px;
+        width: 46px;
+        float:right;
+        margin:10px 5px;
+    }

@@ -24,16 +24,4 @@ class SessionsController < ApplicationController
     redirect_to login_url, :notice => "已注销"
   end
 
-  def reload
-      if params[:t].to_i==OrgOperateType::Client 
-        session[:orgOpeType]=  OrgOperateType::Client 
-        redirect_to :controller=>:demander,:action =>:demand_upload
-      elsif params[:t].to_i==OrgOperateType::Supplier
-        session[:orgOpeType]= OrgOperateType::Supplier
-        redirect_to :controller=>:demander,:action =>:index
-      else
-          redirect_to login_url,:notice=>'请重新登录'
-      end
-  end
-
 end
