@@ -643,7 +643,17 @@ input.uploadfile {
     	background-color:#1297CF;
     	color:white;
     }
+      #check-all{
+      	border:2px solid #1297CF;
+    	background-color:#1297CF;
+    	color:white;
+    }
     
+    #check-all:hover{
+    	background-color:white;
+    	color:#1297CF;
+    }
+  
 /**************progress--bar****************************/
     .progress-bar {
     	list-style: none;
