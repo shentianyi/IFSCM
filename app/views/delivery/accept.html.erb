@@ -49,11 +49,18 @@
 		</tr>
 	</table>
 	<div class="button-group">
-		<input type="button" value="接收" onclick="pack_rece_reje(400,1);">
-		<input type="button" value="拒收" onclick="pack_rece_reje(500,1);">
-		<input type="button" value="标记异常" onclick="pop_pack_inspect();">
+		<%if intransit=DeliveryHelper::dn_intransit(@dn.wayState)%>
+		 <div class="arrive-button-group">
+		  	<input type="button" value="运单到达" onclick="delivery_arrived();"/>
+		  </div>
+		<%end%>
+		<div <%="style=display:none;" if intransit%> class="accept-button-group">
+		<input type="button" value="接收" onclick="pack_rece_reje(400,1);"/>
+		<input type="button" value="拒收" onclick="pack_rece_reje(500,1);"/>
+		<input type="button" value="标记异常" onclick="pop_pack_inspect();"/>
+		</div> 
 	</div>
-	<div class="fixed-print">
+	<div class="fixed-print" >
 		<input type="button" value="质检单打印" name="check-print" onclick="generate_dn_label_pdf(400);">
 		<input type="button" value="入库单打印" name="enter-print" onclick="generate_dn_label_pdf(500);">
 	</div>

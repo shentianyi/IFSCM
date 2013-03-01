@@ -121,4 +121,7 @@ module DeliveryHelper
     descs
   end
   
+  def self.dn_intransit wayState
+    wayState==DeliveryObjWayState::Intransit
+  end
 end

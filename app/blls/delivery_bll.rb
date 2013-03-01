@@ -128,8 +128,9 @@ module DeliveryBll
             :spartNr=>Part.get_partNr(dn.organisation_id,pl.supplier_part_id),:saleNo=>pl.saleNo,:purchaseNo=>pl.purchaseNo)
           end
           dn.rupdate(:wayState=>DeliveryObjWayState::Intransit,:destination=>destiStr,:sendDate=>sendDate)
-          dn.add_to_orgs
+           
           dn.delete_from_staff_cache
+          dn.add_to_new_queue OrgOperateType::Client
           # DelieveryNote & DeliveryItem 写入Mysql
           Resque.enqueue(DeliveryNoteMysqlRecorder,dn.key)
           #-----
@@ -272,6 +273,15 @@ module DeliveryBll
     end
   end
 
+  # [功能：] 获取全部公司角色需操作运单
+  # 参数：
+  # - int ： orgId
+  # - int : role
+  # 返回值：
+  # - DeliveryNote : 对象数组
+  def self.get_all_org_role_dn orgId,role
+    return DeliveryNote.all_org_role_dn(orgId,role)
+  end
   # ws
   # [功能：] 生成运单标签PDF文件
   # 参数：
@@ -303,11 +313,26 @@ module DeliveryBll
   # - string : dnKey
   # 返回值：
   # - array : delivery items
-  def self.get_dn_list dnKey
-    select="delivery_items.*,delivery_packages.cpartNr,delivery_packages.spartNr,delivery_packages.perPackAmount"
-    condi={}
-    condi["delivery_notes.key"]=dnKey
-    return DeliveryItem.joins(:delivery_package=>:delivery_note).find(:all,:select=>select,:conditions=>condi)
+  def self.get_dn_list dnKey,mysql=true
+    if mysql
+      select="delivery_items.*,delivery_packages.cpartNr,delivery_packages.spartNr,delivery_packages.perPackAmount"
+      condi={}
+      condi["delivery_notes.key"]=dnKey
+      return DeliveryItem.joins(:delivery_package=>:delivery_note).find(:all,:select=>select,:conditions=>condi)
+    else
+      items=nil
+      if dn=DeliveryNote.single_or_default(dnKey)
+        items=[]
+        dn.items=DeliveryNote.get_children(dn.key,0,-1)[0]
+        dn.items.each do |p|
+          p.items=DeliveryPackage.get_children(p.key,0,-1)[0]
+          p.items.each do |item|
+            items<<item
+          end
+        end
+      end
+    return items
+    end
   end
 
   # ws
@@ -351,35 +376,48 @@ module DeliveryBll
   # - 无
   def self.delivery_item_accept ids,dn_id,type
     begin
-    attrs={:wayState=>type}
-    delivery_item_update_all(100,ids,attrs)
-    dn=DeliveryNote.find(dn_id)
-    if type==DeliveryObjWayState::Rejected
-      if dn.state==DeliveryObjState::Normal
-        dn.update_attributes(:state=>DeliveryObjState::Abnormal,:wayState=>DeliveryObjWayState::InAccept)
-      end
-      total=dn.delivery_packages.sum('packAmount')
-      rejected=dn.delivery_items.where(:wayState=>DeliveryObjWayState::Rejected).count
-      if total==rejected
-        dn.update_attributes(:wayState=>DeliveryObjWayState::Rejected)
-      else
-        rece_reje=dn.delivery_items.where(:wayState=>[DeliveryObjWayState::Rejected,DeliveryObjWayState::Received]).count
-        if total==rece_reje
+      attrs={:wayState=>type}
+      delivery_item_update_all(100,ids,attrs)
+      dn=DeliveryNote.find(dn_id)
+      if type==DeliveryObjWayState::Rejected
+        if dn.state==DeliveryObjState::Normal
+          dn.update_attributes(:state=>DeliveryObjState::Abnormal,:wayState=>DeliveryObjWayState::InAccept)
+        end
+        total=dn.delivery_packages.sum('packAmount')
+        rejected=dn.delivery_items.where(:wayState=>DeliveryObjWayState::Rejected).count
+        if total==rejected
+          dn.update_attributes(:wayState=>DeliveryObjWayState::Rejected)
+        else
+          rece_reje=dn.delivery_items.where(:wayState=>[DeliveryObjWayState::Rejected,DeliveryObjWayState::Received]).count
+          if total==rece_reje
+            dn.update_attributes(:wayState=>DeliveryObjWayState::Received)
+          end
+        end
+      elsif type==DeliveryObjWayState::Received
+        if dn.wayState==DeliveryObjWayState::Intransit or  dn.wayState==DeliveryObjWayState::Arrived
+          dn.update_attributes(:wayState=>DeliveryObjWayState::InAccept)
+        end
+        if dn.delivery_packages.sum('packAmount')==dn.delivery_items.where(:wayState=>[DeliveryObjWayState::Rejected,DeliveryObjWayState::Received]).count
           dn.update_attributes(:wayState=>DeliveryObjWayState::Received)
         end
       end
-    elsif type==DeliveryObjWayState::Received
-      if dn.wayState==DeliveryObjWayState::Intransit or  dn.wayState==DeliveryObjWayState::Arrived
-        dn.update_attributes(:wayState=>DeliveryObjWayState::InAccept)
-      end
-      if dn.delivery_packages.sum('packAmount')==dn.delivery_items.where(:wayState=>[DeliveryObjWayState::Rejected,DeliveryObjWayState::Received]).count
-        dn.update_attributes(:wayState=>DeliveryObjWayState::Received)
-      end
-    end
     rescue Exception=>e
-   puts e.message
+      puts e.message
       puts e.backtrace
     end
+  end
+  
+   # ws
+  # [功能：] 接收运单
+  # 参数：
+  # - ids : 包装箱号
+  # - dn : 运单
+  # - type : 接收/拒收
+  # 返回值：
+  # - 无
+  def self.delivery_item_inspect type,ids,dn_id,attrs
+    delivery_item_update_all 100,ids,attrs
+    Resque.enqueue(DeliveryNoteWayStateRoleMachine,dn_id,DeliveryRoleMachineAction::DoInspect)
   end
 
   # ws
@@ -389,12 +427,25 @@ module DeliveryBll
   # - dn : 运单
   # 返回值：
   # - 无
-  
   def self.delivery_item_return ids,dn_id
-     dn=DeliveryNote.find(dn_id)
+    dn=DeliveryNote.find(dn_id)
     delivery_item_update_all(100,ids,{:checked=>true,:state=>DeliveryObjState::Abnormal,:wayState=>DeliveryObjWayState::Returned})
     if dn.delivery_packages.sum('packAmount')==dn.delivery_items.where(:wayState=>[DeliveryObjWayState::Returned]).count
       dn.update_attributes(:wayState=>DeliveryObjWayState::Returned)
+    end
+  end
+
+  def self.delivery_note_wayState_state_update id
+    dn=DeliveryNote.find(id)
+    if dn
+      case dn.wayState
+      when DeliveryObjWayState::Arrived
+        dn.delivery_items.update_all(:wayState=>DeliveryObjWayState::Arrived)
+        delivery_item_update_all 300,dn.key,{:wayState=>DeliveryObjWayState::Arrived}
+      when DeliveryObjWayState::Returned
+        dn.delivery_items.update_all(:wayState=>DeliveryObjWayState::Returned)
+        delivery_item_update_all 300,dn.key,{:wayState=>DeliveryObjWayState::Returned}
+      end
     end
   end
 
@@ -406,18 +457,23 @@ module DeliveryBll
   # - attrs : 需要更新的属性
   # 返回值：
   # - array : delivery items
-  def self.delivery_item_update_all type,ids,attrs
+  def self.delivery_item_update_all type,index,attrs
     if type==100
-      DeliveryItem.where(:id=>ids).update_all(attrs)
-      DeliveryItem.where(:id=>ids).all.each do |item|
+      DeliveryItem.where(:id=>index).update_all(attrs)
+      DeliveryItem.where(:id=>index).all.each do |item|
         item.rupdate(attrs)
       end
     elsif type==200
-      ids.each do |key|
+      index.each do |key|
         if item=DeliveryItem.single_or_default(key)
         item.rupdate(attrs)
         end
       end
+    elsif type==300
+      get_dn_list(index,false).each do |item|
+        item.rupdate(attrs)
+      end
     end
   end
+
 end

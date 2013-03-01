@@ -14,7 +14,7 @@ module CZ
     end
 
     def update_redis_id
-      self.rupdate(:id=>self.id)
+       self.rupdate(:id=>self.id)
     end
 
     def update_state_wayState

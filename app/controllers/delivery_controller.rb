@@ -367,6 +367,7 @@ class DeliveryController < ApplicationController
   # 返回值：
   # - html
   def accept        
+    Strategy
       @params={:dnKey=>params[:dnKey]}
      if @msg and @msg.result
        if @dn.can_accept
@@ -379,7 +380,7 @@ class DeliveryController < ApplicationController
        end
        else
          @msg.result=false
-         @msg.content="运单：#{DeliveryObjWayState.get_desc_by_value(@dn.wayState)}，不可接收"
+         @msg.content="运单：#{DeliveryObjWayState.get_desc_by_value(@dn.wayState)}，不可接收或设置到达"
        end
        end
   end
@@ -393,11 +394,16 @@ class DeliveryController < ApplicationController
   def doaccept
      if request.post?
       if @msg.result
+        if @dn.can_doaccept
       ids=params[:ids].split(',')
       type=params[:type].to_i
        Resque.enqueue(DeliveryItemAccepter,ids,@dn.id,type)       
       @msg.object=DeliveryObjWayState.get_desc_by_value(type)
       @msg.content="已操作"
+      else
+         @msg.result=false
+         @msg.content="运单：#{DeliveryObjWayState.get_desc_by_value(@dn.wayState)}，不可接收"
+      end
       end
       render :json=>@msg      
     end
@@ -432,10 +438,12 @@ class DeliveryController < ApplicationController
   def arrive
     if @msg.result
       if @dn.wayState==DeliveryObjWayState::Intransit
-        @dn.update_attributes(:wayState=>DeliveryObjWayState::Arrived)        
+        @dn.update_attributes(:wayState=>DeliveryObjWayState::Arrived)  
+        Resque.enqueue(DeliveryNoteWayStateStateUpdater,@dn.id)
+        set_way_state_code(DeliveryObjWayState::Arrived)      
       else
         @msg.result=false
-        @msg.content="运单已到达"
+        @msg.content="运单：#{DeliveryObjWayState.get_desc_by_value(@dn.wayState)}，不可再次到达"
       end
     end
     render :json=>@msg
@@ -477,7 +485,7 @@ class DeliveryController < ApplicationController
         type=params[:type].to_i
         ids=params[:ids].split(',')
         if type==DeliveryObjInspectState::Normal
-            Resque.enqueue(DeliveryItemAllUpdater,100,ids,{:checked=>true,:state=>type})
+          Resque.enqueue(DeliveryItemInspector,100,ids,@dn.id,{:checked=>true,:state=>type})
           @msg.object=DeliveryObjState::Normal          
         elsif type!=DeliveryObjInspectState::Normal
           @msg.object=DeliveryObjState::Abnormal
@@ -491,7 +499,7 @@ class DeliveryController < ApplicationController
                set_way_state_code(DeliveryObjWayState::Returned)
             end
             else              
-            Resque.enqueue(DeliveryItemAllUpdater,100,ids,{:checked=>true,:state=>DeliveryObjState::Abnormal})
+            Resque.enqueue(DeliveryItemInspector,100,ids,@dn.id,{:checked=>true,:state=>DeliveryObjState::Abnormal})
           end
         end      
         if @msg.result         
@@ -528,12 +536,14 @@ class DeliveryController < ApplicationController
   end
   
   def doinstore
+    begin
     if request.post?
       if @msg.result   
         if item=DeliveryBll.get_dn_instore_item(params[:id])
          @msg=WarehouseBll.position_in(params[:posiNr],params[:ware],item.amount,item.part_id,item.id)
          if @msg.result
            item.update_attributes(:posi=>params[:posiNr],:stored=>true)
+           Resque.enqueue(DeliveryNoteWayStateRoleMachine,@dn.id,DeliveryRoleMachineAction::DoStore)
          end
         else
             @msg.result=false
@@ -541,6 +551,10 @@ class DeliveryController < ApplicationController
         end
       end
       render :json=>@msg
+    end
+    rescue Exception=>e
+     puts e.message
+  
     end
   end
   
@@ -556,7 +570,7 @@ class DeliveryController < ApplicationController
            @msg.object=items.delete_if{|k,v| !denied.include?(k)}
          else
            @dn.update_attributes(:wayState=>DeliveryObjWayState::Returned)
-           Resque.enqueue(DeliveryItemAllUpdater,100,items.keys,{:wayState=>DeliveryObjWayState::Returned})
+           Resque.enqueue(DeliveryNoteWayStateStateUpdater,@dn.id)
            set_way_state_code(DeliveryObjWayState::Returned)
         end
         else
@@ -568,19 +582,28 @@ class DeliveryController < ApplicationController
     end
   end
   
-  private 
-  def auth_dn     
-     @dn=DeliveryNote.single_or_default(params[:dnKey],true)
-     p_auth_dn
+  def link
+      @list=DeliveryBll.get_all_org_role_dn(session[:org_id],params[:r])
+      @action=get_delivery_link_action(params[:r].to_i)
   end
   
-    def redis_auth_dn       
+  private 
+  def auth_dn
+    if params[:dnKey]     
+     @dn=DeliveryNote.single_or_default(params[:dnKey],true)
+     p_auth_dn
+     end
+  end
+  
+    def redis_auth_dn  
+       if params[:dnKey]        
       @dn=DeliveryNote.single_or_default(params[:dnKey])
       p_auth_dn
+      end
      end
   
   def p_auth_dn
-      @msg=ReturnMsg.new
+    @msg=ReturnMsg.new
     if @dn
       if @dn.organisation_id==session[:org_id] or @dn.rece_org_id==session[:org_id]       
         @msg.result=true
@@ -596,4 +619,15 @@ class DeliveryController < ApplicationController
       @msg.instance_variable_set "@wayStateCode",code
   end
   
+  def get_delivery_link_action code
+   action=case code
+     when OrgRoleType::DnReciver
+       "accept"
+     when OrgRoleType::DnInspector
+       "inspect"
+     when OrgRoleType::DnInstorer
+       "instore"
+     end   
+     return action
+  end
 end

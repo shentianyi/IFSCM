@@ -9,11 +9,12 @@ class DeliveryItem < ActiveRecord::Base
   belongs_to :delivery_package
   has_one :delivery_item_state
   delegate :part_rel,:to=>:delivery_package
+  delegate :delivery_note,:to=>:delivery_package
    
   include CZ::BaseModule
   include CZ::DeliveryBase
 
-  after_save :update_redis_id
+  after_create :update_redis_id
   after_update :update_state_wayState,:update_delivery_note_state
   before_create :build_item_state
     
@@ -44,8 +45,8 @@ class DeliveryItem < ActiveRecord::Base
     if self.checked_change
       attr[:checked]=self.checked
     end
-    if self.posiNr_change
-      attr[:posiNr]=self.posiNr
+    if self.posi_change
+      attr[:posi]=self.posi
     end
     if self.stored_change
       attr[:stored]=self.stored
