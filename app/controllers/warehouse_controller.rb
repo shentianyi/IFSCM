@@ -5,13 +5,12 @@ class WarehouseController < ApplicationController
   
   def stock_out_list
     begin
-      raise( ArgumentError, "格式错误：仓库ID！" )  unless params[:whId].is_a?(String)
-      raise( ArgumentError, "格式错误：零件号！" )  unless params[:partNr].is_a?(String)
-      warehouseId = params[:whId].strip
-      partNr = params[:partNr].strip
+      raise( ArgumentError, "格式错误：仓库ID！" )  unless params[:whId].is_a?(String) and warehouseId = params[:whId].strip
+      raise( ArgumentError, "格式错误：零件号！" )  unless params[:partNr].is_a?(String)  and partNr = params[:partNr].strip
       raise( ArgumentError, "参数错误：仓库ID无效！" )  unless FormatHelper.str_is_positive_integer( warehouseId )
       raise( RuntimeError, "仓库不存在！" )  unless wh = @cz_org.warehouses.find_by_id(warehouseId)
-      posis = wh.positions.by_part(partNr)
+      raise( RuntimeError, "零件不存在！" )  unless part = @cz_org.parts.find_by_partNr(partNr)
+      posis = wh.positions.by_partId(part.id)
       if posis.present?
         @whid = warehouseId
         @posilist = posis
@@ -29,17 +28,15 @@ class WarehouseController < ApplicationController
       @whlist = Warehouse.selection_list(@cz_org)
     else
       begin
-        raise( ArgumentError, "格式错误：库位ID！" )  unless params[:posiId].is_a?(String)
-        raise( ArgumentError, "格式错误：零件号！" )  unless params[:partNr].is_a?(String)
-        raise( ArgumentError, "格式错误：出库量！" )  unless params[:amount].is_a?(String)
-        posiId = params[:posiId].strip
-        partNr = params[:partNr].strip
-        amount = params[:amount].strip
+        raise( ArgumentError, "格式错误：库位ID！" )  unless params[:posiId].is_a?(String) and posiId = params[:posiId].strip
+        raise( ArgumentError, "格式错误：零件号！" )  unless params[:partNr].is_a?(String) and partNr = params[:partNr].strip
+        raise( ArgumentError, "格式错误：出库量！" )  unless params[:amount].is_a?(String) and amount = params[:amount].strip
         raise( ArgumentError, "参数错误：库位ID无效！" )  unless FormatHelper.str_is_positive_integer( posiId )
         raise( ArgumentError, "参数错误：出库量无效！" )  unless FormatHelper.str_is_positive_float( amount )
-        msg = WarehouseBll.position_out( posiId.to_i, partNr, amount.to_f )
+        raise( RuntimeError, "零件不存在！" )  unless part = @cz_org.parts.find_by_partNr(partNr)
+        msg = WarehouseBll.position_out( posiId.to_i, part.id, amount.to_f )
         if msg.result
-          render :json => {:flag=>true, :msg=>"出库成功。"}
+          render :json => {:flag=>true, :msg=>"出库成功。", :obj=>msg.object}
         else
           render :json => {:flag=>false, :msg=>msg.content}
         end
@@ -238,7 +235,7 @@ class WarehouseController < ApplicationController
         
         @positions = wh.positions.joins(:warehouse, :storages=>:part)
                                   .where( conditions )
-                                  .select('warehouses.nr as whNr, positions.nr, parts.partNr, sum(storages.stock) as stock')
+                                  .select('warehouses.nr as whNr, positions.nr, parts.partNr, sum(storages.stock) as total')
                                   .group('positions.id')
                                   .having(aggregations)
                                   .limit($DEPSIZE).offset($DEPSIZE*params[:page].to_i)
@@ -246,8 +243,8 @@ class WarehouseController < ApplicationController
         @totalPages = @total / $DEPSIZE + (@total%$DEPSIZE==0 ? 0:1)
         @currentPage=params[:page].to_i
         render :partial=>"state_list"
-      rescue Exception => e
-        render :text => e.to_s
+      # rescue Exception => e
+        # render :text => e.to_s
       end
     end
   end

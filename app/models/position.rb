@@ -5,13 +5,13 @@ class Position < ActiveRecord::Base
   has_many :storages
   has_many :storage_histories
   
-  scope :by_part, lambda { |partNr| joins(:storages=>:part).where('parts.partNr'=>partNr) }
+  scope :by_partId, lambda { |partId| joins(:storages=>:part).select("positions.*, parts.partNr, sum(storages.stock) as total").group("positions.id").where('parts.id'=>partId) }
   
   def stock
     self.storages.sum(:stock)
   end
     
-  def stock_by_part( partNr )
-    self.storages.by_part(partNr).sum(:stock)
+  def stock_by_partId( partId )
+    self.storages.by_partId(partId).sum(:stock)
   end
 end

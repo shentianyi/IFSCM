@@ -22,8 +22,8 @@
 			<th><%= d.whNr %></th>
 			<th><%= d.nr %></th>
 			<th><%= d.partNr %></th>
-			<th><%= d.opType%></th>
-			<th><%= d.amount %></th>
+			<th><%= StorageOpType.get_desc_by_value(d.opType)%></th>
+			<th><%= FormatHelper.string_to_int(d.amount.to_s) %></th>
 		  </tr>
 		<% end %>
 	</table>

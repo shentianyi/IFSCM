@@ -21,7 +21,7 @@
 			<th><%= d.whNr %></th>
 			<th><%= d.nr %></th>
 			<th><%= d.partNr %></th>
-			<th><%= d.amount %></th>
+			<th><%= FormatHelper.string_to_int(d.total.to_s) %></th>
 		  </tr>
 		<% end %>
 	</table>

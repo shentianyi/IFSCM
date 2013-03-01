@@ -1,3 +1,13 @@
+<link rel="stylesheet"  type="text/css" href="/assets/warehouse/stock_out.css" />
+
+Warehouse:<%= select_tag :whId,  options_for_select(@whlist),  prompt: "请选择仓库..." %>
+<br/>
+partNr:<%= text_field_tag :partNr %>
+<br/>
+<%= button_tag '库位列表',:name=>"out_list",:type=>'button',:onclick=>"stock_out_list();"%>
+<hr/>
+<div id="positions_list"></div>
+
 
 <script type="text/javascript">
 function stock_out_list(){
@@ -13,34 +23,24 @@ function stock_out_list(){
 	);
 }
 
-function stock_out(){
+
+function stock_out(e){
 	$.post("../warehouse/stock_out",
 		{
-			posiId: $('#posiId').val(),
+			posiId: $(e).parent().parent().attr("posiid"),
 			partNr: $('#partNr').val(),
-			amount: $('#amount').val()
+			amount: $(e).parent().prev().children().val()
 		},
 		function(data){
-				MessageBox(data.msg);
+			if (data.flag){
+				$(e).parent().prev().prev().text(data.obj);
+				$(e).parent().prev().children().val("");
+				$(e).parent().prev().prev().addClass("new-add");
+			}
+			MessageBox(data.msg);
 		},
 		'json'		
 	);
 }
 	
 </script>
-
-Warehouse:<%= select_tag :whId,  options_for_select(@whlist),  prompt: "请选择仓库..." %>
-<br/>
-partNr:<%= text_field_tag :partNr %>
-<br/>
-<%= button_tag '库位列表',:name=>"out_list",:type=>'button',:onclick=>"stock_out_list();"%>
-<hr/>
-
-posiId:<%= text_field_tag :posiId %>
-<br/>
-amount:<%= text_field_tag :amount %>
-<br/>
-<%= button_tag '出库',:name=>"out",:type=>'button',:onclick=>"stock_out();"%>
-<hr/>
-<div id="result"></div>
-<div id="positions_list"></div>
