@@ -17,10 +17,21 @@
 					<li><a href="../demander/demand_upload">上传需求</a></li>
 					 <li><a href="../demander">查看需求</a></li>
 					 <li><a href="../demander/search_expired">过期需求</a></li>
-			          <li><a  href="../delivery">查看运单</a></li>
-					<li><a href="../organisation_manager/search">供应商信息</a></li>
-					<li>数据分析</li>
-					<li>零件入库</li>
+			          <li><a href="../delivery">查看运单</a></li>
+<!-- 					<li><a href="../organisation_manager/search">供应商信息</a></li> -->
+					<li><a href="../delivery/accept">运单接收</a></li>
+					<li><a href="../delivery/inspect">运单质检</a></li>
+					<li><a href="../delivery/instore">运单入库</a></li>
+					<li><a href="../warehouse/search_state">库存查询</a></li>
+					<li><a href="../warehouse/search_op_history">仓库历史</a></li>
+					<li><a href="../warehouse/primary_warehouse">仓库维护</a></li>
+<!-- 					<li>
+						<a>功能</a>
+						<dl class="" style="display: none">
+							<dt>
+							<dd>
+						</dl>
+					</li> -->
 				<% elsif session[:orgOpeType]==OrgOperateType::Supplier %>
 					<li><a href="../demander">查看需求</a></li>
 					<li><a href="../demander/search_expired">过期需求</a></li>
@@ -41,17 +52,25 @@
 			</a>
 		</div>
 		<div class="cus licon">
-		     <a href="../sessions/reload?t=<%=OrgOperateType::Client%>">
+		     <a href="../client">
 			     <p  name="customericon" class="customericon" style=" cursor:pointer;" ></p>
 			 </a> 
 		</div>
 		<div class="sup licon">
-		       <a href="../sessions/reload?t=<%=OrgOperateType::Supplier%>">
+		       <a href="../supplier">
 			 <p  name="suppliericon" class="suppliericon" style=" cursor:pointer;" ></p>
 			 </a>
 		</div>
 	</div>
 	
+	<div id="MessageBox" class="message-box">
+       <div class="bg-grey">
+            <div>信息</div>
+          	<div class="close-logo"></div>   	 	
+       </div>	
+		<p></p>
+	</div>
+
 <div class="content">
 	  <div class="wrapcontent">
 			<%= yield %>

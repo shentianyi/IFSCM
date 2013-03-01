@@ -1,0 +1,130 @@
+
+<link rel="stylesheet"  type="text/css" href="/assets/warehouse/primary_warehouse.css" />
+<h2 style="margin-top:30px;">基础数据维护</h2>
+
+<div id="warehouses_list">
+	<%= render :partial => "warehouses_list"%>	
+</div>
+
+<div id="positions_list"></div>
+
+
+<script type="text/javascript">
+function new_warehouse(){
+	$.post("../warehouse/primary_warehouse",
+		{
+			whNr: $('#whNr').val(),
+			whName: $('#whName').val()
+		},
+		function(data){
+			if (data.flag)
+				$('#warehouses_list').html(data.txt);
+			MessageBox(data.msg);
+		},
+		'json'		
+	);
+}
+
+function delete_warehouse(whid){
+	$.post("../warehouse/delete_warehouse",
+		{ whId:whid },
+		function(data){
+			if (data.flag)
+				$('#warehouses_list').html(data.txt);
+			MessageBox(data.msg);
+		},
+		'json'		
+	);
+}
+
+function position_list(whid){
+	$.get("../warehouse/primary_position?whId="+whid,	function(data){
+			$('#positions_list').html(data);
+	});
+}
+
+function new_position_range(){
+	$.post("../warehouse/new_position_range",
+		{
+			whId: $('#positions_list_id').attr('whid'),
+			posiStart: $('#posiStart').val(),
+			posiEnd: $('#posiEnd').val(),
+			capa: $('#capa').val(),
+		},
+		function(data){
+			if (data.flag)
+				$('#positions_list').html(data.txt);
+			else
+				MessageBox(data.msg);
+		},
+		'json'		
+	);
+}
+
+function new_position_single(){
+	$.post("../warehouse/new_position_single",
+		{
+			whId: $('#positions_list_id').attr('whid'),
+			posiNr: $('#posiNr').val(),
+			capacity: $('#capacity').val()
+		},
+		function(data){
+			if (data.flag)
+				$('#positions_list').html(data.txt);
+			else
+				MessageBox(data.msg);
+		},
+		'json'		
+	);
+}
+
+function remove_position(e){
+	$(e).parent().remove();
+}
+
+function save_position(){
+	hash = {};
+	$('#positions_list_id input.new-add').each(function(){
+		hash[ $(this).val() ] = $(this).next().text() ;
+	})
+	$.post("../warehouse/primary_position",
+		{
+			whId: $('#positions_list_id').attr('whid'),
+			posiHash: hash,
+		},
+		function(data){
+			if (data.flag)
+				$('#positions_list').html(data.txt);
+			else
+				MessageBox(data.msg);
+		},
+		'json'		
+	);
+}
+
+function delete_position(posiid, e){
+	$.post("../warehouse/delete_position",
+		{ posiId: posiid	},
+		function(data){
+			if (data.flag)
+				$(e).parent().remove();
+			MessageBox(data.msg);
+		},
+		'json'		
+	);
+}
+
+var openRightPanel = false;
+var openfuncright = function openright() {
+	if (openRightPanel == false) {
+		$("div.toggle-list").show("slow");
+		$("div.toggle-btn").attr("style", "background-image:url(/assets/lefticon.png)");
+		openRightPanel = true;
+	} else {
+		$("div.toggle-list").hide("fast");
+		$("div.toggle-btn").attr("style", "background-image:url(/assets/righticon.png)");
+		openRightPanel = false;
+	}
+};
+
+</script>

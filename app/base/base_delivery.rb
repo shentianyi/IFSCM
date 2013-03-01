@@ -1,24 +1,32 @@
 #encoding: utf-8
 
 module CZ
-  module DeliveryBase 
+  module DeliveryBase
     attr_accessor :items
-        
     def add_to_parent
       key=eval(self.class.name).generate_child_zset_key self.parentKey
       $redis.zadd key,DeliveryBll.delivery_obj_reconverter(self.class.name),self.key
     end
-    
+
     def remove_from_parent
       key=eval(self.class.name).generate_child_zset_key self.parentKey
       $redis.zrem key,self.key
     end
-    
+
     def update_redis_id
-      self.rupdate(:id=>self.id)
+       self.rupdate(:id=>self.id)
     end
 
-    def self.included(base)      
+    def update_state_wayState
+      if self.wayState_change
+        self.rupdate(:wayState=>self.wayState)
+      end
+      if self.state_change
+        self.rupdate(:state=>self.state)
+      end
+    end
+
+    def self.included(base)
       def base.get_children key,startIndex,endIndex
         key=generate_child_zset_key key
         total=$redis.zcard key

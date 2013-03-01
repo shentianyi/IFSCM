@@ -1,0 +1,23 @@
+
+
+ 	<div class="warehouse">
+ 		<p class="ware-p">仓库</p>
+ 		<ul class="ware-ul">
+ 			<% i=0 ; @warehouses.each do |d|	%>
+ 				<li class="ware-li li-small" onclick="position_list(<%= d.id %>);">
+ 					<div><%= i+=1%></div>
+ 					<%= text_field_tag nil, d.nr, :readOnly=>true, :style=>"cursor:default" %>
+ 					<%= text_field_tag nil, d.name, :readOnly=>true, :style=>"cursor:default" %>
+ 					<div class="wh-del del-small" onclick="delete_warehouse(<%= d.id %>);"></div>
+ 				</li>
+ 			<% end %>
+ 				<li class="ware-li li-small">
+ 					<div>new</div>
+ 					<%= text_field_tag :whNr %>
+ 					<%= text_field_tag :whName %>
+ 					<div class="wh-del del-small"></div>
+ 				</li>
+ 		</ul>
+ 		<div class="wh-add" onclick="new_warehouse();"></div>   		
+ 	</div>
+

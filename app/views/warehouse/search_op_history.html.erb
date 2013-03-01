@@ -1,0 +1,39 @@
+
+<br /><br />
+仓库:<%= select_tag :whId,  options_for_select(@whlist),  prompt: "请选择仓库..." %>
+<br/>
+库位:<%= text_field_tag :posiNr %>
+<br/>
+零件号:<%= text_field_tag :partNr %>
+<br/>
+操作类型:<%= select_tag :opType,  options_for_select(@opType),  prompt: "请选择操作类型..." %>
+<br/>
+数量:<%= text_field_tag :amountStart, nil,:size=>5 %>
+至<%= text_field_tag :amountEnd, nil,:size=>5 %>
+<br/><br />
+<%= button_tag '搜索',:class=>"normal-small-btn",:type=>'button',:onclick=>"search_op_history(0);"%>
+<hr/>
+<hr/>
+
+<div id="result"></div>
+
+<script type="text/javascript">
+function search_op_history( page ){
+	$.post("../warehouse/search_op_history",
+		{
+			whId: $('#whId').val(),
+			posiNr: $('#posiNr').val(),
+			partNr: $('#partNr').val(),
+			opType: $('#opType').val(),
+			amountStart: $('#amountStart').val(),
+			amountEnd: $('#amountEnd').val(),
+			page: page
+		},
+		function(data){
+				$('#result').html(data);
+		},
+		'html'		
+	);
+}
+
+</script>

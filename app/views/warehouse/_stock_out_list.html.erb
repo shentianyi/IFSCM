@@ -1,0 +1,34 @@
+
+	<table class="upData" id="posi_list_id" whid=<%= @whid %> >
+		<tr class="lineone">
+			<th></th>
+			<th>库位</th>
+			<th>零件号</th>
+			<th>存量</th>
+			<th>出库量</th>
+			<th></th>
+			<th></th>
+			<th>成本中心</th>
+		</tr>
+		<tr class="divide" style="display: none">
+			<th class="nordvd"></th>
+			<th class="nordvd"></th>
+			<th class="nordvd"></th>
+			<th class="nordvd"></th>
+			<th class="nordvd"></th>
+			<th class="lastdvd"></th>
+		</tr>
+		<% i=0 ; @posilist.each do |d|	%>
+		  <tr class="norline hoverable" posiid=<%= d.id %> >
+			<th><%= i+=1%></th>
+			<th><%= d.nr%></th>
+			<th><%= d.partNr%></th>
+			<th><%= FormatHelper.string_to_int(d.total.to_s)%></th>
+			<th><%= text_field_tag :amount %></th>
+			<th><%= button_tag '出库',:type=>'button',:onclick=>"stock_out(this, '');"%></th>
+			<th><%= button_tag '报废',:type=>'button',:onclick=>"stock_out(this, 'scrap');"%></th>
+			<th><%= select_tag :ccId,  options_for_select(@costcenterlist),  prompt: "请选择成本中心..." %></th>
+		  </tr>
+		<% end %>
+	</table>
+	

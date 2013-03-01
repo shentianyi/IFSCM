@@ -8,7 +8,9 @@ class PartRel < ActiveRecord::Base
   belongs_to :client_part, :class_name=>"Part"#, :foreign_key=>"client_part_id"
   belongs_to :supplier_part, :class_name=>"Part"#, :foreign_key=>"supplier_part_id"
   has_one :strategy
-
+  has_many :delivery_packages
+  has_many :delivery_items,:through=>:delivery_packages
+  
   after_create :add_redis_indexs
   after_destroy :del_redis_indexs
 

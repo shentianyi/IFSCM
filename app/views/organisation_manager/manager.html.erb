@@ -30,6 +30,26 @@
     <%= button_tag '新建',:type=>'button',:onclick=>"org_staff_new();"%>
 <% end %>
 
+
+<h4>成本中心</h4>
+<hr/>
+<%= form_tag( {:controller=>"organisation_manager", :action=>"create_costcenter"}, id:"formCostCenter" ) do  %>
+	<div>
+		<label>公司:</label>
+		<%= select_tag :orgId,  options_for_select(@list),  prompt: "All" %>
+	</div>
+	  <div>
+	    <label>名称:</label>
+	    <%= text_field_tag :ccName, nil, size:10 %>
+	  </div>
+	  <div >
+	    <label>描述:</label>
+	    <%= text_field_tag :ccDesc, nil, size:40 %>
+	  </div>
+    <%= button_tag '新建',:type=>'button',:onclick=>"org_costcenter_new();"%>
+<% end %>
+
+
 <h4>公司关系</h4>
 <hr/>
 <%= form_tag( {:controller=>"organisation_manager", :action=>"create_org_relation"}, id:"formRelation" ) do  %>

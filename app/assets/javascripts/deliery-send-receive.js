@@ -354,7 +354,7 @@ function build_delivery_note() {
 		},
 		success : function(data) {
 			if (data.result) {
-					window.location="../delivery/dn_detail?dnKey="+data.object+"&t=p";
+				window.location = "../delivery/dn_detail?dnKey=" + data.object + "&t=p";
 			} else {
 				hide_handle_dialog();
 				alert(data.content);
@@ -370,10 +370,9 @@ function build_delivery_note() {
 // - int : pageIndex
 // 返回 ：
 // - 无
-function get_dn_detail(type,pageIndex) {
-		window.location="../delivery/dn_detail?dnKey="+$('#dnkey-hidden').val()+"&t="+type+"&p="+pageIndex;
+function get_dn_detail(type, pageIndex) {
+	window.location = "../delivery/dn_detail?dnKey=" + $('#dnkey-hidden').val() + "&t=" + type + "&p=" + pageIndex;
 }
-
 
 // ws
 // 功能 ： 发送运单
@@ -686,7 +685,7 @@ function pop_cancel(e) {
 function generate_dn_label_pdf(type) {
 	var desi = $("#destination-text").val();
 	var sendDate = $("#sendDate-text").val();
-	if ((desi == "" || sendDate == "") && type == "dn") {
+	if ((desi == "" || sendDate == "") && type == 100) {
 		flash_message(".errparts");
 	} else {
 		show_handle_dialog();
@@ -707,13 +706,19 @@ function generate_dn_label_pdf(type) {
 					window.open(data.content, '_blank');
 					window.focus();
 				} else {
-					alert("打印失败，请重试");
+					alert(data.content);
 				}
 			}
 		});
 	}
 }
 
+// ws
+// 功能 ： 将运单添加到客户端打印列表
+// 参数 ：
+// - 调用者 : 无
+// 返回 ：
+// - 无
 function add_dn_to_print_queue() {
 	$.ajax({
 		url : "../delivery/add_to_print",
@@ -726,4 +731,285 @@ function add_dn_to_print_queue() {
 			alert(data.content);
 		}
 	});
+}
+
+// ws
+// 功能 ： 获取运单接收列表
+// 参数 ：
+// - 调用者 : 无
+// 返回 ：
+// - 无
+function redirect_delivery_action(action, params) {
+	if (params == null) {
+		window.location = "../delivery/" + action + "?dnKey=" + $("#dnKey").val();
+	} else {
+		var p = "";
+		for (var h in params) {
+			p += "&" + h + "=" + params[h];
+		}
+		window.location = "../delivery/" + action + "?dnKey=" + $("#dnKey").val() + p;
+	}
+}
+
+function get_dn_obj_state_css(state) {
+	switch(state) {
+		case 100:
+			return 'normal';
+		case 200:
+			return 'abnorm'
+	}
+}
+
+function get_dn_obj_waystate_css(state) {
+	switch(state) {
+		case 100:
+			return "instransit";
+		case 400:
+			return "received";
+		case 600:
+			return "returned";
+		default :
+			return "instransit"
+	}
+}
+
+function trimEnd(str) {
+	var reg = /,$/gi;
+	return str.replace(reg, "");
+}
+
+function check_all() {
+	var cbs = document.getElementsByTagName('input');
+	var check = document.getElementById('check-all');
+	for (var i = 0; i < cbs.length; i++) {
+		if (cbs[i].type == "checkbox" && $("#" + cbs[i].id).attr("no-all-check") == null) {
+			cbs[i].checked = check.className == 1 ? true : false;
+		}
+	}
+	check.className = check.className == 1 ? 0 : 1;
+}
+
+function checked_ids() {
+	var cbs = document.getElementsByTagName('input');
+	var ids = "";
+	for (var i = 0; i < cbs.length; i++) {
+		if (cbs[i].type == "checkbox" && $("#" + cbs[i].id).attr("no-all-check") == null) {
+			if (cbs[i].checked) {
+				ids += cbs[i].id + ",";
+			}
+		}
+	}
+	return trimEnd(ids);
+}
+
+function pack_rece_reje(type, action, pdata,call) {
+	var actions = {
+		1 : "doaccept",
+		2 : "mark_abnormal"
+	};
+	var ids = checked_ids();
+	if (ids.length > 0) {
+		if (confirm("确认执行此操作？")) {
+			var data = {
+				dnKey : $("#dnkey-hidden").val(),
+				ids : ids,
+				type : type
+			};
+			if (pdata != null) {
+				for (var v in pdata) {
+					data[v] = pdata[v];
+				}
+			}
+			show_handle_dialog();
+			$.ajax({
+				url : "../delivery/" + actions[action],
+				type : 'post',
+				data : data,
+				dataType : 'json',
+				success : function(msg) {
+					hide_handle_dialog();
+					if (msg.result) {
+						alert("操作成功！");
+						ids = ids.split(",");
+						if (action == 1) {
+							for (var i = 0; i < ids.length; i++) {
+								$("#waystate-th-" + ids[i]).attr('class', get_dn_obj_waystate_css(type)).html(msg.object);
+							}
+						} else if (action == 2) {
+							for (var i = 0; i < ids.length; i++) {
+								$("#state-th-" + ids[i]).attr('class', get_dn_obj_state_css(msg.object)).html(msg.content);
+							}
+						}
+						if (call != null) {
+								call();
+							}
+					} else {
+						alert(msg.content);
+					}
+				}
+			});
+		}
+	}
+}
+
+function mark_pack_abnormal(){
+	if (checked_ids().length > 0) {
+		var data = {
+			desc : $("#check-desc-input").val()
+		};
+		pack_rece_reje($("#inspect_type").val(), 2, data, hide_inspect_box);
+	} else {
+		alert("请选择包装箱！");
+		hide_inspect_box();
+	}
+}
+
+function delivery_arrived() {
+		show_handle_dialog();
+	$.post('../delivery/arrive', {dnKey : $("#dnkey-hidden").val()},function(msg) {
+		if (msg.result) {
+			$(".arrive-button-group").remove();
+			$(".accept-button-group").show();
+			$("[id^='waystate-th-']").attr('class', get_dn_obj_waystate_css(msg.wayStateCode)).html(msg.wayState);
+			hide_handle_dialog();
+		}
+	}, 'json');
+}
+
+function pack_inspect(type, action, pdata, call) {
+	var actions = {
+		1 : "doinspect",
+		2 : "doreturn"
+	};
+	var ids = checked_ids();
+	if (ids.length > 0) {
+		if (confirm("确认此操作？")) {
+
+			var data = {
+				dnKey : $("#dnkey-hidden").val(),
+				ids : ids,
+				type : type
+			};
+			if (pdata != null) {
+				for (var v in pdata) {
+					data[v] = pdata[v];
+				}
+			}
+			show_handle_dialog();
+			$.ajax({
+				url : "../delivery/" + actions[action],
+				type : 'post',
+				data : data,
+				dataType : 'json',
+				success : function(msg) {
+					hide_handle_dialog();
+					if (msg.result) {
+						alert("操作成功！");
+						ids = ids.split(",");
+						if (action == 1) {
+							var checked = $("#pack-return-checkbox").attr("checked");
+							for (var i = 0; i < ids.length; i++) {
+								$("#check-th-" + ids[i]).html("是");
+								$("#operate-th-" + ids[i]).html("");
+								$("#state-th-" + ids[i]).attr('class', get_dn_obj_state_css(msg.object)).html(msg.content);
+								if (checked != null) {
+									$("#waystate-th-" + ids[i]).attr('class', get_dn_obj_waystate_css(msg.wayStateCode)).html(msg.wayState);
+								}
+							}
+							if (call != null) {
+								call();
+							}
+						} else if (action == 2) {
+
+						}
+					} else {
+						if (msg.content) {
+							alert(msg.content);
+						} else {
+							var mess = "下列包装箱不可退货：\n";
+							for (var i = 0; i < msg.object.length; i++) {
+								mess += $("#pack-key-th-" + msg.object[i]).html() + ";\n";
+							}
+							alert(mess);
+						}
+					}
+				}
+			});
+
+		}
+	}
+}
+
+function pop_pack_inspect() {
+	if (checked_ids().length > 0) {
+		$("#pick-part-info-box").show();
+	}
+}
+
+function abnormal_pack_inpect() {
+	if (checked_ids().length > 0) {
+		var data = {
+			desc : $("#check-desc-input").val(),
+			"return" : $("#pack-return-checkbox").attr("checked")
+		};
+		pack_inspect($("#inspect_type").val(), 1, data, hide_inspect_box);
+	} else {
+		alert("请选择包装箱！");
+		hide_inspect_box();
+	}
+}
+
+function pack_in_store(dnKey, id, posiNr, ware) {
+	if (posiNr.length > 0) {
+		$.ajax({
+			url : "../delivery/doinstore",
+			type : 'post',
+			data : {
+				dnKey : dnKey,
+				id : id,
+				posiNr : posiNr,
+				ware : ware
+			},
+			dataType : 'json',
+			success : function(msg) {
+				if (msg.result) {
+					$("#operate-th-" + id).html(posiNr);
+					$("#store-th-" + id).html("是");
+					$(".position:eq(" + ($(".position").index($("#" + id)) + 1) + ")").focus();
+				} else {
+					alert(msg.content);
+				}
+			}
+		});
+	}
+}
+
+function return_delivery_note() {
+	if (confirm("确认此操作？")) {
+		show_handle_dialog();
+		$.ajax({
+			url : "../delivery/return_dn",
+			type : 'post',
+			data : {
+				dnKey : $("#dnkey-hidden").val()
+			},
+			dataType : 'json',
+			success : function(msg) {
+				hide_handle_dialog();
+				if (msg.result) {
+					$("[id^='waystate-th-']").attr('class', get_dn_obj_waystate_css(msg.wayStateCode)).html(msg.wayState);
+				} else {
+					if (msg.content) {
+						alert(msg.content);
+					} else {
+						var mess = "下列包装箱不可退货：\n";
+						for (var i = 0; i < msg.object.length; i++) {
+							mess += msg.object[i] + ";\n";
+						}
+						alert(mess);
+					}
+				}
+			}
+		});
+	}
 }

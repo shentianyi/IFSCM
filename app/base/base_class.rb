@@ -55,15 +55,16 @@ module CZ
         end
       end
       
-      args.each do |k,v|
-        instance_variable_set "@#{k}",v
-      end
-      
       if self.respond_to?(:default)
         self.default.each do |k,v|
           instance_variable_set "@#{k}",v
         end
       end
+      
+      args.each do |k,v|
+        instance_variable_set "@#{k}",v
+      end
+      
     end
 
     def save

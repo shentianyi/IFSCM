@@ -11,14 +11,24 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130221135320) do
+ActiveRecord::Schema.define(:version => 20130301071153) do
+
+  create_table "cost_centers", :force => true do |t|
+    t.string   "name"
+    t.string   "desc"
+    t.integer  "organisation_id"
+    t.datetime "created_at",      :null => false
+    t.datetime "updated_at",      :null => false
+  end
+
+  add_index "cost_centers", ["organisation_id"], :name => "index_cost_centers_on_organisation_id"
 
   create_table "delivery_item_states", :force => true do |t|
-    t.string   "state"
+    t.integer  "state",            :default => 100
     t.string   "desc"
     t.integer  "delivery_item_id"
-    t.datetime "created_at",       :null => false
-    t.datetime "updated_at",       :null => false
+    t.datetime "created_at",                        :null => false
+    t.datetime "updated_at",                        :null => false
   end
 
   add_index "delivery_item_states", ["delivery_item_id"], :name => "index_delivery_item_states_on_delivery_item_id"
@@ -33,6 +43,7 @@ ActiveRecord::Schema.define(:version => 20130221135320) do
     t.integer  "wayState",            :default => 100
     t.boolean  "checked",             :default => false
     t.boolean  "stored",              :default => false
+    t.string   "posi"
   end
 
   add_index "delivery_items", ["delivery_package_id"], :name => "index_delivery_items_on_delivery_package_id"
@@ -60,7 +71,7 @@ ActiveRecord::Schema.define(:version => 20130221135320) do
     t.string   "cpartNr"
     t.string   "spartNr"
     t.string   "parentKey"
-    t.integer  "partRelId"
+    t.integer  "part_rel_id"
     t.integer  "packAmount"
     t.float    "perPackAmount"
     t.integer  "delivery_note_id"
@@ -69,6 +80,7 @@ ActiveRecord::Schema.define(:version => 20130221135320) do
   end
 
   add_index "delivery_packages", ["delivery_note_id"], :name => "index_delivery_packages_on_delivery_note_id"
+  add_index "delivery_packages", ["part_rel_id"], :name => "index_delivery_packages_on_part_rel_id"
 
   create_table "demanders", :force => true do |t|
     t.string   "key"
@@ -150,12 +162,24 @@ ActiveRecord::Schema.define(:version => 20130221135320) do
 
   add_index "staffs", ["organisation_id"], :name => "index_staffs_on_organisation_id"
 
-  create_table "storages", :force => true do |t|
-    t.decimal  "stock",       :precision => 10, :scale => 0
+  create_table "storage_histories", :force => true do |t|
+    t.integer  "opType"
+    t.decimal  "amount",           :precision => 15, :scale => 2
     t.integer  "position_id"
     t.integer  "part_id"
-    t.datetime "created_at",                                 :null => false
-    t.datetime "updated_at",                                 :null => false
+    t.datetime "created_at",                                      :null => false
+    t.datetime "updated_at",                                      :null => false
+    t.string   "cost_center_name"
+  end
+
+  create_table "storages", :force => true do |t|
+    t.decimal  "stock",            :precision => 15, :scale => 2
+    t.integer  "position_id"
+    t.integer  "part_id"
+    t.datetime "created_at",                                                       :null => false
+    t.datetime "updated_at",                                                       :null => false
+    t.integer  "delivery_item_id"
+    t.integer  "state",                                           :default => 100
   end
 
   add_index "storages", ["part_id"], :name => "index_storages_on_part_id"
@@ -164,9 +188,9 @@ ActiveRecord::Schema.define(:version => 20130221135320) do
   create_table "strategies", :force => true do |t|
     t.integer  "leastAmount"
     t.integer  "part_rel_id"
-    t.datetime "created_at",  :null => false
-    t.datetime "updated_at",  :null => false
-    t.string   "needCheck"
+    t.datetime "created_at",                   :null => false
+    t.datetime "updated_at",                   :null => false
+    t.integer  "needCheck",   :default => 100
   end
 
   add_index "strategies", ["part_rel_id"], :name => "index_strategies_on_part_rel_id"
