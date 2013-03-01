@@ -634,14 +634,14 @@ input.uploadfile {
     }
     .normal-small-btn{
     	border:2px solid #1297CF;
-    	background-color:white;
-    	color:#1297CF;
+    	background-color:#1297CF;
+    	color:white;
     	font-family:"微软雅黑"
     }
     .normal-small-btn:hover{
     	border:2px solid #1297CF;
-    	background-color:#1297CF;
-    	color:white;
+    	background-color:white;
+    	color:#1297CF;
     }
     
 /**************progress--bar****************************/
