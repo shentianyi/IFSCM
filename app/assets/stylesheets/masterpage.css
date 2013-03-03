@@ -344,7 +344,11 @@ div #f2 {
 	background-image: url(welcome/f2.png);
 }
 
-
+/*li.dropmenu a:hover ul{
+	display:inherit;
+	top:100px;
+	left: 100px;
+}*/
 /**************************************************      redis search      */
 .ui-helper-hidden-accessible {
 	display: none
