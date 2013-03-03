@@ -477,7 +477,7 @@ class DemanderController<ApplicationController
             :page=>params[:page] )
             
             orgRelIds = demands.map {|d| OrganisationRelation.where( :origin_supplier_id=>d.supplierId, :origin_client_id=>d.clientId).first.id }
-            if DeliveryBll::vali_current_di_temp( session[:staff_id], orgRelIds )
+            if DeliveryBll.vali_current_di_temp( session[:staff_id], orgRelIds )
               demands.each { |d|  DeliveryHelper::automake_di_temp( session[:staff_id], d)  }
               render :json => {:flag=>true, :clientNr=>OrganisationRelation.find(orgRelIds.first).clientNr}
             else
