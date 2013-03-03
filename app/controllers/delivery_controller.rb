@@ -2,8 +2,8 @@
 class DeliveryController < ApplicationController
 
   before_filter  :authorize
-  before_filter :auth_dn,:only=>[:arrive,:mark_abnormal,:return_dn]
-  before_filter :redis_auth_dn,:only=>[:dn_detail,:gen_dn_pdf,:accept,:doaccept,:receive,:inspect,:doinspect,:instore,:doinstore]
+  before_filter :auth_dn,:only=>[:arrive,:mark_abnormal,:return_dn,:doinspect]
+  before_filter :redis_auth_dn,:only=>[:dn_detail,:gen_dn_pdf,:accept,:doaccept,:receive,:inspect,:instore,:doinstore]
   ##
   # ws
   # 运单列表
@@ -497,10 +497,10 @@ class DeliveryController < ApplicationController
             else           
                Resque.enqueue(DeliveryItemReturner,ids,@dn.id)
                set_way_state_code(DeliveryObjWayState::Returned)
-            end
-            else              
-            Resque.enqueue(DeliveryItemInspector,100,ids,@dn.id,{:checked=>true,:state=>DeliveryObjState::Abnormal})
-          end
+            end           
+          end            
+          @dn.update_attributes(:state=>DeliveryObjState::Abnormal)  
+          Resque.enqueue(DeliveryItemInspector,100,ids,@dn.id,{:checked=>true,:state=>DeliveryObjState::Abnormal})  
         end      
         if @msg.result         
           @msg.content=DeliveryObjState.get_desc_by_value(@msg.object)      

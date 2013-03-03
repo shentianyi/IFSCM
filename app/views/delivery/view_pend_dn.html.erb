@@ -8,7 +8,7 @@
      });
 	});
 </script>
-<%if @msg.result%>
+<%if @msg and @msg.result%>
 <% dn=@msg.object%>
  <ul class="progress-bar">						  
 				<a href="#"><li style="z-index:3">
@@ -68,6 +68,6 @@
 <%= render :partial => "shared/handling_msg_box", :locals => { :handlemsg => "正在处理中，请稍后..." } %>
 <%else%>
 <div class="abstractblock">
-	<%= @msg.content%>
+	<%= @msg.content if @msg%>
 </div>
 <%end%>
