@@ -8,9 +8,19 @@
      });
 	});
 </script>
-<%if @msg.result%>
+<%if @msg and @msg.result%>
 <% dn=@msg.object%>
- 
+ <ul class="progress-bar">						  
+				<a href="#"><li style="z-index:3">
+					<p>运单添加</p>
+				</li></a>
+				<a href="#"><li style="z-index:2" >
+					<p>运单审核</p>
+				</li></a>
+				<a href="#"><li style="z-index:1" class="progress-bar-choosen">
+					<p>运单生成</p>
+				</li></a>			  
+		    </ul>
 <div class="fillindestinations">
 	<p>
 		运单发送预览数据: <%= dn.key%>
@@ -58,6 +68,6 @@
 <%= render :partial => "shared/handling_msg_box", :locals => { :handlemsg => "正在处理中，请稍后..." } %>
 <%else%>
 <div class="abstractblock">
-	<%= @msg.content%>
+	<%= @msg.content if @msg%>
 </div>
 <%end%>

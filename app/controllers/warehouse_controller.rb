@@ -149,6 +149,7 @@ class WarehouseController < ApplicationController
         @whid = whId
         @positions = wh.positions.order("nr asc")
         @newposi = []
+        raise( RuntimeError, "库位范围过大，请缩小范围！" )  if (posiStart..posiEnd).count > 100
         (posiStart..posiEnd).each do |p|
           posi = Position.new( :nr=>p, :capacity=>capa )
           posi.errors[:temp]="重复"  if wh.positions.where( :nr=>p ).first

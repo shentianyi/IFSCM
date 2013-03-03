@@ -40,7 +40,8 @@ module DeliveryBll
 
   def self.vali_current_di_temp staffId, orgRelIds
     temps=DeliveryItemTemp.get_staff_cache(staffId).first ||[]
-    ids = temps.collect {|t| PartRel.find_by_id(t.partRelId.to_i).organisation_relation_id}
+    puts temps
+    ids = temps.collect {|t| puts(t.part_rel_id.class) ;PartRel.find_by_id(t.part_rel_id.to_i).organisation_relation_id}
     len = (ids+orgRelIds).uniq.size
     return true  if len==1
     return false
@@ -298,9 +299,7 @@ module DeliveryBll
           dn.rupdate(:destination=>destination,:sendDate=>sendDate)
         end
       end
-      result=TPrinter.print_dn_pdf(dnKey,type)
-      msg.result= result[:result]
-      msg.content=result[:content]
+      msg=TPrinter.print_dn_pdf(dnKey,type)
     else
       msg.content="运单不存在"
     end
