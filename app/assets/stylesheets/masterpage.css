@@ -344,6 +344,10 @@ div #f2 {
 	background-image: url(welcome/f2.png);
 }
 
+a {
+	color:#9D9D9D;
+}
+
 /*li.dropmenu a:hover ul{
 	display:inherit;
 	top:100px;
