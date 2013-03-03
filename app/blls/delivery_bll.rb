@@ -299,9 +299,9 @@ module DeliveryBll
           dn.rupdate(:destination=>destination,:sendDate=>sendDate)
         end
       end
-      result=TPrinter.print_dn_pdf(dnKey,type)
-      msg.result= result[:result]
-      msg.content=result[:content]
+      msg=TPrinter.print_dn_pdf(dnKey,type)
+      # msg.result= result[:result]
+      # msg.content=result[:content]
     else
       msg.content="运单不存在"
     end

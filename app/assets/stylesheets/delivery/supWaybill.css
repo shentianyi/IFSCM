@@ -317,30 +317,3 @@ input.partsamount {
 #staff-dn-cache-link .closebt{
 		margin-top:0px;
 }
-
-
-    .progress-bar{
-    	display:block;
-    	position:fixed;
-    	right:20px;  
-    	top:95px;
-    	width:150px;
-    	height:320px;
-    	background-image:url("../progress-bar.png");
-    	background-position:right center;
-    	background-repeat:no-repeat;
-    }
-    .progress-bar ul{
-    	list-style:none;
-    	font-size:13px;
-    	color:#9D9D9D;
-    }
-    .progress-bar ul li{
-    	margin:65px 0 -4px 27px;
-    	width:80px;
-    }
-    .choosen{
-    	background-image:url("../progress-bar-ball.png");
-    	background-position:95% center;
-    	background-repeat:no-repeat;
-    }
