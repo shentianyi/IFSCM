@@ -93,14 +93,15 @@ h2{
 }
 .greeting {
 
-	    background-image:url("../images/img/arrow-down.png");
+	    background-image:url("img/arrow-down.png");
 	    background-repeat:no-repeat;
-	    background-position:93% center;
+	    background-position:right center;
 	    cursor:pointer;
 		display: block;
-	
+
 		color: #9D9D9D;
-		width:84px;
+	   padding-left:5px;
+	   padding-right:11px;
 
 }
 .content {
@@ -179,18 +180,22 @@ ul.subs {
 
 }
 .subs li > dl{
+	z-index: 10;
+	position: absolute;
 	background-color: #EAEDEC;
 	margin: 0px -10px;
 }
 .subs li > dl > dt {
 	display: none;
 	padding-left: 5px;
+	
 	font-weight: bold;
 }
 .subs li > dl > dd {
 	display: none;
 	margin: 0px;
     padding-left: 15px;
+    padding-right:15px;
 }
 
 .subs dd:hover {

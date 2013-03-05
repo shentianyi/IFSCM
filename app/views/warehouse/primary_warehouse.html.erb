@@ -6,20 +6,38 @@
 	<%= render :partial => "warehouses_list"%>	
 </div>
 
-<!-- <div id="positions_list"></div> -->
 <div class="equal-sign">-</div>
-<div class="wareposition">
-	<p class="ware-p"><label name="warehouse">warehouse</label>&nbsp;库位</p>
+<div class="wareposition"   id="positions_list_id" whid=<%= @whid %> >
+	<p class="ware-p"><label name="warehouse">当前仓库：</label>&nbsp;未选中</p>
 	<ul class="ware-ul">
-	<li class="ware-li li-right"><p><strong>单个添加/删除</strong></p></li>
-	<li class="ware-li li-right"><input class="ip1" type="text" value="输入库位"><input class="ip2" type="text" name="warehouse" value="20000"><div class="wh-post btn-normal " style="margin-right:15px;">删除</div><div class="wh-post btn-normal wh-small-add ">添加</div></li>
-	<li class="ware-li li-right"><p><strong>连续添加/删除</strong></p></li>
-	<li class="ware-li li-right"><input class="ip1" type="text" value="输入库位"><input class="ip2" type="text" name="warehouse" value="容量"></li>
-	 <li class="ware-li li-right"><p>-</p><input class="ip1" type="text" value="输入库位"><input class="ip2" type="text" name="warehouse" value="容量"><div class="wh-post btn-normal" >删除</div><div class="wh-post btn-normal wh-small-add ">添加</div></li>
+		<li class="ware-li li-right"><p><strong>单个添加/删除</strong></p></li>
+		<li class="ware-li li-right">
+			<%= text_field_tag :posiNr, nil, :class=>"ip1", :placeholder=>"输入库位..." %>
+			<%= text_field_tag :capacity, nil, :class=>"ip2", :placeholder=>"容量..." %>
+			<div class="wh-post btn-normal " style="margin-right:15px;" onclick="delete_position(this);">删除</div>
+			<div class="wh-post btn-normal wh-small-add " onclick="new_position_single();">添加</div>
+		</li>
+		<li class="ware-li li-right"><p><strong>连续添加/删除</strong></p></li>
+		<li class="ware-li li-right">
+			<%= text_field_tag :posiStart, nil, :class=>"ip1", :placeholder=>"输入库位..." %>
+			<%= text_field_tag :capa, nil, :class=>"ip2", :placeholder=>"容量..." %>
+		</li>
+		 <li class="ware-li li-right">
+		 	<p>-</p>
+		 	<%= text_field_tag :posiEnd, nil, :class=>"ip1", :placeholder=>"输入库位..." %>
+		 	<div class="wh-post btn-normal" >删除</div>
+		 	<div class="wh-post btn-normal wh-small-add " onclick="new_position_range();">添加</div>
+		 </li>
 	</ul>
 </div>
 
+<!-- <div id="positions_list"></div> -->
+
 <script type="text/javascript">
+function ready_new_warehouse(){
+	$('#ready_for_new_warehouse').show();
+}
+
 function new_warehouse(){
 	$.post("../warehouse/primary_warehouse",
 		{
@@ -45,6 +63,13 @@ function delete_warehouse(whid){
 		},
 		'json'		
 	);
+}
+
+function current_warehouse(whid, e){
+	str = '<label name="warehouse">当前仓库：</label>&nbsp;'+$(e).children(':first').text()  ;
+	$('#positions_list_id').attr('whid', whid).children('p').html(str);
+	$(e).parent().find('label').removeClass("choosen-li");
+	$(e).children('label').addClass("choosen-li");
 }
 
 function position_list(whid){
@@ -88,10 +113,6 @@ function new_position_single(){
 	);
 }
 
-function remove_position(e){
-	$(e).parent().remove();
-}
-
 function save_position(){
 	hash = {};
 	$('#positions_list_id input.new-add').each(function(){
@@ -114,7 +135,10 @@ function save_position(){
 
 function delete_position(posiid, e){
 	$.post("../warehouse/delete_position",
-		{ posiId: posiid	},
+		{
+			whId: $('#positions_list_id').attr('whid'),
+			posiNr: $('#posiNr').val(),
+		},
 		function(data){
 			if (data.flag)
 				$(e).parent().remove();
@@ -123,18 +147,5 @@ function delete_position(posiid, e){
 		'json'		
 	);
 }
-
-var openRightPanel = false;
-var openfuncright = function openright() {
-	if (openRightPanel == false) {
-		$("div.toggle-list").show("slow");
-		$("div.toggle-btn").attr("style", "background-image:url(/assets/lefticon.png)");
-		openRightPanel = true;
-	} else {
-		$("div.toggle-list").hide("fast");
-		$("div.toggle-btn").attr("style", "background-image:url(/assets/righticon.png)");
-		openRightPanel = false;
-	}
-};
 
 </script>

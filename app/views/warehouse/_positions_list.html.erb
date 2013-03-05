@@ -6,7 +6,6 @@
  		    	<li class="ware-li li-big">
  		    		<%= text_field_tag nil, d.nr, :readOnly=>true, :style=>"cursor:default" %>
  		    		<p><%= d.capacity %></p>
- 		    		<div class="wh-del del-big" onclick="delete_position(<%= d.id%>, this);"></div>
  		    	</li>
  		    <% end %>
  		    <% @newposi.each do |d|	%>
@@ -21,7 +20,7 @@
  		    	</li>
  		    <% end %>
  		</ul>
- 		<div class="wh-add" onclick="save_position();"></div>   		
+ 		<div class="wh-add" onclick="save_position();"></div>
  	</div>
  	<div class="toggle-btn"></div>
  	<div class="toggle-list" style="display: none">
@@ -40,9 +39,3 @@
  		<%= text_field_tag :capacity %>
  		<button class="btn-normal" onclick="new_position_single();">添加</button>
  	</div>
-
-<script type="text/javascript">
-$("document").ready(function() {
-	$("div.toggle-btn").click(openfuncright);
-});
-</script>
