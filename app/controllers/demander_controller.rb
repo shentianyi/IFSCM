@@ -525,6 +525,40 @@ class DemanderController<ApplicationController
             end
     end
   end
+  
+  def demander_maintenance
+    if request.get?
+      if params[:id].nil?
+        @org = @cz_org
+      else
+        @org = Organisation.find(params[:id])
+      end
+      @demands, total = Demander.search(:supplierId=>@org.id )
+    else
+      dKey = params[:dKey]
+      if d = Demander.rfind(dKey )
+              dhKeys = DemandHistory.generate_zset_key( d.clientId,d.supplierId,d.relpartId,d.type,d.date )
+              $redis.zrange( dhKeys, 0, -1).each do |dhK|
+                $redis.del( dhK )
+                puts "-"*20
+                puts dhK
+              end
+              puts "h"+"-"*20
+              puts dhKeys  if $redis.del( dhKeys )
+              $redis.srem( "#{Rns::C}:#{d.clientId}", d.key )
+              $redis.srem( "#{Rns::S}:#{d.supplierId}", d.key )
+              $redis.srem( "#{Rns::RP}:#{d.relpartId}", d.key )
+              $redis.zrem( Rns::Date, d.key )
+              $redis.zrem( Rns::Amount, d.key )
+              $redis.srem( "#{Rns::T}:#{d.type}", d.key )
+              puts "key"+"-"*20
+              puts d.key if d.rdestroy
+              render :json => {:flag=>true, :msg=>"成功："+dKey}
+      else
+        render :json => {:flag=>false, :msg=>"不存在！"}
+      end
+    end
+  end
 
   def data_analysis
     if request.post?

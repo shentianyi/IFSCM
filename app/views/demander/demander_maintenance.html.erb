@@ -1,0 +1,49 @@
+
+
+<h2><%= @org.name%></h2>
+<div id="result"></div>
+
+	<table class="upData">
+		<tr class="lineone">
+			<th>需求Key</th>
+			<th>日期</th>
+			<th>数量</th>
+			<th>预测类型</th>
+			<th></th>
+		</tr>
+		<tr class="divide" style="display: none">
+			<th class="nordvd"></th>
+			<th class="nordvd"></th>
+			<th class="nordvd"></th>
+			<th class="nordvd"></th>
+			<th class="nordvd"></th>
+			<th class="lastdvd"></th>
+		</tr>
+		<% @demands.each do |d|	%>
+		  <tr class="norline hoverable" key=<%= d.key%> >
+		  	<th><%= d.key%></th>
+			<th><%= FormatHelper::demand_date_outside( d.date, d.type )%></th>
+			<th><%= d.amount%></th>
+			<th><%= d.type%></th>
+			<th><%= button_tag '删除',:type=>'button',:onclick=>"demander_delete(this);"%></th>
+		  </tr>
+		<% end %>
+	</table>
+
+<hr/>
+
+
+<script type="text/javascript">
+function demander_delete(e){
+	$.post("../demander/demander_maintenance",
+		{
+			dKey: $(e).parent().parent().attr("key"),
+		},
+		function(data){
+				$('#result').html(data.msg);
+		},
+		'json'		
+	);
+}
+	
+</script>

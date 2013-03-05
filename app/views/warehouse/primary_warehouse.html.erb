@@ -14,7 +14,7 @@
 		<li class="ware-li li-right">
 			<%= text_field_tag :posiNr, nil, :class=>"ip1", :placeholder=>"输入库位..." %>
 			<%= text_field_tag :capacity, nil, :class=>"ip2", :placeholder=>"容量..." %>
-			<div class="wh-post btn-normal " style="margin-right:15px;" onclick="delete_position(this);">删除</div>
+			<div class="wh-post btn-normal " style="margin-right:15px;" onclick="delete_position();">删除</div>
 			<div class="wh-post btn-normal wh-small-add " onclick="new_position_single();">添加</div>
 		</li>
 		<li class="ware-li li-right"><p><strong>连续添加/删除</strong></p></li>
@@ -31,7 +31,9 @@
 	</ul>
 </div>
 
-<!-- <div id="positions_list"></div> -->
+<div style="clear:left"></div>
+<button class="btn-normal" onclick="position_list(0);">显示</button>
+<div id="positions_list"></div>
 
 <script type="text/javascript">
 function ready_new_warehouse(){
@@ -72,8 +74,9 @@ function current_warehouse(whid, e){
 	$(e).children('label').addClass("choosen-li");
 }
 
-function position_list(whid){
-	$.get("../warehouse/primary_position?whId="+whid,	function(data){
+function position_list(page){
+	whid = $('#positions_list_id').attr("whid");
+	$.get("../warehouse/primary_position?whId="+whid+"&page="+page,	function(data){
 			$('#positions_list').html(data);
 	});
 }
@@ -87,10 +90,12 @@ function new_position_range(){
 			capa: $('#capa').val(),
 		},
 		function(data){
-			if (data.flag)
-				$('#positions_list').html(data.txt);
-			else
-				MessageBox(data.msg);
+			if (data.flag){
+				posiStart: $('#posiStart').val("");
+				posiEnd: $('#posiEnd').val("");
+				capa: $('#capa').val("");
+			}
+			MessageBox(data.msg);
 		},
 		'json'		
 	);
@@ -104,44 +109,27 @@ function new_position_single(){
 			capacity: $('#capacity').val()
 		},
 		function(data){
-			if (data.flag)
-				$('#positions_list').html(data.txt);
-			else
-				MessageBox(data.msg);
+			if (data.flag){
+				posiNr: $('#posiNr').val("");
+				capacity: $('#capacity').val("");
+			}
+			MessageBox(data.msg);
 		},
 		'json'		
 	);
 }
 
-function save_position(){
-	hash = {};
-	$('#positions_list_id input.new-add').each(function(){
-		hash[ $(this).val() ] = $(this).next().text() ;
-	})
-	$.post("../warehouse/primary_position",
-		{
-			whId: $('#positions_list_id').attr('whid'),
-			posiHash: hash,
-		},
-		function(data){
-			if (data.flag)
-				$('#positions_list').html(data.txt);
-			else
-				MessageBox(data.msg);
-		},
-		'json'		
-	);
-}
-
-function delete_position(posiid, e){
+function delete_position(){
 	$.post("../warehouse/delete_position",
 		{
 			whId: $('#positions_list_id').attr('whid'),
 			posiNr: $('#posiNr').val(),
 		},
 		function(data){
-			if (data.flag)
-				$(e).parent().remove();
+			if (data.flag){
+				posiNr: $('#posiNr').val("");
+				capacity: $('#capacity').val("");
+			}
 			MessageBox(data.msg);
 		},
 		'json'		

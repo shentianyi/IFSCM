@@ -625,7 +625,7 @@ input.uploadfile {
 		top:200px;
 		width:480px;
 		border-radius:5px;
-		-moz-border-radius: :5px;
+		-moz-border-radius: 5px;
 		-webkit-border-radius: 5px;
 		box-shadow:2px 2px 10px #999;
 		-moz-box-shawdow:2px 2px 10px #999;
@@ -641,7 +641,7 @@ input.uploadfile {
 		height:36px;
 	}
 .bg-grey div{
-    float;left;
+    float:left;
 	color:#363636;
 	font-size:18px;
 	display:inline-block;
@@ -680,8 +680,8 @@ input.uploadfile {
     }
     .normal-small-btn:hover{
     	border:2px solid #1297CF;
-    	background-color:white;
-    	color:#1297CF;
+    	background-color:#0e80b0;
+    	color:white;
     }
       #check-all{
       	border:2px solid #1297CF;

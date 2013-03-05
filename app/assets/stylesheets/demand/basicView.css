@@ -30,36 +30,34 @@
 	}
 	.lineone th {
 		color: #7c7c7c;
-		padding-bottom: 0.3em;
-		padding-left: 1.5em;
-		padding-right: 1.5em;
-		padding-top: 0.3em;
+		padding:0.3em 1.3em;
 		text-align: center;
 		font-size: 0.9em;
 		font-family: Arial;
 		font-weight: normal;
 		line-height: 1.5em;
 	}
+		.lineone th:nth-child(6){
+		padding:0.3em 1.3em;
+	}
+	.lineone th:nth-child(7){
+		padding:0.3em 
+	}
+	.lineone th:nth-child(8){
+		
+	}
 	.norline th {
 		color: #9d9d9d;
-		padding-bottom: 0.3em;
-		padding-left: 1em;
-		padding-right: 1em;
-		margin-left: 0.3em;
+		padding:0.3em 0.4em;
+		margin-left:0.3em;
 		margin-right: 0.3em;
-		padding-top: 0.3em;
 		text-align: center;
 		font-weight: normal;
-		font-size: 0.9em;
-		padding-right: 1em;
-		margin-left: 0.3em;
-		margin-right: 0.3em;
-		padding-top: 0.3em;
+		font-size: 0.9em;		
 		text-align: center;
-		font-weight: normal;
-		font-size: 0.9em;
 		border-bottom: 1px dashed #a8a8a8;
 	}
+
 	.forcasttypes {
 		width: 740px;
 		height: auto;
@@ -112,7 +110,7 @@
 	.fnumbers {
 		font-size: 12px;
 		float: left;
-		width: 120px;
+		width: 100px;
 		text-align: left;
 	}
 	.forcastcompare {

@@ -1,0 +1,27 @@
+	
+	
+	<%= form_for @staff, :url => { :action => "edit" } do |f| %>
+	  <fieldset>
+		  <div class="field">
+		    <%= f.label :staffNr, '帐号：' %>
+		    <%= f.label :staffNr, @staff.staffNr %>
+		  </div>
+		  <div class="field">
+		    <%= f.label :name, '用户名：' %>
+		    <%= f.label :name, @staff.name %>
+		  </div>
+		  <div class="field">
+		    <%= f.label :password, '密码' %><br />
+		    <%= f.password_field :password, size:10 %>
+		  </div>
+		  <div class="field">
+		    <%= f.label :password_confirmation, '密码' %><br />
+		    <%= f.password_field :password_confirmation, size:10 %>
+		  </div>
+		  <div class="actions">
+		    <%= f.submit "修改" %>
+		  </div>
+	  
+	  </fieldset>
+	<% end %>
+	
