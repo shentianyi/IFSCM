@@ -34,10 +34,10 @@ module CZ
           if  (keys=$redis.zrange(key,startIndex,endIndex,:withscores=>true)).count>0
             items=[]
             keys.each do |k,s|
-              if $redis.hexists(k,"partRelId")
-                $redis.hset(k,"part_rel_id",$redis.hget(k,"partRelId"))
-                $redis.hdel(k,"partRelId")
-              end
+              # if $redis.hexists(k,"partRelId")
+                # $redis.hset(k,"part_rel_id",$redis.hget(k,"partRelId"))
+                # $redis.hdel(k,"partRelId")
+              # end
               i=eval(DeliveryBll.delivery_obj_converter s).rfind(k)
               items<<i
             end
