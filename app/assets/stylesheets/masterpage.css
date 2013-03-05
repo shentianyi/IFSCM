@@ -92,12 +92,16 @@ h2{
 	height: 40px;
 }
 .greeting {
-	padding-right: 10px;
-	padding-top: 12px;
-	margin: 0px;
-	display: block;
-	float: right;
-	color: #89c501;
+
+	    background-image:url("../images/img/arrow-down.png");
+	    background-repeat:no-repeat;
+	    background-position:93% center;
+	    cursor:pointer;
+		display: block;
+	
+		color: #9D9D9D;
+		width:84px;
+
 }
 .content {
 	float: left;
@@ -144,7 +148,7 @@ input.gbtn:hover {
 	height: 40px;
 }
 ul.subs {
-	float: left;
+
 	margin-top: 0px;
 	margin-bottom: 0px;
 	padding-left: 5px;
@@ -152,6 +156,12 @@ ul.subs {
 	line-height: 30px;
 	list-style: none;
 	margin-top: 0px;
+}
+.pull-left{
+		float: left;
+}
+.pull-right{
+		float: right;
 }
 .subs li {
 	font-size: 14px;
@@ -163,14 +173,13 @@ ul.subs {
 	line-height: 40px;
 	display: block
 }
-.subs li:hover {
-	background-color: #dbdbdb;
-}
+
 .subs li:hover dl > dt, .subs li:hover dl > dd {
 	display: block;
+
 }
 .subs li > dl{
-	background-color: #eaedec;
+	background-color: #EAEDEC;
 	margin: 0px -10px;
 }
 .subs li > dl > dt {
@@ -183,6 +192,7 @@ ul.subs {
 	margin: 0px;
     padding-left: 15px;
 }
+
 .subs dd:hover {
 	background-color: #dbdbdb;
 }
@@ -193,6 +203,7 @@ ul.subs {
 	text-decoration: none;
 	color: #9D9D9D;
 }
+
 /*     dialog--css*/
 #dialog-overlay {
 	display: none;
