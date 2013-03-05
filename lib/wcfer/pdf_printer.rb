@@ -38,7 +38,7 @@ class Wcfer
         result[:content]=resResult[:content]
       end
       else
-         result[:content]="无打印数据"
+         result[:content]="不存在需要打印条目"
       end
       rescue => e
         result[:content]=e.message.to_s

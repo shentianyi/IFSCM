@@ -13,7 +13,7 @@
           个有错误
      </p>
      <p>
-          上传时间：<%= Time.at(batch.created_at.to_i)%>
+          上传时间：<%= Time.at(batch.created_at.to_i).strftime("%Y-%m-%d %H:%M:%S")%>
      </p>
 </div>
 <div class="listoffiles">

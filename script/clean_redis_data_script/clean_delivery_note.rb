@@ -36,16 +36,15 @@ class CleanDN
       $redis.del key
     end
 
-    keys=$redis.keys("staff:*:deliverynote:cache:zset")
-    keys.each do |key|
-      puts "rubish staff::deliverynote:cache:zset key :#{key}"
-      $redis.del key
-    end
-
     # mysql
     c=0
     DeliveryNote.all.each do |mdn|
       puts "#{(c+=1)}.clean: #{mdn.id}-#{mdn.key}"
+      mdn.delete_from_staff_cache
+      roles=OrgRoleType.all.collect.collect{|r| r.value}
+      roles.each do |role|
+       mdn.remove_from_org_role(mdn.rece_org_id,role)
+      end     
       mdn.destroy
     end
   end
