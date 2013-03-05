@@ -14,34 +14,69 @@
 				<li><a href="/welcome"><img src="/assets/homeicon.png"/></a></li>
 				<li><img src="/assets/backicon.png"/></li>
 				<% if session[:orgOpeType]==OrgOperateType::Client %>
-					<li><a href="../demander/demand_upload">上传需求</a></li>
-					 <li><a href="../demander">查看需求</a></li>
-					 <li><a href="../demander/search_expired">过期需求</a></li>
-			          <li><a href="../delivery">查看运单</a></li>
-<!-- 					<li><a href="../organisation_manager/search">供应商信息</a></li> -->
-					<li><a href="../delivery/accept">运单接收</a></li>
-					<li><a href="../delivery/inspect">运单质检</a></li>
-					<li><a href="../delivery/instore">运单入库</a></li>
-					<li><a href="../warehouse/search_state">库存查询</a></li>
-					<li><a href="../warehouse/search_op_history">仓库历史</a></li>
-<!-- 					<li><a href="../warehouse/primary_warehouse">仓库维护</a></li> -->
-<!-- 					<li class="dropmenu">
-						<a>功能</a>
-						<ul style="display: none">
-							<li>name</li>
-						</ul>
-						<dl class="menu" style="display: none">
-							<dt>Title</dt>
-							<dd>item</dd>
+					<li>
+						<a>需求模块</a>
+						<dl>
+							<dt>操作</dt>
+							<dd><a href="../demander/demand_upload">上传需求</a></dd>
+							<dt>查询</dt>
+							<dd><a href="../demander">查看需求</a></dd>
+							<dd><a href="../demander/search_expired">过期需求</a></dd>
 						</dl>
-					</li> -->
+					</li>
+					<li>
+						<a>运单模块</a>
+						<dl>
+							<dt>操作</dt>
+							<dd><a href="../delivery/accept">运单接收</a></dd>
+							<dd><a href="../delivery/inspect">运单质检</a></dd>
+							<dd><a href="../delivery/instore">运单入库</a></dd>
+							<dt>查询</dt>
+							<dd><a href="../delivery">查看运单</a></dd>
+						</dl>
+					</li>
+					<li>
+						<a>仓库模块</a>
+						<dl>
+							<dt>操作</dt>
+							<dd><a href="../warehouse/stock_out">出库</a></dd>
+							<dt>查询</dt>
+							<dd><a href="../warehouse/search_state">库存查询</a></dd>
+							<dd><a href="../warehouse/search_op_history">操作历史</a></dd>
+							<dt>数据维护</dt>
+							<dd><a href="../warehouse/primary_warehouse">仓库维护</a></dd>
+						</dl>
+					</li>
+					<li><a href="../organisation_manager/search">供应商信息</a></li>
 				<% elsif session[:orgOpeType]==OrgOperateType::Supplier %>
-					<li><a href="../demander">查看需求</a></li>
-					<li><a href="../demander/search_expired">过期需求</a></li>
-					<li><a href="#">需求转换</a></li>
-					<li><a  href="../delivery/pick_part">发运</a></li>
-			          <li><a  href="../delivery">查看运单</a></li>
-			          <li><a href="../organisation_manager/search">客户信息</a></li>
+					<li>
+						<a>需求模块</a>
+						<dl>
+							<dt>查询</dt>
+							<dd><a href="../demander">查看需求</a></dd>
+							<dd><a href="../demander/search_expired">过期需求</a></dd>
+						</dl>
+					</li>
+					<li>
+						<a>运单模块</a>
+						<dl>
+							<dt>操作</dt>
+							<dd><a  href="../delivery/pick_part">发运</a></dd>
+							<dt>查询</dt>
+							<dd><a href="../delivery">查看运单</a></dd>
+						</dl>
+					</li>
+					<li>
+						<a>仓库模块</a>
+						<dl>
+							<dt>查询</dt>
+							<dd><a href="../warehouse/search_state">库存查询</a></dd>
+							<dd><a href="../warehouse/search_op_history">操作历史</a></dd>
+							<dt>数据维护</dt>
+							<dd><a href="../warehouse/primary_warehouse">仓库维护</a></dd>
+						</dl>
+					</li>
+			        <li><a href="../organisation_manager/search">客户信息</a></li>
 				<% end %>
 			</ul>
 			<p class="greeting">你好！<%= Staff.find(session[:staff_id]).name %>&emsp;<a href="/logout">注销</a></p>

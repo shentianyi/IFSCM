@@ -312,7 +312,7 @@ class DemanderController<ApplicationController
         render :json=>Demander.clear_kestrel(@cz_org.id)
     else
         dType={ ''=>0 }
-        ['D','W','M','Y'].each{|e| dType[e]=Demander.get_kestrel(@cz_org.id, e, 0).last  and dType['']+=dType[e] }
+        ['D','W','M','Y','T'].each{|e| dType[e]=Demander.get_kestrel(@cz_org.id, e, 0).last  and dType['']+=dType[e] }
         render :json=>dType.to_json
     end
   end
