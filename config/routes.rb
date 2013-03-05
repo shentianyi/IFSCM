@@ -36,6 +36,7 @@ Demand::Application.routes.draw do
     match 'organisation_manager/add_dncontact'=>:add_dncontact
     match 'organisation_manager/del_dncontact'=>:del_dncontact
     match 'organisation_manager/upload_printer_template'=>:upload_printer_template
+    match 'organisation_manager/get_org_info'=> :get_org_info
   end
 
   resources :demander do
@@ -102,6 +103,9 @@ Demand::Application.routes.draw do
       post :return_dn
       post :arrive
       match :link
+      match :abnormal
+      match :item_state
+      match :pack
     end
   end
   

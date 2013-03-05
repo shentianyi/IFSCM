@@ -128,4 +128,8 @@ module DeliveryHelper
   def self.dn_intransit wayState
     wayState==DeliveryObjWayState::Intransit
   end
+  
+  def self.can_show_abnormal_pack state
+    state==DeliveryObjState::Abnormal
+  end
 end

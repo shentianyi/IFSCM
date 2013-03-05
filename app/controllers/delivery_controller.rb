@@ -3,7 +3,7 @@ class DeliveryController < ApplicationController
 
   before_filter  :authorize
   before_filter :auth_dn,:only=>[:arrive,:mark_abnormal,:return_dn,:doinspect]
-  before_filter :redis_auth_dn,:only=>[:dn_detail,:gen_dn_pdf,:accept,:doaccept,:receive,:inspect,:instore,:doinstore]
+  before_filter :redis_auth_dn,:only=>[:dn_detail,:gen_dn_pdf,:accept,:doaccept,:receive,:inspect,:instore,:doinstore,:abnormal,:pack]
   ##
   # ws
   # 运单列表
@@ -588,6 +588,28 @@ class DeliveryController < ApplicationController
       @action=get_delivery_link_action(params[:r].to_i)
   end
   
+  
+  def abnormal
+    if @msg.result     
+      @list=DeliveryBll.get_dn_abnormal_pack(params[:id].to_i)
+      render :layout => "window"
+    end
+  end
+  
+  def item_state
+    state=DeliveryItemState.where(:delivery_item_id=>params[:id]).first
+     respond_to do |format|
+      format.json { render json: state }
+      format.html {render partial:'state_info_card',:locals=>{:state=>state}}
+    end
+  end
+  
+   def pack
+    if @msg.result     
+      @list=DeliveryBll.get_pack_by_batch_id(params[:id].to_i)
+      render :layout => "window"
+    end
+  end
   private 
   def auth_dn
     if params[:dnKey]     

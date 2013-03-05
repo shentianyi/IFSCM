@@ -26,15 +26,17 @@
 	<% i=0
 	dns.each do |dn|
 	partnerNr=if session[:orgOpeType]==OrgOperateType::Client
+	partnerId=dn.organisation_id
 	DeliveryHelper.get_supplierNr_by_orgId(dn.rece_org_id,dn.organisation_id)
 	else
+	partnerId=dn.rece_org_id
 	DeliveryHelper.get_clientNr_by_orgId(dn.organisation_id,dn.rece_org_id)
 	end
 	%>
 	<tr class="norline hoverable">
 		<th><%= (i+=1)%></th>
 		<th><a href="../delivery/dn_detail?dnKey=<%= dn.key%>&t=d" target="blank" style="color:#9D9D9D"><%= dn.key%></a></th>
-		<th><%= partnerNr%></th>
+		<th><span class="org-info-card" onmouseover="get_info_card(<%= partnerId%>,'get_org_info',1);"><%= partnerNr%></span></th>
 		<th><%= Time.at(dn.sendDate.to_i).strftime('%Y/%m/%d') %></th>
 		<th><%= dn.destination%></th>
 		<th>
@@ -42,16 +44,19 @@
 			<%= DeliveryHelper::get_dn_wayState(dn.wayState)%>
 		</div></th>
 		<th>
-		<div class="<%= DeliveryHelper::get_delivery_obj_state_css(dn.state)%>">
+		<div class="<%= DeliveryHelper::get_delivery_obj_state_css(dn.state)%>"
+			 <%= "onclick=get_abnormal_packs(#{dn.id},'#{dn.key}')" if DeliveryHelper::can_show_abnormal_pack(dn.state)%>>
 			<%= DeliveryHelper::get_delivery_obj_state(dn.state)%>
 		</div></th>
 	</tr>
 	<%end%>
 </table>
+<div id="info-result">
+		
+</div>
 <div class="census">
 	共 <%= @totalCount%> 条
 </div>
-<!-- pager -->
 <div class="pagers">
 	<%= bri_pager options={:class=>"pagination",:pages=>@totalPages,:current=>@currentPage,:action=>'search_dn',:target=>@condition}%>
 </div>

@@ -512,7 +512,6 @@ function dn_list_ready() {
 			date : [$("#startdate-search-text").val(), $("#enddate-search-text").val()]
 		});
 	});
-
 	check_org_kn_queue();
 	search_dn();
 }
@@ -751,6 +750,13 @@ function redirect_delivery_action(action, params) {
 	}
 }
 
+// ws
+// 功能 ： 获取运单项css
+// 参数 ：
+// - integer : state code
+// 返回 ：
+// - 无
+
 function get_dn_obj_state_css(state) {
 	switch(state) {
 		case 100:
@@ -760,6 +766,12 @@ function get_dn_obj_state_css(state) {
 	}
 }
 
+// ws
+// 功能 ： 获取运输状态css
+// 参数 ：
+// - integer : state code
+// 返回 ：
+// - 无
 function get_dn_obj_waystate_css(state) {
 	switch(state) {
 		case 100:
@@ -802,6 +814,15 @@ function checked_ids() {
 	return trimEnd(ids);
 }
 
+// ws
+// 功能 ： 运单接收，拒收
+// 参数 ：
+// - type : 接受类型
+// - action : action
+// - pdata : 额外数据
+// - call : 回调
+// 返回 ：
+// - 无
 function pack_rece_reje(type, action, pdata, call) {
 	var actions = {
 		1 : "doaccept",
@@ -852,6 +873,11 @@ function pack_rece_reje(type, action, pdata, call) {
 	}
 }
 
+// ws
+// 功能 ： 标记异常
+// 参数 ：
+// 返回 ：
+// - 无
 function mark_pack_abnormal() {
 	if (checked_ids().length > 0) {
 		var data = {
@@ -864,6 +890,12 @@ function mark_pack_abnormal() {
 	}
 }
 
+// ws
+// 功能 ： 设置运单状态为到达
+// 参数 ：
+// - 无
+// 返回 ：
+// - 无
 function delivery_arrived() {
 	show_handle_dialog();
 	$.post('../delivery/arrive', {
@@ -878,6 +910,15 @@ function delivery_arrived() {
 	}, 'json');
 }
 
+// ws
+// 功能 ： 运单质检
+// 参数 ：
+// - type : 质检类型
+// - action : action
+// - pdata : 额外数据
+// - call : 回调
+// 返回 ：
+// - 无
 function pack_inspect(type, action, pdata, call) {
 	var actions = {
 		1 : "doinspect",
@@ -942,6 +983,12 @@ function pack_inspect(type, action, pdata, call) {
 	}
 }
 
+// ws
+// 功能 ： 打开质检数据填写窗口
+// 参数 ：
+// - 无
+// 返回 ：
+// - 无
 function pop_pack_inspect(e) {
 	if (checked_ids().length > 0) {
 		$("#pick-part-info-box").show();
@@ -971,6 +1018,15 @@ function abnormal_pack_inpect() {
 	}
 }
 
+// ws
+// 功能 ： 运单入库
+// 参数 ：
+// - dnKey : 运单key
+// - id : package id
+// - posiNr : 库位
+// - ware : 仓库
+// 返回 ：
+// - 无
 function pack_in_store(dnKey, id, posiNr, ware) {
 	if (posiNr.length > 0) {
 		$.ajax({
@@ -996,6 +1052,12 @@ function pack_in_store(dnKey, id, posiNr, ware) {
 	}
 }
 
+// ws
+// 功能 ： 运单退货
+// 参数 ：
+// - 无
+// 返回 ：
+// - 无
 function return_delivery_note() {
 	if (confirm("确认此操作？")) {
 		show_handle_dialog();
@@ -1024,4 +1086,42 @@ function return_delivery_note() {
 			}
 		});
 	}
+}
+
+// ws
+// 功能 ： 获取组织数据
+// 参数 ：
+// - 无
+// 返回 ：
+// - 无
+function get_info_card(id,action,i) {
+	var c={1:"/organisation_manager/",2:"/delivery/"};
+	$.ajax({
+		url : "../"+c[i]+action,
+		data : {
+			id : id
+		},
+		dataType : 'html',
+		success : function(data) {
+			$("#info-result").html(data);
+		}
+	});
+}
+
+// 功能 ： 获取运单异常项
+// 参数 ：
+// - id : 运单id
+// - id : 运单key
+// 返回 ：
+// - 无
+function get_abnormal_packs(id,key){
+	window.open("../delivery/abnormal?id="+id+"&dnKey="+key,
+	'newwindow',
+	'height=700,width=600,top=200,left=200,toolbar=no,menubar=no,resizable=no,location=no, status=no');
+}
+
+function get_batch_pack(id){
+	window.open("../delivery/pack?id="+id+"&dnKey="+$("#dnkey-hidden").val(),
+	'newwindow',
+	'height=700,width=600,top=200,left=200,toolbar=no,menubar=no,resizable=no,location=no, status=no');
 }
