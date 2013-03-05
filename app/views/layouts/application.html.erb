@@ -79,7 +79,15 @@
 			        <li><a href="../organisation_manager/search">客户信息</a></li>
 				<% end %>
 			</ul>
-			<p class="greeting">你好！<%= Staff.find(session[:staff_id]).name %>&emsp;<a href="/logout">注销</a></p>
+			<ul class="subs pull-right">
+				<li>
+					<a class="greeting"><%= Staff.find(session[:staff_id]).name %>&emsp;</a>
+						<dl>
+							<dd><a href="#">编辑账户</a></dd>
+							<dd><a href="/logout">注销</a> </dd>
+						</dl>
+				</li>
+			</ul>
 		</div>
 	</div>
 	
