@@ -352,6 +352,7 @@ class DeliveryController < ApplicationController
           @msg.content="运单无内容"
         end
     end
+    @type=params[:t]
     if params[:t]=="p"
       render "view_pend_dn"
     elsif params[:t]=="d"

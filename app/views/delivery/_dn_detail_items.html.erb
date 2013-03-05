@@ -35,7 +35,7 @@
 		</tr>
 	</table>
 	<div class="pagers">
-		<%= bri_pager options={:class=>"pagination",:pages=>@totalPages,:current=>@currentPage,:action=>'get_dn_detail',:target=>"p"}%>
+		<%= bri_pager options={:class=>"pagination",:pages=>@totalPages,:current=>@currentPage,:action=>'get_dn_detail',:target=>@type}%>
 	</div>
 </div>
 <%else%>

@@ -90,10 +90,10 @@ i= <%= @params[:ware].nil? ? 0 : @params[:ware].to_i%>;
 		posi=$(positions[i]);
 		 posi.bind('keypress', {
 			id :  posi.attr('id')
-		}, function(ele) {
+		}, function(event) {
 			var e = event ? event : (window.event ? window.event : null);
 			if (e.keyCode == 13) {	
-				 pack_in_store($("#dnkey-hidden").val(),ele.data.id,$("#"+ele.data.id).val(),document.getElementById('wares').value);
+				 pack_in_store($("#dnkey-hidden").val(),e.data.id,$("#"+e.data.id).val(),document.getElementById('wares').value);
 			}
 		});
 	}
