@@ -12,6 +12,11 @@ Demand::Application.routes.draw do
     post 'login' => :create
     get 'logout' => :destroy
   end
+  
+  controller :staff do
+    get 'user' => :index
+    match 'user/edit' => :edit
+  end
 
   controller :organisation_manager do
     get 'organisation_manager' => :index
@@ -42,6 +47,7 @@ Demand::Application.routes.draw do
     collection do
       post :search
       match :search_expired
+      match :demander_maintenance
       post :demand_transform_delivery
       get :demand_upload
       match :upload_files

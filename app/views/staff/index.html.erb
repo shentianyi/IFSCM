@@ -1,0 +1,43 @@
+	
+	
+<p style="color: red"><%= notice%></p>
+<br/>
+<h1>当前用户</h1>
+
+<hr/>
+<div id="result">
+		<div>
+				<label>用户名：</label><%= @staff.name %>
+				<br/>
+				<label>隶属公司：</label><%= @cz_org.name %>
+		</div>
+</div>
+<hr/>
+
+		<%= button_tag '修改密码',:name=>"edit",:type=>'button',:onclick=>"user_edit();"%>
+<!-- 		<%= button_tag '修改',:name=>"modify",:type=>'button',:onclick=>"organisation_edit_submit();",:style=>"display:none"%> -->
+
+
+<script src="/assets/jquery.file.upload/jquery.fileupload.js" type="text/javascript"></script>
+<script type="text/javascript">
+function user_edit() {
+	$.get("../user/edit", function(data) {
+		$('button[name=edit]').hide();
+		$("#result").html(data);
+	}, "html");
+}
+
+// function user_edit_submit() {
+	// eles = document.getElementById('forminfo').elements;
+	// var hash = {};
+	// for (var i = 0; i < eles.length; i++)
+		// hash[eles[i].name] = eles[i].value;
+	// $.post("../organisation_manager/edit", hash, function(data) {
+		// if (data.flag) {
+			// alert(data.msg);
+			// window.location = "../organisation_manager";
+		// } else
+			// alert(data.msg);
+	// }, "json");
+// }
+</script>
