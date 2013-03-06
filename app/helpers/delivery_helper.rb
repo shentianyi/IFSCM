@@ -34,21 +34,21 @@ module DeliveryHelper
       num = d.amount
       return false unless num.is_a?(Integer)
       return false if num == 0
-      if pr = PartRel.find_by_id(d.relpartId) and pinfo = pr.strategy
-        least = pinfo.leastAmount
+      if pr = PartRel.joins(:strategy, :supplier_part).select("strategies.leastAmount as leastAmount, parts.partNr as partNr").where(:id=>d.relpartId).first# and pinfo = pr.strategy
+        least = pr.leastAmount
       else
         return false
       end
       pack = num/least
       if pack != 0 
-        dit=DeliveryItemTemp.new(:packAmount=>pack,:perPackAmount=>least,:part_rel_id=>d.relpartId,:spartNr=>PartRel.find(d.relpartId).supplier_part.partNr,
+        dit=DeliveryItemTemp.new(:packAmount=>pack,:perPackAmount=>least,:part_rel_id=>d.relpartId,:spartNr=>pr.partNr,
                                                               :total=>FormatHelper.string_multiply(least, pack))
         dit.save
         dit.add_to_staff_cache staffId
       end
       numLeft = num%least
       if numLeft != 0
-        dit=DeliveryItemTemp.new(:packAmount=>1,:perPackAmount=>numLeft,:part_rel_id=>d.relpartId,:spartNr=>PartRel.find(d.relpartId).supplier_part.partNr,
+        dit=DeliveryItemTemp.new(:packAmount=>1,:perPackAmount=>numLeft,:part_rel_id=>d.relpartId,:spartNr=>pr.partNr,
                                                               :total=>numLeft)
         dit.save
         dit.add_to_staff_cache staffId

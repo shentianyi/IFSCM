@@ -32,13 +32,13 @@ test:
   password: scmer@#
   socket: /var/run/mysqld/mysqld.sock
 # 
-# production:
-  # adapter: mysql2
-  # encoding: utf8
-  # reconnect: false
-  # database: scmdb
-  # pool: 5
-  # username: scmer
-  # password: scmer@#
-  # socket: /var/run/mysqld/mysqld.sock
+production:
+  adapter: mysql2
+  encoding: utf8
+  reconnect: false
+  database: scmdb
+  pool: 5
+  username: scmer
+  password: scmer@#
+  socket: /var/run/mysqld/mysqld.sock
 
