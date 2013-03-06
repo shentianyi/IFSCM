@@ -298,34 +298,56 @@ class OrganisationManagerController < ApplicationController
     cli=Organisation.find(params[:cid])
     sup=Organisation.find(params[:sid])
     orl= OrganisationRelation.where("origin_client_id = ? and origin_supplier_id = ? ", cli.id, sup.id).first
-    c=eval(OrgRelContactBase.class_name_converter(params[:ctype].to_i)).find_by_orid(orl.id)
+    # c=eval(OrgRelContactBase.class_name_converter(params[:ctype].to_i)).find_by_orid(orl.id)
+    c=eval(OrgRelContactBase.class_name_converter(params[:ctype].to_i)).all(orl.id)
     s=""
-    c.instance_variables.each do |attr|
-      s+="  "+attr.to_s+":"+c.instance_variable_get(attr)
+    i=0
+    if c
+      c.each do |cc|
+        s+="#{i+=1}."
+        cc.instance_variables.each do |attr|
+          s+="  "+attr.to_s+":"+cc.instance_variable_get(attr)
+        end
+        s+="</br>"
+      end
     end
     render :text=>s
   end
 
   def add_dncontact
-    cli=Organisation.find(params[:cid])
-    sup=Organisation.find(params[:sid])
-    orl= OrganisationRelation.where("origin_client_id = ? and origin_supplier_id = ? ", cli.id, sup.id).first
-    c= eval(OrgRelContactBase.class_name_converter(params[:ctype].to_i)).new(:org_rel_id=>orl.id,:type=>params[:ctype].to_i ,
-    :recer_name=>params[:recer_name],
-    :recer_contact=>params[:recer_contact],
-    :rece_address=>params[:rece_address],
-    :sender_name=>params[:sender_name],:sender_contact=>params[:sender_contact],
-    :send_adderss=>params[:send_adderss])
+    if params[:type].to_i==100
+      cli=Organisation.find(params[:cid])
+      sup=Organisation.find(params[:sid])
+      orl= OrganisationRelation.where("origin_client_id = ? and origin_supplier_id = ? ", cli.id, sup.id).first
+      c= eval(OrgRelContactBase.class_name_converter(params[:ctype].to_i)).new(:org_rel_id=>orl.id,:type=>params[:ctype].to_i ,
+      :recer_name=>params[:recer_name],
+      :recer_contact=>params[:recer_contact],
+      :rece_address=>params[:rece_address],
+      :sender_name=>params[:sender_name],
+      :sender_contact=>params[:sender_contact],
+      :send_address=>params[:send_address])
     c.add_to_contact
     c.save
-    render :json=>{:msg=>"DONE!!!"+c.key}
+    elsif params[:type].to_i==200
+      if c=DnContact.find(params[:conKey])
+        c.update(:recer_name=>params[:recer_name],
+        :recer_contact=>params[:recer_contact],
+        :rece_address=>params[:rece_address],
+        :sender_name=>params[:sender_name],
+        :sender_contact=>params[:sender_contact],
+        :send_address=>params[:send_address])
+      end
+    elsif params[:type].to_i==300
+       c=DnContact.find(params[:conKey])
+    end
+    render :json=>c
   end
 
   def del_dncontact
-    cli=Organisation.find(params[:cid])
-    sup=Organisation.find(params[:sid])
-    orl= OrganisationRelation.where("origin_client_id = ? and origin_supplier_id = ? ", cli.id, sup.id).first
-    c=DnContact.find_by_orid(orl.id)
+    # cli=Organisation.find(params[:cid])
+    # sup=Organisation.find(params[:sid])
+    # orl= OrganisationRelation.where("origin_client_id = ? and origin_supplier_id = ? ", cli.id, sup.id).first
+    c=DnContact.find(params[:conKey])
     c.destroy
     render :json=>{:msg=>"DONE!!!"+c.key}
   end

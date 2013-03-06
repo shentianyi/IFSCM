@@ -36,15 +36,15 @@ module LeoniNbtpDnCheckList
     data[:SupplierOrgName]=sendOrg.name
     data[:SupplierOrgAddress]=sendOrg.address
     data[:ClientOrgName]=receOrg.name
-    data[:ClientOrgAddress]=receOrg.address
-    data[:DnDestination]=dn.destination
+    data[:ClientOrgAddress]=receOrg.address 
     ## still no:
     # supplierNr, clientNr , receStaffName, receStaffContact
     data[:SupplierNr]= orl.supplierNr
     data[:ClientNr]=orl.clientNr
-    contact=DnContact.find_by_orid(orl.id)
+    contact=DnContact.find(dn.destination)
     data[:ReceiverName]=contact.recer_name
     data[:ContactWay]=contact.recer_contact
+    data[:DnDestination]=contact.rece_address
     @@head_keys.each do |key|
       record<<{:Key=>key,:Value=>data[key.to_sym]}
     end

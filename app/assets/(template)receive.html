@@ -1,0 +1,410 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<title>IFSCM</title>
+		<link href="stylesheets/masterpage.css" media="all" rel="stylesheet" type="text/css" />
+		<link href="stylesheets/application.css" media="all" rel="stylesheet" type="text/css" />
+		<link href="stylesheets/demand/basicView.css" media="all" rel="stylesheet" type="text/css" />
+		<link href="stylesheets/delivery/investory-receive.css" media="all" rel="stylesheet" type="text/css" />
+		<link href="stylesheets/jquery.ui/jquery.ui.datepicker.min.css" media="all" rel="stylesheet" type="text/css" />
+		<link href="stylesheets/jquery.ui/jquery.ui.theme.css" media="all" rel="stylesheet" type="text/css" />
+		<script src="javascripts/jquery-1.8.2.min.js" type="text/javascript"></script>
+		<script src="javascripts/jquery.ui/jquery-ui-1.9.1.custom.min.js" type="text/javascript"></script>
+		<script src="javascripts/jquery.ui/jquery.ui.datepicker.js" type="text/javascript"></script>
+		<script src="javascripts/scm-js-base.js" type="text/javascript"></script>
+		<script src="javascripts/application.js" type="text/javascript"></script>
+		<meta content="authenticity_token" name="csrf-param" />
+		<meta content="YuZwNQZ+kSKvzG8H4Ldq8dcsMVDUsrS9ROIIsrIu4CU=" name="csrf-token" />
+	</head>
+	<body>
+		<div class="subicons">
+			<div class="fixedtop">
+				<ul class="subs pull-left">
+					<li>
+						<a href="/welcome"><img src="images/homeicon.png"/></a>
+					</li>
+					<li><img src="images/backicon.png"/>
+					</li>
+				</ul>
+				<!-- made change here!!! -->
+				<ul class="subs pull-right">
+					<li>
+						<a class="greeting">plymouth&emsp;</a>
+						<dl>
+							<dd>
+								<a href="#">编辑账户</a>
+							</dd>
+							<dd>
+								<a href="/logout">注销</a>
+							</dd>
+						</dl>
+					</li>
+
+				</ul>
+
+			</div>
+		</div>
+
+		<div class="lefticons" id="lefticons">
+			<div class="hm licon">
+				<a> <p  name="headicon" class="headicon" ></p> </a>
+			</div>
+			<div class="cus licon">
+				<a href="../client"> <p  name="customericon" class="customericon" style=" cursor:pointer;" ></p> </a>
+			</div>
+			<div class="sup licon">
+				<a href="../supplier"> <p  name="suppliericon" class="suppliericon" style=" cursor:pointer;" ></p> </a>
+			</div>
+		</div>
+
+		<div id="MessageBox" class="message-box">
+			<div class="bg-grey">
+				<div>
+					信息
+				</div>
+				<div class="close-logo"></div>
+			</div>
+			<p></p>
+		</div>
+
+		<div class="content">
+			<div class="wrapcontent">
+				<!-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
+				<div class="input-mix">
+					<span class="uploadfile">运单号：</span>
+					<input id="dnKey" class="uploadfile delivery-up-tx" type="text" value="DN130306B140" name="delivery-up-tx">
+					<input class="btupload" type="button" onclick="redirect_delivery_action('accept');" value="提交" name="delivery-up-btn">
+				</div>
+				<div id="accept-list-div">
+					<input id="dnkey-hidden" type="hidden" name="dnKey" value="DN130306B140">
+					<table class="delivery-check">
+						<tbody>
+							<tr class="lineone">
+								<th></th>
+								<th>箱号</th>
+								<th>客户零件号</th>
+								<th>箱单位量</th>
+								<th>运输状态</th>
+								<th>是否异常</th>
+								<th>
+								<input id="check-all" class="normal-small-btn" type="button" value="全选" onclick="check_all();" name="all-chosen">
+								</th>
+							</tr>
+							<tr class="norline">
+								<th>1</th>
+								<th style="text-align:left;">P130306B13385</th>
+								<th style="text-align:center;">497003300</th>
+								<th>3</th>
+								<th>
+								<div id="waystate-th-208" class="instransit">
+									已到达
+								</div></th>
+								<th>
+								<div id="state-th-208" class="normal">
+									正常
+								</div></th>
+								<th id="operate-th-208">
+								<input id="208" class="id-check" type="checkbox">
+								</th>
+							</tr>
+							<tr class="norline">
+								<th>1</th>
+								<th style="text-align:left;">P130306B13385</th>
+								<th style="text-align:center;">497003300</th>
+								<th>3</th>
+								<th>
+								<div id="waystate-th-208" class="instransit">
+									已到达
+								</div></th>
+								<th>
+								<div id="state-th-208" class="normal">
+									正常
+								</div></th>
+								<th id="operate-th-208">
+								<input id="208" class="id-check" type="checkbox">
+								</th>
+							</tr>
+							<tr class="norline">
+								<th>1</th>
+								<th style="text-align:left;">P130306B13385</th>
+								<th style="text-align:center;">497003300</th>
+								<th>3</th>
+								<th>
+								<div id="waystate-th-208" class="instransit">
+									已到达
+								</div></th>
+								<th>
+								<div id="state-th-208" class="normal">
+									正常
+								</div></th>
+								<th id="operate-th-208">
+								<input id="208" class="id-check" type="checkbox">
+								</th>
+							</tr>
+							<tr class="norline">
+								<th>1</th>
+								<th style="text-align:left;">P130306B13385</th>
+								<th style="text-align:center;">497003300</th>
+								<th>3</th>
+								<th>
+								<div id="waystate-th-208" class="instransit">
+									已到达
+								</div></th>
+								<th>
+								<div id="state-th-208" class="normal">
+									正常
+								</div></th>
+								<th id="operate-th-208">
+								<input id="208" class="id-check" type="checkbox">
+								</th>
+							</tr>
+							<tr class="norline">
+								<th>1</th>
+								<th style="text-align:left;">P130306B13385</th>
+								<th style="text-align:center;">497003300</th>
+								<th>3</th>
+								<th>
+								<div id="waystate-th-208" class="instransit">
+									已到达
+								</div></th>
+								<th>
+								<div id="state-th-208" class="normal">
+									正常
+								</div></th>
+								<th id="operate-th-208">
+								<input id="208" class="id-check" type="checkbox">
+								</th>
+							</tr>
+														<tr class="norline">
+								<th>1</th>
+								<th style="text-align:left;">P130306B13385</th>
+								<th style="text-align:center;">497003300</th>
+								<th>3</th>
+								<th>
+								<div id="waystate-th-208" class="instransit">
+									已到达
+								</div></th>
+								<th>
+								<div id="state-th-208" class="normal">
+									正常
+								</div></th>
+								<th id="operate-th-208">
+								<input id="208" class="id-check" type="checkbox">
+								</th>
+							</tr>
+														<tr class="norline">
+								<th>1</th>
+								<th style="text-align:left;">P130306B13385</th>
+								<th style="text-align:center;">497003300</th>
+								<th>3</th>
+								<th>
+								<div id="waystate-th-208" class="instransit">
+									已到达
+								</div></th>
+								<th>
+								<div id="state-th-208" class="normal">
+									正常
+								</div></th>
+								<th id="operate-th-208">
+								<input id="208" class="id-check" type="checkbox">
+								</th>
+							</tr>
+														<tr class="norline">
+								<th>1</th>
+								<th style="text-align:left;">P130306B13385</th>
+								<th style="text-align:center;">497003300</th>
+								<th>3</th>
+								<th>
+								<div id="waystate-th-208" class="instransit">
+									已到达
+								</div></th>
+								<th>
+								<div id="state-th-208" class="normal">
+									正常
+								</div></th>
+								<th id="operate-th-208">
+								<input id="208" class="id-check" type="checkbox">
+								</th>
+							</tr>
+														<tr class="norline">
+								<th>1</th>
+								<th style="text-align:left;">P130306B13385</th>
+								<th style="text-align:center;">497003300</th>
+								<th>3</th>
+								<th>
+								<div id="waystate-th-208" class="instransit">
+									已到达
+								</div></th>
+								<th>
+								<div id="state-th-208" class="normal">
+									正常
+								</div></th>
+								<th id="operate-th-208">
+								<input id="208" class="id-check" type="checkbox">
+								</th>
+							</tr>
+														<tr class="norline">
+								<th>1</th>
+								<th style="text-align:left;">P130306B13385</th>
+								<th style="text-align:center;">497003300</th>
+								<th>3</th>
+								<th>
+								<div id="waystate-th-208" class="instransit">
+									已到达
+								</div></th>
+								<th>
+								<div id="state-th-208" class="normal">
+									正常
+								</div></th>
+								<th id="operate-th-208">
+								<input id="208" class="id-check" type="checkbox">
+								</th>
+							</tr>
+														<tr class="norline">
+								<th>1</th>
+								<th style="text-align:left;">P130306B13385</th>
+								<th style="text-align:center;">497003300</th>
+								<th>3</th>
+								<th>
+								<div id="waystate-th-208" class="instransit">
+									已到达
+								</div></th>
+								<th>
+								<div id="state-th-208" class="normal">
+									正常
+								</div></th>
+								<th id="operate-th-208">
+								<input id="208" class="id-check" type="checkbox">
+								</th>
+							</tr>
+														<tr class="norline">
+								<th>1</th>
+								<th style="text-align:left;">P130306B13385</th>
+								<th style="text-align:center;">497003300</th>
+								<th>3</th>
+								<th>
+								<div id="waystate-th-208" class="instransit">
+									已到达
+								</div></th>
+								<th>
+								<div id="state-th-208" class="normal">
+									正常
+								</div></th>
+								<th id="operate-th-208">
+								<input id="208" class="id-check" type="checkbox">
+								</th>
+							</tr>
+														<tr class="norline">
+								<th>1</th>
+								<th style="text-align:left;">P130306B13385</th>
+								<th style="text-align:center;">497003300</th>
+								<th>3</th>
+								<th>
+								<div id="waystate-th-208" class="instransit">
+									已到达
+								</div></th>
+								<th>
+								<div id="state-th-208" class="normal">
+									正常
+								</div></th>
+								<th id="operate-th-208">
+								<input id="208" class="id-check" type="checkbox">
+								</th>
+							</tr>
+																			<tr class="norline">
+								<th>1</th>
+								<th style="text-align:left;">P130306B13385</th>
+								<th style="text-align:center;">497003300</th>
+								<th>3</th>
+								<th>
+								<div id="waystate-th-208" class="instransit">
+									已到达
+								</div></th>
+								<th>
+								<div id="state-th-208" class="normal">
+									正常
+								</div></th>
+								<th id="operate-th-208">
+								<input id="208" class="id-check" type="checkbox">
+								</th>
+							</tr>
+																			<tr class="norline">
+								<th>1</th>
+								<th style="text-align:left;">P130306B13385</th>
+								<th style="text-align:center;">497003300</th>
+								<th>3</th>
+								<th>
+								<div id="waystate-th-208" class="instransit">
+									已到达
+								</div></th>
+								<th>
+								<div id="state-th-208" class="normal">
+									正常
+								</div></th>
+								<th id="operate-th-208">
+								<input id="208" class="id-check" type="checkbox">
+								</th>
+							</tr>
+																			<tr class="norline">
+								<th>1</th>
+								<th style="text-align:left;">P130306B13385</th>
+								<th style="text-align:center;">497003300</th>
+								<th>3</th>
+								<th>
+								<div id="waystate-th-208" class="instransit">
+									已到达
+								</div></th>
+								<th>
+								<div id="state-th-208" class="normal">
+									正常
+								</div></th>
+								<th id="operate-th-208">
+								<input id="208" class="id-check" type="checkbox">
+								</th>
+							</tr>
+																			<tr class="norline">
+								<th>1</th>
+								<th style="text-align:left;">P130306B13385</th>
+								<th style="text-align:center;">497003300</th>
+								<th>3</th>
+								<th>
+								<div id="waystate-th-208" class="instransit">
+									已到达
+								</div></th>
+								<th>
+								<div id="state-th-208" class="normal">
+									正常
+								</div></th>
+								<th id="operate-th-208">
+								<input id="208" class="id-check" type="checkbox">
+								</th>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<div class="button-group">
+					<div class="accept-button-group">
+						<input type="button" onclick="pack_rece_reje(400,1);" value="接收">
+						<input type="button" onclick="pack_rece_reje(500,1);" value="拒收">
+						<input type="button" onclick="pop_pack_inspect(event);" value="标记异常">
+					</div>
+				</div>
+				<div class="botbts" style="height:270px;">
+					<div class="check-print botbtn" onclick="generate_dn_label_pdf(400);">
+						<p>
+							质检单打印
+						</p>
+					</div>
+					<div class="enter-print botbtn" onclick="generate_dn_label_pdf(500);">
+						<p>
+							入库单打印
+						</p>
+					</div>
+				</div>
+
+				<!-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
+			</div>
+		</div>
+	</body>
+</html>

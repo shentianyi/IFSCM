@@ -80,6 +80,23 @@ input.partsamount {
 .fillindestlonger {
 	width: 280px;
 }
+.fillind .select{
+	border: 1px solid #dbdbdb;
+	width: 300px;
+	height: 38px;
+	float: left; 
+	margin: 10px 30px 5px 2px;
+	color: #7c7c7c; 
+	background:white;
+}
+.select-disable{
+	border: 1px solid #dbdbdb;
+	width: 300px;
+	height: 38px;
+	float: left; 
+	margin: 10px 30px 5px 2px;
+	color: #7c7c7c; 
+}
 .search-btn {
 	margin: 11px 30px 5px 10px;
 	height: 35px;
