@@ -68,15 +68,28 @@ class OrgRelContactBase<CZ::BaseClass
   def add_to_contact
     zkey=OrgRelContactBase.g_or_contact_zset_key(self.org_rel_id)
     if $redis.zscore(zkey,self.key).nil?
-    $redis.zremrangebyscore(zkey,self.type,self.type) if $redis.zcount(zkey,self.type,self.type)>0
+    #$redis.zremrangebyscore(zkey,self.type,self.type) if $redis.zcount(zkey,self.type,self.type)>0
     return $redis.zadd(zkey,self.type,self.key)
     end
     return false
   end
 
+  def self.all orid
+    cons=nil
+    zkey=g_or_contact_zset_key orid
+    type=class_type_converter(self.name)
+    if (keys=$redis.zrangebyscore(zkey,type,type)).count>0
+      cons=[]
+      keys.each do |k|
+        cons<<find(k)
+      end
+    end    
+    return cons
+  end
+
   def del_from_contact
-    skey=OrgRelContactBase.g_or_contact_zset_key(self.org_rel_id)
-    $redis.zrem(skey,self.key)
+    zkey=OrgRelContactBase.g_or_contact_zset_key(self.org_rel_id)
+    $redis.zrem(zkey,self.key)
   end
 
   def destroy

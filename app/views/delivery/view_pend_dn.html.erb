@@ -28,7 +28,7 @@
 	<span class="errparts" style="display:none;">*请先填写正确的送货地址或送货时间</span></br>
 	<div class="fillind">
 		<input type="text" class="fillindest"id="client-text" autocomplete="off" disabled="false"  style="width: 150px"
-		value="<%= DeliveryHelper.get_clientNr_by_orgId(dn.organisation_id,dn.rece_org_id)%>"
+		value="<%=DeliveryHelper.get_clientNr_by_orgId(dn.organisation_id,dn.rece_org_id)%>"
 		disabled/>
 		<form method="post" id="gen_dn_pdf_form" action="../delivery/gen_dn_pdf">
 			<input type="hidden" value="<%= dn.key%>" id="dnkey-hidden" name="dnKey">

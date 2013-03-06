@@ -13,6 +13,9 @@ class DeliveryController < ApplicationController
   # ws
   # 准备运单零件
   def pick_part
+    if params[:c]
+      @clientNr=params[:c]
+    end
   end
 
   # ws
