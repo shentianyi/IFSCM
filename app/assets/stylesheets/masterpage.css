@@ -687,11 +687,13 @@ input.uploadfile {
       	border:2px solid #1297CF;
     	background-color:#1297CF;
     	color:white;
+    	font-family:"微软雅黑"
     }
     
     #check-all:hover{
-    	background-color:white;
-    	color:#1297CF;
+    	border:2px solid #1297CF;
+    	background-color:#0e80b0;
+    	color:white;
     }
   
 /**************progress--bar****************************/

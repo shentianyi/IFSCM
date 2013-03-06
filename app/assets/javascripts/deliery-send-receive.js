@@ -399,7 +399,7 @@ function send_staff_dn(ele) {
 			},
 			success : function(data) {
 				if (data.result) {
-					desi.attr('disabled', true);
+					desi.attr('disabled', true).css('background',"none");
 					$(ele).unbind('click').removeAttr('onclick').bind('click', function() {
 						alert('运单已经发送成功，不可重复发送');
 					});

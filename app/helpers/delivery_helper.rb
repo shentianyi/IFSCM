@@ -132,4 +132,8 @@ module DeliveryHelper
   def self.can_show_abnormal_pack state
     state==DeliveryObjState::Abnormal
   end
+  
+  def self.get_dn_contact key
+    DnContact.find(key)
+  end
 end

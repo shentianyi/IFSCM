@@ -1,17 +1,26 @@
 <link rel="stylesheet"  type="text/css" href="/assets/delivery/supWaybill.css" />
 <script src="/assets/deliery-send-receive.js" type="text/javascript"></script>
 <link rel="stylesheet" type="text/css" href="/assets/delivery/supCheckbill.css"/>
-	<ul class="progress-bar">						  
-				<a href="#"><li style="z-index:3">
-					<p>运单添加</p>
-				</li></a>
-				<a href="#"><li style="z-index:2" class="progress-bar-choosen">
-					<p>运单审核</p>
-				</li></a>
-				<a href="#"><li style="z-index:1">
-					<p>运单生成</p>
-				</li></a>			  
-		    </ul>		<button class="normal-small-btn abandon-btn" onclick="clean_staff_dit();">放弃订单</button>
+<ul class="progress-bar">
+	<li style="z-index:3" >
+		<p>
+			运单添加
+		</p>
+	</li>
+	<li style="z-index:2"  class="progress-bar-choosen">
+		<p>
+			运单审核
+		</p>
+	</li>
+	<li style="z-index:1">
+		<p>
+			运单生成
+		</p>
+	</li>
+</ul>
+<button class="normal-small-btn abandon-btn" onclick="clean_staff_dit();">
+	放弃订单
+</button>
 <input type="hidden" name="clientNr" id="clientNr" value="<%= @clientNr%>"/>
 <div class="partsselection">
 	<div class="tableview">
@@ -53,7 +62,7 @@
 			<div class="pagers">
 				<%= bri_pager options={:class=>"pagination",:pages=>@totalPages,:current=>@currentPage,:action=>'page_change'}%>
 			</div>
-			<input class="fixed-btn add-btn" type="button" onclick="location.href='../delivery/pick_part?c=<%=@clientNr%>'" />
+			<input class="fixed-btn add-btn" type="button" onclick="location.href='../delivery/pick_part?c=<%= @clientNr%>'" />
 			<input class="fixed-btn generate-btn" type="button" onclick="build_delivery_note();"/>
 			<%= render :partial => "shared/handling_msg_box", :locals => { :handlemsg => "运单生成中..." } %>
 			<script type="text/javascript">

@@ -357,6 +357,8 @@ class DeliveryController < ApplicationController
     end
     @type=params[:t]
     if params[:t]=="p"
+      orl= OrganisationRelation.where("origin_client_id = ? and origin_supplier_id = ? ", @dn.rece_org_id, @dn.organisation_id).first
+      @contacts=DnContact.all(orl.id).collect{|c| [c.rece_address,c.key]}
       render "view_pend_dn"
     elsif params[:t]=="d"
       render "dn_detail"
@@ -401,7 +403,7 @@ class DeliveryController < ApplicationController
         if @dn.can_doaccept
       ids=params[:ids].split(',')
       type=params[:type].to_i
-       Resque.enqueue(DeliveryItemAccepter,ids,@dn.id,type)       
+      Resque.enqueue(DeliveryItemAccepter,ids,@dn.id,type)       
       @msg.object=DeliveryObjWayState.get_desc_by_value(type)
       @msg.content="已操作"
       else
