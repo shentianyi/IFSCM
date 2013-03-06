@@ -53,7 +53,7 @@
 			<div class="pagers">
 				<%= bri_pager options={:class=>"pagination",:pages=>@totalPages,:current=>@currentPage,:action=>'page_change'}%>
 			</div>
-			<input class="fixed-btn add-btn" type="button" onclick="location.href='../delivery/pick_part'" />
+			<input class="fixed-btn add-btn" type="button" onclick="location.href='../delivery/pick_part?c=<%=@clientNr%>'" />
 			<input class="fixed-btn generate-btn" type="button" onclick="build_delivery_note();"/>
 			<%= render :partial => "shared/handling_msg_box", :locals => { :handlemsg => "运单生成中..." } %>
 			<script type="text/javascript">
