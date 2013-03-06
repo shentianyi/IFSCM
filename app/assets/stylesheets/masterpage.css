@@ -14,7 +14,7 @@ h2{
 	width: 1000px;
 	float: left;
 	margin-left: 30px;
-	padding-bottom: 50px;
+	padding-bottom: 80px;
 }
 .headicon {
 	background-image: url(headicon.png);
@@ -416,6 +416,9 @@ a {
 	border-width: 0px;
 	font-size: 18px;
 	color: #ffffff;
+	cursor:pointer;
+    vertical-align:bottom;
+    margin-left:-5px;
 }
 .btupload:hover {
 	background-color: #0e80b0;
@@ -676,14 +679,15 @@ input.uploadfile {
     	border:2px solid #1297CF;
     	background-color:#1297CF;
     	color:white;
-    	font-family:"微软雅黑"
+    	font-family:"微软雅黑";
+    	cursor:pointer;
     }
     .normal-small-btn:hover{
-    	border:2px solid #1297CF;
+    	border:2px solid #0e80b0;
     	background-color:#0e80b0;
     	color:white;
     }
-      #check-all{
+      /*#check-all{
       	border:2px solid #1297CF;
     	background-color:#1297CF;
     	color:white;
@@ -692,7 +696,7 @@ input.uploadfile {
     #check-all:hover{
     	background-color:white;
     	color:#1297CF;
-    }
+    }*/
   
 /**************progress--bar****************************/
  

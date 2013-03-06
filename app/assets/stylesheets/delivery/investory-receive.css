@@ -25,6 +25,9 @@
 .delivery-check .norline th{
 	padding:10px 2px;
 }
+.delivery-check tbody{
+	margin-bottom:200px;
+} 
 .norline .font-blue{
 	color:#1297CF
 }
@@ -40,15 +43,23 @@
 	clear:both;
 }
 .button-group{
-    float:right;
+	z-index:999;
+    border-radius:5px 5px 0 0;
+    position:fixed;
+    bottom:0px;
+    left:692px;
+    background-color:white;
+    border-left:1px solid #eaedec;
+    border-right:1px solid #eaedec;
+    border-top:1px solid #eaedec;
+    padding:15px 7px 0 15px;
 /*	width:100px;*/
-	margin-right:300px;
-	margin-top:30px
+
 }
 .button-group input{
 /*	background-image:url("../btn-big.png");*/
 	background-position:center;
-	margin-bottom:20px;
+	margin-bottom:15px;
 	width:100px;
 	height:40px;
 	font-size:16px;
@@ -60,9 +71,10 @@
 	border:none;
 	cursor: pointer;
 	background-color: #1297CF;
+	margin-right:8px;
 }
 .button-group input:hover{
-		 box-shadow: 3px 3px 10px #1297CF;
+		 background-color: #0e80b0;
 }
 .fixed-print{
 	background-color:#E6E6E6;
