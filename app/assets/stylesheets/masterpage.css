@@ -743,3 +743,27 @@ input.uploadfile {
     left:870px;
 
 }
+/**************************************************     staff     */
+.current-user{
+	width:400px;
+	margin-left:35px;
+}
+.current-user h1{
+	color:#9d9d9d;
+	font-size:24px;
+	margin-top:27px;	
+}
+#result{
+	font-size:18px;
+	padding:10px;
+	border-radius:5px;
+	box-shadow:2px 2px 2px #ccc ;
+	color:#9d9d9d;
+	margin-left:20px;
+	margin-bottom:20px;
+	border:1px solid #CCC;
+}
+.info-in-line{
+	margin-top:5px;
+	margin-bottom:10px;
+}
