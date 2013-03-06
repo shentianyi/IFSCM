@@ -136,4 +136,8 @@ module DeliveryHelper
   def self.get_dn_contact key
     DnContact.find(key)
   end
+  
+  def self.get_inspect_desc code
+    DeliveryObjInspectState.get_desc_by_value code
+  end
 end

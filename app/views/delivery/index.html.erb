@@ -1,74 +1,94 @@
 <link rel="stylesheet"  type="text/css" href="/assets/delivery/supWaybill.css" />
 <script src="/assets/deliery-send-receive.js" type="text/javascript"></script>
 <script type="text/javascript">
-     $(document).ready(function() {
-         dn_list_ready();
-     });
+	$(document).ready(function() {
+		dn_list_ready();
+	}); 
 </script>
 <div class="forcasttypes">
-     <div class="forcasttype typeactive wayState" wayState="ALL">
-          显示全部
-     </div>
-     <div class="forcasttype wayState" wayState="100">
-          在途运单
-     </div>
-     <div class="forcasttype wayState" wayState="400">
-          已收运单
-     </div>
-     <div class="forcasttype wayState" wayState="500">
-          拒收运单
-     </div>
-     <div class="forcasttype wayState" wayState="600">
-          退货运单
-     </div>
-     <div class="forcasttype forcastright objState" objState="200">
-          异常运单
-     </div>
+	<div class="forcasttype typeactive wayState" wayState="ALL">
+		显示全部
+	</div>
+	<div class="forcasttype wayState" wayState="100">
+		在途运单
+	</div>
+	<div class="forcasttype wayState" wayState="400">
+		已收运单
+	</div>
+	<div class="forcasttype wayState" wayState="500">
+		拒收运单
+	</div>
+	<div class="forcasttype wayState" wayState="600">
+		退货运单
+	</div>
+	<div class="forcasttype forcastright objState" objState="200">
+		异常运单
+	</div>
 </div>
 
-<div class="search_label" id="label_dnKey">运单号：</div>
-<div class="search_label" id="label_receiver">客户：</div>
-<div class="search_label" id="label_sender">供应商：</div>
-<div class="search_label" id="label_date">日期：</div>
-<div class="search_label" id="label_wayState">类型：</div>
-<div class="search_label" id="label_objState"> 异常：</div>
+<div class="search_label" id="label_dnKey">
+	运单号：
+</div>
+<div class="search_label" id="label_receiver">
+	客户：
+</div>
+<div class="search_label" id="label_sender">
+	供应商：
+</div>
+<div class="search_label" id="label_date">
+	日期：
+</div>
+<div class="search_label" id="label_wayState">
+	类型：
+</div>
+<div class="search_label" id="label_objState">
+	异常：
+</div>
 
 <div class="tableview" id="dn-list-div">
-    
+
 </div>
 
 <div class="textsearchbox texts" style="display:none;" id="dn-search-box">
-     <span class="searchcontenttype">运单号</span>
-     <input type="text"
-     name="searchcontent" class="searchcontent" placeholder="请输入运单号" id="dn-search-text"/>
-     <input
-     type="button" name="startsearch" class="startsearch" value="搜索" />
+	<span class="searchcontenttype">运单号</span>
+	<input type="text"
+	name="searchcontent" class="searchcontent" placeholder="请输入运单号" id="dn-search-text"/>
+	<input
+	type="button" name="startsearch" class="startsearch" value="搜索" />
 </div>
 <div class="textsearchbox texts" style="display:none;"  id="rece-search-box">
-     <span class="searchcontenttype">客户号</span>
-     <input type="text" id="client-search-text"
-     name="searchcontent" class="searchcontent" placeholder="请输入客户号" />
-     <input
-     type="button" name="startsearch" class="startsearch" value="搜索" />
+	<span class="searchcontenttype">客户号</span>
+	<input type="text" id="client-search-text"
+	name="searchcontent" class="searchcontent" placeholder="请输入客户号" />
+	<input
+	type="button" name="startsearch" class="startsearch" value="搜索" />
 </div>
 
 <div class="textsearchbox texts" style="display:none;"  id="sender-search-box">
-     <span class="searchcontenttype">供应商号</span>
-     <input type="text" id="supplier-search-text"
-     name="searchcontent" class="searchcontent" placeholder="请输入供应商号" />
-     <input
-     type="button" name="startsearch" class="startsearch" value="搜索" />
+	<span class="searchcontenttype">供应商号</span>
+	<input type="text" id="supplier-search-text"
+	name="searchcontent" class="searchcontent" placeholder="请输入供应商号" />
+	<input
+	type="button" name="startsearch" class="startsearch" value="搜索" />
 </div>
 
-
 <div class="textsearchbox ranges" style="display:none;"  id="date-search-box">
-     <span class="searchcontenttype ">日期</span>
-     <input type="text"
-     name="searchcontent" class="searchcontent" placeholder="请选择开始时间" id="startdate-search-text"/>
-     <input
-     type="text" name="searchcontent" class="searchcontent"
-     placeholder="请选择结束时间"  id="enddate-search-text"/>
-     <input type="button" name="startsearch"
-     class="startsearch" value="搜索" />
+	<span class="searchcontenttype ">日期</span>
+	<input type="text"
+	name="searchcontent" class="searchcontent" placeholder="请选择开始时间" id="startdate-search-text"/>
+	<input
+	type="text" name="searchcontent" class="searchcontent"
+	placeholder="请选择结束时间"  id="enddate-search-text"/>
+	<input type="button" name="startsearch"
+	class="startsearch" value="搜索" />
+</div>
+<div class="tooltip-content" style="display: none;">
+	<div id="tooltip-content-prepare">
+		<img class="pull-right" src="/assets/loading.gif" style="margin:0 30px 0 -30px" width="22px" height="22px" alt="稍等一下">
+		<p>
+			努力为您加载中
+		</p>
+	</div>
+	<div id="tooltip-content-detail"></div>
 </div>
 
