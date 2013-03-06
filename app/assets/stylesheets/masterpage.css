@@ -14,7 +14,7 @@ h2{
 	width: 1000px;
 	float: left;
 	margin-left: 30px;
-	padding-bottom: 50px;
+	padding-bottom: 80px;
 }
 .headicon {
 	background-image: url(headicon.png);
@@ -416,6 +416,9 @@ a {
 	border-width: 0px;
 	font-size: 18px;
 	color: #ffffff;
+	cursor:pointer;
+    vertical-align:bottom;
+    margin-left:-5px;
 }
 .btupload:hover {
 	background-color: #0e80b0;
@@ -676,14 +679,15 @@ input.uploadfile {
     	border:2px solid #1297CF;
     	background-color:#1297CF;
     	color:white;
-    	font-family:"微软雅黑"
+    	font-family:"微软雅黑";
+    	cursor:pointer;
     }
     .normal-small-btn:hover{
-    	border:2px solid #1297CF;
+    	border:2px solid #0e80b0;
     	background-color:#0e80b0;
     	color:white;
     }
-      #check-all{
+     #check-all{
       	border:2px solid #1297CF;
     	background-color:#1297CF;
     	color:white;
@@ -691,6 +695,7 @@ input.uploadfile {
     }
     
     #check-all:hover{
+
     	border:2px solid #1297CF;
     	background-color:#0e80b0;
     	color:white;
@@ -740,4 +745,28 @@ input.uploadfile {
     top:75px;
     left:870px;
 
+}
+/**************************************************     staff     */
+.current-user{
+	width:400px;
+	margin-left:35px;
+}
+.current-user h1{
+	color:#9d9d9d;
+	font-size:24px;
+	margin-top:27px;	
+}
+#result{
+	font-size:18px;
+	padding:10px;
+	border-radius:5px;
+	box-shadow:2px 2px 2px #ccc ;
+	color:#9d9d9d;
+	margin-left:20px;
+	margin-bottom:20px;
+	border:1px solid #CCC;
+}
+.info-in-line{
+	margin-top:5px;
+	margin-bottom:10px;
 }
