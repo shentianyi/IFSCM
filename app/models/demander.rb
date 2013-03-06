@@ -44,6 +44,11 @@ class Demander < ActiveRecord::Base
       $redis.zadd zsetKey,self.date.strftime('%Y%m%d').to_i,self.key
     end
   end
+  
+  def update_otd_record
+    zsetKey=Demander.generate_org_part_otd_zset_key(self.clientId,self.relpartId,self.supplierId,self.type)
+    # to do
+  end
 
   def amount t=nil
     return FormatHelper::get_number @attributes["amount"],t
@@ -61,6 +66,10 @@ class Demander < ActiveRecord::Base
 
   def self.generate_org_part_cf_zset_key orgId,partrelId,supplierId,type
     "cId:#{orgId}:partrelId:#{partrelId}:spId:#{supplierId}:type:#{type}:cf:zset"
+  end
+  
+  def self.generate_org_part_otd_zset_key orgId,partrelId,supplierId,type
+    # to do
   end
 
 end
