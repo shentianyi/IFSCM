@@ -1,0 +1,110 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<title>IFSCM</title>
+		<link href="stylesheets/masterpage.css" media="all" rel="stylesheet" type="text/css" />
+		<link href="stylesheets/application.css" media="all" rel="stylesheet" type="text/css" />
+		<link href="stylesheets/demand/basicView.css" media="all" rel="stylesheet" type="text/css" />
+		<link href="stylesheets/jquery.ui/jquery.ui.datepicker.min.css" media="all" rel="stylesheet" type="text/css" />
+		<link href="stylesheets/jquery.ui/jquery.ui.theme.css" media="all" rel="stylesheet" type="text/css" />
+
+		<script src="javascripts/jquery-1.8.2.min.js" type="text/javascript"></script>
+		<script src="javascripts/jquery.ui/jquery-ui-1.9.1.custom.min.js" type="text/javascript"></script>
+		<script src="javascripts/jquery.ui/jquery.ui.datepicker.js" type="text/javascript"></script>
+		<script src="javascripts/scm-js-base.js" type="text/javascript"></script>
+		<script src="javascripts/application.js" type="text/javascript"></script>
+
+		<meta content="authenticity_token" name="csrf-param" />
+		<meta content="YuZwNQZ+kSKvzG8H4Ldq8dcsMVDUsrS9ROIIsrIu4CU=" name="csrf-token" />
+	</head>
+	<body>
+		<div class="subicons">
+			<div class="fixedtop">
+				<ul class="subs pull-left">
+					<li>
+						<a href="/welcome"><img src="images/homeicon.png"/></a>
+					</li>
+					<li><img src="images/backicon.png"/>
+					</li>
+				</ul>
+				<ul class="subs pull-right">
+					<li>
+						<a class="greeting">plymouth&emsp;</a>
+						<dl>
+							<dd>
+								<a href="#">编辑账户</a>
+							</dd>
+							<dd>
+								<a href="/logout">注销</a>
+							</dd>
+						</dl>
+					</li>
+
+				</ul>
+
+			</div>
+		</div>
+
+		<div class="lefticons" id="lefticons">
+			<div class="hm licon">
+				<a> <p  name="headicon" class="headicon" ></p> </a>
+			</div>
+			<div class="cus licon">
+				<a href="../client"> <p  name="customericon" class="customericon" style=" cursor:pointer;" ></p> </a>
+			</div>
+			<div class="sup licon">
+				<a href="../supplier"> <p  name="suppliericon" class="suppliericon" style=" cursor:pointer;" ></p> </a>
+			</div>
+		</div>
+
+		<div id="MessageBox" class="message-box">
+			<div class="bg-grey">
+				<div>
+					信息
+				</div>
+				<div class="close-logo"></div>
+			</div>
+			<p></p>
+		</div>
+
+		<div class="content">
+			<div class="wrapcontent">
+				<!-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
+								<div class="tooltip-content-prepare tooltip-content">
+					<div id="tooltip-content-prepare">
+						<img class="pull-right" src="images/loading.gif" style="margin:0 30px 0 -30px" width="22px" height="22px"  alt="稍等一下">
+						<p>努力为您加载中</p>				   
+					</div>
+				</div>
+
+ 				<div class="tooltip-content-detail tooltip-content">
+					<div id="tooltip-content-detail">
+						<p class="pull-left given-type" >异常类型</p>
+						
+						<div class="pull-right wrap-text">
+							<p class="pull-left">
+								异常描述：
+							</p>
+						<p class="pull-left">
+							这个那个什么东海海底啊哈外地哇哈
+						</p>
+							<!-- <p class="pull-left">
+								图片：
+							</p>
+						 <img class="pull-left" src="images/iconpickcheck.png" width="26px" height="26px">
+						 <img class="pull-left" src="images/iconpickcheck.png" width="26px" height="26px">
+						 <img class="pull-left" src="images/iconpickcheck.png" width="26px" height="26px">
+						 <img class="pull-left" src="images/iconpickcheck.png" width="26px" height="26px">
+						 <img class="pull-left" src="images/iconpickcheck.png" width="26px" height="26px"> -->
+						</div>
+						<p class="pull-left given-cause" >包装箱破损</p>
+					</div>
+					
+				</div>  
+
+				<!-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
+			</div>
+		</div>
+	</body>
+</html>
