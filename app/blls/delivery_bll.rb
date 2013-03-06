@@ -334,6 +334,28 @@ module DeliveryBll
     end
   end
 
+  
+  # ws
+  # [功能：] 根据运单id获取异常运单
+  # 参数：
+  # - integer : id
+  # 返回值：
+  # - array : delivery items
+  def self.get_dn_abnormal_pack id
+     select="delivery_items.*,delivery_packages.perPackAmount,delivery_packages.packAmount,delivery_packages.cpartNr,delivery_packages.spartNr"
+    # condi={}
+    # condi["delivery_notes.id"]=id
+    # condi["delivery_items.state"]=DeliveryObjState::Abnormal
+     # condi["delivery_items.wayState"]=DeliveryItem.abnormal_waystate
+    return DeliveryItem.joins(:delivery_package=>:delivery_note)
+    .where("(delivery_items.state=? or delivery_items.wayState in (?)) and delivery_notes.id=?",DeliveryObjState::Abnormal,DeliveryItem.abnormal_waystate,id)
+    .select(select).all
+  end
+  
+  def self.get_pack_by_batch_id id
+      select="delivery_items.*,delivery_packages.perPackAmount,delivery_packages.packAmount,delivery_packages.cpartNr,delivery_packages.spartNr"
+    return DeliveryItem.joins(:delivery_package).where("delivery_packages.id=?",id).select(select).all
+  end
   # ws
   # [功能：] 根据运单需要质检或不要质检的包装箱
   # 参数：

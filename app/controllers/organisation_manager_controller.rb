@@ -60,7 +60,7 @@ class OrganisationManagerController < ApplicationController
       render :json=>{flag:false,msg:"失败！此号已存在。"}
     end
   end
-  
+
   def create_costcenter
     unless cc=CostCenter.where(:name=>params[:ccName].strip,:organisation_id=>params[:orgId]).first
       st=CostCenter.new(:name=>params[:ccName].strip,:desc=>params[:ccDesc].strip,:organisation_id=>params[:orgId])
@@ -151,7 +151,7 @@ class OrganisationManagerController < ApplicationController
           # next unless spart = Part.where("organisation_id = ? and partNr = ?", sup.id, row["SpartNr"]).first
           next unless pr = PartRel.where(:client_part_id=>cpart.id,  :organisation_relation_id=>orgrel.id).first
           package = Strategy.new(:leastAmount=>row["Least"].strip, :part_rel_id=>pr.id)
-          i+=1 if package.save
+        i+=1 if package.save
         else
           result = false
           info="缺少列值或文件标题错误,请重新修改上传！"
@@ -170,7 +170,6 @@ class OrganisationManagerController < ApplicationController
       render :json=>{flag:false,msg:"失败！"+info}
     end
   end
-
 
   def search
     if request.post?
@@ -226,6 +225,7 @@ class OrganisationManagerController < ApplicationController
     end
   # render :text => lines
   end
+
   #**********************************************************************************************
   #__________________________________________delivery info set__________________________________
   def delivery_set
@@ -260,9 +260,9 @@ class OrganisationManagerController < ApplicationController
     printer.destroy
     render :json=>{:msg=>"DONE!!!"+printer.key}
   end
-  
+
   def update_default_printer
-     printer=OrgRelPrinter.find(params[:printerKey])
+    printer=OrgRelPrinter.find(params[:printerKey])
     printer.update(:updated=>params[:updated])
     render :json=>{:msg=>"DONE!!!"+printer.key}
   end
@@ -277,23 +277,23 @@ class OrganisationManagerController < ApplicationController
     files=params[:files]
     msg=ReturnMsg.new
     begin
-    if files.size==1
-      f = files.first
-      template=FileData.new(:data=>f,:oriName=>f.original_filename,:path=>$PRINTERTEMPLATEPATH,:pathName=>f.original_filename)
-      template.saveFile      
-      path=File.join($PRINTERTEMPLATEPATH,template.pathName)
-      AliDnPrintTemplateBuket.store(template.pathName,open(path))
-      msg.result=true
-      msg.content=f.original_filename+"，上传成功"
-    else
-      msg.content = "文件数量只可为1！"
-    end
+      if files.size==1
+        f = files.first
+        template=FileData.new(:data=>f,:oriName=>f.original_filename,:path=>$PRINTERTEMPLATEPATH,:pathName=>f.original_filename)
+        template.saveFile
+        path=File.join($PRINTERTEMPLATEPATH,template.pathName)
+        AliDnPrintTemplateBuket.store(template.pathName,open(path))
+        msg.result=true
+        msg.content=f.original_filename+"，上传成功"
+      else
+        msg.content = "文件数量只可为1！"
+      end
     rescue Exception=>e
-      msg.content=e.message
+    msg.content=e.message
     end
     render :json=>{:flag=>msg.result,:msg=>msg.content}
   end
-  
+
   def get_dncontact
     cli=Organisation.find(params[:cid])
     sup=Organisation.find(params[:sid])
@@ -301,8 +301,8 @@ class OrganisationManagerController < ApplicationController
     c=eval(OrgRelContactBase.class_name_converter(params[:ctype].to_i)).find_by_orid(orl.id)
     s=""
     c.instance_variables.each do |attr|
-        s+="  "+attr.to_s+":"+c.instance_variable_get(attr)
-      end
+      s+="  "+attr.to_s+":"+c.instance_variable_get(attr)
+    end
     render :text=>s
   end
 
@@ -322,12 +322,19 @@ class OrganisationManagerController < ApplicationController
   end
 
   def del_dncontact
-   cli=Organisation.find(params[:cid])
+    cli=Organisation.find(params[:cid])
     sup=Organisation.find(params[:sid])
     orl= OrganisationRelation.where("origin_client_id = ? and origin_supplier_id = ? ", cli.id, sup.id).first
     c=DnContact.find_by_orid(orl.id)
-   c.destroy
-   render :json=>{:msg=>"DONE!!!"+c.key}
+    c.destroy
+    render :json=>{:msg=>"DONE!!!"+c.key}
   end
 
+  def get_org_info
+    org=Organisation.find(params[:id])
+    respond_to do |format|
+      format.json { render json: org }
+      format.html {render partial:'org_info_card',:locals=>{:org=>org}}
+    end
+  end
 end

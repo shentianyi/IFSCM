@@ -292,6 +292,7 @@ input.partsamount {
 }
 .abnorm {
 	background-image: url(../abnormbg.png);
+	cursor: pointer;
 }
 .hoverable:hover {
 	background-color: #efefef;

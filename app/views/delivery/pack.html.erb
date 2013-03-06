@@ -1,0 +1,51 @@
+<link rel="stylesheet"  type="text/css" href="/assets/delivery/supWaybill.css" />
+<link rel="stylesheet" type="text/css" href="/assets/delivery/investory-receive.css"/>
+<script src="/assets/deliery-send-receive.js" type="text/javascript"></script>
+
+<div id="accept-list-div">
+	<%if @msg
+	if @msg.result%>
+	<table class="delivery-check">
+		<tr  class="lineone">
+			<th>&nbsp;</th>
+			<th>箱号</th>
+			<th>客户零件号</th>
+			<th>供应商零件号</th>
+			<th>箱单位量</th>
+			<th>运输状态</th>
+			<th>是否异常</th>			
+		</tr>
+		<%i=0
+		@list.each do |pack|
+		per=FormatHelper.string_to_int(pack.perPackAmount.to_s)
+		%>
+		<tr class="norline">
+			<th><%= (i+=1)%></th>
+			<th style="text-align:left;"><%= pack.key%></th>
+			<th style="text-align:center;"><%= pack.cpartNr%></th>
+			<th style="text-align:center;"><%= pack.spartNr%></th>
+			<th><%= per%></th>
+			<th>
+			<div class="<%= DeliveryHelper::get_dn_wayState_css(pack.wayState)%>">
+				<%= DeliveryHelper::get_dn_wayState(pack.wayState)%>
+			</div></th>
+			<th>
+			<div class="<%= DeliveryHelper::get_delivery_obj_state_css(pack.state)%>"
+			  <%= "onmouseover=get_info_card(#{pack.id},'item_state',2)" if DeliveryHelper::can_show_abnormal_pack(pack.state)%>>
+				<%= DeliveryHelper::get_delivery_obj_state(pack.state)%>
+			</div></th>
+		</tr>
+		<%
+		end%>
+		</tr>
+	</table>	
+	<div id="info-result">
+		
+	</div>
+	<%else%>
+	<div class="abstractblock">
+		<%= @msg.content%>
+	</div>
+	<%end
+	end%>
+</div>
