@@ -691,15 +691,15 @@ input.uploadfile {
     	color:white;
     }
      #check-all{
-      	border:2px solid #1297CF;
+        	border:2px solid #1297CF;
     	background-color:#1297CF;
     	color:white;
-    	font-family:"微软雅黑"
+    	font-family:"微软雅黑";
+    	cursor:pointer;
     }
     
     #check-all:hover{
-
-    	border:2px solid #1297CF;
+    	border:2px solid #0e80b0;
     	background-color:#0e80b0;
     	color:white;
     }

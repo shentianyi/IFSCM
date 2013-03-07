@@ -27,7 +27,7 @@
 			<th style="text-align:left;"><%= pack.spartNr%></th>
 			<th style="text-align:left;"><%= pack.cpartNr%></th>
 			<th><%= per%></th>
-			<th  <%="onclick=get_batch_pack(#{pack.id})" if pack.id%>><%= pack.packAmount%></th>
+			<th <%="onclick=get_batch_pack(#{pack.id})" if pack.id%>><a href="#"><%= pack.packAmount%></a></th>
 			<th> <%= FormatHelper.string_multiply(per,pack.packAmount)%></th>
 		</tr>
 		<%

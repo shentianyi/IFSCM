@@ -56,6 +56,8 @@
 			 <th id="operate-th-<%= pack.id%>">
 			 	<%if pack.can_inspect and !pack.checked%>
 			<input class="id-check" id="<%= pack.id%>" type="checkbox"/>
+			<%else%>
+			  已操作
 			<%end%>
 			</th>
 		</tr>
