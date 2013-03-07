@@ -13,7 +13,7 @@
 			<th>供应商零件号</th>
 			<th>箱单位量</th>
 			<th>运输状态</th>
-			<th>是否异常</th>			
+			<th>是否异常</th>
 		</tr>
 		<%i=0
 		@list.each do |pack|
@@ -31,17 +31,24 @@
 			</div></th>
 			<th>
 			<div class="<%= DeliveryHelper::get_delivery_obj_state_css(pack.state)%>"
-			  <%= "onmouseover=get_info_card(#{pack.id},'item_state',2)" if DeliveryHelper::can_show_abnormal_pack(pack.state)%>>
+			<%= "onmouseover=get_info_card(event,#{pack.id},'item_state',2); onmouseout=hide_info_card();" if DeliveryHelper::can_show_abnormal_pack(pack.state)%>>
 				<%= DeliveryHelper::get_delivery_obj_state(pack.state)%>
 			</div></th>
 		</tr>
 		<%
 		end%>
 		</tr>
-	</table>	
-	<div id="info-result">
-		
+	</table>
+	<div class="tooltip-content" style="display: none;">
+		<div id="tooltip-content-prepare">
+			<img class="pull-right" src="/assets/loading.gif" style="margin:0 30px 0 -30px" width="22px" height="22px" alt="稍等一下">
+			<p>
+				努力为您加载中
+			</p>
+		</div>
+		<div id="tooltip-content-detail"></div>
 	</div>
+
 	<%else%>
 	<div class="abstractblock">
 		<%= @msg.content%>
@@ -49,3 +56,4 @@
 	<%end
 	end%>
 </div>
+

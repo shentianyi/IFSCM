@@ -1,4 +1,29 @@
-<%if org%>
-<span><%=org.id%></span>
- <span><%=org.name%></span>
-<%end%>
+<div id="tooltip-content-detail">
+	<%if org%>
+	<img class="pull-left" height="70" width="70" src="/assets/companylogo1.png" alt="no pic">
+	<div class="pull-right wrap-text">
+		<p class="pull-left">
+			公司地址:
+			<br>
+			<%=org.address%>
+		</p>
+		<p class="pull-left">
+			公司网址:
+			<br>
+			<%=org.website%>
+		</p>
+		<p class="pull-left">
+			联系人:<%=org.contact%>
+		</p>
+	</div>
+	<p class="pull-left given-name">
+		<%=org.name%>
+	</p>
+	<%else%>
+	<p>
+		公司不存在
+	</p>
+
+	<%end%>
+</div>
+

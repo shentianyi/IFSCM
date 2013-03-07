@@ -36,7 +36,7 @@
 	<tr class="norline hoverable">
 		<th><%= (i+=1)%></th>
 		<th><a href="../delivery/dn_detail?dnKey=<%= dn.key%>&t=d" target="blank" style="color:#9D9D9D"><%= dn.key%></a></th>
-		<th><span class="org-info-card" onmouseover="get_info_card(<%= partnerId%>,'get_org_info',1);"><%= partnerNr%></span></th>
+		<th><span class="org-info-card" onmouseout="hide_info_card();" onmouseover="get_info_card(event,<%= partnerId%>,'get_org_info',1);"><%= partnerNr%></span></th>
 		<th><%= Time.at(dn.sendDate.to_i).strftime('%Y/%m/%d') %></th>
 		<th><%= dn.destination%></th>
 		<th>

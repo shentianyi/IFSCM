@@ -418,7 +418,7 @@ a {
 	color: #ffffff;
 	cursor:pointer;
     vertical-align:bottom;
-    margin-left:-5px;
+    margin-left:1px;
 }
 .btupload:hover {
 	background-color: #0e80b0;
@@ -641,26 +641,29 @@ input.uploadfile {
 		}
 	.bg-grey{
 		background-color:#E1E1E1;
+		
 		height:36px;
 	}
 .bg-grey div{
     float:left;
-	color:#363636;
+	color:#9d9d9d;
 	font-size:18px;
 	display:inline-block;
 	margin:6px 8px;
 }
-	.close-logo{	
+.bg-grey .close-logo{	
 		width:20px;
 		height:20px;
 	   float:right;
-	  margin:8px 10px;
-       background:url(closeiconB.png);
+	  margin-top:10px;
+	  filter:alpha(opacity=100);
+	  -moz-opacity:1;
+       background:url(../images/closeiconB.png);
        background-position:center;
        background-repeat:no-repeat;
 	}
 	.close-logo:hover{
-		background-image:url(closeicon.png);
+		background-image:url(../images/closeicon.png);
 	}
 
 
@@ -756,7 +759,7 @@ input.uploadfile {
 	font-size:24px;
 	margin-top:27px;	
 }
-#result{
+.user-info-detail{
 	font-size:18px;
 	padding:10px;
 	border-radius:5px;

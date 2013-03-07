@@ -1,5 +1,19 @@
 <%if state%>
-<span><%=state.id%></span>
- <span><%=state.desc%></span>
-  <span><%=state.state%></span>
+<p class="pull-left given-type">
+	异常类型
+</p>
+<div class="pull-right wrap-text">
+	<p class="pull-left">
+		异常描述：
+	</p>
+	<p class="pull-left">
+		<%= state.desc%>
+	</p>
+</div>
+<p class="pull-left given-cause">
+	<%= DeliveryHelper::get_inspect_desc(state.state)%>
+</p>
+<%else%>
+无异常记录
 <%end%>
+

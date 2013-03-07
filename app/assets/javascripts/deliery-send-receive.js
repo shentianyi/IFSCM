@@ -399,7 +399,7 @@ function send_staff_dn(ele) {
 			},
 			success : function(data) {
 				if (data.result) {
-					desi.attr('disabled', true).css('background',"none");
+					desi.attr('disabled', true).css('background', "none");
 					$(ele).unbind('click').removeAttr('onclick').bind('click', function() {
 						alert('运单已经发送成功，不可重复发送');
 					});
@@ -1094,18 +1094,38 @@ function return_delivery_note() {
 // - 无
 // 返回 ：
 // - 无
-function get_info_card(id,action,i) {
-	var c={1:"/organisation_manager/",2:"/delivery/"};
+function get_info_card(e, id, action, i) {
+	var left=e.pageX;
+	var top=e.pageY;
+	if(i==2){
+		left-=300;
+		
+	}
+	$(".tooltip-content").show().offset({
+		left :left,
+		top : top
+	});
+	$("#tooltip-content-prepare").show();
+	$("#tooltip-content-detail").hide();
+	var c = {
+		1 : "/organisation_manager/",
+		2 : "/delivery/"
+	};
 	$.ajax({
-		url : "../"+c[i]+action,
+		url : "../" + c[i] + action,
 		data : {
 			id : id
 		},
 		dataType : 'html',
 		success : function(data) {
-			$("#info-result").html(data);
+			$("#tooltip-content-prepare").hide();
+			$("#tooltip-content-detail").html(data).show();
 		}
 	});
+}
+
+function hide_info_card() {
+	$(".tooltip-content").hide();
 }
 
 // 功能 ： 获取运单异常项
@@ -1114,14 +1134,10 @@ function get_info_card(id,action,i) {
 // - id : 运单key
 // 返回 ：
 // - 无
-function get_abnormal_packs(id,key){
-	window.open("../delivery/abnormal?id="+id+"&dnKey="+key,
-	'newwindow',
-	'height=700,width=600,top=200,left=200,toolbar=no,menubar=no,resizable=no,location=no, status=no');
+function get_abnormal_packs(id, key) {
+	window.open("../delivery/abnormal?id=" + id + "&dnKey=" + key, 'newwindow', 'height=800,width=750,top=50,left=200,toolbar=no,menubar=no,resizable=no,location=no, status=no');
 }
 
-function get_batch_pack(id){
-	window.open("../delivery/pack?id="+id+"&dnKey="+$("#dnkey-hidden").val(),
-	'newwindow',
-	'height=700,width=600,top=200,left=200,toolbar=no,menubar=no,resizable=no,location=no, status=no');
+function get_batch_pack(id) {
+	window.open("../delivery/pack?id=" + id + "&dnKey=" + $("#dnkey-hidden").val(), 'newwindow', 'height=800,width=750,top=50,left=200,toolbar=no,menubar=no,resizable=no,location=no, status=no');
 }
