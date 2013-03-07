@@ -44,6 +44,10 @@ class PartController<ApplicationController
       end
     end
   end
+  
+  def strategy
+    
+  end
 
   # # ws get parts by condtions in page
   # # redis-search

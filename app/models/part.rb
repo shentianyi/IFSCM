@@ -10,7 +10,7 @@ class Part < ActiveRecord::Base
  
   after_save :add_or_update_redis_index
   after_destroy :del_redis_index
-
+  after_update :update_part_rel_info
   include Redis::Search
   redis_search_index(:title_field => :partNr,
                      :prefix_index_enable => true,
@@ -64,6 +64,23 @@ class Part < ActiveRecord::Base
   def update_redis_index
     del_redis_index
     add_redis_index
+  end
+  
+  def update_part_rel_info
+    if self.partNr_change
+     self.client_part_rels.each do |pl|
+      if pinfo=PartRelInfo.find(pl.id)
+        pinfo.update(:cpartNr=>self.partNr)
+      end 
+     end
+     
+     self.supplier_part_rels.each do |pl|
+      if pinfo=PartRelInfo.find(pl.id)
+        pinfo.update(:spartNr=>self.partNr)
+      end 
+     end
+     
+    end
   end
 end
 
