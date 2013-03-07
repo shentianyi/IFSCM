@@ -77,13 +77,17 @@
 					$(this).toggleClass("partsimage-choosen");
 				});
 				$("#checkbox-all-parnum").click(function(){
-					if($(this).attr("checked")=="true"){
+					if($(this).attr("checked")){
+					
 						$(".partsimage").addClass("partsimage-choosen");
 					}
 					else{
 						$(".partsimage").removeClass("partsimage-choosen");
 					}
 				});
+				// $('input[id=^"'img-strategy-'"]').onclick(function () {
+				  // alert($(this).attr("id"));
+				// });
 				$(".logosearchv").click(function(){
 					$(".popupqlt").attr("style","display:block");
 				});
@@ -298,12 +302,12 @@
 						检验策略:
 					</p>
 					<input type="image" src="images/iconnocheck.png" class="checktype" alt="免检"
-					width="40" height="40" />
+					width="40" height="40" id="img-strategy-exem"/>
 					<input type="image"
 					src="images/iconpickcheck.png" class="checktype" alt="抽检" width="40"
-					height="40" />
+					height="40" id="img-strategy-sam"/>
 					<input type="image" src="images/iconcheck.png"
-					class="checktype" alt="全检" width="40" height="40" />
+					class="checktype" alt="全检" width="40" height="40" id="img-strategy-full"/>
 				</div>
 				<div class="errorlineqlt">
 					<p class="errormsg" style="visibility: hidden">
