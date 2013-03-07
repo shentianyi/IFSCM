@@ -5,24 +5,14 @@
  		<ul class="ware-ul">
  			<% @warehouses.each do |d|	%>
  				<li class="ware-li li-small" onclick="current_warehouse(<%= d.id %>, this);">
- 					<div class="lb1 fake-lable"><%= d.nr%></div>
- 					<div class="lb2 fake-lable"><%= d.name%></div>
+ 					<div class="lb1 fake-lable"><%= d.nr%></div><div class="lb2 fake-lable"><%= d.name%></div>
  					<div class="del-sign wh-del" onclick="delete_warehouse(<%= d.id %>);"></div>
  				</li>
  			<% end %>
 			<li class="ware-li li-small last-ware" id="ready_for_new_warehouse" style="display:none">
-				<%= text_field_tag :whNr, nil, :class=>"ip1", :placeholder=>"输入仓库..." %>
-				<%= text_field_tag :whName, nil, :class=>"ip2", :placeholder=>"输入简述..." %>
+				<%= text_field_tag :whNr, nil, :class=>"ip1", :placeholder=>"输入仓库..." %><%= text_field_tag :whName, nil, :class=>"ip2", :placeholder=>"输入简述..." %>
 				<div class="wh-post btn-normal" onclick="new_warehouse();">提交</div>
 			</li>
-			
-<li class="ware-li li-small"><div class="lb1 fake-lable">wdwad</div  ><div  class="lb2 fake-lable">description</div ><div class="del-sign wh-del"></div></li>
-     			<li class="ware-li li-small"><div  class="lb1 fake-lable choosen-li">warehouse</div ><div  class="lb2 fake-lable choosen-li">description</div ><div class="del-sign wh-del "></div></li>
-     			<li class="ware-li li-small"><div  class="lb1 fake-lable">warehouse</div ><div  class="lb2 fake-lable">description</div ><div class="del-sign wh-del"></div></li>
-     			<li class="ware-li li-small last-ware"><input class="ip1" type="text" value="输入仓库"><input class="ip2" type="text" name="warehouse" value="输入简述"><div class="wh-post btn-normal">提交</div></li>
-     		  	
-			
-			
  		</ul>
  		<div class="wh-add btn-normal" onclick="ready_new_warehouse();">新建仓库</div>   		
  	</div>

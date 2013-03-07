@@ -231,26 +231,15 @@ function chart_history(key, tstart, tend) {
           if($('.chartactive').attr("name") == "line")
                source = {
                     data : data.chart,
-                    lines : {
-                         show : true
-                    },
-                    points : {
-                         show : true
-                    },
+                    lines : { show : true },
+                    points : { show : true },
                     color : '#71c73e'
                };
           else
                source = {
                     data : data.chart,
-                    lines : {
-                         show : true,
-                         steps : true,
-                         fill : true
-                    },
-                    points : {
-                         show : true,
-                         fillColor : '#77b7c5'
-                    },
+                    lines : { show : true, steps : true, fill : true },
+                    points : { show : true, fillColor : '#77b7c5' },
                     color : '#77b7c5'
                };
           $.plot(charting, [source], {
@@ -260,9 +249,7 @@ function chart_history(key, tstart, tend) {
                     ticks : data.x,
                     tickColor : 'transparent',
                },
-               yaxis : {
-                    min : 0
-               },
+               yaxis : { min : 0 },
                grid : {
                     borderColor : 'transparent',
                     minBorderMargin : 20,
@@ -276,7 +263,7 @@ function chart_history(key, tstart, tend) {
                }
           });
           var yaxisLabel = $("<div>").text("零件： " + data.partNr).appendTo(charting);
-          yaxisLabel.css("position", "absolute").css('top', '-10%').css('width', '600px').css("text-align", 'center');
+          yaxisLabel.css("position", "absolute").css('top', '-5%').css('width', '600px').css("text-align", 'center');
           var previousPoint = null;
           charting.bind('plothover', function(event, pos, item) {
                if(item) {

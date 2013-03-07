@@ -42,7 +42,7 @@ function get_demand_label() {
      label.supplier = $('#supplier_float > input.searchcontent').val();
      label.partNr = $("#partNr_float > input.searchcontent").val();
      label.start = $("#date_float > input").get(0).value;
-     label.end = $("#date_float > input").get(1).value;;
+     label.end = $("#date_float > input").get(1).value;
      label.type = arr;
      label.amount = [$("#amount_float > input").get(0).value, $("#amount_float > input").get(1).value];
      return label;

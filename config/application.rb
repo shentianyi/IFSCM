@@ -22,6 +22,7 @@ module Demand
     config.autoload_paths += Dir["#{config.root}/app/blls/**/"]
     config.autoload_paths += %W(#{config.root}/app/base)
     config.autoload_paths += %W(#{config.root}/app/models)
+    config.autoload_paths += Dir["#{config.root}/app/models/**/"]
     config.autoload_paths += %W(#{config.root}/app/tprinters)
     # Only load the plugins named here, in the order given (default is alphabetical).
     # :all can be used as a placeholder for all plugins not explicitly named.

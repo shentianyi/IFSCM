@@ -99,7 +99,7 @@ class WarehouseController < ApplicationController
       begin
         raise( ArgumentError, "格式错误：仓库ID！" )  unless params[:whId].is_a?(String) and whId = params[:whId].strip
         raise( ArgumentError, "格式错误：页码！" )  unless params[:page].is_a?(String) and page = params[:page].strip
-        raise( ArgumentError, "参数错误：仓库ID无效！" )  unless FormatHelper.str_is_positive_integer( whId )
+        raise( ArgumentError, "仓库无效！" )  unless FormatHelper.str_is_positive_integer( whId )
    #     raise( ArgumentError, "参数错误：页码无效！" )  unless FormatHelper.str_is_positive_integer( page )
         if wh = Warehouse.find_by_id(whId)
           positions = wh.positions.order("nr asc")

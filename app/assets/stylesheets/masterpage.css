@@ -139,6 +139,7 @@ input.gbtn:hover {
 }
 .subicons {
 	position: fixed;
+	z-index: 5;
 	padding-left: 120px;
 	top: 0px;
 	background-color: #eaedec;
@@ -180,7 +181,6 @@ ul.subs {
 
 }
 .subs li > dl{
-	z-index: 10;
 	position: absolute;
 	background-color: #EAEDEC;
 	margin: 0px -10px;
@@ -620,6 +620,7 @@ input.uploadfile {
 	.message-box{	
 		font-size:17px;
 		position:fixed;
+		z-index: 5;
 		display:none;
 		background-color:rgb(234, 237, 236);
 		margin:auto;
@@ -658,12 +659,12 @@ input.uploadfile {
 	  margin-top:10px;
 	  filter:alpha(opacity=100);
 	  -moz-opacity:1;
-       background:url(../images/closeiconB.png);
+       background:url(closeiconB.png);
        background-position:center;
        background-repeat:no-repeat;
 	}
 	.close-logo:hover{
-		background-image:url(../images/closeicon.png);
+		background-image:url(closeicon.png);
 	}
 
 
