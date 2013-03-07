@@ -1,0 +1,521 @@
+.searchsupp {
+		float: left;
+		padding-right: 5px;
+		border-width: 1px;
+		border-style: solid;
+		border-color: #dbdbdb;
+		color: #9d9d9d;
+		width: 227px;
+		height: 21px;
+		font-size: 13px;
+		padding-left: 5px;
+		margin-top: -45px;
+	}
+	.searchsupp:active,.searchsupp:focus {
+		border-color: #b1b1b1;
+		color: #7c7c7c;
+	}
+	.search-parnum{
+				float: left;
+		margin-left: 245px;
+		margin-top: -45px;
+	}
+	.logosearchv {
+       border-width:0;
+       border-radius:5px;
+       padding:5px 7px;
+		background-color: transparent;
+		background-image: url(images/btnbg.png);
+		font-size: 15px;
+		font-family:"微软雅黑";
+		color: #ffffff;
+		cursor:pointer;
+		margin-right:40px;
+		margin-bottom:20px;
+		position:relative;
+		bottom:6px;
+	}
+	.logosearchv:hover {
+		background-image: url(images/btnhov.png);
+	}
+	.choose-all-parnum{
+		cursor:default;
+		font-size:14px;
+		color:#9d9d9d;
+		font-family:"微软雅黑";
+	position:relative;
+		bottom:-2px;
+		margin-right:20px;
+	}
+	.supplierinfo {
+		height: 80px;
+		padding-top:5px;
+		margin-bottom:-5px;
+		width: 900px;
+		float: left;
+		display: block;
+		border-bottom-width: 1px;
+		border-bottom-color: #dbdbdb;
+		border-bottom-style: solid;
+		padding-bottom: 10px;
+	}
+	.supplierinfo img {
+		float: left;
+		margin: 5px 5px 5px 5px;
+		border-width: 1px;
+		border-color: #dbdbdb;
+		border-style: solid;
+	}
+	.supplierinfo p {
+		float: left;
+		display: block;
+		padding: 0px;
+	}
+	.normalstyle {
+		text-decoration: none;
+		color: #000000;
+		display: block;
+		float: left;
+	}
+	.namestyle {
+		text-decoration: none;
+		color: #0063de;
+		display: block;
+		float: left;
+	}
+	.suppname {
+		margin: 10px 10px 0px 10px;
+		font-size: 18px;
+	}
+	.address {
+		margin: 10px 180px 0px 10px;
+		width: 55px;
+		text-align: left;
+		float: left;
+		font-size: 18px;
+	}
+	.qltall {
+		width: 20px;
+		height: 20px;
+		border-width: 0px;
+		background-color: transparent;
+		background-image: url(images/iconqltall.png);
+		margin: 10px 80px 0px 0px;
+		float: left;
+		display: block;
+	}
+	.qltall:hover {
+		background-image: url(images/iconqltallh.png);
+	}
+	.products {
+		float: left;
+		margin: 3px 10px 0px 10px;
+		width: 430px;
+		font-size: 13px;
+	}
+	.contacts {
+		float: left;
+		width: 430px;
+		font-size: 13px;
+		margin: 3px 10px 0px 10px;
+	}
+	.partsdetail {
+		width: 900px;
+		float: left;
+	}
+	.parts {
+		float: left;
+		margin: 20px 18px 20px 5px;
+			word-break:break-all;
+		word-wrap:break-word;
+	}
+	.addbt {
+		background-image: url(images/partplus.png);
+		width: 120px;
+		height: 165px;
+		border-width: 0px;
+		background-color: transparent;
+	}
+	.addbt:hover {
+		background-image: url(images/partplush.png);
+	}
+	.partsadd {
+		background-image: url(images/partplus.png);
+		width: 120px;
+		height: 165px;
+		border: 1px dashed #666666;
+	}
+	.partsadd:hover {
+		background-image: url(images/partplush.png);
+		border-color: #000000;
+	}
+	.partsimage {
+		background-image: url(images/part1.png);
+		width: 120px;
+		height: 120px;
+		border: 1px solid #dbdbdb;
+		cursor:pointer;
+	}
+    .partsimage-choosen{
+    	border:1px solid #1297cf;
+    }
+	.parts p {
+		margin: 0px;
+		padding: 0px;
+		width: 122px;
+	}
+	.partname {
+		color: #0063de;
+		font-size: 13px;
+		margin-top: 5px;
+	
+	}
+	.partnmc {
+		font-size: 12px;
+		margin-top: 3px;
+	}
+
+	.bottombtns {
+		position: relative;
+		top: 97px;
+		left: 37px;
+		width: auto;
+	}
+	
+	.editbtn {
+		background-color: transparent;
+		background-image: url(images/iconedit.png);
+		width: 20px;
+		height: 20px;
+		border-width: 0px;
+		padding: 0px;
+		margin: 0px;
+		float: left;
+		
+	}
+	.editbtn:hover {
+		background-image: url(images/iconedith.png);
+	}
+	.lockbtn {
+		background-color: transparent;
+		background-image: url(images/iconlock.png);
+		width: 20px;
+		height: 20px;
+		border-width: 0px;
+		margin: 0px;
+		padding: 0px;
+		float: left;
+	}
+	.lockbtn:hover {
+		background-image: url(images/iconlockh.png);
+	}
+	.qltbtn {
+		background-color: transparent;
+		background-image: url(images/iconqlt.png);
+		width: 20px;
+		height: 20px;
+		border-width: 0px;
+		margin: 0px;
+		padding: 0px;
+		float: left;
+	}
+	.qltbtn:hover {
+		background-image: url(images/iconqlth.png);
+	}
+	.partstatus {
+		width: 20px;
+		height: 20px;
+		background-image: url(images/iconunlocked.png);
+		background-repeat: no-repeat;
+		float: left;
+		margin-left: 3px;
+		margin-top: 3px;
+	}
+	/*the pop up window codes*/
+	.popup {
+		position: fixed;
+		left: 350px;
+		top: 180px;
+		background-color: #ffffff;
+		border-color: #dbdbdb;
+		border-width: 1px;
+		border-style: solid;
+		padding: 10px;
+		width: 430px;
+		height: 200px;
+	}
+	.closeeditbt {
+		float: left;
+		margin-left: 415px;
+		margin-top: -5px;
+		margin-bottom: 5px;
+		width: 20px;
+		height: 20px;
+		background-image: url(images/closeicon.png);
+		background-position: center;
+		background-repeat: no-repeat;
+		background-color: transparent;
+		border-width: 0px;
+		background-color: transparent;
+		width: 20px;
+	}
+	.closeeditbt:hover {
+		background-image: url(images/closeiconh.png);
+	}
+	.editimage {
+		margin-left: 10px;
+		margin-top: 0px;
+		float: left;
+	}
+	.editinput {
+		float: left;
+		height: 25px;
+		border-width: 1px;
+		border-color: #dbdbdb;
+		border-style: solid;
+		padding-left: 5px;
+		color: #666666;
+		width: 195px;
+	}
+	.editinput:active,.editinput:focus {
+		border-color: #b1b1b1;
+		color: #7c7c7c;
+	}
+	.errorline {
+		float: left;
+		width: 200px;
+		margin: 0px 0px 0px 80px;
+	}
+	.btline {
+		margin-top: 10px;
+	}
+	.errormsg {
+		font-size: 12px;
+		color: red;
+		margin: 0px;
+		padding: 0px;
+	}
+	.inputline {
+		height: 32px;
+		width: 280px;
+		float: left;
+		line-height: 30px;
+		margin-bottom: 0px;
+		margin-left: 10px;
+	}
+	.topline {
+		margin-bottom: 10px;
+	}
+	.popup P {
+		float: left;
+		font-size: 12px;
+		float: left;
+		margin: 0px;
+	}
+	.updatepic {
+		float: left;
+	}
+	.uploadpic {
+		float: left;
+		padding: 0px;
+		background-color: #1297cf;
+		color: #ffffff;
+		background-color: #1297cf;
+	}
+	.uploadpic:hover {
+		background-color: #0e80b0;
+	}
+	.innerpartsname {
+		float: left;
+		margin-left: 10px;
+	}
+	.outerpartsname {
+		float: left;
+		margin-left: 10px;
+	}
+	.inputlines {
+		margin-top: 0px;
+		margin-left: 5px;
+		float: left;
+		width: 280px;
+	}
+	.editbt {
+		border-width: 0px;
+		height: 29px;
+		width: 70px;
+		font-size: 14px;
+		cursor:pointer;
+	}
+	.canclebt:hover {
+		background-color: #0e80b0;
+		color: white;
+	}
+	.canclebt {
+		margin-left: 130px;
+		background-color: #1297cf;
+		color: white;
+	}
+	.ensurebt {
+		margin-left: 7px;
+		background-color: #1297cf;
+		color: #ffffff;
+	}
+	.ensurebt:hover {
+		background-color: #0e80b0;
+	}
+	/*quality popup window goes here*/
+	.popupqlt {
+		position: fixed;
+		left: 470px;
+		top: 180px;
+		background-color: #ffffff;
+		border-color: #dbdbdb;
+		border-width: 1px;
+		border-style: solid;
+		padding: 10px;
+		width: 395px;
+			border-radius:5px;
+		box-shadow:2px 2px 2px #9d9d9d;
+		font-size: 14px;
+	}
+	.closeqltbt {
+		float: left;
+		margin-left: 370px;
+		margin-top: 0px;
+		margin-bottom: 5px;
+		width: 20px;
+		height: 20px;
+		background-image: url(images/closeicon.png);
+		background-position: center;
+		background-repeat: no-repeat;
+		background-color: transparent;
+		border-width: 0px;
+		background-color: transparent;
+		width: 20px;
+		cursor:pointer;
+	}
+	.closeqltbt:hover {
+		background-image: url(images/closeiconh.png);
+	}
+	.instruction {
+		font-size: 14px;
+		margin: 0px 10px 0px 5px;
+		padding: 0px;
+		float: left;
+	}
+	.checktype {
+		float: left;
+		margin: 0px 15px 0px 0px;
+		border: 1px dashed #dbdbdb;
+	}
+	.checktype-focus{
+		background-color: #efefef;
+		border:1px dashed #B0E0E6;
+	}
+
+	.checkline {
+		width: 400px;
+		height: 40px;
+		line-height: 40px;
+		float: left;
+		margin-left: 10px;
+		margin-top:10px;
+	}
+	.checkpoint {
+		float: left;
+		height: 25px;
+		border-width: 1px;
+		border-color: #dbdbdb;
+		border-style: solid;
+		padding-left: 5px;
+		color: #666666;
+		width: 247px;
+	}
+	.checkpoint:active,.checkpoint:focus {
+		border-color: #b1b1b1;
+		color: #7c7c7c;
+	}
+	.checknum {
+		float: left;
+		height: 25px;
+		border-width: 1px;
+		border-color: #dbdbdb;
+		border-style: solid;
+		padding-left: 5px;
+		color: #666666;
+		width: 125px;
+	}
+	.checknum:active,.checknum:focus {
+		border-color: #b1b1b1;
+		color: #7c7c7c;
+	}
+	.inputlineqlt {
+		height: 32px;
+		width: 400px;
+		float: left;
+		line-height: 30px;
+		margin-bottom: 0px;
+		margin-left: 10px;
+		margin-top:10px;
+	}
+	.midspace {
+		margin-top: 15px;
+	}
+	.errorlineqlt {
+		float: left;
+		width: 200px;
+		margin: -2px 0px 5px 20px;
+	}
+	.btlineqlt {
+		margin-left: 100px;
+		margin-top: 60px;
+		padding-bottom:20px;
+	}
+	.radiobt {
+		font-size: 12px;
+	}
+	/*all products' quality strategy*/
+	.popupqltall {
+		position: fixed;
+		left: 370px;
+		top: 180px;
+		background-color: #ffffff;
+		border-color: #dbdbdb;
+		border-width: 1px;
+		border-style: solid;
+		padding: 10px;
+		width: 395px;
+		height: 250px;
+		font-size: 14px;
+
+	}
+	.titleqltall {
+		font-size: 16px;
+		padding: 10px 0px 10px 5px;
+		margin: -10px 0px 30px -10px;
+		display: block;
+		width: 410px;
+		background-color: #1297cf;
+		color: white;
+		float: left;
+	}
+	.closeqltbtall {
+		position:absolute;
+		left:390px;
+		z-index:2;	
+		width: 20px;
+		height: 20px;
+		background-image: url(images/closeicona.png);
+		background-position: center;
+		background-repeat: no-repeat;
+		background-color: transparent;
+		border-width: 0px;
+		background-color: transparent;
+		width: 20px;
+	}
+	.closeqltbtall:hover {
+		background-image: url(images/closeiconh.png);
+	}
+	.btlineall{
+	margin-left:96px;
+	}

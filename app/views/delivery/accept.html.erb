@@ -41,7 +41,11 @@
 				<%= DeliveryHelper::get_delivery_obj_state(pack.state)%>
 			</div></th>
 			<th id="operate-th-<%= pack.id%>">
-			<input class="id-check" id="<%= pack.id%>" type="checkbox"/>
+				<%if pack.can_accept_or_reject%>
+			  <input class="id-check" id="<%= pack.id%>" type="checkbox"/>
+			  <%else%>
+			  已操作
+			  <%end%>
 			</th>
 		</tr>
 		<%

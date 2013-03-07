@@ -74,7 +74,7 @@ Demand::Application.routes.draw do
       get :searcher
       get :redis_search
       post :get_partRels
-      match :redis_search_meta
+      # match :redis_search_meta
     end
   end
 
@@ -125,6 +125,7 @@ Demand::Application.routes.draw do
     post "warehouse/delete_position" => :delete_position
     match "warehouse/search_state" => :search_state
     match "warehouse/search_op_history" => :search_op_history
+    match "warehouse/tip_point"=>:tip_point
   end
   
   controller :analysis do

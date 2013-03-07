@@ -692,15 +692,15 @@ input.uploadfile {
     	color:white;
     }
      #check-all{
-      	border:2px solid #1297CF;
+        	border:2px solid #1297CF;
     	background-color:#1297CF;
     	color:white;
-    	font-family:"微软雅黑"
+    	font-family:"微软雅黑";
+    	cursor:pointer;
     }
     
     #check-all:hover{
-
-    	border:2px solid #1297CF;
+    	border:2px solid #0e80b0;
     	background-color:#0e80b0;
     	color:white;
     }
@@ -762,7 +762,7 @@ input.uploadfile {
 }
 .user-info-detail{
 	font-size:18px;
-	padding:10px;
+	padding:10px 10px 15px;
 	border-radius:5px;
 	box-shadow:2px 2px 2px #ccc ;
 	color:#9d9d9d;
@@ -773,4 +773,14 @@ input.uploadfile {
 .info-in-line{
 	margin-top:5px;
 	margin-bottom:10px;
+}
+.change-password{
+	margin-left:270px;
+}
+
+.input-text-style:hover{
+   border-bottom:2px solid #eaedec;
+    border-left:2px solid #eaedec;
+     border-right:2px solid #eaedec;
+      border-top:2px solid #DDD;
 }

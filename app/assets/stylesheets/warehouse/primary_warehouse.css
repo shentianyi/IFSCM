@@ -12,10 +12,22 @@
 	}
 	.ware-p{
 		font-size:20px;
-		margin-top:8px;
+		margin-top:10px;
 	   margin-bottom:-5px;
 		margin-left:10px;
-		
+		display:inline-block;
+	}
+	.show-wareposition{
+		 margin-right: 6px;
+    margin-top: 12px;
+	}
+	.show-wareposition-list{
+		float:right;
+		margin-right:356px;
+		margin-top:20px;
+		border: 2px solid #DADADA;
+	
+
 	}
 	.wh-add{
 		margin-top:10px;
@@ -171,8 +183,7 @@
     	  	
     }
     .ware-li:hover div.fake-lable{
-    	border:1px solid #1297CF;
-    	box-shadow:2px 2px 2px #1297CF; 
+    	background:#F9FCFE;
     }
     
     .wareposition{

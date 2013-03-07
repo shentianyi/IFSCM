@@ -9,22 +9,24 @@
 <div class="equal-sign">-</div>
 <div class="wareposition"   id="positions_list_id" whid=<%= @whid %> >
 	<p class="ware-p"><label name="warehouse">当前仓库：</label>&nbsp;未选中</p>
+	<button class="btn-normal pull-right show-wareposition" onclick="position_list(0);">显示库位</button>
 	<ul class="ware-ul">
-		<li class="ware-li li-right"><p><strong>单个添加/删除</strong></p></li>
+		<li class="ware-li li-right"><p><strong>单个添加/删除库位</strong></p></li>
 		<li class="ware-li li-right">
 			<%= text_field_tag :posiNr, nil, :class=>"ip1", :placeholder=>"输入库位..." %>
 			<%= text_field_tag :capacity, nil, :class=>"ip2", :placeholder=>"容量..." %>
 			<div class="wh-post btn-normal " style="margin-right:15px;" onclick="delete_position();">删除</div>
 			<div class="wh-post btn-normal wh-small-add " onclick="new_position_single();">添加</div>
 		</li>
-		<li class="ware-li li-right"><p><strong>连续添加/删除</strong></p></li>
+		<li class="ware-li li-right"><p><strong>连续添加/删除库位</strong></p></li>
 		<li class="ware-li li-right">
 			<%= text_field_tag :posiStart, nil, :class=>"ip1", :placeholder=>"输入库位..." %>
-			<%= text_field_tag :capa, nil, :class=>"ip2", :placeholder=>"容量..." %>
+			
 		</li>
 		 <li class="ware-li li-right">
 		 	<p>-</p>
 		 	<%= text_field_tag :posiEnd, nil, :class=>"ip1", :placeholder=>"输入库位..." %>
+		 	<%= text_field_tag :capa, nil, :class=>"ip2", :placeholder=>"容量..." %>
 		 	<div class="wh-post btn-normal" >删除</div>
 		 	<div class="wh-post btn-normal wh-small-add " onclick="new_position_range();">添加</div>
 		 </li>
@@ -32,9 +34,8 @@
 </div>
 
 <div style="clear:left"></div>
-<br /><br /><br /><br /><br />
-<button class="btn-normal" onclick="position_list(0);">显示库位列表：</button>
-<div id="positions_list"></div>
+
+<div id="positions_list" class="show-wareposition-list"></div>
 
 <script type="text/javascript">
 function ready_new_warehouse(){
