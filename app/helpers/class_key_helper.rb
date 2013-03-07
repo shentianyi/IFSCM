@@ -12,6 +12,7 @@ module ClassKeyHelper
     :DemandHistory=>:generate_uuid_key,
     :DemanderTemp=>:generate_uuid_key,
     :Demander=>:generate_redis_incr_key,
+    :OnTimeDelivery=>:generate_redis_incr_key,
     :FileData=>:generate_redis_incr_key,
     :Organisation=>:generate_redis_incr_key,
     :PartRelMeta=>:generate_redis_incr_key,

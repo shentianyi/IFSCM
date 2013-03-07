@@ -60,7 +60,6 @@ Demand::Application.routes.draw do
       post :send_demand
       post :kestrel_newer
       match :data_analysis
-      post :data_chart
       post :check_staff_cache_file
       post :check_staff_unfinished_file
       post :clean_staff_cache_file
@@ -126,6 +125,10 @@ Demand::Application.routes.draw do
     post "warehouse/delete_position" => :delete_position
     match "warehouse/search_state" => :search_state
     match "warehouse/search_op_history" => :search_op_history
+  end
+  
+  controller :analysis do
+    match "analysis/demand_cf" => :demand_cf
   end
 
   namespace :api,defaults:{format:'json'} do

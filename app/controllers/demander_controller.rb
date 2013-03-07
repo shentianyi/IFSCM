@@ -380,11 +380,11 @@ class DemanderController<ApplicationController
 
   def download_viewed_demand
     if request.post?
-              c = params[:client]
+            c = params[:client]
             s = params[:supplier]
             p = params[:partNr]
             
-                tstart = Time.parse(params[:start]).to_i if params[:start] && params[:start].size>0
+            tstart = Time.parse(params[:start]).to_i if params[:start] && params[:start].size>0
             tend = Time.parse(params[:end]).to_i if params[:end] && params[:end].size>0
     
             ######  判断类型 C or S ， 将session[:id]赋值给 id
@@ -558,33 +558,6 @@ class DemanderController<ApplicationController
         render :json => {:flag=>false, :msg=>"不存在！"}
       end
     end
-  end
-
-  def data_analysis
-    if request.post?
-            p = params[:partNr]
-            ######  判断类型 C or S ， 将session[:id]赋值给 id
-            if session[:orgOpeType]==OrgOperateType::Client
-              clientId = @cz_org.id
-              partRelMetaKey = PartRel.get_all_partRelMetaKey_by_partNr( clientId, p, PartRelType::Client ) if p && p.size>0
-            else
-              supplierId = @cz_org.id
-              partRelMetaKey = PartRel.get_all_partRelMetaKey_by_partNr( supplierId, p, PartRelType::Supplier ) if p && p.size>0
-            end
-            partRelMetaKey = 'none' if partRelMetaKey && partRelMetaKey.size==0
-            @demands = []
-            @demands, @total = Demander.search( :clientId=>clientId, :supplierId=>supplierId,
-                                                                                        :rpartNr=>partRelMetaKey,
-                                                                                        :page=>params[:page] )
-            @totalPages=@total/Demander::NumPer+(@total%Demander::NumPer==0 ? 0:1)
-            @currentPage=params[:page].to_i
-            @options = params[:options]?params[:options]:{}
-            render :partial=>"chart_table"
-    else
-    end
-  end
-
-  def data_chart
   end
 
   # ws : check unfinished batch file before page unload
