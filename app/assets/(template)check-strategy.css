@@ -408,10 +408,11 @@
 		margin: 0px 15px 0px 0px;
 		border: 1px dashed #dbdbdb;
 	}
-	.checktype:active,.checktype:focus {
+	.checktype-focus{
 		background-color: #efefef;
 		border:1px dashed #B0E0E6;
 	}
+
 	.checkline {
 		width: 400px;
 		height: 40px;

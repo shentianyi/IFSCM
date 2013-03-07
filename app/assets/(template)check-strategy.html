@@ -85,9 +85,11 @@
 						$(".partsimage").removeClass("partsimage-choosen");
 					}
 				});
-				// $('input[id=^"'img-strategy-'"]').onclick(function () {
-				  // alert($(this).attr("id"));
-				// });
+				$("[id^='img-strategy-']").click(function () {
+					 $("[id^='img-strategy-']").css("background","white");
+				     $(this).css("background-color","#efefef");
+				});
+			
 				$(".logosearchv").click(function(){
 					$(".popupqlt").attr("style","display:block");
 				});
