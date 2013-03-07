@@ -481,7 +481,7 @@ class DemanderController<ApplicationController
               demands.each { |d|  DeliveryHelper::automake_di_temp( session[:staff_id], d)  }
               render :json => {:flag=>true, :clientNr=>OrganisationRelation.find(orgRelIds.first).clientNr}
             else
-              render :json => {:flag=>false}
+              render :json => {:flag=>false, :msg=>"自动转换失败！客户号多于一个。"}
             end
   end
   

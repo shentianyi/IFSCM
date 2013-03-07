@@ -196,7 +196,7 @@ function demand_tansform_delivery(){
 				alert("转换成功！页面将跳转至‘运单审核’。");
 				window.location = "../delivery/check_dit_list?c="+data.clientNr;
 			}else
-				alert("自动转换失败！客户号多于一个。");
+				MessageBox(data.msg);
 	},"json");
 }
 
