@@ -1,5 +1,5 @@
 class Warehouse < ActiveRecord::Base
-  attr_accessible :nr, :name
+  attr_accessible :nr, :name,:type,:state
   
   belongs_to :organisation
   has_many :positions

@@ -855,6 +855,7 @@ function pack_rece_reje(type, action, pdata, call) {
 						if (action == 1) {
 							for (var i = 0; i < ids.length; i++) {
 								$("#waystate-th-" + ids[i]).attr('class', get_dn_obj_waystate_css(type)).html(msg.object);
+								$("#operate-th-" + ids[i]).html("已操作");
 							}
 						} else if (action == 2) {
 							for (var i = 0; i < ids.length; i++) {
@@ -953,7 +954,7 @@ function pack_inspect(type, action, pdata, call) {
 							var checked = $("#pack-return-checkbox").attr("checked");
 							for (var i = 0; i < ids.length; i++) {
 								$("#check-th-" + ids[i]).html("是");
-								$("#operate-th-" + ids[i]).html("");
+								$("#operate-th-" + ids[i]).html("已操作");
 								$("#state-th-" + ids[i]).attr('class', get_dn_obj_state_css(msg.object)).html(msg.content);
 								if (checked != null) {
 									$("#waystate-th-" + ids[i]).attr('class', get_dn_obj_waystate_css(msg.wayStateCode)).html(msg.wayState);
