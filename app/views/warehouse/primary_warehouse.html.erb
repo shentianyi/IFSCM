@@ -20,11 +20,12 @@
 		<li class="ware-li li-right"><p><strong>连续添加/删除</strong></p></li>
 		<li class="ware-li li-right">
 			<%= text_field_tag :posiStart, nil, :class=>"ip1", :placeholder=>"输入库位..." %>
-			<%= text_field_tag :capa, nil, :class=>"ip2", :placeholder=>"容量..." %>
+			
 		</li>
 		 <li class="ware-li li-right">
 		 	<p>-</p>
 		 	<%= text_field_tag :posiEnd, nil, :class=>"ip1", :placeholder=>"输入库位..." %>
+		 	<%= text_field_tag :capa, nil, :class=>"ip2", :placeholder=>"容量..." %>
 		 	<div class="wh-post btn-normal" >删除</div>
 		 	<div class="wh-post btn-normal wh-small-add " onclick="new_position_range();">添加</div>
 		 </li>

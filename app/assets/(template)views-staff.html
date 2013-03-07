@@ -70,25 +70,52 @@
 		<div class="content">
 			<div class="wrapcontent">
 				<!-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
-
-				<p style="color: #1297cf"></p>
-				<div class="current-user">
-					<h1>当前账户信息</h1>
+                <p style="color: #1297cf"></p>
 				
-					<div id="result" class="user-info-detail">
+				<!-- first face --><div class="current-user">
+					<h1>当前账户信息</h1>
+
+					 <div id="result" class="user-info-detail">
 						<div class="info-in-line">
 							<label>用户名：</label>
 							leoni
-					   </div>
+						</div>
 						<div class="info-in-line">
 							<label>隶属公司：</label>
 							Leoni
 						</div>
+						<button type="button" class="normal-small-btn change-password" onclick="user_edit();" name="edit">
+							修改密码
+						</button>
 					</div>
+
+				</div>
 				
-					<button type="button" class="normal-small-btn" onclick="user_edit();" name="edit">
-						修改密码
-					</button>
+				<!-- second face --><div class="current-user">
+					<h1>当前账户信息</h1>
+
+					<div id="result" class="user-info-detail">
+						<div class="info-in-line">
+							<label>用户名：</label>
+							leoni
+						</div>
+						<div class="info-in-line">
+							<label>隶属公司：</label>
+							Leoni
+						</div>
+						<div class="info-in-line">
+							<label>旧密码：</label>
+							<input type="text" class="input-text-style">
+						</div>
+						<div class="info-in-line">
+							<label>新密码：</label>
+							<input type="password" class="input-text-style">
+						</div>
+						<button type="button" class="normal-small-btn change-password" onclick="user_edit();" name="commit">
+							完成修改
+						</button>
+					</div>
+
 				</div>
 				<!-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
 			</div>

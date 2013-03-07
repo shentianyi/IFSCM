@@ -171,8 +171,7 @@
     	  	
     }
     .ware-li:hover div.fake-lable{
-    	border:1px solid #1297CF;
-    	box-shadow:2px 2px 2px #1297CF; 
+    	background:#F9FCFE;
     }
     
     .wareposition{
