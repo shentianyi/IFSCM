@@ -16,11 +16,11 @@ class Demander < ActiveRecord::Base
   end
 
   def clientNr
-    OrganisationRelation.get_parterNr(:oid=>supplierId,:pt=>:c,:pid=>clientId)
+    OrganisationRelation.get_partnerNr(:oid=>supplierId,:pt=>:c,:pid=>clientId)
   end
 
   def supplierNr
-    OrganisationRelation.get_parterNr(:oid=>clientId,:pt=>:s,:pid=>supplierId)
+    OrganisationRelation.get_partnerNr(:oid=>clientId,:pt=>:s,:pid=>supplierId)
   end
 
   def cpartNr
