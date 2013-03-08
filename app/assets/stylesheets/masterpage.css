@@ -822,9 +822,10 @@ input.uploadfile {
 .cf-drawing{
 	position:fixed;
 	top:155px;
-	width:600px;
-	height:300px;
-	padding:5px;
+	width:640px;
+	height:340px;
+	
+	background-color:rgba(0,0,0,0);
 	border:2px solid #eaedec;
 	border-radius:5px;
 	box-shadow:0px 0px 10px #9d9d9d inset; 
@@ -832,6 +833,13 @@ input.uploadfile {
 	
 	word-break:break-all;
 	word-wrap:break-word;
+}
+.cf-put-drawing{
+	width:600px;
+	height:300px;
+
+	margin-left:20px;
+	margin-top:20px;
 }
 .cf-h3{
 	  color: #9d9d9d;
@@ -848,7 +856,7 @@ input.uploadfile {
 }
 .cf-bar{
 	position:fixed;
-	left:840px;
+	left:860px;
 	top:40px;
 	border-bottom:4px solid #EAEDEC;
     border-left:4px solid #EAEDEC;
