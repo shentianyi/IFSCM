@@ -63,6 +63,7 @@ enter-print.png: enter-print-c2ea46d46371f09c80c03c8275099629.png
 enter-store-hover.png: enter-store-hover-637d4470c8954b665289fb4ab7c76866.png
 enter-store.png: enter-store-fc274c03f059e3d7b98822bed21d40d4.png
 equal.png: equal-38150c122fef7ae0234ef43290bb3ab0.png
+favicon.ico: favicon-922e304c3d8362e54bca4fa78dda8a5a.ico
 fixed-btn.png: fixed-btn-d53d97d055974f75cb2768ae8523e194.png
 glyphicons-halflings-white.png: glyphicons-halflings-white-13553a5bf21ae3cc374006592488ec64.png
 glyphicons-halflings.png: glyphicons-halflings-ab3144065a860d198f1d7d9a4882640c.png
@@ -146,6 +147,9 @@ loading.gif: loading-c631d3658062717316068f0e7ce6aead.gif
 maintain.png: maintain-f238ae299a4bf52d03c8e9be34f081b9.png
 minusp.png: minusp-e0e6f09bb447e3e3c6e2c2ac91cfaf53.png
 minusphover.png: minusphover-b92f1d33c69b33ca76758a63feb41ebb.png
+nw-iconcheck.png: nw-iconcheck-cabdf5fae1989cfb5ed54b8beacfccba.png
+nw-iconnocheck.png: nw-iconnocheck-409618c6b52707f74e8a14aa91a11502.png
+nw-iconpickcheck.png: nw-iconpickcheck-073cfe218aa4be01227710564e24dbb4.png
 outer-store-hover.png: outer-store-hover-8c47f99735af9efb1c540b097c89e1b3.png
 outer-store.png: outer-store-a543668652f57aff9a690f4f719f8ab6.png
 part1.png: part1-10679f93e23ca76209b16f9d3d0d3daa.png
@@ -225,5 +229,5 @@ welcome/f3.png: welcome/f3-6129e7ba540bcb9f6675b0768c008a7f.png
 welcome/featurebg.png: welcome/featurebg-ee6fbfdb0d13de143d2b2a02ae047adc.png
 welcome/featurebg.psd: welcome/featurebg-b054fa82cfcfd29766833fee9df19a82.psd
 welcome/featuresshow.psd: welcome/featuresshow-3f3612bce08530e0b4a924a104c478a0.psd
-application.js: application-0a45ff409fae4373b891ecf77789cdca.js
-application.css: application-d99a4d7cea1ebec64ae6f33fd67aa188.css
+application.js: application-8698391623bac9a2bbce291d20dd461d.js
+application.css: application-e2e185e5817db3d026eefaef6b286b57.css

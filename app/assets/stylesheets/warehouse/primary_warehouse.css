@@ -20,7 +20,7 @@
 	.checked-logo{
 		width:20px;
 		height:20px;
-		background:url("../../images/iconqlt.png");
+		background:url("../iconqlt.png");
 		margin-right:10px;
 		margin-top:4px;
 	}
@@ -41,7 +41,7 @@
 	.wh-add{
 		margin-top:20px;
 		float:right;
-		margin-right:-50px;
+		
 		font-size: 15px;
 	}
 	.wh-post{
@@ -54,7 +54,7 @@
 	.del-sign{
 		width:20px;
 		height:20px;
-		background-image:url("../../images/minusp.png");
+		background-image:url("../minusp.png");
 	}
 	.del-sign:hover{
 		background-image:url("../minusphover.png");
@@ -77,13 +77,13 @@
     	background:#0e80b0;
     	
     }
-    .ware-li div.fake-lable{
+    .ware-li div.fake-label{
     	cursor:pointer;	
     	border:1px solid #999;
     	font-size:15px;		
 		font-family:"Arial";
         color:#999;
-        background-color:#EAEDEC;
+/*        background-color:#EAEDEC;*/
         box-shadow:2px 2px 2px #999;
         /*float:left;*/
        display:inline-block;
@@ -115,7 +115,7 @@
 		height:30px;
 		width:36px;
         margin-right:10px;
-        margin-top:2px
+        margin-top:-2px
 	}
 	.ware-li input.check-checked{
 	   float:left;
@@ -203,7 +203,7 @@
     ul.ware-ul p:nth-child(3){
     	margin:-10px 0px 8px;
     }
-    .fake-lable .choosen-li{
+    .choosen-li {
     	background-color:#0e80b0;
     	color:white;
     }
@@ -211,9 +211,9 @@
     	border:1px solid #DADADA;
     	  	
     }
-    .ware-li:hover div.fake-lable{
+/*    .ware-li:hover div.fake-label{
     	background:#F9FCFE;
-    }
+    }*/
     
     .wareposition{
     	color:#999;

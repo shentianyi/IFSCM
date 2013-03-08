@@ -10,11 +10,10 @@
 	// $('#partNr_float > input.startsearch').click(function(){ chart_search( {partNr:$('#partNr_float > input[placeholder]').val()} );    });
 // })
 </script>
-
-<div id="charting" class="cf-drawing" >
-<div >
-						<h1>Sorry<br>You got no picture</h1>
-					</div>
+<h3 id="charttitle" class="cf-h3">CF值与实际到货量对比图</h3>
+<div  class="cf-drawing" >
+	<div id="charting" class="cf-put-drawing">	<h1>请先选择条件</h1> </div>
+</div>
 
 <div id="search_expired_vertical_bar" class="cf-bar">
 	<% if session[:orgOpeType]==OrgOperateType::Client %>
@@ -39,7 +38,7 @@
 	</div>
 	<div class="cf-box texts cf-box-last" id="type_float" >
 	     <span class="cf-contenttype">预测类型</span>
-	     <input type="button"	name="searchtype" class="searchforcasttype" value="D" />
+	     <input type="button"	name="searchtype" class="searchforcasttype cf-searchtype-border" value="D" />
 	     <input type="button" name="searchtype" class="searchforcasttype"	value="W" />
 	     <input type="button" name="searchtype" class="searchforcasttype"	value="M" />
 	     <input type="button" name="searchtype"	class="searchforcasttype" value="Y" />
@@ -69,8 +68,15 @@ function get_demand_label() {
      label.partNr = $("#partNr_float > input.searchcontent").val();
      label.start = $("#date_float > input").get(0).value;
      label.end = $("#date_float > input").get(1).value;
-     label.type = $('.activetype').get(0).value;
+     label.type = $('.cf-searchtype-border').get(0).value;
      return label;
+}
+
+function showTooltip(x, y, contents) {
+     $('<div id="tooltip">' + contents + '</div>').css({
+          top : y - 40,
+          left : x + 5
+     }).appendTo('body').fadeIn();
 }
 
 function chart_cf( hash ){
@@ -98,25 +104,43 @@ function chart_cf( hash ){
 							backgroundColor: {	colors: ["#fff", "#e4f4f4"] 	},
 							hoverable: true,
 							mouseActiveRadius: 50,
-							margin: {	top: 8,	bottom: 20,		left: 20	}
+							margin: {	top: 18,	bottom: 20,		left: 150	}
 						}
 				  	});
-			        var yaxisLabel = $("<div>").text("零件： " + data.partNr).appendTo(charting);
-			        yaxisLabel.css("position", "absolute").css('top', '-10%').css('width', '600px').css("text-align", 'center');
+			        $("#charttitle").text("零件号： "+data.partNr+"， 预测类型："+data.type);
+			          var previousPoint = null;
+			          var tips = data.tips
+			          charting.bind('plothover', function(event, pos, item) {
+			               if(item) {
+			                    if(previousPoint != item.dataIndex) {
+			                         previousPoint = item.dataIndex;
+			                         $('#tooltip').remove();
+			                         var x = item.datapoint[0], y = item.datapoint[1];
+			                         var d = new Date(x * 1000);
+			                         showTooltip( item.pageX, item.pageY, '数量： ' + y + ' , 时间： ' + tips );
+			                    }
+			               } else {
+			                    $('#tooltip').remove();
+			                    previousPoint = null;
+			               }
+			          });
 				 }else
 				 	MessageBox(data.msg);
 			},"json");
 }
 ///////////////////////////////////////////////////////////////////         DOM  on   ready
 $(function() {
-     $('#type_float > input.searchforcasttype').click(function(){ $(this).toggleClass('activetype'); });
+	$(".searchforcasttype").click(function(){
+			$(".searchforcasttype").removeClass("cf-searchtype-border");
+        	$(this).addClass("cf-searchtype-border");
+	});
      $('#search_expired_button > input[name=search]').click(function() {
           var label = get_demand_label();
           chart_cf(label);
      });
      $('#search_expired_button > input[name=cancel]').click(function() {
           $('input.searchcontent').val("");
-          $('.activetype').removeClass("activetype");
+          $('.activetype').removeClass("cf-searchtype-border");
      });
 
      $('#date_float > input[placeholder*=开始]').datepicker({
@@ -140,12 +164,5 @@ $(function() {
      });
 });
 ///////////////////////////////////////////////////////////////////         predict type
-		<script type="text/javascript">
-			$(document).ready(function(){
-				$(".searchforcasttype").click(function(){
-					$(this).toggleClass("cf-searchtype-border");
-				})
-			})
-		</script>
 </script>
 

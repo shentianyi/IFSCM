@@ -813,6 +813,26 @@ input.uploadfile {
 	-webkit-box-shadow:-1px -1px 3px #a4e5ff;
 	-moz-box-shadow:-1px -1px 3px #a4e5ff;
 }
+/**************************************************    chech-strategy-message    */
+.no-part{
+	position:fixed;
+	top:240px;
+	left:480px;
+	text-align:center;
+	border:1px solid #eaedec;
+	box-shadow:4px 4px 5px #9d9d9d;
+	-webkit-box-shadow:2px 2px 2px #9d9d9d;
+	color:#9d9d9d;
+   
+	width:300px;
+	height:150px;
+}
+.no-part p{
+	margin-top:60px;
+	font-size:25px;
+	font-family:"微软雅黑";
+	
+}
 /**************************************************     cf    */
 .cf-btn-first{
 	margin-left:151px;
@@ -822,14 +842,23 @@ input.uploadfile {
 .cf-drawing{
 	position:fixed;
 	top:155px;
-	width:600px;
-	height:300px;
-	padding:5px;
+	width:640px;
+	height:340px;
+	background-color:rgba(0,0,0,0);
 	border:2px solid #eaedec;
 	border-radius:5px;
 	box-shadow:0px 0px 10px #9d9d9d inset; 
+	-webkit-box-shadow:0px 0px 10px #9d9d9d inset;
+	
 	word-break:break-all;
 	word-wrap:break-word;
+}
+.cf-put-drawing{
+	width:600px;
+	height:300px;
+
+	margin-left:20px;
+	margin-top:20px;
 }
 .cf-h3{
 	  color: #9d9d9d;
@@ -846,7 +875,7 @@ input.uploadfile {
 }
 .cf-bar{
 	position:fixed;
-	left:840px;
+	left:860px;
 	top:40px;
 	border-bottom:4px solid #EAEDEC;
     border-left:4px solid #EAEDEC;

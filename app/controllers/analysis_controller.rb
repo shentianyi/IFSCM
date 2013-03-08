@@ -9,14 +9,14 @@ class AnalysisController < ApplicationController
         begin
             c = params[:client]
             s = params[:supplier]
-            p = params[:partNr]
+            raise( ArgumentError, "缺少条件：零件号！" )  unless params[:partNr].is_a?(String) and p = params[:partNr].strip and p.present?
             tStart = Time.parse(params[:start]).to_i if params[:start].present?
             tEnd = Time.parse(params[:end]).to_i if params[:end].present?
+            raise( ArgumentError, "开始时间应小于结束时间！" )  if tStart>tEnd
             type = params[:type].strip if params[:type].is_a?(String)
         
             ######  判断类型 C or S ， 将session[:id]赋值给 id
         
-            raise( ArgumentError, "缺少条件：零件号！" )  if p.blank?
             if session[:orgOpeType]==OrgOperateType::Client
               raise( ArgumentError, "缺少条件：供应商号！" )  if s.blank?
               raise( ArgumentError, "供应商不存在！" )  unless org_rel = @cz_org.suppliers.where( supplierNr:s ).first
@@ -40,8 +40,9 @@ class AnalysisController < ApplicationController
             chart += [nil,[3,otd],[4,otd]]
             
             x = [ [1.5,"需求"], [3.5,"到货"], [5.5,"在途"]]
+            tips = "#{params[:start]} - #{params[:end]}"
             
-            render :json=>{:flag=>true, :partNr=>p, :chart=>chart, :x=>x }
+            render :json=>{:flag=>true, :chart=>chart, :x=>x, :partNr=>p, :type=>type, :tips=>tips }
         rescue Exception => e
           render :json=>{:flag=>false, :msg=>e.to_s}
         end
