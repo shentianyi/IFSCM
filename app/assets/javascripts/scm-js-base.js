@@ -16,7 +16,7 @@ function isPositiveInt(v) {
 	return false;
 }
 
-// ws : 判断数字是否是整数
+// ws : 判断数字是否是正数
 function isPositiveNum(v) {
 	if (!isNaN(v)) {
 		var reg = /^([1-9]\d*|\d+\.\d+)$/;

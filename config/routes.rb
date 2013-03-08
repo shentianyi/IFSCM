@@ -76,6 +76,7 @@ Demand::Application.routes.draw do
       post :get_partRels
       # match :redis_search_meta
       match :strategy
+      match :strategyinfo
     end
   end
 

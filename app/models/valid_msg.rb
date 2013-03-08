@@ -2,7 +2,7 @@
 require 'base_class'
 
 class ValidMsg<BaseMsg
-  attr_accessor :result,:content_key,:fields,:content
+  attr_accessor :result,:content_key,:fields,:content,:object
   
   @@valids={
             # for forcast 
@@ -18,7 +18,12 @@ class ValidMsg<BaseMsg
             :partRelMetaNotEx=>'供应商-客户零件关系未建立',
             :packAmountIsNotInt=>'包装箱数应为正整数',
             :perPackAmountIsNotFloat=>'单位包装量应为大于零',
-            :notSameClient=>'运单项需为同一客户'
+            :notSameClient=>'运单项需为同一客户',
+            # for part strategy
+            :inpectTypeNotEx=>'质检策略不存在',
+            :posiNotEx=>'库位不存在',
+            :leastAmountIsNotPositiveFloat=>'最小包装量应大于0',
+            :demoteTimesNotIntBetween=>'升级次数不在范围内'            
             }
             
   def contents
