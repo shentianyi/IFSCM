@@ -6,7 +6,9 @@
  			<% @warehouses.each do |d|	%>
  				<li class="ware-li li-small" onclick="current_warehouse(<%= d.id %>, this);">
  					<div class="lb1 fake-lable"><%= d.nr%></div><div class="lb2 fake-lable"><%= d.name%></div>
+ 					
  					<div class="del-sign wh-del" onclick="delete_warehouse(<%= d.id %>);"></div>
+ 					<div class="checked-logo pull-right"></div>
  				</li>
  			<% end %>
 			<li class="ware-li li-small last-ware" id="ready_for_new_warehouse" style="display:none">

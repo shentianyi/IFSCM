@@ -1,8 +1,8 @@
 	.warehouse{
 		color:#999;
-		width:325px;
-		margin-left:40px;
-		margin-top:45px;	 
+		width:380px;
+		
+		margin-top:15px;	 
 		float:left;
 		border:2px solid #DADADA;
     	border-radius:5px;
@@ -17,17 +17,28 @@
 		margin-left:10px;
 		display:inline-block;
 	}
+	.checked-logo{
+		width:20px;
+		height:20px;
+		background:url("../../images/iconqlt.png");
+		margin-right:3px;
+		margin-top:4px;
+	}
 	.show-wareposition{
 		 margin-right: 6px;
     margin-top: 12px;
 	}
 	.show-wareposition-list{
-		float:right;
-		margin-right:356px;
-		margin-top:20px;
-		border: 2px solid #DADADA;
-	
+      border-radius:5px;
+     border: 2px solid #DADADA;
+	 padding:10px;
+	 position:absolute;
+	 left:611px;
+	 top:405px;
 
+	}
+	.width-ok{
+		width:200px;
 	}
 	.wh-add{
 		margin-top:10px;
@@ -45,7 +56,7 @@
 	.del-sign{
 		width:20px;
 		height:20px;
-		background-image:url("../minusp.png");
+		background-image:url("../../images/minusp.png");
 	}
 	.del-sign:hover{
 		background-image:url("../minusphover.png");
@@ -102,6 +113,9 @@
 		 border:1px solid #B1B1B1;
 		box-shadow:2px 2px 3px #DADADA inset;
 	}
+	.ware-li input.check-checked{
+		width:5px;
+	}
     .ware-li input.ip1{
     	width:75px;
     	margin-right:10px;
@@ -155,7 +169,7 @@
 		float:left;
 		margin-left:20px;
 		color:#9D9D9D;
-		margin-top:60px;
+		margin-top:45px;
 	    font-weight:lighter;
 	}
     .display-block{
@@ -189,7 +203,7 @@
     .wareposition{
     	color:#999;
     	float:left;
-    	margin-top:45px;
+    	margin-top:15px;
     	margin-left:20px;
     	border:2px solid #DADADA;
     	border-radius:5px;
