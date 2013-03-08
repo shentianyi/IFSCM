@@ -1,0 +1,114 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<title>IFSCM</title>
+		<link href="stylesheets/masterpage.css" media="all" rel="stylesheet" type="text/css" />
+		<link href="stylesheets/application.css" media="all" rel="stylesheet" type="text/css" />
+		<link href="stylesheets/demand/basicView.css" media="all" rel="stylesheet" type="text/css" />
+		<link href="stylesheets/jquery.ui/jquery.ui.datepicker.min.css" media="all" rel="stylesheet" type="text/css" />
+		<link href="stylesheets/jquery.ui/jquery.ui.theme.css" media="all" rel="stylesheet" type="text/css" />
+		<script src="javascripts/jquery-1.8.2.min.js" type="text/javascript"></script>
+		<script src="javascripts/jquery.ui/jquery-ui-1.9.1.custom.min.js" type="text/javascript"></script>
+		<script src="javascripts/jquery.ui/jquery.ui.datepicker.js" type="text/javascript"></script>
+		<script src="javascripts/scm-js-base.js" type="text/javascript"></script>
+		<script src="javascripts/application.js" type="text/javascript"></script>
+		<meta content="authenticity_token" name="csrf-param" />
+		<meta content="YuZwNQZ+kSKvzG8H4Ldq8dcsMVDUsrS9ROIIsrIu4CU=" name="csrf-token" />
+	</head>
+	<body>
+		<div class="subicons">
+			<div class="fixedtop">
+				<ul class="subs pull-left">
+					<li>
+						<a href="/welcome"><img src="images/homeicon.png"/></a>
+					</li>
+					<li><img src="images/backicon.png"/>
+					</li>
+				</ul>
+				<!-- made change here!!! -->
+				<ul class="subs pull-right">
+					<li>
+						<a class="greeting">plymouth&emsp;</a>
+						<dl>
+							<dd>
+								<a href="#">编辑账户</a>
+							</dd>
+							<dd>
+								<a href="/logout">注销</a>
+							</dd>
+						</dl>
+					</li>
+
+				</ul>
+
+			</div>
+		</div>
+
+		<div class="lefticons" id="lefticons">
+			<div class="hm licon">
+				<a> <p  name="headicon" class="headicon" ></p> </a>
+			</div>
+			<div class="cus licon">
+				<a href="../client"> <p  name="customericon" class="customericon" style=" cursor:pointer;" ></p> </a>
+			</div>
+			<div class="sup licon">
+				<a href="../supplier"> <p  name="suppliericon" class="suppliericon" style=" cursor:pointer;" ></p> </a>
+			</div>
+		</div>
+
+		<div id="MessageBox" class="message-box">
+			<div class="bg-grey">
+				<div>
+					信息
+				</div>
+				<div class="close-logo"></div>
+			</div>
+			<p></p>
+		</div>
+
+		<div class="content">
+			<div class="wrapcontent">
+				<!-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
+				<div id="charting" style="position:absolute; top:150px; left:450px; width:600px;height:300px;">
+					<div style="position:absolute; top:100px; left:130px">
+						<h1>CHARTING HISTORY</h1>
+					</div>
+				</div>
+				<div id="search_expired_vertical_bar" style="position: fixed; top: 100px; left: 120px">
+					<div id="supplier_float" class="textsearchbox texts" style="position: relative">
+						<span class="searchcontenttype">供应商号</span>
+						<input class="searchcontent ui-autocomplete-input" type="text" placeholder="请输入供应商号" name="searchcontent" autocomplete="off">
+						<span class="ui-helper-hidden-accessible" role="status" aria-live="polite"></span>
+						<ul id="ui-id-1" class="ui-autocomplete ui-menu ui-widget ui-widget-content ui-corner-all" tabindex="0" style="z-index: 1; display: none;"></ul>
+					</div>
+					<div id="partNr_float" class="textsearchbox texts" style="position: relative">
+						<span class="searchcontenttype">零件号</span>
+						<input class="searchcontent ui-autocomplete-input" type="text" placeholder="请输入零件号" name="searchcontent" autocomplete="off">
+						<span class="ui-helper-hidden-accessible" role="status" aria-live="polite"></span>
+						<ul id="ui-id-2" class="ui-autocomplete ui-menu ui-widget ui-widget-content ui-corner-all" tabindex="0" style="z-index: 1; display: none;"></ul>
+					</div>
+					<div id="date_float" class="textsearchbox ranges" style="position: relative">
+						<span class="searchcontenttype ">日期</span>
+						<input id="dp1362723986920" class="searchcontent hasDatepicker" type="text" placeholder="请选择开始时间" name="searchcontent">
+						<input id="dp1362723986921" class="searchcontent hasDatepicker" type="text" placeholder="请选择结束时间" name="searchcontent">
+					</div>
+					<div id="type_float" class="textsearchbox texts" style="position: relative">
+						<span class="searchcontenttype ">预测类型</span>
+						<input class="searchforcasttype" type="button" value="D" name="searchtype">
+						<input class="searchforcasttype" type="button" value="W" name="searchtype">
+						<input class="searchforcasttype" type="button" value="M" name="searchtype">
+						<input class="searchforcasttype" type="button" value="Y" name="searchtype">
+						<input class="searchforcasttype" type="button" value="T" name="searchtype">
+					</div>
+					<div id="search_expired_button" style="position: relative">
+						<input class="normal-small-btn cf-btn-first" type="button" value="取消" name="cancel">
+						<input class="normal-small-btn " type="button" value="搜索" name="search">
+					</div>
+				</div>
+
+				<!-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
+			</div>
+		</div>
+	</body>
+</html>

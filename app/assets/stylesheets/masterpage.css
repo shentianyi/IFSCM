@@ -96,7 +96,7 @@ h2{
 	    background-image:url("img/arrow-down.png");
 	    background-repeat:no-repeat;
 	    background-position:right center;
-	    cursor:pointer;
+	    cursor:default;
 		display: block;
 
 		color: #9D9D9D;
@@ -150,7 +150,7 @@ input.gbtn:hover {
 	height: 40px;
 }
 ul.subs {
-
+    cursor:default;
 	margin-top: 0px;
 	margin-bottom: 0px;
 	padding-left: 5px;
@@ -812,4 +812,9 @@ input.uploadfile {
 	box-shadow:-1px -1px 3px #a4e5ff;
 	-webkit-box-shadow:-1px -1px 3px #a4e5ff;
 	-moz-box-shadow:-1px -1px 3px #a4e5ff;
+}
+/**************************************************     cf    */
+.cf-btn-first{
+	margin-left:154px;
+	margin-top:15px;
 }
