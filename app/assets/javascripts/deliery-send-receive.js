@@ -1,20 +1,3 @@
-function flash_message(obj, times) {
-	var i = 0, t = false, times = times || 4;
-	if (t)
-		return;
-	t = setInterval(function() {
-		i++;
-		if (i % 2 == 0) {
-			$(obj).hide();
-		} else {
-			$(obj).show();
-		}
-		if (i == times * 2) {
-			clearInterval(t);
-		}
-	}, 300);
-}
-
 // ws
 // 功能 ： 根据parterNr搜索关系零件
 // 参数 ：
@@ -783,11 +766,6 @@ function get_dn_obj_waystate_css(state) {
 		default :
 			return "instransit"
 	}
-}
-
-function trimEnd(str) {
-	var reg = /,$/gi;
-	return str.replace(reg, "");
 }
 
 function check_all() {

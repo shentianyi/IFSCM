@@ -1,21 +1,34 @@
 <link href="/assets/orgViewSearch.css"  rel="stylesheet" type="text/css"/>
 <script type="text/javascript">
-function cs_search( hash, page){
-	 if (page==null)	page=0;
-	$.post("./search",{ csNr: hash["csNr"], options: hash, page: page },
-			  function(data){ $('#cslist').html(data); }, "html");
-};
-$(function() {
-      $('#orgSearchBox').autocomplete({source: "/organisation_manager/redis_search", appendTo: "#searchline"});
-      $('#orgSearchBut').click(function(){	cs_search( {csNr:$('#orgSearchBox').val()} );  });
-      cs_search({});
-});
+	function cs_search(hash, page) {
+		if (page == null)
+			page = 0;
+		$.post("./search", {
+			csNr : hash["csNr"],
+			options : hash,
+			page : page
+		}, function(data) {
+			$('#cslist').html(data);
+		}, "html");
+	};
+	$(function() {
+		$('#orgSearchBox').autocomplete({
+			source : "/organisation_manager/redis_search",
+			appendTo : "#searchline"
+		});
+		$('#orgSearchBut').click(function() {
+			cs_search({
+				csNr : $('#orgSearchBox').val()
+			});
+		});
+		cs_search({});
+	});
 </script>
 <br/>
-		<div id="searchline">
-			<input type="text" id='orgSearchBox' name="floats" class="searchsupp" placeholder="搜索筛选条件" />
-			<input type="button" id='orgSearchBut' name="logosearchv" class="logosearchv btn" value="搜索" />
-		</div>
+<div id="searchline">
+	<input type="text" id='orgSearchBox' name="floats" class="searchsupp" placeholder="搜索筛选条件" />
+	<input type="button" id='orgSearchBut' name="logosearchv" class="logosearchv btn" value="搜索" />
+</div>
 <hr/>
 <br/>
 

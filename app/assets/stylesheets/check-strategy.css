@@ -25,9 +25,7 @@
        border-radius:5px;
        padding:5px 7px;
 		background-color: transparent;
-		background-image: url(images/btnbg.png);
-		background-position:center center;
-		background-repeat:no-repeat;
+		background-image: url(btnbg.png);
 		font-size: 15px;
 		font-family:"微软雅黑";
 		color: #ffffff;
@@ -38,7 +36,7 @@
 		bottom:6px;
 	}
 	.logosearchv:hover {
-		background-image: url(images/btnhov.png);
+		background-image: url(btnhov.png);
 	}
 	.choose-all-parnum{
 		cursor:default;
@@ -60,9 +58,6 @@
 		border-bottom-color: #dbdbdb;
 		border-bottom-style: solid;
 		padding-bottom: 10px;
-		word-break:break-all;
-		word-wrap:break-word;
-		
 	}
 	.supplierinfo img {
 		float: left;
@@ -81,19 +76,16 @@
 		color: #000000;
 		display: block;
 		float: left;
-		width:500px
 	}
 	.namestyle {
 		text-decoration: none;
 		color: #0063de;
 		display: block;
 		float: left;
-		width:500px
 	}
 	.suppname {
 		margin: 10px 10px 0px 10px;
 		font-size: 18px;
-		
 	}
 	.address {
 		margin: 10px 180px 0px 10px;
@@ -101,20 +93,19 @@
 		text-align: left;
 		float: left;
 		font-size: 18px;
-	
 	}
 	.qltall {
 		width: 20px;
 		height: 20px;
 		border-width: 0px;
 		background-color: transparent;
-		background-image: url(images/iconqltall.png);
+		background-image: url(iconqltall.png);
 		margin: 10px 80px 0px 0px;
 		float: left;
 		display: block;
 	}
 	.qltall:hover {
-		background-image: url(images/iconqltallh.png);
+		background-image: url(iconqltallh.png);
 	}
 	.products {
 		float: left;
@@ -123,7 +114,6 @@
 		font-size: 13px;
 	}
 	.contacts {
-		
 		float: left;
 		width: 430px;
 		font-size: 13px;
@@ -140,27 +130,27 @@
 		word-wrap:break-word;
 	}
 	.addbt {
-		background-image: url(images/partplus.png);
+		background-image: url(partplus.png);
 		width: 120px;
 		height: 165px;
 		border-width: 0px;
 		background-color: transparent;
 	}
 	.addbt:hover {
-		background-image: url(images/partplush.png);
+		background-image: url(partplush.png);
 	}
 	.partsadd {
-		background-image: url(images/partplus.png);
+		background-image: url(partplus.png);
 		width: 120px;
 		height: 165px;
 		border: 1px dashed #666666;
 	}
 	.partsadd:hover {
-		background-image: url(images/partplush.png);
+		background-image: url(partplush.png);
 		border-color: #000000;
 	}
 	.partsimage {
-		background-image: url(images/part1.png);
+		background-image: url(part1.png);
 		width: 120px;
 		height: 120px;
 		border: 1px solid #dbdbdb;
@@ -194,7 +184,7 @@
 	
 	.editbtn {
 		background-color: transparent;
-		background-image: url(images/iconedit.png);
+		background-image: url(iconedit.png);
 		width: 20px;
 		height: 20px;
 		border-width: 0px;
@@ -204,11 +194,11 @@
 		
 	}
 	.editbtn:hover {
-		background-image: url(images/iconedith.png);
+		background-image: url(iconedith.png);
 	}
 	.lockbtn {
 		background-color: transparent;
-		background-image: url(images/iconlock.png);
+		background-image: url(iconlock.png);
 		width: 20px;
 		height: 20px;
 		border-width: 0px;
@@ -217,11 +207,11 @@
 		float: left;
 	}
 	.lockbtn:hover {
-		background-image: url(images/iconlockh.png);
+		background-image: url(iconlockh.png);
 	}
 	.qltbtn {
 		background-color: transparent;
-		background-image: url(images/iconqlt.png);
+		background-image: url(iconqlt.png);
 		width: 20px;
 		height: 20px;
 		border-width: 0px;
@@ -230,12 +220,12 @@
 		float: left;
 	}
 	.qltbtn:hover {
-		background-image: url(images/iconqlth.png);
+		background-image: url(iconqlth.png);
 	}
 	.partstatus {
 		width: 20px;
 		height: 20px;
-		background-image: url(images/iconunlocked.png);
+		background-image: url(iconunlocked.png);
 		background-repeat: no-repeat;
 		float: left;
 		margin-left: 3px;
@@ -261,7 +251,7 @@
 		margin-bottom: 5px;
 		width: 20px;
 		height: 20px;
-		background-image: url(images/closeicon.png);
+		background-image: url(closeicon.png);
 		background-position: center;
 		background-repeat: no-repeat;
 		background-color: transparent;
@@ -270,7 +260,7 @@
 		width: 20px;
 	}
 	.closeeditbt:hover {
-		background-image: url(images/closeiconh.png);
+		background-image: url(closeiconh.png);
 	}
 	.editimage {
 		margin-left: 10px;
@@ -395,7 +385,7 @@
 		margin-bottom: 5px;
 		width: 20px;
 		height: 20px;
-		background-image: url(images/closeicon.png);
+		background-image: url(closeicon.png);
 		background-position: center;
 		background-repeat: no-repeat;
 		background-color: transparent;
@@ -405,7 +395,7 @@
 		cursor:pointer;
 	}
 	.closeqltbt:hover {
-		background-image: url(images/closeiconh.png);
+		background-image: url(closeiconh.png);
 	}
 	.instruction {
 		font-size: 14px;
@@ -515,7 +505,7 @@
 		z-index:2;	
 		width: 20px;
 		height: 20px;
-		background-image: url(images/closeicona.png);
+		background-image: url(closeicona.png);
 		background-position: center;
 		background-repeat: no-repeat;
 		background-color: transparent;
@@ -524,7 +514,7 @@
 		width: 20px;
 	}
 	.closeqltbtall:hover {
-		background-image: url(images/closeiconh.png);
+		background-image: url(closeiconh.png);
 	}
 	.btlineall{
 	margin-left:96px;

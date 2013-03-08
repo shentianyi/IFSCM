@@ -228,7 +228,7 @@ margin-left:2px;
 .chartsign {
 	height: 20px;
 	width: 30px;
-	background-image: url(../unfold.png);
+	background-image: url(unfold.png);
 	background-repeat: no-repeat;
 	background-position: center;
 }
@@ -297,11 +297,11 @@ margin-left:2px;
 	position: absolute;
 	top: 3px;
 	right: 3px;
-	/*		background-image: url(../jquery.ui/images/ui-icons_454545_256x240.png);
+	/*		background-image: url(jquery.ui/images/ui-icons_454545_256x240.png);
 	 background-position: -32px -192px;*/
 	width: 20px;
 	height: 20px;
-	background-image: url(../closeicon.png);
+	background-image: url(closeicon.png);
 	background-position: center;
 	background-repeat: no-repeat;
 	background-color: transparent;
@@ -345,7 +345,7 @@ margin-left:2px;
 	background-repeat: no-repeat;
 }
 .previousdate {
-	background-image: url(../prev-date.png);
+	background-image: url(prev-date.png);
 }
 .centerchart {
 	width: 680px;
@@ -357,7 +357,7 @@ margin-left:2px;
 	border: 5px solid #d7d7d7;
 }
 .laterdate {
-	background-image: url(../later-date.png);
+	background-image: url(later-date.png);
 }
 .charttypebt {
 	position: absolute;
@@ -372,16 +372,16 @@ margin-left:2px;
 	background-color: #0e80b0;
 }
 .charttypelineb {
-	background-image: url(../chartbutton1b.png);
+	background-image: url(chartbutton1b.png);
 }
 .charttypestepb {
-	background-image: url(../chartbutton2b.png);
+	background-image: url(chartbutton2b.png);
 }
 .charttypelinea {
-	background-image: url(../chartbutton1a.png);
+	background-image: url(chartbutton1a.png);
 }
 .charttypestepa {
-	background-image: url(../chartbutton2a.png);
+	background-image: url(chartbutton2a.png);
 }
 .closebt {
 	float: right;
@@ -389,14 +389,14 @@ margin-left:2px;
 	margin-right: 5px;
 	width: 20px;
 	height: 20px;
-	background-image: url(../closeicon.png);
+	background-image: url(closeicon.png);
 	background-position: center;
 	background-repeat: no-repeat;
 	background-color: transparent;
 	border-width: 0px;
 }
 .closebt:hover {
-	background-image: url(../closeiconh.png);
+	background-image: url(closeiconh.png);
 }
 #tooltip {
 	position: absolute;

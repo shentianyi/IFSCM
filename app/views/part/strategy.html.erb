@@ -1,0 +1,200 @@
+<link rel="stylesheet"  type="text/css" href="/assets/check-strategy.css" />
+<script type="text/javascript">
+	$(document).ready(function() {
+		$(".partsimage").click(function() {
+			$(this).toggleClass("partsimage-choosen");
+		});
+		$("#checkbox-all-parnum").click(function() {
+			if ($(this).attr("checked")) {
+				$(".partsimage").addClass("partsimage-choosen");
+			} else {
+				$(".partsimage").removeClass("partsimage-choosen");
+			}
+		});
+		$("[id^='img-strategy-']").click(function() {
+			$("[id^='img-strategy-']").removeClass("strategy-checked").css("background", "white");
+			$(this).addClass("strategy-checked").css("background-color", "#efefef");
+		});
+		$("input[type='radio']").click(function() {
+			$("input[type='radio']").attr("checked", false);
+			$(this).attr("checked", true);
+		});
+		$(".logosearchv").click(function() {
+			if ($(".partsimage-choosen").length > 0) {
+				$(".popupqlt").attr("style", "display:block");
+			}
+		});
+		$(".closeqltbt,.canclebt").click(function() {
+			close_strategy();
+		});
+		$(".popupqlt").draggable();
+		$("[id^='img-strategy-']:first").addClass("strategy-checked").css("background-color", "#efefef");
+	});
+	function close_strategy() {
+		$(".popupqlt").attr("style", "display:none");
+		$("[id^='img-strategy-']").removeClass("strategy-checked").css("background", "white");
+		$($("[id^='img-strategy-']")[0]).addClass("strategy-checked").css("background-color", "#efefef");
+		$("#check-point-posi").val("");
+		$("#demote-times").val("");
+		$("input[name='group1']").attr("checked","false");		
+		$($("input[name='group1']")[0]).attr("checked","false");
+		document.getElementById("wares").selectedIndex=0;
+	}
+
+	function set_part_strategy() {
+		var parts = $(".partsimage-choosen");
+		if (parts.length > 0) {
+			ids = "";
+			for (var i = 0; i < parts.length; i++) {
+				ids += parts[i].id + ",";
+			}
+			ids = trimEnd(ids);
+			var posi = $("#check-point-posi").val();
+			var times = $("#demote-times").val();
+			if (posi.length == 0) {
+				flash_hidden_message("#check-point-posi-error");
+				return false;
+			}
+			if (!isIntBetween(1, 10000, times)) {
+				flash_hidden_message("#demote-times-error");
+				return false;
+			}
+			$.post("../part/strategy", {
+				ids : ids,
+				ware : document.getElementById('wares').value,
+				posiNr : posi,
+				strategy : $(".strategy-checked").attr("strategy"),
+				demote : $("input[name='group1'][checked]").val(),
+				demoteTimes : times
+			}, function(data) {
+
+			});
+		}
+	}
+
+	function page_change(p) {
+		window.location = "../part/strategy?s=" + $("#s").val() + '&p=' + p;
+	}
+</script>
+<div id="info1" class="supplierinfo">
+	<a href="#"> <img src="/assets/companylogo1.png" width=70 height=70 /> </a><a class="namestyle" href="#">
+	<p class="suppname">
+		<%= @org.name%>
+	</p>
+	<p class="address">
+		&nbsp;
+	</p> </a>
+	<a href="#"
+	class="normalstyle">
+	<p class="products">
+		公司地址：<%= @org.address%>
+	</p></a>
+	<a class="normalstyle" href="#">
+	<p class="contacts">
+		联系人：<%= @org.contact%>
+		<%= @org.tel%>&nbsp;&nbsp;<%= @org.email%>
+	</p></a>
+	<button class="pull-right logosearchv" title="记得先选择零件">
+		制定质检策略
+	</button>
+	<div class="pull-right choose-all-parnum">
+		<input type="checkbox" id="checkbox-all-parnum">
+		选择所有零件
+	</div>
+	<input type="hidden" value="<%= @s%>" id="s" />
+</div>
+
+<%if @sparts and (c=@sparts.count)>0%>
+<div class="partsdetail">
+	<%@sparts.each do |part|
+	pinfo=PartRelInfo.find(part.id)
+	%>
+	<div class="parts">
+		<div class="partsimage" id="<%= part.id%>">
+			<div>
+				<img src="/assets/<%= PartHelper::get_inpect_type_image(pinfo.needCheck.to_i,true)%>" />
+			</div>
+		</div>
+		<p class="partname">
+			零件号：<%= pinfo.cpartNr%>
+		</p>
+		<p class="partnmc">
+			供应商号：<%= pinfo.spartNr%>
+		</p>
+	</div>
+	<%end%>
+</div>
+<div style="clear: left">
+	<div class="census" style="color: #9D9D9D;">
+		共 <%= @totalCount%> 条
+	</div>
+</div>
+<div class="pagers">
+	<%= bri_pager options={:class=>"pagination",:pages=>@totalPages,:current=>@currentPage,:action=>'page_change'}%>
+</div>
+
+<div class="popupqlt" style="display: none">
+	<input type="button" name="closeqltbt" class="closeqltbt"
+	id="closeqlt" />
+
+	<div class="checkline">
+		<p class="instruction">
+			检验策略:
+		</p>
+		<% i=0
+		@strategies.each do |s|%>
+		<input type="image" src="/assets/<%= PartHelper::get_inpect_type_image(s[0].to_i)%>" class="checktype" alt="<%= s[1]%>"
+		width="40" height="40" id="img-strategy-<%= s[0]%>" strategy="<%= s[0]%>"/>
+		<%i+=1
+		end%>
+	</div>
+
+	<div class="inputlineqlt">
+		<p class="instruction">
+			接收仓库:
+		</p>
+		<%= select_tag :wares,options_for_select(@points)%>
+	</div>
+	<div class="inputlineqlt">
+		<p class="instruction">
+			接收库位:
+		</p>
+		<input type="text" name="checkpoint" class="checkpoint" id="check-point-posi" />
+	</div>
+	<div class="errorlineqlt">
+		<p class="errormsg"  id="check-point-posi-error"  style="visibility: hidden;">
+			*抱歉，请填写库位
+		</p>
+	</div>
+	<div class="checkline midspace">
+		<p class="instruction">
+			出现质量问题后，检验策略是否降级:
+		</p>
+		<input type="radio" name="group1" class="raiobt" value="1" checked="true">
+		是</input> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		<input type="radio" name="group1" class="radiobt" value="0">
+		不是</input>
+	</div>
+	<div class="inputlineqlt">
+		<p class="instruction">
+			可自动升级的未出质量问题次数(1-10000)：
+		</p>
+		<input type="text" name="checknum" class="checknum" style="width: 80px;" id="demote-times"/>
+	</div>
+	<div class="errorlineqlt" >
+		<p class="errormsg" id="demote-times-error" style="visibility: hidden;">
+			*抱歉，次数范围为1-10000
+		</p>
+	</div>
+	<div class="inputlineqlt btlineqlt">
+		<input type="button" name="cancleqlt" class="canclebt editbt"
+		value="取消" id="cancleqlt" />
+		<input type="button" name="ensureqlt"
+		class="ensurebt editbt" value="确定" id="ensureqlt" onclick="set_part_strategy();"/>
+	</div>
+</div>
+<%else%>
+<div>
+	无零件信息
+</div>
+<%end%>

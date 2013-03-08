@@ -44,23 +44,34 @@ class PartController<ApplicationController
       end
     end
   end
-  
+
   def strategy
-    
+    if request.get?
+      @currentPage=pageIndex=params[:p].to_i
+      @s=params[:s]
+      @sparts,@totalCount=PartRelBll.get_part_rel_by_partnerId(session[:org_id],params[:s],session[:orgOpeType],18,pageIndex,false)
+      @org=Organisation.find(params[:s])
+      @points=@cz_org.warehouses.where(:type=>WarehouseType::Tippoint).collect{|w| [w.nr,w.id]}
+      @strategies=DeliveryObjInspect.all.collect{|item| [item.value,item.desc]}
+      @totalPages=PageHelper::generate_page_count @totalCount,18
+    else
+      msg=ReturnMsg.new
+      
+    end
   end
 
-  # # ws get parts by condtions in page
-  # # redis-search
-  # def redis_search_meta
-    # @currentPage=pageIndex=params[:pageIndex].to_i
-    # startIndex=pageIndex*$DEPSIZE
-    # prms,@totalCount=PartRelBll.redis_search_by_conditions(params[:q],:conditions=>{:orgIds=>session[:org_id]},:startIndex=>startIndex,:take=>$DEPSIZE)
-    # @totalPages=PageHelper::generate_page_count @totalCount,$DEPSIZE
-    # respond_to do |format|
-      # format.xml {render :xml=>JSON.parse(demands.to_json).to_xml(:root=>'prms')}
-      # format.json { render json: prms }
-      # format.html { render partial:'part_rel_metas',:locals=>{:prms=>prms}}
-    # end
-  # end
+# # ws get parts by condtions in page
+# # redis-search
+# def redis_search_meta
+# @currentPage=pageIndex=params[:pageIndex].to_i
+# startIndex=pageIndex*$DEPSIZE
+# prms,@totalCount=PartRelBll.redis_search_by_conditions(params[:q],:conditions=>{:orgIds=>session[:org_id]},:startIndex=>startIndex,:take=>$DEPSIZE)
+# @totalPages=PageHelper::generate_page_count @totalCount,$DEPSIZE
+# respond_to do |format|
+# format.xml {render :xml=>JSON.parse(demands.to_json).to_xml(:root=>'prms')}
+# format.json { render json: prms }
+# format.html { render partial:'part_rel_metas',:locals=>{:prms=>prms}}
+# end
+# end
 
 end
