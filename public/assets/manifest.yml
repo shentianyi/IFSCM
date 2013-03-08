@@ -14,11 +14,11 @@ backicon.psd: backicon-13813b1e84f5ba2ba35106101dd6e295.psd
 basebg.png: basebg-a87d5ba63aa08fca95865a35c0f0a958.png
 box-printer.png: box-printer-88ca4223f2b804e1fcf309ef5c1737d0.png
 btn-big.png: btn-big-94c116eefa0da28c611803db8e1f75f5.png
-btnbg.png: btnbg-2ad80eaf8b06d0ff4cb042f04bb0ad2f.png
-btnbg.psd: btnbg-d23673d387c95035d4686b61731a02e9.psd
+btnbg.png: btnbg-ff9b3ceb0cc7cb3abab65900c9f34eca.png
+btnbg.psd: btnbg-6ab714f35437abfda094a53f583c00a3.psd
 btncbg.png: btncbg-ec5929970921822823658474f664a977.png
 btnchov.png: btnchov-3136ae84f84eb3a3ad10f371e8db41d9.png
-btnhov.png: btnhov-839073fbe1a17f6573ff1dcb39f676e2.png
+btnhov.png: btnhov-e4b97868dc30eb79c35fe93f6fecff59.png
 cancel.png: cancel-4596a2aac412dee3ce1153970c0b8bc0.png
 cancel.psd: cancel-368545b64d0fa13c82821e9283281d6e.psd
 chart.png: chart-de7e2675c722647703d546ccf5eb3a22.png
@@ -225,5 +225,5 @@ welcome/f3.png: welcome/f3-6129e7ba540bcb9f6675b0768c008a7f.png
 welcome/featurebg.png: welcome/featurebg-ee6fbfdb0d13de143d2b2a02ae047adc.png
 welcome/featurebg.psd: welcome/featurebg-b054fa82cfcfd29766833fee9df19a82.psd
 welcome/featuresshow.psd: welcome/featuresshow-3f3612bce08530e0b4a924a104c478a0.psd
-application.js: application-13144ae2383fdf38a19fc4919d0eef66.js
-application.css: application-f4bf122bc74564a8d6386880c7eaf49b.css
+application.js: application-0a45ff409fae4373b891ecf77789cdca.js
+application.css: application-d99a4d7cea1ebec64ae6f33fd67aa188.css
