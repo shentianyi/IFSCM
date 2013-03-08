@@ -64,7 +64,8 @@ class WarehouseController < ApplicationController
         whNr = params[:whNr].strip
         whName = params[:whName].strip
         raise( RuntimeError, "仓库已存在，不可重建！" )  if @cz_org.warehouses.where( :nr=>whNr ).first
-        wh = Warehouse.new( :nr=>whNr, :name=>whName )
+        type = params[:checkware].present? ? (WarehouseType::Tippoint) : (WarehouseType::Normal)
+        wh = Warehouse.new( :nr=>whNr, :name=>whName, :type=>type )
         if @cz_org.warehouses << wh
           @warehouses = @cz_org.warehouses
           render :json => {:flag=>true, :msg=>"新建仓库成功。", :txt=>render_to_string(:partial=>"warehouses_list") }

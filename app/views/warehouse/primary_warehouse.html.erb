@@ -43,10 +43,14 @@ function ready_new_warehouse(){
 }
 
 function new_warehouse(){
+	checkware = null;
+	if ($('#checkware').attr("checked"))
+		checkware = true;
 	$.post("../warehouse/primary_warehouse",
 		{
 			whNr: $('#whNr').val(),
-			whName: $('#whName').val()
+			whName: $('#whName').val(),
+			checkware: checkware
 		},
 		function(data){
 			if (data.flag)
@@ -72,8 +76,8 @@ function delete_warehouse(whid){
 function current_warehouse(whid, e){
 	str = '<label name="warehouse">当前仓库：</label>&nbsp;'+$(e).children(':first').text()  ;
 	$('#positions_list_id').attr('whid', whid).children('p').html(str);
-	$(e).parent().find('label').removeClass("choosen-li");
-	$(e).children('label').addClass("choosen-li");
+	$(e).parent().find('div.fake-label').removeClass("choosen-li");
+	$(e).children('div.fake-label').addClass("choosen-li");
 }
 
 function position_list(page){

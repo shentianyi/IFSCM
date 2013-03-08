@@ -10,7 +10,7 @@
 	// $('#partNr_float > input.startsearch').click(function(){ chart_search( {partNr:$('#partNr_float > input[placeholder]').val()} );    });
 // })
 </script>
-<h3 id="charting_title" class="cf-h3">零件号：312312312321</h3>
+<h3 id="charttitle" class="cf-h3">CF值与实际到货量对比图</h3>
 <div  class="cf-drawing" >
 	<div id="charting" class="cf-put-drawing">	<h1>请先选择条件</h1> </div>
 </div>
@@ -72,6 +72,13 @@ function get_demand_label() {
      return label;
 }
 
+function showTooltip(x, y, contents) {
+     $('<div id="tooltip">' + contents + '</div>').css({
+          top : y - 40,
+          left : x + 5
+     }).appendTo('body').fadeIn();
+}
+
 function chart_cf( hash ){
 	$.post("./demand_cf",
 			{
@@ -100,8 +107,23 @@ function chart_cf( hash ){
 							margin: {	top: 18,	bottom: 20,		left: 150	}
 						}
 				  	});
-			        var yaxisLabel = $("<div>").text("零件： " + data.partNr).appendTo(charting);
-			        yaxisLabel.css("position", "absolute").css('top', '-10%').css('width', '600px').css("text-align", 'center');
+			        $("#charttitle").text("零件号： "+data.partNr+"， 预测类型："+data.type);
+			          var previousPoint = null;
+			          var tips = data.tips
+			          charting.bind('plothover', function(event, pos, item) {
+			               if(item) {
+			                    if(previousPoint != item.dataIndex) {
+			                         previousPoint = item.dataIndex;
+			                         $('#tooltip').remove();
+			                         var x = item.datapoint[0], y = item.datapoint[1];
+			                         var d = new Date(x * 1000);
+			                         showTooltip( item.pageX, item.pageY, '数量： ' + y + ' , 时间： ' + tips );
+			                    }
+			               } else {
+			                    $('#tooltip').remove();
+			                    previousPoint = null;
+			               }
+			          });
 				 }else
 				 	MessageBox(data.msg);
 			},"json");
