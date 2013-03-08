@@ -1,27 +1,24 @@
 	
-	
 	<%= form_for @staff, :url => { :action => "edit" } do |f| %>
-	  <fieldset>
-		  <div class="field">
+		  <div class="info-in-line">
 		    <%= f.label :staffNr, '帐号：' %>
 		    <%= f.label :staffNr, @staff.staffNr %>
 		  </div>
-		  <div class="field">
+		  <div class="info-in-line">
 		    <%= f.label :name, '用户名：' %>
 		    <%= f.label :name, @staff.name %>
 		  </div>
-		  <div class="field">
-		    <%= f.label :password, '密码' %><br />
-		    <%= f.password_field :password, size:10 %>
+		  <div class="info-in-line">
+		    <%= f.label :password, '新密码' %>
+		    <%= f.password_field :password, :class=>"input-text-style", size:10 %>
 		  </div>
-		  <div class="field">
-		    <%= f.label :password_confirmation, '密码' %><br />
-		    <%= f.password_field :password_confirmation, size:10 %>
+		  <div class="info-in-line">
+		    <%= f.label :password_confirmation, '确认新密码' %>
+		    <%= f.password_field :password_confirmation, :class=>"input-text-style", size:10 %>
 		  </div>
 		  <div class="actions">
-		    <%= f.submit "修改" %>
+		    <%= f.submit "完成修改",  :class=>"normal-small-btn change-password" %>
 		  </div>
 	  
-	  </fieldset>
 	<% end %>
 	

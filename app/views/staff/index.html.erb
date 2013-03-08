@@ -2,22 +2,21 @@
 	
 <p style="color: #1297cf"><%= notice%></p>
 <br/>
-<h1>当前用户</h1>
-
-<hr/>
-<div id="result">
-		<div>
-				<label>用户名：</label><%= @staff.name %>
-				<br/>
-				<label>隶属公司：</label><%= @cz_org.name %>
+<div class="current-user">
+	<h1>当前账户信息</h1>
+	
+	 <div id="result" class="user-info-detail">
+		<div class="info-in-line">
+			<label>用户名：</label><%= @staff.name %>
 		</div>
+		<div class="info-in-line">
+			<label>隶属公司：</label><%= @cz_org.name %>
+		</div>
+		<%= button_tag '修改密码',:name=>"edit", :class=>"normal-small-btn change-password", :type=>'button',:onclick=>"user_edit();"%>
+	</div>
 </div>
-<hr/>
 
-		<%= button_tag '修改密码',:name=>"edit",:type=>'button',:onclick=>"user_edit();"%>
-<!-- 		<%= button_tag '修改',:name=>"modify",:type=>'button',:onclick=>"organisation_edit_submit();",:style=>"display:none"%> -->
-
-
+		
 <script type="text/javascript">
 function user_edit() {
 	$.get("../user/edit", function(data) {
