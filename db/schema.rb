@@ -188,9 +188,13 @@ ActiveRecord::Schema.define(:version => 20130301071153) do
   create_table "strategies", :force => true do |t|
     t.integer  "leastAmount"
     t.integer  "part_rel_id"
-    t.datetime "created_at",                   :null => false
-    t.datetime "updated_at",                   :null => false
-    t.integer  "needCheck",   :default => 100
+    t.datetime "created_at",                            :null => false
+    t.datetime "updated_at",                            :null => false
+    t.integer  "needCheck",          :default => 100
+    t.boolean  "demote",             :default => false
+    t.integer  "demote_times",       :default => 1
+    t.integer  "position_id"
+    t.integer  "check_passed_times", :default => 0
   end
 
   add_index "strategies", ["part_rel_id"], :name => "index_strategies_on_part_rel_id"
@@ -199,8 +203,10 @@ ActiveRecord::Schema.define(:version => 20130301071153) do
     t.string   "nr"
     t.string   "name"
     t.integer  "organisation_id"
-    t.datetime "created_at",      :null => false
-    t.datetime "updated_at",      :null => false
+    t.datetime "created_at",                       :null => false
+    t.datetime "updated_at",                       :null => false
+    t.integer  "type",            :default => 100
+    t.integer  "state"
   end
 
   add_index "warehouses", ["organisation_id"], :name => "index_warehouses_on_organisation_id"

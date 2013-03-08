@@ -16,11 +16,11 @@ class Demander < ActiveRecord::Base
   end
 
   def clientNr
-    OrganisationRelation.get_parterNr(:oid=>supplierId,:pt=>:c,:pid=>clientId)
+    OrganisationRelation.get_partnerNr(:oid=>supplierId,:pt=>:c,:pid=>clientId)
   end
 
   def supplierNr
-    OrganisationRelation.get_parterNr(:oid=>clientId,:pt=>:s,:pid=>supplierId)
+    OrganisationRelation.get_partnerNr(:oid=>clientId,:pt=>:s,:pid=>supplierId)
   end
 
   def cpartNr
@@ -39,23 +39,51 @@ class Demander < ActiveRecord::Base
   # 返回值：
   # - 无
   def update_cf_record
-    zsetKey=Demander.generate_org_part_cf_zset_key(self.clientId,self.relpartId,self.supplierId,self.type)
+    zsetKey=Demander.generate_partrel_cf_zset_key(self.relpartId, self.type)
     if !$redis.zscore zsetKey,self.key
-      $redis.zadd zsetKey,self.date.strftime('%Y%m%d').to_i,self.key
+      $redis.zadd zsetKey,self.date.to_i,self.key
     end
   end
   
-  def update_otd_record
-    zsetKey=Demander.generate_org_part_otd_zset_key(self.clientId,self.relpartId,self.supplierId,self.type)
-    # to do
-  end
-
   def amount t=nil
     return FormatHelper::get_number @attributes["amount"],t
   end
 
   def oldamount t=nil
     return FormatHelper::get_number @attributes["oldamount"],t
+  end
+  
+  def self.find_by_key( k )
+    if d = Demander.rfind( k )
+      return d
+    elsif d = Demander.where( :key=>k ).first
+      return d
+    else
+      return nil
+    end
+  end
+  
+  def self.get_cf_by_range( iRelpartId, tStart, tEnd, type )
+    zsetKey=Demander.generate_partrel_cf_zset_key( iRelpartId, type)
+    arr = $redis.zrangebyscore( zsetKey, tStart, tEnd )
+    return nil  if arr.size==0
+    first = arr.first
+    last = arr.last
+    return nil  unless deLast = Demander.find_by_key( last )
+    index = $redis.zrank( zsetKey, first )
+    if index>0
+      index -= 1
+      first = $redis.zrange( zsetKey, index, index ).first
+    else
+      return deLast.amount
+    end
+    return nil  unless deFirst = Demander.find_by_key( first )
+    cf = deLast.amount - deFirst.amount
+    if cf >= 0
+      return cf
+    else
+      return nil
+    end
   end
 
   private
@@ -64,12 +92,9 @@ class Demander < ActiveRecord::Base
     "#{sId}:#{Rns::De}:#{Rns::Kes}"
   end
 
-  def self.generate_org_part_cf_zset_key orgId,partrelId,supplierId,type
-    "cId:#{orgId}:partrelId:#{partrelId}:spId:#{supplierId}:type:#{type}:cf:zset"
+  def self.generate_partrel_cf_zset_key iPartrelId,type
+    # "cId:#{orgId}:partrelId:#{partrelId}:spId:#{supplierId}:type:#{type}:cf:zset"
+    "cf:zset:partrelId:#{iPartrelId}:type:#{type}"
   end
   
-  def self.generate_org_part_otd_zset_key orgId,partrelId,supplierId,type
-    # to do
-  end
-
 end

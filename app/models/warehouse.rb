@@ -1,5 +1,6 @@
 class Warehouse < ActiveRecord::Base
-  attr_accessible :nr, :name
+  self.inheritance_column = "not_used_type"
+  attr_accessible :nr, :name,:type,:state
   
   belongs_to :organisation
   has_many :positions

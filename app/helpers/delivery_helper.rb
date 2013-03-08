@@ -88,11 +88,11 @@ module DeliveryHelper
 
   
   def self.get_clientNr_by_orgId orgId,pid
-    OrganisationRelation.get_parterNr(:oid=>orgId,:pt=>:c,:pid=>pid)
+    OrganisationRelation.get_partnerNr(:oid=>orgId,:pt=>:c,:pid=>pid)
   end
       
   def self.get_supplierNr_by_orgId orgId,pid
-    OrganisationRelation.get_parterNr(:oid=>orgId,:pt=>:s,:pid=>pid)
+    OrganisationRelation.get_partnerNr(:oid=>orgId,:pt=>:s,:pid=>pid)
   end
   
   def self.get_dn_rece_address supplierId,clientId

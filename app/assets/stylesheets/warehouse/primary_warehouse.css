@@ -12,10 +12,22 @@
 	}
 	.ware-p{
 		font-size:20px;
-		margin-top:8px;
+		margin-top:10px;
 	   margin-bottom:-5px;
 		margin-left:10px;
-		
+		display:inline-block;
+	}
+	.show-wareposition{
+		 margin-right: 6px;
+    margin-top: 12px;
+	}
+	.show-wareposition-list{
+		float:right;
+		margin-right:356px;
+		margin-top:20px;
+		border: 2px solid #DADADA;
+	
+
 	}
 	.wh-add{
 		margin-top:10px;
@@ -56,7 +68,7 @@
     	background:#0e80b0;
     	
     }
-    .ware-li label{
+    .ware-li div.fake-lable{
     	cursor:pointer;	
     	border:1px solid #999;
     	font-size:15px;		
@@ -64,19 +76,24 @@
         color:#999;
         background-color:#EAEDEC;
         box-shadow:2px 2px 2px #999;
+        /*float:left;*/
+       display:inline-block;
+        margin-bottom:10px;
     }
-    .ware-li label.lb1{
-    	padding:5px 10px 5px 7px;
+    .ware-li div.lb1{
+     padding:5px;
+    	width:79px;
+    	 height:17px;
     	margin-right:10px;
+    
     }
-    .ware-li label.lb2{
-    	padding:5px 90px 5px 7px;
+    .ware-li div.lb2{
+    	padding:5px;
+    	width:158px;
+    	height:17px;
     }
-    .ware-li{
-    	margin-bottom:15px;
-    }
+
 	.ware-li input{
-		
 		color:#A2A2A2;		
 		font-size:14px;
 		padding:5px 7px;
@@ -125,6 +142,10 @@
     	width:40px;
     	margin-left:3px;
     }
+
+    .ware-li:hover .wh-post{
+    	display:block;
+    }
     .wh-small-add{
     	margin-right:10px;
     }
@@ -149,10 +170,11 @@
     	font-size:15px;
     	margin:20px 0px 8px;
     }
+
     ul.ware-ul p:nth-child(3){
     	margin:-10px 0px 8px;
     }
-    label.choosen-li{
+    .fake-lable .choosen-li{
     	background-color:#0e80b0;
     	color:white;
     }
@@ -160,13 +182,10 @@
     	border:1px solid #DADADA;
     	  	
     }
-    .ware-li:hover label{
-    	border:1px solid #1297CF;
-    	box-shadow:2px 2px 2px #1297CF; 
+    .ware-li:hover div.fake-lable{
+    	background:#F9FCFE;
     }
-    .ware-li:hover .wh-post{
-    	display:block;
-    }
+    
     .wareposition{
     	color:#999;
     	float:left;

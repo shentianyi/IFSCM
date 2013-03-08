@@ -40,8 +40,7 @@ module DeliveryBll
 
   def self.vali_current_di_temp staffId, orgRelIds
     temps=DeliveryItemTemp.get_staff_cache(staffId).first ||[]
-    puts temps
-    ids = temps.collect {|t| puts(t.part_rel_id.class) ;PartRel.find_by_id(t.part_rel_id.to_i).organisation_relation_id}
+    ids = temps.collect {|t| PartRel.find_by_id(t.part_rel_id.to_i).organisation_relation_id}
     len = (ids+orgRelIds).uniq.size
     return true  if len==1
     return false

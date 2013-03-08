@@ -1,0 +1,60 @@
+<!-- <link rel="stylesheet"  type="text/css" href="/assets/delivery/supWaybill.css" />
+<div class="partsselection">
+	<div>
+		<h2>零件接收点维护</h2>
+	</div>
+	<div class="tableview">
+		<div class="tableviewparts">
+			<%if @points and @points.count>0%>
+			<table class="partsData">
+				<tr class="titline">
+					<th>&nbsp;</th>
+					<th>编号</th>
+					<th>名称</th>
+					<th>&nbsp;</th>
+				</tr>
+				<%i=0
+				@points.each do |point|%>
+				<tr class="partlines" id="<%= point.id%>">
+					<th><%= i+1%> </th>
+					<th ondblclick="change_label_to_text(this);"><%= point.nr%></th>
+					<th ondblclick="change_label_to_text(this);"><%= point.name%></th>
+					<th>
+					<input type="button" class="edit_btn" wid="<%= point.id%>"/>
+					<input type="button" class="del_btn" wid="<%= point.id%>"/>
+					</th>
+				</tr>
+				<%end%>
+			</table>
+			<%else%>
+			<div class="abstractblock">
+				无接收点
+			</div>
+			<%end%>
+		</div> 
+			<div>
+				<input type="button" value="新建"  class="btupload"  style=" margin-top: 20px;"/>
+			</div> 
+	</div>
+</div>
+
+<script type="text/javascript">
+				$(document).ready(function() {
+					var ed = $(".edit_btn");
+					for (var i = 0; i < ed.length; i++) {
+						$(ed[i]).bind('click', {
+							id : $(ed[i]).attr("wid")
+						}, function(e) {
+							update_tip_point(e.data.id);
+						});
+					}
+					var dd = $(".del_btn");
+					for (var i = 0; i < dd.length; i++) {
+						$(dd[i]).bind('click', {
+							id : $(dd[i]).attr("wid")
+						}, function(e) {
+							delete_tip_point(e.data.id);
+						});
+					}
+				});
+			</script> -->

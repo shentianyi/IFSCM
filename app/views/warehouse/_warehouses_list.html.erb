@@ -5,16 +5,14 @@
  		<ul class="ware-ul">
  			<% @warehouses.each do |d|	%>
  				<li class="ware-li li-small" onclick="current_warehouse(<%= d.id %>, this);">
- 					<label class="lb1"><%= d.nr%></label>
- 					<label class="lb2"><%= d.name%></label>
+ 					<div class="lb1 fake-lable"><%= d.nr%></div><div class="lb2 fake-lable"><%= d.name%></div>
  					<div class="del-sign wh-del" onclick="delete_warehouse(<%= d.id %>);"></div>
  				</li>
  			<% end %>
-			<li class="ware-li li-small" id="ready_for_new_warehouse" style="display:none">
-				<%= text_field_tag :whNr, nil, :class=>"ip1", :placeholder=>"输入仓库..." %>
-				<%= text_field_tag :whName, nil, :class=>"ip2", :placeholder=>"输入简述..." %>
+			<li class="ware-li li-small last-ware" id="ready_for_new_warehouse" style="display:none">
+				<%= text_field_tag :whNr, nil, :class=>"ip1", :placeholder=>"输入仓库..." %><%= text_field_tag :whName, nil, :class=>"ip2", :placeholder=>"输入简述..." %>
 				<div class="wh-post btn-normal" onclick="new_warehouse();">提交</div>
 			</li>
  		</ul>
- 		<div class="wh-add btn-normal" onclick="ready_new_warehouse();">新建库位</div>   		
+ 		<div class="wh-add btn-normal" onclick="ready_new_warehouse();">新建仓库</div>   		
  	</div>

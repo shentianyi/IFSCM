@@ -14,10 +14,11 @@
 		border-style: solid;
 		border-color: #dbdbdb;
 		color: #9d9d9d;
-		width: 727px;
-		height: 30px;
+		width: 700px;
+		height: 23px;
 		font-size: 14px;
 		padding-left: 5px;
+		margin-top:-1px;
 	}
 	.searchsupp:active,.searchsupp:focus {
 		border-color: #b1b1b1;
@@ -37,20 +38,22 @@
 		border-top-color: #dbdbdb;
 	}
 	.supplierinfo {
-		height: 80px;
-		width: 1000px;
+		
+		width: 750px;
 		float: left;
 		display: block;
 		border-bottom-width: 1px;
 		border-bottom-color: #dbdbdb;
 		border-bottom-style: solid;
+		word-break:break-all;
+		word-wrap:break-word;
 	}
 	.supplierinfo:hover {
 		background-color: #f8f8f8;
 	}
 	.supplierinfo img {
 		float: left;
-		margin: 5px 5px 5px 5px;
+		margin: 17px 5px 5px 5px;
 		border-width: 1px;
 		border-color: #dbdbdb;
 		border-style: solid;
@@ -62,38 +65,41 @@
 	}
 	.normalstyle {
 		text-decoration: none;
-		color: #000000;
+		color: #9d9d9d;
 		display: block;
 	}
 	.normalstyle:hover {
-		color: #4a248a;
+		color:black;
 		text-decoration: underline;
 	}
 	.namestyle {
 		text-decoration: none;
-		color: #0063de;
+		color: #1297CF;
 		display: block;
 	}
 	.namestyle:hover {
-		color: #4a248a;
+		color: #0e80b0;
 	}
-	.suppname {
+	.namestyle .suppname {
 		margin: 3px 10px 0px 10px;
 		font-size: 18px;
+		width:540px
 	}
-	.address {
+	.normalstyle .address {
           margin: 3px 10px 0px 10px;
           font-size: 13px;
+          width:540px
 	}
-	.products {
+	.normalstyle .products {
 		float: left;
 		margin: 3px 10px 0px 10px;
-		width: 500px;
+		width: 540px;
 		font-size: 13px;
 	}
-	.contacts {
+	.normalstyle .contacts {
 		float: left;
-		width: 500px;
+		width: 540px;
+		padding-bottom:10px;
 		font-size: 13px;
 		margin: 3px 10px 0px 10px;
 	}
@@ -113,7 +119,16 @@
 	.hovbt:hover {
 		background-color: #0e80b0;
 	}
-
+    .check-strategy-logo{
+    	width:20px;
+    	height:20px;
+    	cursor:pointer;
+    	background-image:url("../images/iconqlt.png")
+    }
+    .check-strategy-logo-hover{
+    	background-image:url("../images/iconqltall.png");
+    
+    }
 /*different media*/
 /*@media screen and (max-width: 800px) {
 	#searchline {
