@@ -6,12 +6,17 @@
  			<% @warehouses.each do |d|	%>
  				<li class="ware-li li-small" onclick="current_warehouse(<%= d.id %>, this);">
  					<div class="lb1 fake-lable"><%= d.nr%></div><div class="lb2 fake-lable"><%= d.name%></div>
+ 					
  					<div class="del-sign wh-del" onclick="delete_warehouse(<%= d.id %>);"></div>
+ 					<div class="checked-logo pull-right"><!-- new here -->
+ 						
+ 					</div>
  				</li>
  			<% end %>
 			<li class="ware-li li-small last-ware" id="ready_for_new_warehouse" style="display:none">
 				<%= text_field_tag :whNr, nil, :class=>"ip1", :placeholder=>"输入仓库..." %><%= text_field_tag :whName, nil, :class=>"ip2", :placeholder=>"输入简述..." %>
-				<div class="wh-post btn-normal" onclick="new_warehouse();">提交</div>
+				<div class="wh-post btn-normal display-block" onclick="new_warehouse();">提交</div>
+				<!-- new here --><div class="choose-check-word pull-right"><input title="设为质检库" type="checkbox"  class="check-checked"><p>质检库</p></div>
 			</li>
  		</ul>
  		<div class="wh-add btn-normal" onclick="ready_new_warehouse();">新建仓库</div>   		

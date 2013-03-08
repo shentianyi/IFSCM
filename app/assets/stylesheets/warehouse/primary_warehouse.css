@@ -1,8 +1,8 @@
 	.warehouse{
 		color:#999;
-		width:325px;
-		margin-left:40px;
-		margin-top:45px;	 
+		width:375px;
+		
+		margin-top:15px;	 
 		float:left;
 		border:2px solid #DADADA;
     	border-radius:5px;
@@ -17,43 +17,52 @@
 		margin-left:10px;
 		display:inline-block;
 	}
+	.checked-logo{
+		width:20px;
+		height:20px;
+		background:url("../../images/iconqlt.png");
+		margin-right:10px;
+		margin-top:4px;
+	}
 	.show-wareposition{
 		 margin-right: 6px;
     margin-top: 12px;
 	}
 	.show-wareposition-list{
-		float:right;
-		margin-right:356px;
-		margin-top:20px;
-		border: 2px solid #DADADA;
-	
+      border-radius:5px;
+     border: 2px solid #DADADA;
+	 padding:10px;
+	 position:absolute;
+	 left:661px;
+	 top:405px;
 
 	}
+
 	.wh-add{
-		margin-top:10px;
+		margin-top:20px;
 		float:right;
-		margin-right:10px;
+		margin-right:-50px;
 		font-size: 15px;
 	}
 	.wh-post{
 		float:right;
         font-size:13px;
-		margin-top:1px;
+		margin-top:2px;
 		margin-right:2px;
 	    display:none;
 	}
 	.del-sign{
 		width:20px;
 		height:20px;
-		background-image:url("../minusp.png");
+		background-image:url("../../images/minusp.png");
 	}
 	.del-sign:hover{
 		background-image:url("../minusphover.png");
 	}
 	.wh-del{
 		float:right;
-		margin-right:10px;
-		margin-top:3px;
+		margin-right:25px;
+		margin-top:4px;
 	}
 	    .btn-normal{
     	background-color: #1297CF;
@@ -101,6 +110,26 @@
 		font-family:"Arial";
 		 border:1px solid #B1B1B1;
 		box-shadow:2px 2px 3px #DADADA inset;
+	}
+	.choose-check-word {
+		height:30px;
+		width:36px;
+        margin-right:10px;
+        margin-top:2px
+	}
+	.ware-li input.check-checked{
+	   float:left;
+		width:13px;
+		height:13px;
+       margin:0 0 0 12px;
+		padding:0px;
+	}
+	 .choose-check-word p{
+	 	float:left;
+		display:inline-block;
+		font-size:12px;
+		margin:0px
+
 	}
     .ware-li input.ip1{
     	width:75px;
@@ -155,7 +184,7 @@
 		float:left;
 		margin-left:20px;
 		color:#9D9D9D;
-		margin-top:60px;
+		margin-top:45px;
 	    font-weight:lighter;
 	}
     .display-block{
@@ -189,7 +218,7 @@
     .wareposition{
     	color:#999;
     	float:left;
-    	margin-top:45px;
+    	margin-top:15px;
     	margin-left:20px;
     	border:2px solid #DADADA;
     	border-radius:5px;
