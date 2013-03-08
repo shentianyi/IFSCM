@@ -28,7 +28,7 @@ class OrganisationRelation < ActiveRecord::Base
    find_partnerid_from_redis args
   end  
   
-  def self.get_parterNr args
+  def self.get_partnerNr args
     find_partnerNr_from_redis args
   end
   

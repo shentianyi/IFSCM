@@ -303,11 +303,16 @@ class WarehouseController < ApplicationController
     end
   end
   
-  def tip_point
-    if request.get?
-      @points=@cz_org.warehouse.where(:type=>WarehouseType::Tippoint).all      
-    else
-    end
-  end
-  
+  # def tippoint
+    # if request.get?
+      # @points=@cz_org.warehouses.where(:type=>WarehouseType::Tippoint).all      
+    # end
+  # end
+#   
+  # def del_tippoint
+#     
+  # end
+#   
+  # def update_tippoint
+  # end
 end

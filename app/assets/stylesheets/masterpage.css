@@ -784,3 +784,32 @@ input.uploadfile {
      border-right:2px solid #eaedec;
       border-top:2px solid #DDD;
 }
+
+.edit_btn{
+	background-image:url("edit.png");
+	background-position:center center;
+	background-repeat:no-repeat;
+	float:left;
+	border:1px solid #DDD;
+	width:23px;
+	height:23px;
+}
+.del_btn{
+    background-image:url("del.png");
+	background-position:center center;
+	background-repeat:no-repeat;
+	border:1px solid #DDD;
+	width:23px;
+	height:23px;
+	margin-left:10px;
+}
+.edit_btn:hover{
+	box-shadow:-1px -1px 3px #a4e5ff;
+	-webkit-box-shadow:-1px -1px 3px #a4e5ff;
+	-moz-box-shadow:-1px -1px 3px #a4e5ff;
+}
+.del_btn:hover{
+	box-shadow:-1px -1px 3px #a4e5ff;
+	-webkit-box-shadow:-1px -1px 3px #a4e5ff;
+	-moz-box-shadow:-1px -1px 3px #a4e5ff;
+}

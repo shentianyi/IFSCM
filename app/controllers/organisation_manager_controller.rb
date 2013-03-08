@@ -184,6 +184,10 @@ class OrganisationManagerController < ApplicationController
         @search = Redis::Search.complete("OrganisationRelation", cs, :conditions=>{:origin_supplier_id=>@cz_org.id} ) ||[]
         @organs = @search.collect{|item| [ item["clientNr"], Organisation.find_by_id(item['origin_client_id'].to_i) ]  }
       end
+      puts "#___"
+      @search.each do |o|
+        puts o.to_json
+      end
       @total = @organs.size
       s = params[:page].to_i*Demander::NumPer
       e = params[:page].to_i*Demander::NumPer+Demander::NumPer-1
