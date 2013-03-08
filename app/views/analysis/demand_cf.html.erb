@@ -13,7 +13,7 @@
 
 <div id="charting" class="cf-drawing" >
 <div >
-						<h1>Sorry<br>You got no picture</h1>
+						<h1>请先选择条件</h1>
 					</div>
 
 <div id="search_expired_vertical_bar" class="cf-bar">
@@ -39,7 +39,7 @@
 	</div>
 	<div class="cf-box texts cf-box-last" id="type_float" >
 	     <span class="cf-contenttype">预测类型</span>
-	     <input type="button"	name="searchtype" class="searchforcasttype" value="D" />
+	     <input type="button"	name="searchtype" class="searchforcasttype cf-searchtype-border" value="D" />
 	     <input type="button" name="searchtype" class="searchforcasttype"	value="W" />
 	     <input type="button" name="searchtype" class="searchforcasttype"	value="M" />
 	     <input type="button" name="searchtype"	class="searchforcasttype" value="Y" />
@@ -142,8 +142,12 @@ $(function() {
 ///////////////////////////////////////////////////////////////////         predict type
 			$(document).ready(function(){
 				$(".searchforcasttype").click(function(){
-					$(this).toggleClass("cf-searchtype-border");
-				})
+	
+						$(".searchforcasttype").removeClass("cf-searchtype-border");
+                    	$(this).addClass("cf-searchtype-border");
+                  				
+				});
+
 			})
 </script>
 
