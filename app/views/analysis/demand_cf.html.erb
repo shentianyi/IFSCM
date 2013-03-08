@@ -12,9 +12,8 @@
 </script>
 
 <div id="charting" class="cf-drawing" >
-<div >
-						<h1>请先选择条件</h1>
-					</div>
+	<div >	<h1>请先选择条件</h1> </div>
+</div>
 
 <div id="search_expired_vertical_bar" class="cf-bar">
 	<% if session[:orgOpeType]==OrgOperateType::Client %>
@@ -69,7 +68,7 @@ function get_demand_label() {
      label.partNr = $("#partNr_float > input.searchcontent").val();
      label.start = $("#date_float > input").get(0).value;
      label.end = $("#date_float > input").get(1).value;
-     label.type = $('.activetype').get(0).value;
+     label.type = $('.cf-searchtype-border').get(0).value;
      return label;
 }
 
@@ -98,7 +97,7 @@ function chart_cf( hash ){
 							backgroundColor: {	colors: ["#fff", "#e4f4f4"] 	},
 							hoverable: true,
 							mouseActiveRadius: 50,
-							margin: {	top: 8,	bottom: 20,		left: 20	}
+							margin: {	top: 18,	bottom: 20,		left: 150	}
 						}
 				  	});
 			        var yaxisLabel = $("<div>").text("零件： " + data.partNr).appendTo(charting);
@@ -109,14 +108,17 @@ function chart_cf( hash ){
 }
 ///////////////////////////////////////////////////////////////////         DOM  on   ready
 $(function() {
-     $('#type_float > input.searchforcasttype').click(function(){ $(this).toggleClass('activetype'); });
+	$(".searchforcasttype").click(function(){
+			$(".searchforcasttype").removeClass("cf-searchtype-border");
+        	$(this).addClass("cf-searchtype-border");
+	});
      $('#search_expired_button > input[name=search]').click(function() {
           var label = get_demand_label();
           chart_cf(label);
      });
      $('#search_expired_button > input[name=cancel]').click(function() {
           $('input.searchcontent').val("");
-          $('.activetype').removeClass("activetype");
+          $('.activetype').removeClass("cf-searchtype-border");
      });
 
      $('#date_float > input[placeholder*=开始]').datepicker({
@@ -140,14 +142,5 @@ $(function() {
      });
 });
 ///////////////////////////////////////////////////////////////////         predict type
-			$(document).ready(function(){
-				$(".searchforcasttype").click(function(){
-	
-						$(".searchforcasttype").removeClass("cf-searchtype-border");
-                    	$(this).addClass("cf-searchtype-border");
-                  				
-				});
-
-			})
 </script>
 
