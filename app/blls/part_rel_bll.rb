@@ -48,14 +48,19 @@ module PartRelBll
   # 返回值：
   # - PartRel : 对象数组
   # - int : total
-  def self.get_part_rel_by_partnerId orgId,partnerId,orgOpeType,psize=nil,page=nil
+  def self.get_part_rel_by_partnerId orgId,partnerId,orgOpeType,psize=nil,page=nil,getPart=nil
     cid,sid,part=get_csId_by_orgOpeType(orgOpeType,orgId,partnerId)
     c={}
     c["organisation_relations.origin_client_id"]=cid
     c["organisation_relations.origin_supplier_id"]=sid
-    select="part_rels.*,parts.partNr"
+    select="part_rels.*"
+    select+=",parts.partNr" if getPart.nil?
     count=PartRel.joins(:organisation_relation).count(:conditions=>c)
-    prs=PartRel.joins(:organisation_relation).joins(part).limit(psize).offset(psize*page).find(:all,:select=>select,:conditions=>c) if count>0
+    prs=if getPart.nil?
+      PartRel.joins(:organisation_relation).joins(part).limit(psize).offset(psize*page).find(:all,:select=>select,:conditions=>c) if count>0
+    else
+      PartRel.joins(:organisation_relation).limit(psize).offset(psize*page).find(:all,:select=>select,:conditions=>c) if count>0
+    end
     return prs,count
   end
 
