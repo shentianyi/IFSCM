@@ -16,8 +16,15 @@
 		<script type="text/javascript">
 			$(document).ready(function(){
 				$(".searchforcasttype").click(function(){
-					$(this).toggleClass("cf-searchtype-border");
-				})
+					// e = $(this);
+					// if (e.hasClass("cf-searchtype-border")){
+						// e.removeClass("cf-searchtype-border");}
+					// else{
+						$(".searchforcasttype").removeClass("cf-searchtype-border");
+                    	$(this).addClass("cf-searchtype-border");
+                    // }				
+				});
+
 			})
 		</script>
 		<meta content="authenticity_token" name="csrf-param" />
@@ -103,7 +110,7 @@
 					</div>
 					<div id="type_float" class="cf-box texts cf-box-last" >
 						<span class="cf-contenttype ">预测类型</span>
-						<input class="searchforcasttype" type="button" value="D" name="searchtype">
+						<input class="searchforcasttype cf-searchtype-border" type="button" value="D" name="searchtype">
 						<input class="searchforcasttype" type="button" value="W" name="searchtype">
 						<input class="searchforcasttype" type="button" value="M" name="searchtype">
 						<input class="searchforcasttype" type="button" value="Y" name="searchtype">
