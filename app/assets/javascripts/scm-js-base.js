@@ -64,3 +64,50 @@ function change_label_to_text(obj) {
 		obj.innerHTML = txt.value;
 	}
 }
+
+function trimEnd(str) {
+	var reg = /,$/gi;
+	return str.replace(reg, "");
+}
+
+
+function isIntBetween(i, j, p) {
+	if (isPositiveInt(p)) {
+		return p >= i && p <= j;
+	}
+	return false;
+}
+
+function flash_message(obj, times) {
+	var i = 0, t = false, times = times || 4;
+	if (t)
+		return;
+	t = setInterval(function() {
+		i++;
+		if (i % 2 == 0) {
+			$(obj).hide();
+		} else {
+			$(obj).show();
+		}
+		if (i == times * 2) {
+			clearInterval(t);
+		}
+	}, 300);
+}
+
+function flash_hidden_message(obj, times) {
+	var i = 0, t = false, times = times || 4;
+	if (t)
+		return;
+	t = setInterval(function() {
+		i++;
+		if (i % 2 == 0) {
+			$(obj).css("visibility","hidden");
+		} else {
+			$(obj).css("visibility","visible");
+		}
+		if (i == times * 2) {
+			clearInterval(t);
+		}
+	}, 300);
+}
