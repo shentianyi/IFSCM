@@ -842,7 +842,7 @@ input.uploadfile {
 .cf-drawing h1{
 	color:#9d9d9d;
 	text-align:center;
-	margin-top:90px;
+	margin-top:120px;
 }
 .cf-bar{
 	position:fixed;
@@ -858,6 +858,11 @@ input.uploadfile {
 }
 .cf-bar > div {
 	position:relative;
+}
+.cf-searchtype-border{
+	background-color:#1297cf !important;
+	color:white !important;
+	border:#1297cf !important;
 }
 .cf-box{
   background-color: #FFFFFF;

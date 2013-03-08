@@ -13,6 +13,13 @@
 		<script src="javascripts/jquery.ui/jquery.ui.datepicker.js" type="text/javascript"></script>
 		<script src="javascripts/scm-js-base.js" type="text/javascript"></script>
 		<script src="javascripts/application.js" type="text/javascript"></script>
+		<script type="text/javascript">
+			$(document).ready(function(){
+				$(".searchforcasttype").click(function(){
+					$(this).toggleClass("cf-searchtype-border");
+				})
+			})
+		</script>
 		<meta content="authenticity_token" name="csrf-param" />
 		<meta content="YuZwNQZ+kSKvzG8H4Ldq8dcsMVDUsrS9ROIIsrIu4CU=" name="csrf-token" />
 	</head>
@@ -73,7 +80,7 @@
 				<h3 class="cf-h3">零件号：312312312321</h3>
 				<div id="charting" class="cf-drawing">
 					<div >
-						<h1>Sorry<br>You got no picture</h1>
+						<h1>请先选择条件</h1>
 					</div>
 				</div>
 				<div id="search_expired_vertical_bar" class="cf-bar">
