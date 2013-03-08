@@ -114,7 +114,10 @@
 		box-shadow:2px 2px 3px #DADADA inset;
 	}
 	.ware-li input.check-checked{
-		width:5px;
+		width:20px;
+		height:20px;
+		margin-top:1px;
+		margin-left:1px;
 	}
     .ware-li input.ip1{
     	width:75px;

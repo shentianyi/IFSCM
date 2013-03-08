@@ -60,6 +60,9 @@
 		border-bottom-color: #dbdbdb;
 		border-bottom-style: solid;
 		padding-bottom: 10px;
+		word-break:break-all;
+		word-wrap:break-word;
+		
 	}
 	.supplierinfo img {
 		float: left;
@@ -78,16 +81,19 @@
 		color: #000000;
 		display: block;
 		float: left;
+		width:500px
 	}
 	.namestyle {
 		text-decoration: none;
 		color: #0063de;
 		display: block;
 		float: left;
+		width:500px
 	}
 	.suppname {
 		margin: 10px 10px 0px 10px;
 		font-size: 18px;
+		
 	}
 	.address {
 		margin: 10px 180px 0px 10px;
@@ -95,6 +101,7 @@
 		text-align: left;
 		float: left;
 		font-size: 18px;
+	
 	}
 	.qltall {
 		width: 20px;
@@ -116,6 +123,7 @@
 		font-size: 13px;
 	}
 	.contacts {
+		
 		float: left;
 		width: 430px;
 		font-size: 13px;
