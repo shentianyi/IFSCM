@@ -11,9 +11,9 @@
  * 
  * = require masterpage
  * = require_self
- * = require demand/basicView
- * = require jquery.ui/jquery.ui.datepicker.min
- * = require jquery.ui/jquery.ui.theme
+ * = require basicView
+ * = require jquery.ui.datepicker.min
+ * = require jquery.ui.theme
 */
 
 
