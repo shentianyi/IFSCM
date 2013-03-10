@@ -1,4 +1,4 @@
-#coding:utf-8
+#encoding:utf-8
 require 'org_rel_info'
 
 module TPrinter
@@ -9,9 +9,9 @@ module TPrinter
       result=Wcfer::PdfPrinter.generate_dn_pdf(printer.template,dataset,dnKey)
       msg.result= result[:result]
       msg.content=result[:content]
+    rescue DataMissingError=>e
+      msg.content=e.message
     rescue NoMethodError=>e
-      puts e.message
-      puts e.backtrace
       msg.content="打印机模板未设置，联系系统供应商进行设置"
     rescue Excetion=>e
       msg.content="打印服务错误，请联系系统供应商"
@@ -20,8 +20,20 @@ module TPrinter
   end
 
   def self.print_dn_pack_list_pdf dnKey
-    printer,dataset=generate_dn_pack_list_print_data dnKey
-    return Wcfer::PdfPrinter.generate_dn_pdf(printer.template,dataset,dnKey)
+    msg=ReturnMsg.new
+    begin
+      printer,dataset=generate_dn_pack_list_print_data dnKey
+      result=Wcfer::PdfPrinter.generate_dn_pdf(printer.template,dataset,dnKey)
+      msg.result= result[:result]
+      msg.content=result[:content]
+    rescue DataMissingError=>e
+      msg.content=e.message
+    rescue NoMethodError=>e
+      msg.content="打印机模板未设置，联系系统供应商进行设置"
+    rescue Excetion=>e
+      msg.content="打印服务错误，请联系系统供应商"
+    end
+    return msg
   end
 
   def self.generate_dn_print_data dnKey,type

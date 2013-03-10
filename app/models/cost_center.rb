@@ -1,3 +1,4 @@
+#encoding: utf-8
 class CostCenter < ActiveRecord::Base
   attr_accessible :name, :desc
   attr_accessible :organisation_id

@@ -1,3 +1,4 @@
+#encoding: utf-8
 require 'base_class'
 
 class BaseMsg<CZ::BaseClass

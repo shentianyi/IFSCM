@@ -57,7 +57,7 @@ module Api
         dnKey=params[:dnKey]
       end
       data=nil
-      if dn=ddn||DeliveryNote.single_or_default(dnKey)
+      if dn=ddn||DeliveryNote.single_or_default(dnKey)        
         printer,dataset=TPrinter.generate_dn_item_print_data(dn.key,diKeys)
         data=Class.new
         data.instance_variable_set :@template,printer.template

@@ -65,10 +65,14 @@ module DeliveryBll
         :state=>dstate,:staff_id=>staffId,:organisation_id=>orgId,:rece_org_id=>desiOrgId)
         temps.each do |t|
           packcount=t.packAmount
-          pl=PartRel.find(t.part_rel_id)
-          pack=DeliveryPackage.new(:key=>ClassKeyHelper::gen_key("DeliveryPackage"),:parentKey=>dn.key,:packAmount=>packcount,
+          # pl=PartRel.find(t.part_rel_id)
+          pl=PartRelInfo.find(t.part_rel_id)
+          # pack=DeliveryPackage.new(:key=>ClassKeyHelper::gen_key("DeliveryPackage"),:parentKey=>dn.key,:packAmount=>packcount,
+          # :perPackAmount=>t.perPackAmount,:part_rel_id=>t.part_rel_id,:saleNo=>pl.saleNo,:purchaseNo=>pl.purchaseNo,
+          # :cpartNr=>Part.get_partNr(desiOrgId,pl.client_part_id),:spartNr=>Part.get_partNr(orgId,pl.supplier_part_id))
+           pack=DeliveryPackage.new(:key=>ClassKeyHelper::gen_key("DeliveryPackage"),:parentKey=>dn.key,:packAmount=>packcount,
           :perPackAmount=>t.perPackAmount,:part_rel_id=>t.part_rel_id,:saleNo=>pl.saleNo,:purchaseNo=>pl.purchaseNo,
-          :cpartNr=>Part.get_partNr(desiOrgId,pl.client_part_id),:spartNr=>Part.get_partNr(orgId,pl.supplier_part_id))
+          :cpartNr=>pl.cpartNr,:spartNr=>pl.spartNr)
           for i in 0...packcount
             item=DeliveryItem.new(:key=>ClassKeyHelper::gen_key("DeliveryItem"),
             :parentKey=>pack.key,:state=>dstate,:wayState=>DeliveryObjWayState::Intransit,:checked=>0,:stored=>0)
@@ -123,9 +127,11 @@ module DeliveryBll
       if dn=DeliveryNote.single_or_default(dnKey)
         if dn.items=DeliveryNote.get_children(dn.key,0,-1)[0]
           dn.items.each do |i|
-            pl=PartRel.find(i.part_rel_id)
-            i.rupdate(:cpartNr=>Part.get_partNr(dn.rece_org_id,pl.client_part_id),
-            :spartNr=>Part.get_partNr(dn.organisation_id,pl.supplier_part_id),:saleNo=>pl.saleNo,:purchaseNo=>pl.purchaseNo)
+            # pl=PartRel.find(i.part_rel_id)
+            # i.rupdate(:cpartNr=>Part.get_partNr(dn.rece_org_id,pl.client_part_id),
+            # :spartNr=>Part.get_partNr(dn.organisation_id,pl.supplier_part_id),:saleNo=>pl.saleNo,:purchaseNo=>pl.purchaseNo)
+             pl=PartRelInfo.find(t.part_rel_id)
+            i.rupdate(:cpartNr=>pl.cpartNr,:spartNr=>pl.spartNr,:saleNo=>pl.saleNo,:purchaseNo=>pl.purchaseNo)
           end
           dn.rupdate(:wayState=>DeliveryObjWayState::Intransit,:destination=>destiStr,:sendDate=>sendDate)
            
