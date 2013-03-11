@@ -343,6 +343,8 @@ div #f1 {
 div #f2 {
 	background-image: url(welcome/f2.png);
 }
+
+
 /**************************************************      redis search      */
 .ui-helper-hidden-accessible {
 	display: none

@@ -22,8 +22,8 @@ Demand::Application.routes.draw do
     post 'organisation_manager/create_costcenter' => :create_costcenter
     post 'organisation_manager/create_org_relation' => :create_org_relation
     post 'organisation_manager/create_relpart' => :create_relpart
-    post 'organisation_manager/create_relpart_package' => :create_relpart_package
-    post 'organisation_manager/create_relpart_check' => :create_relpart_check
+    post 'organisation_manager/create_relpart_package' => :create_relpart_strategy
+    # post 'organisation_manager/create_relpart_check' => :create_relpart_check
     match 'organisation_manager/search' => :search
     get 'organisation_manager/redis_search' => :redis_search
     match 'organisation_manager/delivery_set'=>:delivery_set

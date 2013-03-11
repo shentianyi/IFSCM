@@ -8,7 +8,7 @@ class CleanPartsPartRels
           puts "#{i+=1}.-#{id}-#{k.length}-#{k.strip.length}"
           score=$redis.zscore(key,k)          
           $redis.zrem(key,k)
-          $redis.zadd(key,score,k)
+          $redis.zadd(key,score,k.strip)
         end
       end
     end
