@@ -83,7 +83,7 @@
     	font-size:15px;		
 		font-family:"Arial";
         color:#999;
-/*        background-color:#EAEDEC;*/
+        background-color:#EAEDEC;
         box-shadow:2px 2px 2px #999;
         /*float:left;*/
        display:inline-block;
@@ -204,16 +204,16 @@
     	margin:-10px 0px 8px;
     }
     .choosen-li {
-    	background-color:#0e80b0;
-    	color:white;
+    	background-color:#0e80b0 !important;
+    	color:white !important;
     }
     .ware-li:hover input{
     	border:1px solid #DADADA;
     	  	
     }
-/*    .ware-li:hover div.fake-label{
+    .ware-li:hover div.fake-label{
     	background:#F9FCFE;
-    }*/
+    }
     
     .wareposition{
     	color:#999;
