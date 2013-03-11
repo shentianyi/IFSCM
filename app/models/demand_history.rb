@@ -30,7 +30,8 @@ class DemandHistory<CZ::BaseClass
   end
 
   def self.compare_rate(d)
-    ckey=generate_zset_key d.clientId,d.supplierId,d.relpartId,d.type,d.date
+    date=FormatHelper::demand_date_inside(d.date, d.type)
+    ckey=generate_zset_key d.clientId,d.supplierId,d.relpartId,d.type,date
     return generate_rate d.amount,ckey
   end
 
