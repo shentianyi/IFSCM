@@ -299,8 +299,6 @@ module DeliveryBll
         end
       end
       msg=TPrinter.print_dn_pdf(dnKey,type)
-      # msg.result= result[:result]
-      # msg.content=result[:content]
     else
       msg.content="运单不存在"
     end

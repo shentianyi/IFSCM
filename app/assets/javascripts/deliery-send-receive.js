@@ -802,7 +802,7 @@ function checked_ids() {
 	return trimEnd(ids);
 }
 
-function pack_rece_reje(type, action, pdata,call) {
+function pack_rece_reje(type, action, pdata, call) {
 	var actions = {
 		1 : "doaccept",
 		2 : "mark_abnormal"
@@ -841,8 +841,8 @@ function pack_rece_reje(type, action, pdata,call) {
 							}
 						}
 						if (call != null) {
-								call();
-							}
+							call();
+						}
 					} else {
 						alert(msg.content);
 					}
@@ -852,7 +852,7 @@ function pack_rece_reje(type, action, pdata,call) {
 	}
 }
 
-function mark_pack_abnormal(){
+function mark_pack_abnormal() {
 	if (checked_ids().length > 0) {
 		var data = {
 			desc : $("#check-desc-input").val()
@@ -865,8 +865,10 @@ function mark_pack_abnormal(){
 }
 
 function delivery_arrived() {
-		show_handle_dialog();
-	$.post('../delivery/arrive', {dnKey : $("#dnkey-hidden").val()},function(msg) {
+	show_handle_dialog();
+	$.post('../delivery/arrive', {
+		dnKey : $("#dnkey-hidden").val()
+	}, function(msg) {
 		if (msg.result) {
 			$(".arrive-button-group").remove();
 			$(".accept-button-group").show();
@@ -940,9 +942,19 @@ function pack_inspect(type, action, pdata, call) {
 	}
 }
 
-function pop_pack_inspect() {
+function pop_pack_inspect(e) {
 	if (checked_ids().length > 0) {
 		$("#pick-part-info-box").show();
+		var top = null;
+		if (e.pageY - 400 > 100)
+			top = e.pageY - 100;
+		$("#pick-part-info-box").show();
+		if (top != null) {
+			$("#pick-part-info-box").offset({
+				left : e.pageX,
+				top : e.pageY - 400
+			})
+		}
 	}
 }
 
