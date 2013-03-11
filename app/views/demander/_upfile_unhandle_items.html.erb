@@ -9,7 +9,7 @@
           共<%= batch.itemCount%>个
      </p>
      <p>
-          &nbsp;&nbsp;&nbsp; 上传时间：<%= Time.at(batch.created_at)%>
+          &nbsp;&nbsp;&nbsp; 上传时间：<%= Time.at(batch.created_at).strftime("%Y-%m-%d %H:%M:%S")%>
      </p>
 </div>
 <div class="abstractblock">
