@@ -1,6 +1,6 @@
 #encoding: utf-8
 class Part < ActiveRecord::Base
-  attr_accessible :partNr
+  attr_accessible :partNr,:organisation_id
   
   belongs_to :organisation
   has_many :client_part_rels, :class_name=>"PartRel", :foreign_key=>"client_part_id" # org is client
