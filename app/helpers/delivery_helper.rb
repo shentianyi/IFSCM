@@ -48,7 +48,7 @@ module DeliveryHelper
       end
       numLeft = num%least
       if numLeft != 0
-        dit=DeliveryItemTemp.new(:packAmount=>1,:perPackAmount=>least,:part_rel_id=>d.relpartId,:spartNr=>PartRel.find(d.relpartId).supplier_part.partNr,
+        dit=DeliveryItemTemp.new(:packAmount=>1,:perPackAmount=>numLeft,:part_rel_id=>d.relpartId,:spartNr=>PartRel.find(d.relpartId).supplier_part.partNr,
                                                               :total=>numLeft)
         dit.save
         dit.add_to_staff_cache staffId
