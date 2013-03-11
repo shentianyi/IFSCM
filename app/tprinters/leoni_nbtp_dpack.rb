@@ -48,13 +48,13 @@ module LeoniNbtpDpack
     data[:Description]=pack.spartNr
     # data[:SendDate]=sendDate
     data[:Quantity]=FormatHelper.string_to_int(pack.perPackAmount.to_s)
-    # data[:Destination]="WE87"
-    pl=PartRelInfo.find(pack.part_rel_id)
-    if pl.position_nr.nil? or pl.position_nr.length==0
-      raise DataMissingError.new,"零件:#{pack.spartNr}未设置零件接收点！请设置好再打印包装箱标签！"
-    else
-      data[:Destination]=pl.position_nr
-    end
+    data[:Destination]="WE87"
+    # pl=PartRelInfo.find(pack.part_rel_id)
+    # if pl.position_nr.nil? or pl.position_nr.length==0
+      # raise DataMissingError.new,"零件:#{pack.spartNr}未设置零件接收点！请设置好再打印包装箱标签！"
+    # else
+      # data[:Destination]=pl.position_nr
+    # end
     data[:DnPackNr]=packNr
     @@label_keys.each do |key|
       record<<{:Key=>key,:Value=>data[key.to_sym]}

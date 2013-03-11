@@ -70,7 +70,7 @@ module DeliveryBll
           # pack=DeliveryPackage.new(:key=>ClassKeyHelper::gen_key("DeliveryPackage"),:parentKey=>dn.key,:packAmount=>packcount,
           # :perPackAmount=>t.perPackAmount,:part_rel_id=>t.part_rel_id,:saleNo=>pl.saleNo,:purchaseNo=>pl.purchaseNo,
           # :cpartNr=>Part.get_partNr(desiOrgId,pl.client_part_id),:spartNr=>Part.get_partNr(orgId,pl.supplier_part_id))
-           pack=DeliveryPackage.new(:key=>ClassKeyHelper::gen_key("DeliveryPackage"),:parentKey=>dn.key,:packAmount=>packcount,
+          pack=DeliveryPackage.new(:key=>ClassKeyHelper::gen_key("DeliveryPackage"),:parentKey=>dn.key,:packAmount=>packcount,
           :perPackAmount=>t.perPackAmount,:part_rel_id=>t.part_rel_id,:saleNo=>pl.saleNo,:purchaseNo=>pl.purchaseNo,
           :cpartNr=>pl.cpartNr,:spartNr=>pl.spartNr)
           for i in 0...packcount
@@ -127,14 +127,14 @@ module DeliveryBll
       if dn=DeliveryNote.single_or_default(dnKey)
         if dn.items=DeliveryNote.get_children(dn.key,0,-1)[0]
           dn.items.each do |i|
-            # pl=PartRel.find(i.part_rel_id)
-            # i.rupdate(:cpartNr=>Part.get_partNr(dn.rece_org_id,pl.client_part_id),
-            # :spartNr=>Part.get_partNr(dn.organisation_id,pl.supplier_part_id),:saleNo=>pl.saleNo,:purchaseNo=>pl.purchaseNo)
-             pl=PartRelInfo.find(t.part_rel_id)
+          # pl=PartRel.find(i.part_rel_id)
+          # i.rupdate(:cpartNr=>Part.get_partNr(dn.rece_org_id,pl.client_part_id),
+          # :spartNr=>Part.get_partNr(dn.organisation_id,pl.supplier_part_id),:saleNo=>pl.saleNo,:purchaseNo=>pl.purchaseNo)
+            pl=PartRelInfo.find(i.part_rel_id)
             i.rupdate(:cpartNr=>pl.cpartNr,:spartNr=>pl.spartNr,:saleNo=>pl.saleNo,:purchaseNo=>pl.purchaseNo)
           end
           dn.rupdate(:wayState=>DeliveryObjWayState::Intransit,:destination=>destiStr,:sendDate=>sendDate)
-           
+
           dn.delete_from_staff_cache
           dn.add_to_new_queue OrgOperateType::Client
           # DelieveryNote & DeliveryItem 写入Mysql
@@ -288,6 +288,7 @@ module DeliveryBll
   def self.get_all_org_role_dn orgId,role
     return DeliveryNote.all_org_role_dn(orgId,role)
   end
+
   # ws
   # [功能：] 生成运单标签PDF文件
   # 参数：
@@ -339,7 +340,6 @@ module DeliveryBll
     end
   end
 
-  
   # ws
   # [功能：] 根据运单id获取异常运单
   # 参数：
@@ -347,20 +347,21 @@ module DeliveryBll
   # 返回值：
   # - array : delivery items
   def self.get_dn_abnormal_pack id
-     select="delivery_items.*,delivery_packages.perPackAmount,delivery_packages.packAmount,delivery_packages.cpartNr,delivery_packages.spartNr"
+    select="delivery_items.*,delivery_packages.perPackAmount,delivery_packages.packAmount,delivery_packages.cpartNr,delivery_packages.spartNr"
     # condi={}
     # condi["delivery_notes.id"]=id
     # condi["delivery_items.state"]=DeliveryObjState::Abnormal
-     # condi["delivery_items.wayState"]=DeliveryItem.abnormal_waystate
+    # condi["delivery_items.wayState"]=DeliveryItem.abnormal_waystate
     return DeliveryItem.joins(:delivery_package=>:delivery_note)
     .where("(delivery_items.state=? or delivery_items.wayState in (?)) and delivery_notes.id=?",DeliveryObjState::Abnormal,DeliveryItem.abnormal_waystate,id)
     .select(select).all
   end
-  
+
   def self.get_pack_by_batch_id id
-      select="delivery_items.*,delivery_packages.perPackAmount,delivery_packages.packAmount,delivery_packages.cpartNr,delivery_packages.spartNr"
+    select="delivery_items.*,delivery_packages.perPackAmount,delivery_packages.packAmount,delivery_packages.cpartNr,delivery_packages.spartNr"
     return DeliveryItem.joins(:delivery_package).where("delivery_packages.id=?",id).select(select).all
   end
+
   # ws
   # [功能：] 根据运单需要质检或不要质检的包装箱
   # 参数：
@@ -388,7 +389,7 @@ module DeliveryBll
   # 返回值：
   # - object : delivery item
   def self.get_dn_instore_item id
-    select= "delivery_items.*,delivery_packages.perPackAmount as 'amount',part_rels.client_part_id as 'part_id'"
+    select= "delivery_items.*,delivery_packages.perPackAmount as 'amount',part_rels.client_part_id as 'part_id',delivery_packages.part_rel_id"
     return DeliveryItem.joins(:delivery_package=>:part_rel).find(:first,:select=>select,:conditions=>{:id=>id,:stored=>false})
   end
 
@@ -420,6 +421,11 @@ module DeliveryBll
           end
         end
       elsif type==DeliveryObjWayState::Received
+        ids.each do |id|
+          item=get_dn_instore_item id
+          pinfo=PartRelInfo.find(item.part_rel_id)
+          WarehouseBll.dn_item_in_by_posiId(pinfo.position_id,item.amount,item.part_id,item.id)
+        end
         if dn.wayState==DeliveryObjWayState::Intransit or  dn.wayState==DeliveryObjWayState::Arrived
           dn.update_attributes(:wayState=>DeliveryObjWayState::InAccept)
         end
@@ -432,8 +438,8 @@ module DeliveryBll
       puts e.backtrace
     end
   end
-  
-   # ws
+
+  # ws
   # [功能：] 接收运单
   # 参数：
   # - ids : 包装箱号

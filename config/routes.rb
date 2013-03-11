@@ -107,7 +107,7 @@ Demand::Application.routes.draw do
       post :mark_abnormal
       match :instore
       post :doinstore
-      post :return_dn
+      # post :return_dn
       post :arrive
       match :link
       match :abnormal

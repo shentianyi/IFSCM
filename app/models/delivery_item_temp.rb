@@ -11,7 +11,7 @@ class DeliveryItemTemp<CZ::BaseClass
   # 返回值：
   # - 无
   def self.single_or_default staffId
-    zset_key=generate_staff__zset_key staffId
+    zset_key=generate_staff_zset_key staffId
     find(($redis.zrange zset_key,0,0 )[0])
   end
 
@@ -23,7 +23,7 @@ class DeliveryItemTemp<CZ::BaseClass
   # 返回值：
   # - 无
   def add_to_staff_cache staffId
-    zset_key=DeliveryItemTemp.generate_staff__zset_key staffId
+    zset_key=DeliveryItemTemp.generate_staff_zset_key staffId
     $redis.zadd zset_key,Time.now.to_i,self.key
   end
 
@@ -34,7 +34,7 @@ class DeliveryItemTemp<CZ::BaseClass
   # 返回值：
   # - 无
   def delete_from_staff_cache staffId
-    zset_key=DeliveryItemTemp.generate_staff__zset_key staffId
+    zset_key=DeliveryItemTemp.generate_staff_zset_key staffId
     $redis.zrem zset_key,self.key
   end
 
@@ -45,7 +45,7 @@ class DeliveryItemTemp<CZ::BaseClass
   # 返回值：
   # - Array : 运单项缓存数组
   def self.get_staff_cache staffId,startIndex=0,endIndex=-1
-    zset_key=generate_staff__zset_key staffId
+    zset_key=generate_staff_zset_key staffId
     total=$redis.zcard zset_key
     if total>0
       keys=$redis.zrange zset_key,startIndex,endIndex
@@ -68,7 +68,11 @@ class DeliveryItemTemp<CZ::BaseClass
   # 返回值：
   # - 无
   def self.clean_all_staff_cache staffId
-    zset_key=generate_staff__zset_key staffId
+    zset_key=generate_staff_zset_key staffId
+    keys=$redis.zrange zset_key,0,-1
+    keys.each do |key|
+      $redis.del key
+    end
     $redis.zremrangebyrank zset_key,0,-1
   end
   
@@ -84,7 +88,7 @@ class DeliveryItemTemp<CZ::BaseClass
   
   private
 
-  def self.generate_staff__zset_key staffId
+  def self.generate_staff_zset_key staffId
     "staff:#{staffId}:deliveryitemtemp:cache:zset"
   end
 end
