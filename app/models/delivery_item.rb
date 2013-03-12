@@ -7,7 +7,7 @@ class DeliveryItem < ActiveRecord::Base
   attr_accessible :id, :created_at, :updated_at,:delivery_package_id
 
   belongs_to :delivery_package
-  has_one :delivery_item_state
+  has_one :delivery_item_state,:dependent=>:destroy
   delegate :part_rel,:to=>:delivery_package
   delegate :delivery_note,:to=>:delivery_package
    
