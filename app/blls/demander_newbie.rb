@@ -9,6 +9,7 @@ module DemanderNewbie
     when 'M'   then  DemanderType::Month
     when 'Y'   then  DemanderType::Year
     when 'T'   then  DemanderType::Plan
+    when 'O'   then  DemanderType::Order
     end
     $redis.zadd( kesKey, score, demandKey)
   end
@@ -22,6 +23,7 @@ module DemanderNewbie
     when 'M'   then  DemanderType::Month
     when 'Y'   then  DemanderType::Year
     when 'T'   then  DemanderType::Plan
+    when 'O'   then  DemanderType::Order
     when ''
       total = $redis.zcard( kesKey )
       $redis.zrange( kesKey, page.to_i*$DEPSIZE, (page.to_i+1)*$DEPSIZE-1 ).each do |item|
