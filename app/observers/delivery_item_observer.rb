@@ -9,19 +9,18 @@ class DeliveryItemObserver < ActiveRecord::Observer
   
   def after_update( dit )
     return true  unless order = OrderItem.find_by_id( dit.delivery_package.order_item_id )
-    return true  unless arr = dit.wayState_change
+    return true  unless dit.wayState_changed? or dit.stored_changed?
     amount = dit.delivery_package.perPackAmount
-    origin = arr.first
-    current = arr.last
-    if current == DeliveryObjWayState::Intransit
-      order.rest -= amount
-      order.transit += amount
-    elsif current == DeliveryObjWayState::Received
+
+    if dit.stored_changed?
       order.transit -= amount
       order.receipt += amount
-    else
-      order.transit -= amount
-      order.rest += amount
+    # elsif dit.wayState == DeliveryObjWayState::Intransit
+      # order.rest -= amount
+      # order.transit += amount
+    # else
+      # order.transit -= amount
+      # order.rest += amount
     end
   end
   
