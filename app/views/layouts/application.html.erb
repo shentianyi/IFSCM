@@ -3,13 +3,13 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
   <title>IFSCM</title>
-  <meta itemprop="image" content="/assets/maintain.png">
   <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
   <%= stylesheet_link_tag    "application", :media => "all" %>
   <%= javascript_include_tag "application" %>
   <%= csrf_meta_tags %>
 </head>
 <body>
+<<<<<<< HEAD
   <div class="subicons">
     <div class="fixedtop">
       <ul class="subs pull-left">
@@ -133,6 +133,132 @@
   </div>
 
   <div id="MessageBox" class="message-box">
+=======
+	<div class="subicons">
+		<div class="fixedtop">
+			<ul class="subs pull-left">
+				<li><a href="/welcome"><img src="/assets/homeicon.png"/></a></li>
+				<li><img src="/assets/backicon.png"/></li>
+				<% if session[:orgOpeType]==OrgOperateType::Client %>
+					<li>
+						<a>需求模块</a>
+						<dl>
+							<dt>操作</dt>
+							<dd><a href="../demander/demand_upload">上传需求</a></dd>
+							<dt>查询</dt>
+							<dd><a href="../demander">查看需求</a></dd>
+							<dd><a href="../demander/search_expired">过期需求</a></dd>
+						</dl>
+					</li>
+					<li>
+						<a>运单模块</a>
+						<dl>
+							<dt>操作</dt>
+							<dd><a href="../delivery/accept">运单接收</a></dd>
+							<dd><a href="../delivery/inspect">运单质检</a></dd>
+							<dd><a href="../delivery/instore">运单入库</a></dd>
+							<dt>查询</dt>
+							<dd><a href="../delivery">查看运单</a></dd>
+						</dl>
+					</li>
+					<li>
+						<a>仓库模块</a>
+						<dl>
+							<dt>操作</dt>
+							<dd><a href="../warehouse/stock_out">出库</a></dd>
+							<dt>查询</dt>
+							<dd><a href="../warehouse/search_state">库存查询</a></dd>
+							<dd><a href="../warehouse/search_op_history">操作历史</a></dd>
+							<dt>数据维护</dt>
+							<dd><a href="../warehouse/primary_warehouse">仓库维护</a></dd>
+						</dl>
+					</li>
+					<li>
+						<a>质检模块</a>
+						<dl>
+							<dt>操作</dt>
+							<dd><a href="../organisation_manager/search">质检策略</a></dd>								
+						</dl>
+					</li>
+					<li>
+						<a>分析模块</a>
+						<dl>
+							<dt>查询</dt>
+							<dd><a href="../analysis/demand_cf">CF值查询</a></dd>
+							<dd><a href="../analysis/order_progress">订单进度</a></dd>
+						</dl>
+					</li>
+					<li><a href="../organisation_manager/search">供应商信息</a></li>
+				<% elsif session[:orgOpeType]==OrgOperateType::Supplier %>
+					<li>
+						<a>需求模块</a>
+						<dl>
+							<dt>查询</dt>
+							<dd><a href="../demander">查看需求</a></dd>
+							<dd><a href="../demander/search_expired">过期需求</a></dd>
+						</dl>
+					</li>
+					<li>
+						<a>运单模块</a>
+						<dl>
+							<dt>操作</dt>
+							<dd><a  href="../delivery/pick_part">发运</a></dd>
+							<dt>查询</dt>
+							<dd><a href="../delivery">查看运单</a></dd>
+						</dl>
+					</li>
+					<li>
+						<a>仓库模块</a>
+						<dl>
+							<dt>查询</dt>
+							<dd><a href="../warehouse/search_state">库存查询</a></dd>
+							<dd><a href="../warehouse/search_op_history">操作历史</a></dd>
+							<dt>数据维护</dt>
+							<dd><a href="../warehouse/primary_warehouse">仓库维护</a></dd>
+						</dl>
+					</li>
+					<li>
+						<a>分析模块</a>
+						<dl>
+							<dt>查询</dt>
+							<dd><a href="../analysis/demand_cf">CF值查询</a></dd>
+						</dl>
+					</li>
+			        <li><a href="../organisation_manager/search">客户信息</a></li>
+				<% end %>
+			</ul>
+			<ul class="subs pull-right">
+				<li>
+					<a class="greeting"><%= Staff.find(session[:staff_id]).name %>&emsp;</a>
+						<dl>
+							<dd><a href="/user">编辑账户</a></dd>
+							<dd><a href="/logout">注销</a> </dd>
+						</dl>
+				</li>
+			</ul>
+		</div>
+	</div>
+	
+	<div class="lefticons" id="lefticons">
+		<div class="hm licon">
+			<a>
+			      <p  name="headicon" class="headicon" ></p>
+			</a>
+		</div>
+		<div class="cus licon">
+		     <a href="../client">
+			     <p  name="customericon" class="customericon" style=" cursor:pointer;" ></p>
+			 </a> 
+		</div>
+		<div class="sup licon">
+		       <a href="../supplier">
+			 <p  name="suppliericon" class="suppliericon" style=" cursor:pointer;" ></p>
+			 </a>
+		</div>
+	</div>
+	
+	<div id="MessageBox" class="message-box">
+>>>>>>> 4b0ddc06a4a13007d6833621b609325acaebc436
        <div class="bg-grey">
             <div>信息</div>
             <div class="close-logo"></div>      

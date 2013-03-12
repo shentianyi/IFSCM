@@ -329,6 +329,49 @@ margin-left:2px;
 .righttype {
 	margin-right: 38px;
 }
+/**************************************************         search_submit          **************/
+div.search_banner {
+	margin-left:10px;
+	margin-top:50px;
+	padding-bottom:20px;
+	border-bottom: 5px solid #DBDBDB;
+	margin-bottom:20px;
+}
+div.search_banner input {
+	border-color: #DBDBDB;
+	border-style: solid;
+	border-width: 1px;
+	height: 30px;
+	width: 300px;
+	margin: 0px;
+	padding-left: 5px;
+	font-size: 14px;
+	line-height: 14px;
+	color: #9d9d9d;
+	margin: 0px
+}
+/**************************************************         filter_criteria          **************/
+.filter_criteria {
+	
+}
+/**************************************************         order_progress          **************/
+.orderprogress_baseline {
+	width: 300px;
+	border: 1px solid #dbdbdb;
+	margin-top: 5px;
+	height: 15px;
+	float: left;
+}
+.orderprogress_receipt {
+	float: left;
+	height: 15px;
+	background-color: #208041;
+}
+.orderprogress_transit {
+	float: left;
+	height: 15px;
+	background-color: #FFFF00;
+}
 /*********************************************	    chart                   */
 .chartview {
 	width: 850px;

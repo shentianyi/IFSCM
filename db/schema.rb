@@ -11,7 +11,11 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
+<<<<<<< HEAD
 ActiveRecord::Schema.define(:version => 20130312053031) do
+=======
+ActiveRecord::Schema.define(:version => 20130312020246) do
+>>>>>>> 4b0ddc06a4a13007d6833621b609325acaebc436
 
   create_table "cost_centers", :force => true do |t|
     t.string   "name"
@@ -95,8 +99,22 @@ ActiveRecord::Schema.define(:version => 20130312053031) do
     t.float    "oldamount"
     t.datetime "date"
     t.float    "rate"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+    t.datetime "created_at",    :null => false
+    t.datetime "updated_at",    :null => false
+    t.string   "orderNr"
+    t.integer  "order_item_id"
+  end
+
+  create_table "order_items", :force => true do |t|
+    t.string   "orderNr"
+    t.decimal  "total",           :precision => 15, :scale => 2, :default => 0.0
+    t.decimal  "rest",            :precision => 15, :scale => 2, :default => 0.0
+    t.decimal  "transit",         :precision => 15, :scale => 2, :default => 0.0
+    t.decimal  "receipt",         :precision => 15, :scale => 2, :default => 0.0
+    t.string   "demander_key"
+    t.integer  "organisation_id"
+    t.datetime "created_at",                                                      :null => false
+    t.datetime "updated_at",                                                      :null => false
   end
 
   create_table "organisation_relations", :force => true do |t|
