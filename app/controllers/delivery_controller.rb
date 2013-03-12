@@ -2,7 +2,7 @@
 class DeliveryController < ApplicationController
 
   before_filter  :authorize
-  before_filter :auth_dn,:only=>[:arrive,:mark_abnormal,:return_dn,:doinspect]
+  before_filter :auth_dn,:only=>[:arrive,:mark_abnormal,:doinspect]
   before_filter :redis_auth_dn,:only=>[:dn_detail,:gen_dn_pdf,:accept,:doaccept,:receive,:inspect,:instore,:doinstore,:abnormal,:pack]
   ##
   # ws
@@ -424,7 +424,6 @@ class DeliveryController < ApplicationController
     if request.post?
       if @msg.result
        ids=params[:ids].split(',')
-        # DeliveryItem.where(:id=>ids).update_all(:state=>DeliveryObjState::Abnormal) 
         Resque.enqueue(DeliveryItemAllUpdater,100,ids,{:state=>DeliveryObjState::Abnormal})
         @dn.update_attributes(:state=>DeliveryObjState::Abnormal)   
         DeliveryItemState.where(:delivery_item_id=>ids).update_all(:state=>params[:type],:desc=>params[:desc]||"检验通过")  
@@ -496,14 +495,14 @@ class DeliveryController < ApplicationController
         elsif type!=DeliveryObjInspectState::Normal
           @msg.object=DeliveryObjState::Abnormal
           if params[:return]
-            denied=Storage.return_denied(ids)
-            if denied              
-              @msg.result=false
-              @msg.object=denied
-            else           
+            # denied=Storage.return_denied(ids)
+            # if denied              
+              # @msg.result=false
+              # @msg.object=denied
+            # else           
                Resque.enqueue(DeliveryItemReturner,ids,@dn.id)
                set_way_state_code(DeliveryObjWayState::Returned)
-            end           
+            # end           
           end            
           @dn.update_attributes(:state=>DeliveryObjState::Abnormal)  
           Resque.enqueue(DeliveryItemInspector,100,ids,@dn.id,{:checked=>true,:state=>DeliveryObjState::Abnormal})  
@@ -542,11 +541,13 @@ class DeliveryController < ApplicationController
   end
   
   def doinstore
-    begin
     if request.post?
       if @msg.result   
         if item=DeliveryBll.get_dn_instore_item(params[:id])
-         @msg=WarehouseBll.position_in(params[:posiNr],params[:ware],item.amount,item.part_id,item.id)
+         @msg=WarehouseBll.dn_item_move_by_item_id(params[:posiNr],params[:ware],item.id)
+         otd=OnTimeDelivery.new(:amount=>item.amount,:part_rel_id=>item.part_rel_id)
+         otd.save
+         otd.update_otd_record
          if @msg.result
            item.update_attributes(:posi=>params[:posiNr],:stored=>true)
            Resque.enqueue(DeliveryNoteWayStateRoleMachine,@dn.id,DeliveryRoleMachineAction::DoStore)
@@ -558,35 +559,31 @@ class DeliveryController < ApplicationController
       end
       render :json=>@msg
     end
-    rescue Exception=>e
-     puts e.message
-  
-    end
   end
   
-  def return_dn
-    if request.post?
-      if @msg.result
-       if @dn.can_inspect
-        list=@dn.delivery_items
-        items=Hash[list.collect{|i| [i.id,i.key]}]
-        denied=Storage.return_denied(items.keys)
-        if denied              
-           @msg.result=false
-           @msg.object=items.delete_if{|k,v| !denied.include?(k)}
-         else
-           @dn.update_attributes(:wayState=>DeliveryObjWayState::Returned)
-           Resque.enqueue(DeliveryNoteWayStateStateUpdater,@dn.id)
-           set_way_state_code(DeliveryObjWayState::Returned)
-        end
-        else
-          @msg.result=false
-          @msg.content="运单：#{DeliveryObjWayState.get_desc_by_value(@dn.wayState)}，处于不可退货状态"
-        end
-      end      
-    render :json=>@msg
-    end
-  end
+  # def return_dn
+    # if request.post?
+      # if @msg.result
+       # if @dn.can_inspect
+        # list=@dn.delivery_items
+        # items=Hash[list.collect{|i| [i.id,i.key]}]
+        # denied=Storage.return_denied(items.keys)
+        # if denied              
+           # @msg.result=false
+           # @msg.object=items.delete_if{|k,v| !denied.include?(k)}
+         # else
+           # @dn.update_attributes(:wayState=>DeliveryObjWayState::Returned)
+           # Resque.enqueue(DeliveryNoteWayStateStateUpdater,@dn.id)
+           # set_way_state_code(DeliveryObjWayState::Returned)
+        # end
+        # else
+          # @msg.result=false
+          # @msg.content="运单：#{DeliveryObjWayState.get_desc_by_value(@dn.wayState)}，处于不可退货状态"
+        # end
+      # end      
+    # render :json=>@msg
+    # end
+  # end
   
   def link
       @list=DeliveryBll.get_all_org_role_dn(session[:org_id],params[:r])
