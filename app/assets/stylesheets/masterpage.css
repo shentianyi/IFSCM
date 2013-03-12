@@ -166,6 +166,26 @@ ul.subs {
 .subs li:hover {
 	background-color: #dbdbdb;
 }
+.subs li:hover dl > dt, .subs li:hover dl > dd {
+	display: block;
+}
+.subs li > dl{
+	background-color: #eaedec;
+	margin: 0px -10px;
+}
+.subs li > dl > dt {
+	display: none;
+	padding-left: 5px;
+	font-weight: bold;
+}
+.subs li > dl > dd {
+	display: none;
+	margin: 0px;
+    padding-left: 15px;
+}
+.subs dd:hover {
+	background-color: #dbdbdb;
+}
 .subs img {
 	vertical-align: middle;
 }
@@ -344,11 +364,9 @@ div #f2 {
 	background-image: url(welcome/f2.png);
 }
 
-/*li.dropmenu a:hover ul{
-	display:inherit;
-	top:100px;
-	left: 100px;
-}*/
+a {
+	color:#9D9D9D;
+}
 /**************************************************      redis search      */
 .ui-helper-hidden-accessible {
 	display: none

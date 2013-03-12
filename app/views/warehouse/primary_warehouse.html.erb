@@ -6,8 +6,18 @@
 	<%= render :partial => "warehouses_list"%>	
 </div>
 
-<div id="positions_list"></div>
-
+<!-- <div id="positions_list"></div> -->
+<div class="equal-sign">-</div>
+<div class="wareposition">
+	<p class="ware-p"><label name="warehouse">warehouse</label>&nbsp;库位</p>
+	<ul class="ware-ul">
+	<li class="ware-li li-right"><p><strong>单个添加/删除</strong></p></li>
+	<li class="ware-li li-right"><input class="ip1" type="text" value="输入库位"><input class="ip2" type="text" name="warehouse" value="20000"><div class="wh-post btn-normal " style="margin-right:15px;">删除</div><div class="wh-post btn-normal wh-small-add ">添加</div></li>
+	<li class="ware-li li-right"><p><strong>连续添加/删除</strong></p></li>
+	<li class="ware-li li-right"><input class="ip1" type="text" value="输入库位"><input class="ip2" type="text" name="warehouse" value="容量"></li>
+	 <li class="ware-li li-right"><p>-</p><input class="ip1" type="text" value="输入库位"><input class="ip2" type="text" name="warehouse" value="容量"><div class="wh-post btn-normal" >删除</div><div class="wh-post btn-normal wh-small-add ">添加</div></li>
+	</ul>
+</div>
 
 <script type="text/javascript">
 function new_warehouse(){

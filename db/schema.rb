@@ -11,6 +11,8 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
+
+
 ActiveRecord::Schema.define(:version => 20130301071153) do
 
   create_table "cost_centers", :force => true do |t|
@@ -22,6 +24,7 @@ ActiveRecord::Schema.define(:version => 20130301071153) do
   end
 
   add_index "cost_centers", ["organisation_id"], :name => "index_cost_centers_on_organisation_id"
+
 
   create_table "delivery_item_states", :force => true do |t|
     t.integer  "state",            :default => 100
