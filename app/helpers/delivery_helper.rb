@@ -39,7 +39,7 @@ module DeliveryHelper
         orderId = d.order_item_id
         orderNr = d.orderNr
         orderRest = OrderItem.find_by_id( d.order_item_id ).rest
-        num = orderRest.to_i+1
+        num = orderRest.to_i
       end
       return false unless num.is_a?(Integer)
       return false if num == 0
