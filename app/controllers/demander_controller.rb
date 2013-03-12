@@ -264,15 +264,22 @@ class DemanderController<ApplicationController
                       d= FormatHelper::demand_date_inside( nd.date, nd.type )
                       if tempKey = DemandHistory.exists( nd.clientId,nd.supplierId,nd.relpartId,nd.type, d )
                         demand = Demander.rfind(tempKey)
-                        demand.rupdate( :clientId=>nd.clientId, :supplierId=>nd.supplierId, :relpartId=>nd.relpartId, :type=>nd.type, :date=>d,
-                        :amount=>nd.amount, :oldamount=>nd.oldamount, :rate=>nd.rate)
+                        demand.rupdate( :amount=>nd.amount, :oldamount=>nd.oldamount, :rate=>nd.rate)
                         demand.save_to_send_update
+                        ### need to update an Order, (but an Order's amount should not be changed).
                       else
                         demand = Demander.new(
                         :clientId=>nd.clientId, :supplierId=>nd.supplierId, :relpartId=>nd.relpartId, :type=>nd.type, :date=>d,
-                        :amount=>nd.amount, :oldamount=>nd.oldamount, :rate=>nd.rate)
+                        :amount=>nd.amount, :oldamount=>nd.oldamount, :rate=>nd.rate, :orderNr=>nd.orderNr)
                         demand.save_to_redis
                         demand.save_to_send
+                        ### need to new an Order
+                        if nd.orderNr.present?
+                          order = @cz_org.order_items.build(:orderNr=>nd.orderNr, :total=>nd.amount, :rest=>nd.amount, :demander_key=>demand.key)
+                          order.save
+                          demand.rupdate( :order_item_id=>order.id )
+                        end
+                        ### demand.rupdate( :order_item_id=>order.id )
                       end
                       demand.update_cf_record
                       if nd.rate.to_i != 0 or nd.oldamount.nil?

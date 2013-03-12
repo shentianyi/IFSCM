@@ -31,8 +31,13 @@ module DemanderBll
         CSV.foreach(File.join($DECSVP,sfile.uuidName),:headers=>true,:col_sep=>$CSVSP) do |row|
           if row["PartNr"] and row["Supplier"] and row["Date"] and row["Type"] and row["Amount"]
             sfile.itemCount+=1
-            demand= DemanderTemp.new(:cpartNr=>row["PartNr"].strip,:clientId=>clientId,:supplierNr=>row["Supplier"].strip,
-            :filedate=>row["Date"].strip,:type=>row["Type"].strip,:amount=>row["Amount"].strip,:lineNo=>sfile.itemCount,:source=>sfile.oriName,:oldamount=>0)
+            if row["OrderNr"]
+              demand= DemanderTemp.new(:cpartNr=>row["PartNr"].strip,:clientId=>clientId,:supplierNr=>row["Supplier"].strip,
+              :filedate=>row["Date"].strip,:type=>row["Type"].strip,:amount=>row["Amount"].strip,:orderNr=>row["OrderNr"].strip,:lineNo=>sfile.itemCount,:source=>sfile.oriName,:oldamount=>0)
+            else
+              demand= DemanderTemp.new(:cpartNr=>row["PartNr"].strip,:clientId=>clientId,:supplierNr=>row["Supplier"].strip,
+              :filedate=>row["Date"].strip,:type=>row["Type"].strip,:amount=>row["Amount"].strip,:orderNr=>"",:lineNo=>sfile.itemCount,:source=>sfile.oriName,:oldamount=>0)
+            end
             demand.date=FormatHelper::demand_date_by_str_type(demand.filedate,demand.type)
 
             # validate demand field

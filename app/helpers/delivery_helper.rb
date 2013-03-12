@@ -32,6 +32,15 @@ module DeliveryHelper
   
   def self.automake_di_temp staffId, d
       num = d.amount
+      orderId = nil
+      orderNr = ""
+      orderRest = nil
+      if d.orderNr.present? and d.order_item_id.present?
+        orderId = d.order_item_id
+        orderNr = d.orderNr
+        orderRest = OrderItem.find_by_id( d.order_item_id ).rest
+        num = orderRest.to_i+1
+      end
       return false unless num.is_a?(Integer)
       return false if num == 0
       if pr = PartRel.joins(:strategy, :supplier_part).select("strategies.leastAmount as leastAmount, parts.partNr as partNr").where(:id=>d.relpartId).first# and pinfo = pr.strategy
@@ -42,14 +51,16 @@ module DeliveryHelper
       pack = num/least
       if pack != 0 
         dit=DeliveryItemTemp.new(:packAmount=>pack,:perPackAmount=>least,:part_rel_id=>d.relpartId,:spartNr=>pr.partNr,
-                                                              :total=>FormatHelper.string_multiply(least, pack))
+                                                              :total=>FormatHelper.string_multiply(least, pack),
+                                                              :order_item_id=>orderId, :orderNr=>orderNr, :rest=>orderRest)
         dit.save
         dit.add_to_staff_cache staffId
       end
       numLeft = num%least
       if numLeft != 0
         dit=DeliveryItemTemp.new(:packAmount=>1,:perPackAmount=>numLeft,:part_rel_id=>d.relpartId,:spartNr=>pr.partNr,
-                                                              :total=>numLeft)
+                                                              :total=>numLeft,
+                                                              :order_item_id=>orderId, :orderNr=>orderNr, :rest=>orderRest)
         dit.save
         dit.add_to_staff_cache staffId
       end

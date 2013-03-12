@@ -8,4 +8,5 @@ class DemanderType
   DemanderType.define :Month,30,"month"
   DemanderType.define :Year,40,"year"
   DemanderType.define :Plan,50,"Plan"
+  DemanderType.define :Order,60,"Order"
 end

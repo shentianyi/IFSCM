@@ -1,0 +1,23 @@
+
+
+<div class="search_banner">
+	<span class="uploadfile">订单号：</span>
+	<%= text_field_tag :orderNr, nil, :size=>10 %>
+	<%= button_tag '查看', :type=>'button', :class=>'btupload', :onclick=>"order_item_list();"%>
+</div>
+
+<div id="order_item_list"></div>
+
+<script type="text/javascript">
+
+function order_item_list(){
+	$.post("../analysis/order_progress",
+		{orderNr: $('#orderNr').val() },
+		function(data){
+				$('#order_item_list').html(data);
+		},
+		'html'		
+	);
+}
+
+</script>
