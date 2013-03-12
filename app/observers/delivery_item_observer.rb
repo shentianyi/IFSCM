@@ -5,6 +5,7 @@ class DeliveryItemObserver < ActiveRecord::Observer
     amount = dit.delivery_package.perPackAmount
     order.rest -= amount
     order.transit += amount
+    order.save
   end
   
   def after_update( dit )
@@ -23,6 +24,7 @@ class DeliveryItemObserver < ActiveRecord::Observer
       order.transit -= amount
       order.rest += amount
     end
+    order.save
   end
   
 end

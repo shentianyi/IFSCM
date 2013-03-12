@@ -204,6 +204,7 @@
      height: 20px;
      background-image: url(/assets/iconedit.png);
      display: block;
+     background-repeat: no-repeat;
 }
 .correct-img-span:hover {
      background-image: url(/assets/iconedith.png);

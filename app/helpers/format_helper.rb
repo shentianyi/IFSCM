@@ -46,7 +46,7 @@ module FormatHelper
   def self.demand_date_by_str_type date,type
     date=str_to_date(date)
     if date
-      if type=='D' or type=='T'
+      if type=='D' or type=='T' or type=='O'
         return  "#{date.year}/#{date.month}/#{date.day}"
       elsif type=='W'
         return  "#{date.year}/#{date.cweek}"

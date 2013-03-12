@@ -6,7 +6,7 @@ class InitRedisData
   # init demand type
   def self.initDemandType
     $redis.del DemandType.gen_set_key
-    ['D','W','M','Y','T'].each do |t|
+    ['D','W','M','Y','T','O'].each do |t|
       $redis.sadd DemandType.gen_set_key,t
     end
   end
