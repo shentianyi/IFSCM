@@ -32,7 +32,7 @@ class DeliveryNoteWayStateRoleMachine
         checked=DeliveryItem.joins(:delivery_package=>{:part_rel=>:strategy}).joins(:delivery_package=>:delivery_note).count(:conditions=>condi)
         if checked==0
           dn.remove_from_org_role dn.rece_org_id,OrgRoleType::DnInspector
-          dn.add_to_org_role dn.rece_org_id,OrgRoleType::DnInstorer
+          dn.add_to_org_role dn.rece_org_id,OrgRoleType::DnInstorer if dn.wayState!=DeliveryObjWayState::Returned
         end
       when DeliveryRoleMachineAction::DoStore
         stored=dn.delivery_items.where(:wayState=>DeliveryObjWayState::Received,:stored=>false).count

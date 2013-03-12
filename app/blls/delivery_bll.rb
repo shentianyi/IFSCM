@@ -73,6 +73,10 @@ module DeliveryBll
           pack=DeliveryPackage.new(:key=>ClassKeyHelper::gen_key("DeliveryPackage"),:parentKey=>dn.key,:packAmount=>packcount,
           :perPackAmount=>t.perPackAmount,:part_rel_id=>t.part_rel_id,:saleNo=>pl.saleNo,:purchaseNo=>pl.purchaseNo,
           :cpartNr=>pl.cpartNr,:spartNr=>pl.spartNr)
+          if t.order_item_id
+            pack.order_item_id=t.order_item_id
+            pack.orderNr=t.orderNr
+          end
           for i in 0...packcount
             item=DeliveryItem.new(:key=>ClassKeyHelper::gen_key("DeliveryItem"),
             :parentKey=>pack.key,:state=>dstate,:wayState=>DeliveryObjWayState::Intransit,:checked=>0,:stored=>0)

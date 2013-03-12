@@ -14,7 +14,7 @@ module CZ
     end
 
     def update_redis_id
-       self.rupdate(:id=>self.id)
+      self.rupdate(:id=>self.id)
     end
 
     def update_state_wayState
@@ -27,6 +27,18 @@ module CZ
     end
 
     def self.included(base)
+      def base.single_or_default key,mysql=false
+        obj=nil
+        if mysql
+          obj=find_from_mysql key
+        else
+          unless obj=find_from_redis(key)
+            obj=find_from_mysql key
+          end
+        end
+        return obj
+      end
+
       def base.get_children key,startIndex,endIndex
         key=generate_child_zset_key key
         total=$redis.zcard key
@@ -34,10 +46,6 @@ module CZ
           if  (keys=$redis.zrange(key,startIndex,endIndex,:withscores=>true)).count>0
             items=[]
             keys.each do |k,s|
-              # if $redis.hexists(k,"partRelId")
-                # $redis.hset(k,"part_rel_id",$redis.hget(k,"partRelId"))
-                # $redis.hdel(k,"partRelId")
-              # end
               i=eval(DeliveryBll.delivery_obj_converter s).rfind(k)
               items<<i
             end
@@ -51,6 +59,13 @@ module CZ
         "delivery:#{key}:child:zset"
       end
 
+      def base.find_from_mysql key
+        where(:key=>key).first
+      end
+
+      def base.find_from_redis key
+        rfind(key)
+      end
     end
 
   end
