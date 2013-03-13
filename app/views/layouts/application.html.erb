@@ -3,7 +3,6 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
   <title>IFSCM</title>
-  <meta itemprop="image" content="/assets/maintain.png">
   <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
   <%= stylesheet_link_tag    "application", :media => "all" %>
   <%= javascript_include_tag "application" %>
@@ -61,6 +60,7 @@
 						<dl>
 							<dt>查询</dt>
 							<dd><a href="../analysis/demand_cf">CF值查询</a></dd>
+							<dd><a href="../analysis/order_progress">订单进度</a></dd>
 						</dl>
 					</li>
 					<li><a href="../organisation_manager/search">供应商信息</a></li>
@@ -135,15 +135,15 @@
 	<div id="MessageBox" class="message-box">
        <div class="bg-grey">
             <div>信息</div>
-          	<div class="close-logo"></div>   	 	
-       </div>	
-		<p></p>
-	</div>
+            <div class="close-logo"></div>      
+       </div> 
+    <p></p>
+  </div>
 
 <div class="content">
-	  <div class="wrapcontent">
-			<%= yield %>
-	  </div>
+    <div class="wrapcontent">
+      <%= yield %>
+    </div>
 </div>
 </body>
 </html>

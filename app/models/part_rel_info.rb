@@ -25,7 +25,7 @@ class PartRelInfo<CZ::BaseClass
     super(key)
   end
   
-  private
+  private 
   def self.generate_key part_rel_id
     "part_rel_info:#{part_rel_id}"
   end

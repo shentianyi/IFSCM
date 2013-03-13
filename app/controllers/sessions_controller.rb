@@ -8,7 +8,8 @@ class SessionsController < ApplicationController
   def create
     if staff = Staff.authenticate( params[:staffNr], params[:password] )
       session[:staff_id] = staff.id
-      session[:org_id] = staff.orgId
+      # session[:org_id] = staff.orgId
+      session[:org_id]=staff.organisation_id
       #   session[:orgOpeType]=OrgOperateType::Client
       render :json=>{ :status=>1 }
     else

@@ -8,6 +8,7 @@ class Organisation < ActiveRecord::Base
   has_many :delivery_notes
   has_many :warehouses
   has_many :cost_centers
+  has_many :order_items
 
   include Redis::Search
   redis_search_index(:title_field => :name,
