@@ -5,6 +5,7 @@ class InitPartRelInfo
      puts "#{i+1}.#{pl.id}"
      pinfo=pl.create_part_rel_info
      puts "#{pinfo.cpartNr}-#{pinfo.spartNr}"
+     next unless pl.strategy
      pl.strategy.update_part_rel_info 
    end
  end

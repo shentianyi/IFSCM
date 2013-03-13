@@ -275,7 +275,7 @@ class DemanderController<ApplicationController
                         demand.save_to_send
                         ### need to new an Order
                         if nd.orderNr.present?
-                          order = @cz_org.order_items.build(:orderNr=>nd.orderNr, :total=>nd.amount, :rest=>nd.amount, :demander_key=>demand.key)
+                          order = @cz_org.order_items.build(:orderNr=>nd.orderNr, :total=>nd.amount, :rest=>nd.amount, :demander_key=>demand.key, :supplier_id=>nd.supplierId)
                           order.save
                           demand.rupdate( :order_item_id=>order.id )
                         end
@@ -560,6 +560,7 @@ class DemanderController<ApplicationController
               $redis.srem( "#{Rns::T}:#{d.type}", d.key )
               puts "key"+"-"*20
               puts d.key if d.rdestroy
+              order.destroy if order = OrderItem.where(:demander_key=>d.key).first
               render :json => {:flag=>true, :msg=>"成功："+dKey}
       else
         render :json => {:flag=>false, :msg=>"不存在！"}

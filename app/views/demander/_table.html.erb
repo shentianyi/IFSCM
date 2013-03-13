@@ -10,7 +10,9 @@
 			<th link="date_float" style="cursor: pointer" onclick="pop(this);">日期</th>
 			<th link="amount_float" style="cursor: pointer" onclick="pop(this);">数量</th>
 			<th link="type_float">预测类型</th>
+			<th>订单号</th>
 			<th link="rate_float">变动量</th>
+			<th></th>
 		</tr>
 		<tr class="divide" style="display: none">
 			<th class="nordvd"></th>
@@ -31,10 +33,10 @@
 				<th><%= d.clientNr %></th>
 				<th><%= d.spartNr%></th>
 			<% end %>
-			
 			<th><%= FormatHelper::demand_date_outside( d.date, d.type )%></th>
 			<th><%= d.amount%></th>
 			<th><%= d.type%></th>
+			<th><%= d.orderNr%></th>
 			<th>  
 	               <div class="forcastcompare">
 	                     <div class="lineforcast">

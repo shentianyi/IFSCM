@@ -32,8 +32,8 @@
 			<th><%= d.amount%></th>
 			<th>
 				<div class="orderprogress_baseline">
-					<div class="orderprogress_receipt" style="width:<%= o.receipt/o.total %>%"></div>
-					<div class="orderprogress_transit" style="width:<%= o.transit/o.total %>%"></div>
+					<div class="orderprogress_receipt" style="width:<%= (o.receipt/o.total) *100 %>%"><span style="display: none">已接收</span></div>
+					<div class="orderprogress_transit" style="width:<%= (o.transit/o.total) *100 %>%"><span style="display: none">在途</span></div>
 				</div>
 			</th>
 		  </tr>
