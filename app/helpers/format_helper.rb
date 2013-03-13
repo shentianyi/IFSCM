@@ -61,14 +61,14 @@ module FormatHelper
 
   def self.demand_date_inside date,type
     if date
-      if type=='D' or type=='T'
+      if type=='D' or type=='T' or type=='O'
         return  Time.parse(date)
       elsif type=='W'
         yw = date.split('/')
         date = Time.parse("#{yw.first}/1/1")+(60*60*24)*7*(yw.last.to_i-1)
-      date -= (60*60*24)*date.wday  if date.wday>0
-      date += (60*60*24)
-      return  date
+        date -= (60*60*24)*date.wday  if date.wday>0
+        date += (60*60*24)
+        return  date
       elsif type=='M'
         return  Time.parse(date)
       elsif type=='Y'
@@ -80,7 +80,7 @@ module FormatHelper
   
  def self.demand_date_outside date,type
     if date
-      if type=='D' or type=='T'
+      if type=='D' or type=='T' or type=='O'
         return  "#{date.year}/#{date.month}/#{date.day}"
       elsif type=='W'
         return  "#{date.year}/#{date.cweek}"

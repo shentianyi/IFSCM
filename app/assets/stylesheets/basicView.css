@@ -358,18 +358,23 @@ div.search_banner input {
 .orderprogress_baseline {
 	width: 300px;
 	border: 1px solid #dbdbdb;
+	background-color: red;
 	margin-top: 5px;
-	height: 15px;
+	height: 18px;
 	float: left;
 }
 .orderprogress_receipt {
 	float: left;
-	height: 15px;
+	height: 18px;
 	background-color: #208041;
 }
+/*.orderprogress_receipt:hover span {
+	position:absolute;
+	display:block;
+}*/
 .orderprogress_transit {
 	float: left;
-	height: 15px;
+	height: 18px;
 	background-color: #FFFF00;
 }
 /*********************************************	    chart                   */

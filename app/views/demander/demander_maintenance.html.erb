@@ -40,7 +40,9 @@ function demander_delete(e){
 			dKey: $(e).parent().parent().attr("key"),
 		},
 		function(data){
-				$('#result').html(data.msg);
+			if (data.flag)
+				$(e).parent().parent().remove();
+			$('#result').html(data.msg);
 		},
 		'json'		
 	);

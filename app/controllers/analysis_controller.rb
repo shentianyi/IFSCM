@@ -54,17 +54,20 @@ class AnalysisController < ApplicationController
     elsif request.post?
       begin
         raise( ArgumentError, "请输入订单号！" )  unless params[:orderNr].present? and orderNr = params[:orderNr].strip
-        orders = @cz_org.order_items.where(:orderNr=>orderNr)
+        if session[:orgOpeType]==OrgOperateType::Client
+          orders = @cz_org.order_items.where(:orderNr=>orderNr)
+        else
+          orders = @cz_org.client_order_items.where(:orderNr=>orderNr)
+        end
         
         @orderitems = orders.map { |o| [o, Demander.find_by_key(o.demander_key)] }
-        
         if @orderitems.blank?
           render :text=>"没有找到相关数据！"
         else
           render :partial => "order_item_list"
         end
-      rescue Exception => e
-        render :text=>e.to_s
+      # rescue Exception => e
+        # render :text=>e.to_s
       end
     end
   end

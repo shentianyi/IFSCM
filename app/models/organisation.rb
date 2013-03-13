@@ -9,6 +9,7 @@ class Organisation < ActiveRecord::Base
   has_many :warehouses
   has_many :cost_centers
   has_many :order_items
+  has_many :client_order_items, :class_name=>"OrderItem", :foreign_key=>"supplier_id"
 
   include Redis::Search
   redis_search_index(:title_field => :name,
