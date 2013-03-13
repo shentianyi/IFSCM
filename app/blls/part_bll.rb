@@ -32,9 +32,9 @@ module PartBll
 
   def self.update_part_strategy ids,posi,inspect_type,demote,demote_times,least_amount
     Strategy.where(:part_rel_id=>ids).all.each do |strategy|
-      # strategy.update_attributes(:leastAmount=>least_amount, :needCheck=>inspect_type,:demote=>demote,
-      # :demote_times=>demote_times,:position_id=>posi)
-      strategy.update_attributes(:leastAmount=>least_amount, :needCheck=>inspect_type,:position_id=>posi)
+      strategy.update_attributes(:leastAmount=>least_amount, :needCheck=>inspect_type,:demote=>demote,
+      :demote_times=>demote_times,:position_id=>posi)
+      # strategy.update_attributes(:leastAmount=>least_amount, :needCheck=>inspect_type,:position_id=>posi)
     end
   end
 end

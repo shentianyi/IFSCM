@@ -9,15 +9,12 @@ module LeoniNbtpDnList
     sendOrg=Organisation.find(dn.organisation_id)
     receOrg=Organisation.find(dn.rece_org_id)
 
-    if dn.items=DeliveryNote.get_children(dn.key,0,-1)[0]
-      dn.items.each do |p|
-        hrecord=gen_head(dn,sendOrg,receOrg,orl)
-        if p.items=DeliveryPackage.get_children(p.key,0,-1)[0]
-          p.items.each do |i|
-            brecord=gen_body(p,i.key)
-            dataset<<(hrecord+brecord)
-          end 
-        end
+    items=DeliveryBll.get_dn_list dn.key
+    if items and items.count>0
+      hrecord=gen_head(dn,sendOrg,receOrg,orl)
+      items.each do |item|
+        brecord=gen_body(item)
+        dataset<<(hrecord+brecord)
       end
     end
     return dataset
@@ -33,12 +30,12 @@ module LeoniNbtpDnList
     data[:SupplierOrgName]=sendOrg.name
     data[:SupplierOrgAddress]=sendOrg.address
     data[:ClientOrgName]=receOrg.name
-    data[:ClientOrgAddress]=receOrg.address    
+    data[:ClientOrgAddress]=receOrg.address
     ## still no:
     # supplierNr, clientNr , receStaffName, receStaffContact
     data[:SupplierNr]= orl.supplierNr
     data[:ClientNr]=orl.clientNr
-   contact=DnContact.find(dn.destination)
+    contact=DnContact.find(dn.destination)
     data[:ReceiverName]=contact.recer_name
     data[:ContactWay]=contact.recer_contact
     data[:DnDestination]=contact.rece_address
@@ -48,13 +45,19 @@ module LeoniNbtpDnList
     return record
   end
 
-  def self.gen_body pack,pkey
+  def self.gen_body pack
     record=[]
     data={}
-    data[:PerPackNum]= FormatHelper.string_to_int(pack.perPackAmount.to_s)
-    data[:PackNr]=pkey
-    data[:CPartNr]=pack.cpartNr
-    data[:SPartNr]=pack.spartNr
+    data[:PackNr]=pack.key
+    # if pack.respond_to?(:cpartNr)
+      data[:PerPackNum]= FormatHelper.string_to_int(pack.perPackAmount.to_s)
+      data[:CPartNr]=pack.cpartNr
+      data[:SPartNr]=pack.spartNr
+    # else
+      # data[:PerPackNum]= FormatHelper.string_to_int(pack.delivery_package.perPackAmount.to_s)
+      # data[:CPartNr]=pack.delivery_package.cpartNr
+      # data[:SPartNr]=pack.delivery_package.spartNr
+    # end
     @@body_keys.each do |key|
       record<<{:Key=>key,:Value=>data[key.to_sym]}
     end

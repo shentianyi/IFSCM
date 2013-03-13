@@ -38,7 +38,11 @@ module CZ
         end
         return obj
       end
-
+      
+      def base.rexists key
+        $redis.exists key
+      end
+      
       def base.get_children key,startIndex,endIndex
         key=generate_child_zset_key key
         total=$redis.zcard key

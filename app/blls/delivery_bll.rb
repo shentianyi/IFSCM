@@ -65,17 +65,13 @@ module DeliveryBll
         :state=>dstate,:staff_id=>staffId,:organisation_id=>orgId,:rece_org_id=>desiOrgId)
         temps.each do |t|
           packcount=t.packAmount
-          # pl=PartRel.find(t.part_rel_id)
           pl=PartRelInfo.find(t.part_rel_id)
-          # pack=DeliveryPackage.new(:key=>ClassKeyHelper::gen_key("DeliveryPackage"),:parentKey=>dn.key,:packAmount=>packcount,
-          # :perPackAmount=>t.perPackAmount,:part_rel_id=>t.part_rel_id,:saleNo=>pl.saleNo,:purchaseNo=>pl.purchaseNo,
-          # :cpartNr=>Part.get_partNr(desiOrgId,pl.client_part_id),:spartNr=>Part.get_partNr(orgId,pl.supplier_part_id))
           pack=DeliveryPackage.new(:key=>ClassKeyHelper::gen_key("DeliveryPackage"),:parentKey=>dn.key,:packAmount=>packcount,
           :perPackAmount=>t.perPackAmount,:part_rel_id=>t.part_rel_id,:saleNo=>pl.saleNo,:purchaseNo=>pl.purchaseNo,
           :cpartNr=>pl.cpartNr,:spartNr=>pl.spartNr)
           if t.order_item_id
-            pack.order_item_id=t.order_item_id
-            pack.orderNr=t.orderNr
+          pack.order_item_id=t.order_item_id
+          pack.orderNr=t.orderNr
           end
           for i in 0...packcount
             item=DeliveryItem.new(:key=>ClassKeyHelper::gen_key("DeliveryItem"),
@@ -99,21 +95,6 @@ module DeliveryBll
       msg.content='客户号不存在，请重新填写'
     end
     return msg
-  end
-
-  # ws
-  # [功能：] 获取运单详细
-  # 参数：
-  # - DeliveryBaseKey : key
-  # - int : startIndex
-  # - int : endIndex
-  # 返回值：
-  # - DeliveryNote.childernCount : 实例对象,子总数
-  def self.get_delivery_detail key,startIndex,endIndex
-    if result=(DeliveryNote.get_children key,startIndex,endIndex)
-    return result[0],result[1]
-    end
-    return nil
   end
 
   # ws]
@@ -197,24 +178,33 @@ module DeliveryBll
   # - 无
   def self.cancel_staff_dn staffId,dnKey
     if dn=DeliveryNote.single_or_default(dnKey)
-      if dn.staff_id.to_i==staffId
-        # dn.get_children 0,-1
-        if dn.items=DeliveryNote.get_children(dn.key,0,-1)[0]
-          dn.items.each do |i|
-            if i.items=DeliveryPackage.get_children(i.key,0,-1)[0]
-              i.items.each do |ii|
-                puts "pack item key:#{ii.key}"
-                ii.remove_from_parent
-                ii.rdestroy
-              end
-            end
-            puts "pack key:#{i.key}"
-            i.remove_from_parent
-            i.rdestroy
-          end
-        dn.rdestroy
-        end
+      if dn.staff_id==staffId
+        clean_redis_dn_method dn
       end
+    end
+  end
+
+  def self.clean_redis_dn id
+    if dn=DeliveryNote.find(id)
+      clean_redis_dn_method dn
+    end
+  end
+
+  def self.clean_redis_dn_method dn
+    if dn.items=DeliveryNote.get_children(dn.key,0,-1)[0]
+      dn.items.each do |i|
+        if i.items=DeliveryPackage.get_children(i.key,0,-1)[0]
+          i.items.each do |ii|
+            puts "pack item key:#{ii.key}"
+            ii.remove_from_parent
+            ii.rdestroy
+          end
+        end
+        puts "pack key:#{i.key}"
+        i.remove_from_parent
+        i.rdestroy
+      end
+    dn.rdestroy
     end
   end
 
@@ -322,26 +312,82 @@ module DeliveryBll
   # - string : dnKey
   # 返回值：
   # - array : delivery items
-  def self.get_dn_list dnKey,mysql=true
-    if mysql
+  def self.get_dn_list dnKey,redis=true,ditKeys=nil
+    redis=DeliveryNote.rexists(dnKey) if redis
+    if redis
+      items=[]
+      if dn=DeliveryNote.single_or_default(dnKey)
+        if ditKeys
+          ditKeys.each do |k|
+            if item=DeliveryItem.single_or_default(k)
+              p=DeliveryPackage.single_or_default(item.parentKey)
+              item.instance_variable_set('@attributes',item.attributes.merge({'cpartNr'=>p.cpartNr,'spartNr'=>p.spartNr,'perPackAmount'=>p.perPackAmount}))
+            items<<item
+            end
+          end
+        else
+          packs=DeliveryNote.get_children(dn.key,0,-1)[0]
+          packs.each do |p|
+            p.items=DeliveryPackage.get_children(p.key,0,-1)[0]
+            p.items.each do |item|
+              item.instance_variable_set('@attributes',item.attributes.merge({'cpartNr'=>p.cpartNr,'spartNr'=>p.spartNr,'perPackAmount'=>p.perPackAmount}))
+              items<<item
+            end
+          end
+        end
+      end
+    return items
+    else
       select="delivery_items.*,delivery_packages.cpartNr,delivery_packages.spartNr,delivery_packages.perPackAmount"
       condi={}
       condi["delivery_notes.key"]=dnKey
+      condi["delivery_items.key"]=ditKeys if ditKeys
       return DeliveryItem.joins(:delivery_package=>:delivery_note).find(:all,:select=>select,:conditions=>condi)
-    else
+    end
+  end
+
+  def self.get_dn_packinfos dnKey,redis=true
+    redis=DeliveryNote.rexists(dnKey) if redis
+    if redis
       items=nil
       if dn=DeliveryNote.single_or_default(dnKey)
         items=[]
         dn.items=DeliveryNote.get_children(dn.key,0,-1)[0]
         dn.items.each do |p|
-          p.items=DeliveryPackage.get_children(p.key,0,-1)[0]
-          p.items.each do |item|
-            items<<item
-          end
+          items<<p
         end
       end
     return items
+    else
+      condi={}
+      condi["delivery_notes.key"]=dnKey
+      return DeliveryPackage.joins(:delivery_note).find(:all,:conditions=>condi)
     end
+  end
+
+  # ws
+  # [功能：] 获取运单详细
+  # 参数：
+  # - DeliveryBaseKey : key
+  # - int : startIndex
+  # - int : endIndex
+  # 返回值：
+  # - DeliveryNote.childernCount : 实例对象,子总数
+  def self.get_delivery_detail dnKey,startIndex,endIndex,redis=true
+    redis=DeliveryNote.rexists(dnKey) if redis
+    count=items=nil
+    if redis
+      if result=(DeliveryNote.get_children dnKey,startIndex,endIndex)
+      items=result[0]
+      count=result[1]
+      end
+    else
+      condi={}
+      condi["delivery_notes.key"]=dnKey
+      count=DeliveryPackage.joins(:delivery_note).count(:conditions=>condi)
+      items=DeliveryPackage.joins(:delivery_note).limit(endIndex-startIndex+1).offset(startIndex).find(:all, :conditions=>condi) if count>0
+    end
+    return items,count
   end
 
   # ws
@@ -352,10 +398,6 @@ module DeliveryBll
   # - array : delivery items
   def self.get_dn_abnormal_pack id
     select="delivery_items.*,delivery_packages.perPackAmount,delivery_packages.packAmount,delivery_packages.cpartNr,delivery_packages.spartNr"
-    # condi={}
-    # condi["delivery_notes.id"]=id
-    # condi["delivery_items.state"]=DeliveryObjState::Abnormal
-    # condi["delivery_items.wayState"]=DeliveryItem.abnormal_waystate
     return DeliveryItem.joins(:delivery_package=>:delivery_note)
     .where("(delivery_items.state=? or delivery_items.wayState in (?)) and delivery_notes.id=?",DeliveryObjState::Abnormal,DeliveryItem.abnormal_waystate,id)
     .select(select).all
@@ -451,7 +493,8 @@ module DeliveryBll
   # - type : 接收/拒收
   # 返回值：
   # - 无
-  def self.delivery_item_inspect type,ids,dn_id,attrs
+  def self.delivery_item_inspect type,ids,dn_id,attrs,state
+    DeliveryItemState.where(:delivery_item_id=>ids).update_all(state)
     delivery_item_update_all 100,ids,attrs
     Resque.enqueue(DeliveryNoteWayStateRoleMachine,dn_id,DeliveryRoleMachineAction::DoInspect)
   end
@@ -506,7 +549,7 @@ module DeliveryBll
         end
       end
     elsif type==300
-      get_dn_list(index,false).each do |item|
+      get_dn_list(index).each do |item|
         item.rupdate(attrs)
       end
     end

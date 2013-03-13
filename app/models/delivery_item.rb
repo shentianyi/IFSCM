@@ -39,6 +39,7 @@ class DeliveryItem < ActiveRecord::Base
     @@abnormal_waystate
   end
   
+  
   private
 
   def update_delivery_note_state

@@ -20,7 +20,7 @@
 	</div>
 </div>
 <div id='delivery-items-div'>
-	<%= render :partial=>'dn_detail_items',:locals=>{:dnItems=>dn.items}%>
+	<%= render :partial=>'dn_detail_items',:locals=>{:dnItems=>@items}%>
 </div>
 <div class="botbts">
 	<div class="btprintdn botbtn" onclick="generate_dn_label_pdf(100);">
