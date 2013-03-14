@@ -1,16 +1,14 @@
 <link rel="stylesheet"  type="text/css" href="/assets/warehouse/stock_out.css" />
-<br /><br />
-仓库:<%= select_tag :whId,  options_for_select(@whlist),  prompt: "请选择仓库..." %>
-<br/><br />
-零件号:<%= text_field_tag :partNr %>
-<br /><br />
-<%= button_tag '库位列表',:class=>"normal-small-btn",:type=>'button',:onclick=>"stock_out_list();"%>
-<hr/>
+
+<div class="search_banner">
+	<span class="uploadfile">仓库：</span>
+	<%= select_tag :whId,  options_for_select(@whlist),  prompt: "请选择仓库..." %>
+	<span class="uploadfile">零件号：</span>
+	<%= text_field_tag :partNr %>
+	<%= button_tag '库位列表',:class=>"normal-small-btn",:type=>'button',:onclick=>"stock_out_list();"%>
+</div>
+
 <div id="positions_list"></div>
-
-<div style="clear: left"></div>
-<hr/>
-
 
 <script type="text/javascript">
 function stock_out_list(){
@@ -25,7 +23,6 @@ function stock_out_list(){
 		'html'		
 	);
 }
-
 
 function stock_out(e, str){
 	if (str==="scrap")
@@ -51,5 +48,4 @@ function stock_out(e, str){
 		'json'		
 	);
 }
-	
 </script>
