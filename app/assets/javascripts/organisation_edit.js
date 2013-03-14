@@ -38,6 +38,8 @@ function org_rel_new() {
 	var hash = {};
 	for (var i = 0; i < eles.length; i++)
 		hash[eles[i].name] = eles[i].value;
+	if ($('#orgrel_update').attr("checked"))
+		hash['CZ-orgrel-update'] = true;
 	$.post("../organisation_manager/create_org_relation", hash, function(data) {
 		if (data.flag) {
 			alert(data.msg);
@@ -95,6 +97,8 @@ function organisation_manager(idStr) {
 					data.submit();
 		},
 		beforeSend : function(xhr) {
+			if ($('#partrel_update').attr("checked"))
+				xhr.setRequestHeader('CZ-partrel-update', true);
 			xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'));
 		},
 		success : function(data) {

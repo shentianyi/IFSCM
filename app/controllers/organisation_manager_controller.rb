@@ -45,6 +45,7 @@ class OrganisationManagerController < ApplicationController
 
   def manager
     @list = Organisation.all.map {|o| [o.name, o.id] }
+    @adm = true if params[:adms]=="cz"
   end
 
   def create_staff
@@ -75,14 +76,25 @@ class OrganisationManagerController < ApplicationController
   end
 
   def create_org_relation
-    orgrel = OrganisationRelation.new(:clientNr=>params[:clientNr].strip, :supplierNr=>params[:supplierNr].strip,
-    :origin_supplier_id=>params[:supplierId], :origin_client_id=>params[:clientId])
-    if OrganisationRelation.where("origin_client_id = ? and origin_supplier_id = ? ", orgrel.origin_client_id, orgrel.origin_supplier_id).first
-      render :json=>{flag:false,msg:"失败！关系已存在，不可重复建立。"}
-    elsif orgrel.save
-      render :json=>{flag:true,msg:"新建成功"}
-    else
-      render :json=>{flag:false,msg:"失败！"}
+    begin
+      raise( ArgumentError, "请选择客户！" )  unless params[:clientId].present?
+      raise( ArgumentError, "请选择供应商！" )  unless params[:supplierId].present?
+      raise( ArgumentError, "请输入ClientNr！" )  unless params[:clientNr].present?
+      raise( ArgumentError, "请输入SupplierNr！" )  unless params[:supplierNr].present?
+
+      orgrel_old =  OrganisationRelation.where("origin_client_id = ? and origin_supplier_id = ? ", params[:clientId], params[:supplierId]).first
+      if params["CZ-orgrel-update"] == "true" and orgrel_old
+          orgrel_old.update_attributes(:clientNr=>params[:clientNr].strip, :supplierNr=>params[:supplierNr].strip)
+          render :json=>{flag:true,msg:"更新成功"}
+      else
+          raise( RuntimeError, "失败！关系已存在，不可重复建立。" ) if orgrel_old
+          orgrel = OrganisationRelation.new(:clientNr=>params[:clientNr].strip, :supplierNr=>params[:supplierNr].strip,
+                                                                            :origin_supplier_id=>params[:supplierId], :origin_client_id=>params[:clientId])
+          raise( RuntimeError, "失败！" ) unless orgrel.save
+          render :json=>{flag:true,msg:"新建成功"}
+      end
+    rescue Exception => e
+      render :json=>{flag:false,msg:e.to_s}
     end
   end
 
@@ -96,27 +108,43 @@ class OrganisationManagerController < ApplicationController
       dcsv.saveFile
       hfile = File.join($DETMP,dcsv.pathName)
       i=0
-      CSV.foreach(hfile,:headers=>true,:col_sep=>$CSVSP) do |row|
-        if row["Client"] and row["Supplier"] and row["CpartNr"] and row["SpartNr"] and row["SaleNo"] and row["PurchaseNo"]
-          next unless cli = Organisation.where(:abbr=>row["Client"].strip).first
-          next unless sup = Organisation.where(:abbr=>row["Supplier"].strip).first
-          next unless orgrel = OrganisationRelation.where("origin_client_id = ? and origin_supplier_id = ? ", cli.id, sup.id).first
-          cpartNr = row["CpartNr"].strip
-          spartNr = row["SpartNr"].strip
-          unless cpart = Part.where("organisation_id = ? and partNr = ?", cli.id, cpartNr).first
-            cpart = Part.new(:partNr=>cpartNr)
-          cli.parts<<cpart
-          end
-          unless spart = Part.where("organisation_id = ? and partNr = ?", sup.id, spartNr).first
-            spart = Part.new(:partNr=>spartNr)
-          sup.parts<<spart
-          end
-          pr = PartRel.new(:saleNo=>row["SaleNo"].strip, :purchaseNo=>row["PurchaseNo"].strip, :client_part_id=>cpart.id, :supplier_part_id=>spart.id, :organisation_relation_id=>orgrel.id)
-        i+=1 if pr.save
-        else
-          result = false
-          info="缺少列值或文件标题错误,请重新修改上传！"
-        end
+      if request.headers["CZ-partrel-update"] == "true"
+            CSV.foreach(hfile,:headers=>true,:col_sep=>$CSVSP) do |row|
+              if row["Client"] and row["Supplier"] and row["CpartNr"] and row["SpartNr"]
+                next unless cli = Organisation.where(:abbr=>row["Client"].strip).first
+                next unless sup = Organisation.where(:abbr=>row["Supplier"].strip).first
+                next unless orgrel = OrganisationRelation.where("origin_client_id = ? and origin_supplier_id = ? ", cli.id, sup.id).first
+                next unless cpart = Part.where("organisation_id = ? and partNr = ?", cli.id, row["CpartNr"].strip).first
+                next unless pr = PartRel.where(:client_part_id=>cpart.id,  :organisation_relation_id=>orgrel.id).first
+                i+=1 if pr.supplier_part.update_attributes(:partNr=>row["SpartNr"].strip)
+              else
+                result = false
+                info="缺少列值或文件标题错误,请重新修改上传！"
+              end
+            end
+      else
+            CSV.foreach(hfile,:headers=>true,:col_sep=>$CSVSP) do |row|
+                        if row["Client"] and row["Supplier"] and row["CpartNr"] and row["SpartNr"] and row["SaleNo"] and row["PurchaseNo"]
+                          next unless cli = Organisation.where(:abbr=>row["Client"].strip).first
+                          next unless sup = Organisation.where(:abbr=>row["Supplier"].strip).first
+                          next unless orgrel = OrganisationRelation.where("origin_client_id = ? and origin_supplier_id = ? ", cli.id, sup.id).first
+                          cpartNr = row["CpartNr"].strip
+                          spartNr = row["SpartNr"].strip
+                          unless cpart = Part.where("organisation_id = ? and partNr = ?", cli.id, cpartNr).first
+                            cpart = Part.new(:partNr=>cpartNr)
+                          cli.parts<<cpart
+                          end
+                          unless spart = Part.where("organisation_id = ? and partNr = ?", sup.id, spartNr).first
+                            spart = Part.new(:partNr=>spartNr)
+                            sup.parts<<spart
+                          end
+                          pr = PartRel.new(:saleNo=>row["SaleNo"].strip, :purchaseNo=>row["PurchaseNo"].strip, :client_part_id=>cpart.id, :supplier_part_id=>spart.id, :organisation_relation_id=>orgrel.id)
+                          i+=1 if pr.save
+                        else
+                          result = false
+                          info="缺少列值或文件标题错误,请重新修改上传！"
+                        end
+            end
       end
       info = "导入#{i}条。"
       File.delete(hfile)
