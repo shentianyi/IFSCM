@@ -27,9 +27,9 @@
 }
 
 .listoffiles {  
-  float:right;
-    
-    margin-right:-100px;
+  position:fixed;
+  left:1100px;
+  top:75px;
      background-color: #ffffff;
      border: 1px solid #dbdbdb;
      border-radius: 5px;
