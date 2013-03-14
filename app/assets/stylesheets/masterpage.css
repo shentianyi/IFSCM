@@ -691,6 +691,21 @@ input.uploadfile {
     	background-color:#0e80b0;
     	color:white;
     }
+    .normal-middle-btn{
+		height: 34px;
+    	border:2px solid #1297CF;
+    	color:white;
+    	background-color: #1297cf;
+    	font-family:"微软雅黑";
+    	font-size: 18px;
+    	vertical-align:bottom;
+    	cursor:pointer;
+    	margin-left:1px;
+    }
+    .normal-middle-btn:hover{
+    	border:2px solid #0e80b0;
+    	background-color:#0e80b0;
+    }
      #check-all{
         	border:2px solid #1297CF;
     	background-color:#1297CF;

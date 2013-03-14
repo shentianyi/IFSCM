@@ -5,7 +5,7 @@
 	<%= select_tag :whId,  options_for_select(@whlist),  prompt: "请选择仓库..." %>
 	<span class="uploadfile">零件号：</span>
 	<%= text_field_tag :partNr %>
-	<%= button_tag '库位列表',:class=>"normal-small-btn",:type=>'button',:onclick=>"stock_out_list();"%>
+	<%= button_tag '库位列表',:class=>"normal-middle-btn", :type=>'button',:onclick=>"stock_out_list();"%>
 </div>
 
 <div id="positions_list"></div>

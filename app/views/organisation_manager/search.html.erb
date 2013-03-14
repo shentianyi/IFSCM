@@ -24,10 +24,16 @@
 		cs_search({});
 	});
 </script>
-<br/>
+
+<!-- <div id="searchline" class="search_banner">
+	<%= text_field_tag :partNr %>
+	<%= button_tag '库位列表',:class=>"normal-middle-btn", :type=>'button',:onclick=>"stock_out_list();"%>
+</div> -->
+
+
 <div id="searchline">
 	<input type="text" id='orgSearchBox' name="floats" class="searchsupp" placeholder="搜索筛选条件" />
-	<input type="button" id='orgSearchBut' name="logosearchv" class="logosearchv btn" value="搜索" />
+	<input type="button" id='orgSearchBut' name="logosearchv" class="logosearchv btn normal-small-btn" value="搜索" />
 </div>
 <hr/>
 <br/>
