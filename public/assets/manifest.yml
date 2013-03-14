@@ -21,6 +21,7 @@ btnchov.png: btnchov-3136ae84f84eb3a3ad10f371e8db41d9.png
 btnhov.png: btnhov-e4b97868dc30eb79c35fe93f6fecff59.png
 cancel.png: cancel-4596a2aac412dee3ce1153970c0b8bc0.png
 cancel.psd: cancel-368545b64d0fa13c82821e9283281d6e.psd
+cf-up-sign.png: cf-up-sign-e830c23d416a2a7d18730bebff715407.png
 chart.png: chart-de7e2675c722647703d546ccf5eb3a22.png
 chartbutton1a.png: chartbutton1a-5996401d31f8348c5c1eae429e35226a.png
 chartbutton1b.png: chartbutton1b-509bdc89467dbaded4c026549b6300d3.png
@@ -56,7 +57,10 @@ deletepic.png: deletepic-2142b08950b0c2dcb68bc295c0940087.png
 deliver-printer.png: deliver-printer-42d5c9aadc12e9c4674568e3d9cd5be3.png
 dotchecked.png: dotchecked-57f19892433c7707ff733e8479b3bd70.png
 dotunchecked.png: dotunchecked-241a4c7e36785040e394206ea50f6c06.png
+down-sign.png: down-sign-51f7957763aad6a1e060b82dd68c8424.png
+down-sign.psd: down-sign-5c0e6b877a6db77b30b605287226ba88.psd
 download.png: download-19eff3f1f04961ae45648739ac93a710.png
+drop-sign.png: drop-sign-a67ef0fa3ba9736765439cd150d5bad0.png
 edit.png: edit-4fd3be95cfc2cf7a200cb89f83c60637.png
 ensurebtbg.png: ensurebtbg-d962849602603dca4cafecc330c4db08.png
 enter-print.png: enter-print-c2ea46d46371f09c80c03c8275099629.png
@@ -230,4 +234,4 @@ welcome/featurebg.png: welcome/featurebg-ee6fbfdb0d13de143d2b2a02ae047adc.png
 welcome/featurebg.psd: welcome/featurebg-b054fa82cfcfd29766833fee9df19a82.psd
 welcome/featuresshow.psd: welcome/featuresshow-3f3612bce08530e0b4a924a104c478a0.psd
 application.js: application-8698391623bac9a2bbce291d20dd461d.js
-application.css: application-e2e185e5817db3d026eefaef6b286b57.css
+application.css: application-8421363dc659f302cd6bf1fd64a4ff00.css
