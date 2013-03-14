@@ -3,59 +3,45 @@ module LeoniNbtpDpack
   @@label_keys=["SupplierNr","CPartNr","Description","Quantity","DnPackNr","Destination"]
 
   def self.gen_data dn,orl,diKeys=nil
-    if diKeys
-      return gen_selected_di_label dn,orl,diKeys
-    else
-      return gen_all_di_label dn,orl
-    end
-
+    return gen_di_label dn,orl,diKeys
   end
 
   private
 
-  def self.gen_all_di_label dn,orl
+  def self.gen_di_label dn,orl,diKeys
     dataset=[]
-    if dn.items=DeliveryNote.get_children(dn.key,0,-1)[0]
-      dn.items.each do |p|
-        if p.items=DeliveryPackage.get_children(p.key,0,-1)[0]
-          p.items.each do |i|
-            record=gen_label(p,i.key,orl)
-            dataset<<record
-          end
-        end
+    items=DeliveryBll.get_dn_list dn.key,true,diKeys
+    if items and items.count>0
+      items.each do |item|
+        record=gen_label(item,orl)
+        dataset<<record
       end
     end
     return dataset
   end
 
-  def self.gen_selected_di_label dn,orl,diKeys
-    dataset=[]
-    diKeys.each do |k|
-      if i=DeliveryItem.single_or_default(k)
-        p=DeliveryPackage.single_or_default(i.parentKey)
-        record=gen_label(p,i.key,orl)
-      dataset<<record
-      end
-    end
-    return dataset
-  end
-
-  def self.gen_label pack,packNr,orl
+  def self.gen_label pack,orl
     record=[]
     data={}
     data[:SupplierNr]= orl.supplierNr
-    data[:CPartNr]=pack.cpartNr
-    data[:Description]=pack.spartNr
-    # data[:SendDate]=sendDate
-    data[:Quantity]=FormatHelper.string_to_int(pack.perPackAmount.to_s)
     data[:Destination]="WE87"
+    # if pack.respond_to?(:cpartNr)
+      data[:Quantity]= FormatHelper.string_to_int(pack.perPackAmount.to_s)
+      data[:CPartNr]=pack.cpartNr
+      data[:Description]=pack.spartNr
+    # else
+      # data[:Quantity]= FormatHelper.string_to_int(pack.delivery_package.perPackAmount.to_s)
+      # data[:CPartNr]=pack.delivery_package.cpartNr
+      # data[:Description]=pack.delivery_package.spartNr
+    # end
+
     # pl=PartRelInfo.find(pack.part_rel_id)
     # if pl.position_nr.nil? or pl.position_nr.length==0
-      # raise DataMissingError.new,"零件:#{pack.spartNr}未设置零件接收点！请设置好再打印包装箱标签！"
+    # raise DataMissingError.new,"零件:#{pack.spartNr}未设置零件接收点！请设置好再打印包装箱标签！"
     # else
-      # data[:Destination]=pl.position_nr
+    # data[:Destination]=pl.position_nr
     # end
-    data[:DnPackNr]=packNr
+    data[:DnPackNr]=pack.key
     @@label_keys.each do |key|
       record<<{:Key=>key,:Value=>data[key.to_sym]}
     end

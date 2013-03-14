@@ -8,15 +8,14 @@ module LeoniNbtpDn
     dataset=[]
     sendOrg=Organisation.find(dn.organisation_id)
     receOrg=Organisation.find(dn.rece_org_id)
-
-    if dn.items=DeliveryNote.get_children(dn.key,0,-1)[0]
-      dn.items.each do |p|
-        record=gen_head(dn,sendOrg,receOrg,orl)
-        record=gen_body(p,record)
-        dataset<<record
+    
+    packs=DeliveryBll.get_dn_packinfos dn.key
+    if packs and packs.count>0
+      hrecord=gen_head(dn,sendOrg,receOrg,orl)
+      packs.each do |p|         
+        dataset<<(gen_body(p)+hrecord)
       end
     end
-    puts "%%#{dataset.to_json}"
     return dataset
   end
 
@@ -46,14 +45,14 @@ module LeoniNbtpDn
     return record
   end
 
-  def self.gen_body pack,record
+  def self.gen_body pack
+    record=[]
     data={}
     data[:PerPackNum]= FormatHelper.string_to_int(pack.perPackAmount.to_s)
     data[:PackNum]=pack.packAmount
     data[:TotalQuantity]=FormatHelper.string_multiply(data[:PerPackNum],pack.packAmount)
     data[:CPartNr]=pack.cpartNr
     data[:SPartNr]=pack.spartNr
-
     @@body_keys.each do |key|
       record<<{:Key=>key,:Value=>data[key.to_sym]}
     end
