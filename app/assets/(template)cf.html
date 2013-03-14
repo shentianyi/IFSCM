@@ -24,6 +24,11 @@
                     	$(this).addClass("cf-searchtype-border");
                     // }				
 				});
+				
+				$(".drop-sign").click(function(){
+					
+					$(".cf-bar").slideToggle("slow");
+				})
 
 			})
 		</script>
@@ -90,7 +95,11 @@
 						<h1>请先选择条件</h1>
 					</div>
 				</div>
+				<!-- add	 --><div class="fix-cfbar-position">
+					
 				<div id="search_expired_vertical_bar" class="cf-bar">
+					
+				
 					<div id="supplier_float" class="cf-box texts" >
 						<span class="cf-contenttype">供应商号</span>
 						<input class="searchcontent ui-autocomplete-input" type="text" placeholder="请输入供应商号" name="searchcontent" autocomplete="off">
@@ -120,8 +129,15 @@
 						<input class="normal-small-btn cf-btn-first" type="button" value="取消" name="cancel">
 						<input class="normal-small-btn " type="button" value="搜索" name="search">
 					</div>
-				</div>
 
+					
+				</div>
+           
+                					
+			<!-- add	 -->		<div class="drop-sign">
+						
+		     </div>
+		    </div>
 				<!-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
 			</div>
 		</div>

@@ -14,7 +14,7 @@
 <div  class="cf-drawing" >
 	<div id="charting" class="cf-put-drawing">	<h1>请先选择条件</h1> </div>
 </div>
-
+<div class="fix-cfbar-position">
 <div id="search_expired_vertical_bar" class="cf-bar">
 	<% if session[:orgOpeType]==OrgOperateType::Client %>
 		<div class="cf-box  texts" id="supplier_float" >
@@ -50,8 +50,9 @@
 		<input type="button" name="search" class="normal-small-btn" value="搜索" />
 	</div>
 </div>
-
-
+<div class="drop-sign">
+</div>
+</div>
 <div id='result' class="tableview" style="clear: left"></div>
 <script type="text/javascript">
 ///////////////////////////////////////////////////////////////////	        ext     search
@@ -164,6 +165,11 @@ $(function() {
           appendTo : "#partNr_float"
      });
 });
+$(document).ready(function(){
+	$(".drop-sign").click(function(){					
+					$(".cf-bar").slideToggle("slow");
+				})
+})
 ///////////////////////////////////////////////////////////////////         predict type
 </script>
 

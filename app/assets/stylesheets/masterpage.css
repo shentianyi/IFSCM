@@ -834,6 +834,20 @@ input.uploadfile {
 	
 }
 /**************************************************     cf    */
+.drop-sign{
+	cursor:pointer;
+	width:268px;
+	height:20px;
+	background-image:url("drop-sign.png");
+	background-position:center;
+	background-repeat:no-repeat;
+	margin-left:5px;
+}
+.fix-cfbar-position{
+		position:fixed;
+	left:860px;
+	top:40px;
+}
 .cf-btn-first{
 	margin-left:151px;
 	margin-top:15px;
@@ -874,9 +888,7 @@ input.uploadfile {
 	margin-top:120px;
 }
 .cf-bar{
-	position:fixed;
-	left:860px;
-	top:40px;
+    display:none;
 	border-bottom:4px solid #EAEDEC;
     border-left:4px solid #EAEDEC;
     border-right:4px solid #EAEDEC;
