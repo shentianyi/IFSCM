@@ -1,18 +1,21 @@
 .wrap-content{
 	margin-left:65px;
-	margin-top:80px;
+	margin-top:60px;
 }
 /*customer-index*/
-.wrap-content td{
+.wrap-content th{
 	width:200px;
 	height:150px;
 
 }
-tr:hover td{
-	background:none;}
-tr:hover {
-	background-color: white; } 
-.wrap-content td a{
+.wrap-content tr:first-child th{
+	border-bottom:1px dotted #9d9d9d;
+}
+
+.wrap-content tr:hover {
+	background-color:#ffffff !important;
+	} 
+.wrap-content th a{
 	padding:60px 150px 60px 50px;
 	text-decoration:none;
 }
