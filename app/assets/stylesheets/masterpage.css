@@ -843,13 +843,27 @@ input.uploadfile {
 	background-repeat:no-repeat;
 	margin-left:5px;
 }
+.cf-up-sign{
+	width:30px;
+	height:30px;
+	background-image:url("cf-up-sign.png");
+	background-position:center;
+	background-repeat:no-repeat;
+	float:left;
+	margin-top:10px;
+	margin-left:10px;
+	cursor:pointer;
+	border:1px solid #eaedec;
+	border-radius:5px;
+	-webkit-border-radius:5px;
+}
 .fix-cfbar-position{
 	position:fixed;
 	left:860px;
 	top:40px;
 }
 .cf-btn-first{
-	margin-left:151px;
+	margin-left:107px;
 	margin-top:15px;
 	margin-right:5px
 }

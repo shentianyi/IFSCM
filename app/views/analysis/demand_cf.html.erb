@@ -49,8 +49,8 @@
 		<div id="search_expired_button" >
 			<input type="button" name="cancel" class="normal-small-btn cf-btn-first" value="取消" />
 			<input type="button" name="search" class="normal-small-btn" value="搜索" />
+			<div class="cf-up-sign"></div>
 		</div>
-		<div class="drop-sign"></div>
 	</div>
 	<div class="drop-sign"></div>
 </div>
@@ -166,6 +166,9 @@ $(function() {
      });
  	$(".drop-sign").click(function(){					
 				$(".cf-bar").slideToggle("slow");
+	});
+     $(".cf-up-sign").click(function(){
+					$(".cf-bar").slideUp("slow");
 	});
 });
 ///////////////////////////////////////////////////////////////////         predict type
