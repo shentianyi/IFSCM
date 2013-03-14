@@ -7,13 +7,17 @@ module TPrinter
     begin
       printer,dataset=generate_dn_print_data(dnKey,type)
       result=Wcfer::PdfPrinter.generate_dn_pdf(printer.template,dataset,dnKey)
-      msg.result= result[:result]
+      msg.result = result[:result]
       msg.content=result[:content]
     rescue DataMissingError=>e
       msg.content=e.message
     rescue NoMethodError=>e
+      puts e.message
+      puts e.backtrace
       msg.content="打印机模板未设置，联系系统供应商进行设置"
-    rescue Excetion=>e
+    rescue Exception=>e
+         puts e.message
+      puts e.backtrace
       msg.content="打印服务错误，请联系系统供应商"
     end
     return msg
@@ -30,7 +34,7 @@ module TPrinter
       msg.content=e.message
     rescue NoMethodError=>e
       msg.content="打印机模板未设置，联系系统供应商进行设置"
-    rescue Excetion=>e
+    rescue Exception=>e
       msg.content="打印服务错误，请联系系统供应商"
     end
     return msg

@@ -18,9 +18,9 @@
 			<th class="nordvd"></th>
 			<th class="lastdvd"></th>
 		</tr>
-		<% i=0 ; @posilist.each do |d|	%>
+		<% @posilist.each.with_index do |d, index|	%>
 		  <tr class="norline hoverable" posiid=<%= d.id %> >
-			<th><%= i+=1%></th>
+			<th><%= index+1%></th>
 			<th><%= d.nr%></th>
 			<th><%= d.partNr%></th>
 			<th><%= FormatHelper.string_to_int(d.total.to_s)%></th>

@@ -1,7 +1,25 @@
 .wrap-content{
 	margin-left:65px;
-	margin-top:110px;
+	margin-top:60px;
 }
+/*customer-index*/
+.wrap-content th{
+	width:200px;
+	height:150px;
+
+}
+.wrap-content tr:first-child th{
+	border-bottom:1px dotted #9d9d9d;
+}
+
+.wrap-content tr:hover {
+	background-color:#ffffff !important;
+	} 
+.wrap-content th a{
+	padding:60px 150px 60px 50px;
+	text-decoration:none;
+}
+
 .wrap-content ul{
 	display:block;
 	padding-left:0px;
@@ -41,52 +59,65 @@
 	padding-right:130px;
     margin-left:10px;
 }
-.check-receive{
-  background-image:url("img/check-receive1.png");
-   background-position:center;
+.interface-img{
+	cursor:pointer;
+	   background-position:center;
    background-repeat:no-repeat;
+}
+.check-receive{
+
+  background-image:url("../images/img/check-receive1.png");
+
 }
 .check-receive:hover{
-   background-image:url("img/check-receive-hover1.png");
+	
+   background-image:url("../images/img/check-receive-hover1.png");
+ 
 }
 .deal-detection{
-  background-image:url("img/deal-detection1.png");
-   background-position:center;
-   background-repeat:no-repeat;
+	
+  background-image:url("../images/img/deal-detection1.png");
+
 }
 .deal-detection:hover{
-  background-image:url("img/deal-detection-hover1.png");
+	
+  background-image:url("../images/img/deal-detection-hover1.png");
+ 
 }
 .deal-check{
-  background-image:url("img/deal-check.png");
-   background-position:center;
-   background-repeat:no-repeat;
+
+  background-image:url("../images/img/deal-check.png");
+
 }
 .deal-check:hover{
-  background-image:url("img/deal-check-hover.png");
+
+  background-image:url("../images/img/deal-check-hover.png");
+ 
 }
 .deal-delivery{
-  background-image:url("img/deal-delivery.png");
-   background-position:center;
-   background-repeat:no-repeat;
+
+  background-image:url("../images/img/deal-delivery.png");
+
 }
 .deal-delivery:hover{
-  background-image:url("img/deal-delivery-hover.png");
+  background-image:url("../images/img/deal-delivery-hover.png");
+
 }
 .enter-store{
-  background-image:url("img/enter-store1.png");
-   background-position:center;
-   background-repeat:no-repeat;
+
+  background-image:url("../images/img/enter-store1.png");
+
 }
 .enter-store:hover{
-	background-image:url("img/enter-store-hover1.png");
+	background-image:url("../images/img/enter-store-hover1.png");
+
 }
-.wrap-content li.outer-store{
-  background-image:url("img/outer-store1.png");
-   background-position:center;
-   background-repeat:no-repeat;
-   margin-left:20px;
+.outer-store{
+  background-image:url("../images/img/outer-store1.png");
+
+
 }
-.wrap-content li.outer-store:hover{
-	 background-image:url("img/outer-store-hover1.png");
+.outer-store:hover{
+	 background-image:url("../images/img/outer-store-hover1.png");
+
 }

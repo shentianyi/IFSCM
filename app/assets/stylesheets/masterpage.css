@@ -691,6 +691,21 @@ input.uploadfile {
     	background-color:#0e80b0;
     	color:white;
     }
+    .normal-middle-btn{
+		height: 34px;
+    	border:2px solid #1297CF;
+    	color:white;
+    	background-color: #1297cf;
+    	font-family:"微软雅黑";
+    	font-size: 18px;
+    	vertical-align:bottom;
+    	cursor:pointer;
+    	margin-left:1px;
+    }
+    .normal-middle-btn:hover{
+    	border:2px solid #0e80b0;
+    	background-color:#0e80b0;
+    }
      #check-all{
         	border:2px solid #1297CF;
     	background-color:#1297CF;
@@ -834,8 +849,36 @@ input.uploadfile {
 	
 }
 /**************************************************     cf    */
+.drop-sign{
+	cursor:pointer;
+	width:268px;
+	height:20px;
+	background-image:url("drop-sign.png");
+	background-position:center;
+	background-repeat:no-repeat;
+	margin-left:5px;
+}
+.cf-up-sign{
+	width:30px;
+	height:30px;
+	background-image:url("cf-up-sign.png");
+	background-position:center;
+	background-repeat:no-repeat;
+	float:left;
+	margin-top:10px;
+	margin-left:10px;
+	cursor:pointer;
+	border:1px solid #eaedec;
+	border-radius:5px;
+	-webkit-border-radius:5px;
+}
+.fix-cfbar-position{
+	position:fixed;
+	left:860px;
+	top:40px;
+}
 .cf-btn-first{
-	margin-left:151px;
+	margin-left:107px !important;
 	margin-top:15px;
 	margin-right:5px
 }
@@ -874,9 +917,7 @@ input.uploadfile {
 	margin-top:120px;
 }
 .cf-bar{
-	position:fixed;
-	left:860px;
-	top:40px;
+   display:none;
 	border-bottom:4px solid #EAEDEC;
     border-left:4px solid #EAEDEC;
     border-right:4px solid #EAEDEC;
@@ -914,3 +955,54 @@ input.uploadfile {
     width: 246px;
     cursor:default;
     }
+/**************************************************     download-page   */
+.down-load-interface{
+		margin-left:10px;
+	margin-top:80px;
+	list-style:none;
+}
+
+.down-load-interface li{
+	height:200px;
+	width:700px;
+	margin-top:40px;
+	cursor:pointer;
+		border-radius:10px;
+	-webkit-border-radius:10px;
+	box-shadow:8px 8px 3px #9d9d9d;
+	-webkit-box-shadow:5px 5px 2px #9d9d9d;
+	border:3px solid #eaedec;
+
+
+}
+.down-items h2{
+	color:#1297cf;
+	font-size:36px;
+	margin-top:73px;
+	margin-left:72px;
+	display:inline-block;
+}
+.down-sign{
+    background-image:url("../images/down-sign.png");
+    background-repeat:no-repeat;
+    background-position:16px center;
+	border-left:2px dotted #9d9d9d;
+	
+	width:120px;
+	height:150px;
+	border-left:1px dotted #9d9d9d;
+	margin-top:24px;
+	margin-right:60px;
+}
+.down-client{
+
+
+
+}
+.down-user-ticket{
+	
+}
+
+
+
+

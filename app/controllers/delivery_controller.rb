@@ -294,10 +294,14 @@ class DeliveryController < ApplicationController
       if dit=DeliveryItemTemp.find(params[:ditkey])
         per=params[:perPackAmount]
         packN=params[:packAmount]
-        dit.update(:packAmount=>packN,:perPackAmount=>per,
-        :total=>FormatHelper.string_multiply(per,packN))
-        msg.result=true
-        msg.object=dit
+        total=FormatHelper.string_multiply(per,packN)
+        if dit.order_item_id and dit.rest.to_f<total
+            msg.content="订单未发送量为:#{dit.rest},目前总量超出"
+        else
+          dit.update(:packAmount=>packN,:perPackAmount=>per,:total=>total)
+            msg.result=true
+            msg.object=dit
+        end
       else
         msg.content="运单缓存项不存在"
       end
@@ -345,7 +349,7 @@ class DeliveryController < ApplicationController
     if @msg.result
       @currentPage=pageIndex=params[:p].nil? ? 0 : params[:p].to_i
         startIndex,endIndex=PageHelper::generate_page_index(pageIndex,$DEPSIZE)
-        @dn.items,@totalCount=DeliveryBll.get_delivery_detail @dn.key,startIndex,endIndex
+        @items,@totalCount=DeliveryBll.get_delivery_detail @dn.key,startIndex,endIndex
         if @totalCount
           @totalPages=PageHelper::generate_page_count @totalCount,$DEPSIZE
         @msg.object=@dn
@@ -377,8 +381,8 @@ class DeliveryController < ApplicationController
       @params={:dnKey=>params[:dnKey]}
      if @msg and @msg.result
        if @dn.can_accept
-          @list=DeliveryBll.get_dn_list params[:dnKey]
-            if @list.count>0
+          @list=DeliveryBll.get_dn_list params[:dnKey],false
+          if @list.count>0
           @inspects=DeliveryObjInspectState.all.collect{|r| [r.desc,r.value]}[1..-1]
         else
           @msg.result=false
@@ -490,27 +494,19 @@ class DeliveryController < ApplicationController
         type=params[:type].to_i
         ids=params[:ids].split(',')
         if type==DeliveryObjInspectState::Normal
-          Resque.enqueue(DeliveryItemInspector,100,ids,@dn.id,{:checked=>true,:state=>type})
-          @msg.object=DeliveryObjState::Normal          
+          itemState=@msg.object=DeliveryObjState::Normal          
         elsif type!=DeliveryObjInspectState::Normal
-          @msg.object=DeliveryObjState::Abnormal
-          if params[:return]
-            # denied=Storage.return_denied(ids)
-            # if denied              
-              # @msg.result=false
-              # @msg.object=denied
-            # else           
-               Resque.enqueue(DeliveryItemReturner,ids,@dn.id)
-               set_way_state_code(DeliveryObjWayState::Returned)
-            # end           
+          itemState=@msg.object=DeliveryObjState::Abnormal
+          if params[:return]        
+             Resque.enqueue(DeliveryItemReturner,ids,@dn.id)
+             set_way_state_code(DeliveryObjWayState::Returned)                    
           end            
-          @dn.update_attributes(:state=>DeliveryObjState::Abnormal)  
-          Resque.enqueue(DeliveryItemInspector,100,ids,@dn.id,{:checked=>true,:state=>DeliveryObjState::Abnormal})  
-        end      
-        if @msg.result         
-          @msg.content=DeliveryObjState.get_desc_by_value(@msg.object)      
-          DeliveryItemState.where(:delivery_item_id=>ids).update_all(:state=>type,:desc=>params[:desc]||"检验通过")    
-          end     
+          @dn.update_attributes(:state=>itemState)           
+        end             
+        @msg.content=DeliveryObjState.get_desc_by_value(@msg.object)   
+        state={:state=>type,:desc=>params[:desc]||"检验通过"}
+        attrs={:checked=>true,:state=>itemState}
+        Resque.enqueue(DeliveryItemInspector,100,ids,@dn.id,attrs,state)      
       end
       render :json=>@msg
       end

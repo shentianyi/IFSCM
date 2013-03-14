@@ -22,7 +22,7 @@ Redis::Search.configure do |config|
 end
 
  
-# Organisation.new
-# OrganisationRelation.new
-# Part.new
+Organisation.new
+OrganisationRelation.new
+Part.new
   

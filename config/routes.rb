@@ -132,6 +132,7 @@ Demand::Application.routes.draw do
   
   controller :analysis do
     match "analysis/demand_cf" => :demand_cf
+    match "analysis/order_progress" => :order_progress
   end
 
   namespace :api,defaults:{format:'json'} do

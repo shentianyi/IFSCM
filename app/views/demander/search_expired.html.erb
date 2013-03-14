@@ -3,36 +3,37 @@
 <div id="search_expired_vertical_bar" style="position: fixed; top: 100px; left: 120px">
 	<% if session[:orgOpeType]==OrgOperateType::Client %>
 		<div class="textsearchbox texts" id="supplier_float" style="position: relative">
-		     <span class="searchcontenttype">供应商号</span>
+		     <span class="filter-subtitle">供应商号</span>
 		     <input type="text" name="searchcontent" class="searchcontent" placeholder="请输入供应商号" />
 		</div>
 	<% else %>
 		<div class="textsearchbox texts" id="client_float" style="position: relative">
-		     <span class="searchcontenttype">客户号</span>
+		     <span class="filter-subtitle">客户号</span>
 		     <input type="text" name="searchcontent" class="searchcontent" placeholder="请输入客户号" />
 		</div>
 	<% end %>
 	<div class="textsearchbox texts" id="partNr_float" style="position: relative">
-	     <span class="searchcontenttype">零件号</span>
+	     <span class="filter-subtitle">零件号</span>
 	     <input type="text" name="searchcontent" class="searchcontent" placeholder="请输入零件号" />
 	</div>
 	<div class="textsearchbox ranges" id="date_float" style="position: relative">
-	     <span class="searchcontenttype ">日期</span>
+	     <span class="filter-subtitle ">日期</span>
 	     <input type="text" name="searchcontent" class="searchcontent" placeholder="请选择开始时间" />
 	     <input type="text" name="searchcontent" class="searchcontent" placeholder="请选择结束时间" />
 	</div>
 	<div class="textsearchbox ranges" id="amount_float" style="position: relative">
-	     <span class="searchcontenttype ">数量</span>
+	     <span class="filter-subtitle ">数量</span>
 	     <input type="text" name="searchcontent" class="searchcontent" placeholder="请输入起始数字" />
 	     <input type="text" name="searchcontent" class="searchcontent" placeholder="请选择截止数字" />
 	</div>
 	<div class="textsearchbox texts" id="type_float" style="position: relative">
-	     <span class="searchcontenttype ">预测类型</span>
+	     <span class="filter-subtitle ">预测类型</span>
 	     <input type="button"	name="searchtype" class="searchforcasttype" value="D" />
 	     <input type="button" name="searchtype" class="searchforcasttype"	value="W" />
 	     <input type="button" name="searchtype" class="searchforcasttype"	value="M" />
 	     <input type="button" name="searchtype"	class="searchforcasttype" value="Y" />
 	     <input type="button"	name="searchtype" class="searchforcasttype" value="T" />
+	     <input type="button"	name="searchtype" class="searchforcasttype" value="O" />
 	</div>
 	<div id="search_expired_button" style="position: relative">
 		<input type="button" name="cancel" class="startsearch" value="取消" />

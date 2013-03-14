@@ -4,24 +4,14 @@ require 'base_delivery'
 
 class DeliveryPackage < ActiveRecord::Base
   attr_accessible :cpartNr, :key,:parentKey,:packAmount,  :perPackAmount, :purchaseNo, :saleNo, :spartNr, :total
-  attr_accessible :id, :created_at, :updated_at,:delivery_note_id,:part_rel_id
+  attr_accessible :id, :created_at, :updated_at,:delivery_note_id,:part_rel_id,:order_item_id,:orderNr
   
   belongs_to :delivery_note
+  belongs_to :order_item
   belongs_to :part_rel
   has_many :delivery_items,:dependent=>:destroy
   
   include CZ::BaseModule
   include CZ::DeliveryBase
   
-  
-  after_save :update_redis_id
-    
-  def self.single_or_default key
-    find_from_redis key
-  end
-  
-  private
-  def self.find_from_redis key
-    rfind(key)
-  end
 end

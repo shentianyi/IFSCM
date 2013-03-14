@@ -15,22 +15,14 @@ class DeliveryNote < ActiveRecord::Base
   include CZ::BaseModule
   include CZ::DeliveryBase
 
-  after_create :update_redis_id,:update_wayState_next_role
-  after_update :update_state_wayState ,:update_wayState_next_role
+  after_create :update_wayState_next_role
+  after_update :update_wayState_next_role
 
   @@can_inspect_waystate=[DeliveryObjWayState::Received]
   @@can_accept_waystate=[DeliveryObjWayState::Intransit,DeliveryObjWayState::Arrived,DeliveryObjWayState::InAccept]
   @@can_doaccept_waystate=[DeliveryObjWayState::Arrived,DeliveryObjWayState::InAccept]
   @@can_instore_waystate=[DeliveryObjWayState::Received]
   @@can_arrive_waystate=[DeliveryObjWayState::Intransit]
-
-  def self.single_or_default key,mysql=false
-    if mysql
-      where(:key=>key).first
-    else
-      return find_from_redis key
-    end
-  end
 
   # ws
   # [功能：] 将运单加入用户 ZSet
@@ -224,11 +216,6 @@ class DeliveryNote < ActiveRecord::Base
   end
 
   private
-
-  def self.find_from_redis key
-    rfind(key)
-  end
-
   def update_wayState_next_role
     if self.wayState_change
       case self.wayState

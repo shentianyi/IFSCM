@@ -13,9 +13,8 @@ class DeliveryItem < ActiveRecord::Base
    
   include CZ::BaseModule
   include CZ::DeliveryBase
-
-  after_create :update_redis_id
-  after_update :update_state_wayState,:update_delivery_note_state
+ 
+  after_update  :update_delivery_note_state
   before_create :build_item_state
     
   @@can_acc_rej_waystates=[DeliveryObjWayState::Intransit,DeliveryObjWayState::Arrived]
@@ -23,9 +22,6 @@ class DeliveryItem < ActiveRecord::Base
   @@inspect_states=[DeliveryObjInspect::SamInspect,DeliveryObjInspect::FullInspect]
   @@can_instore_waystate=[DeliveryObjWayState::Received]
   @@abnormal_waystate=[DeliveryObjWayState::Rejected,DeliveryObjWayState::Returned]
-  def self.single_or_default key   
-    return find_from_redis key
-  end
 
   def can_accept_or_reject
     @@can_acc_rej_waystates.include?(self.wayState)
@@ -42,6 +38,7 @@ class DeliveryItem < ActiveRecord::Base
   def self.abnormal_waystate
     @@abnormal_waystate
   end
+  
   
   private
 
@@ -87,8 +84,5 @@ class DeliveryItem < ActiveRecord::Base
   def build_item_state
     build_delivery_item_state(:desc=>"未检验")
   end
-  
-  def self.find_from_redis key
-    rfind(key)
-  end
+
 end

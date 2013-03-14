@@ -1,21 +1,35 @@
 
 <br /><br />
-仓库:<%= select_tag :whId,  options_for_select(@whlist),  prompt: "请选择仓库..." %>
-<br/>
-库位:<%= text_field_tag :posiNr %>
-<br/>
-零件号:<%= text_field_tag :partNr %>
-<br/>
-操作类型:<%= select_tag :opType,  options_for_select(@opType),  prompt: "请选择操作类型..." %>
-<br/>
-数量:<%= text_field_tag :amountStart, nil,:size=>5 %>
-至<%= text_field_tag :amountEnd, nil,:size=>5 %>
-<br/><br />
-<%= button_tag '搜索',:class=>"normal-small-btn",:type=>'button',:onclick=>"search_op_history(0);"%>
-<hr/>
-<hr/>
+<div id="result">请输入条件，并搜索。</div>
 
-<div id="result"></div>
+
+<div id="search_expired_vertical_bar" class="filter-bar">
+	<div class="filter-box  texts" >
+	     <span class="filter-subtitle">仓库</span>
+	     <%= select_tag :whId,  options_for_select(@whlist), :class=>"searchcontent",  prompt: "请选择仓库..." %>
+	</div>
+	<div class="filter-box  texts" >
+	     <span class="filter-subtitle">库位</span>
+	     <%= text_field_tag :posiNr, nil, :class=>"searchcontent", :placeholder=>"请输入库位"%>
+	</div>
+	<div class="filter-box  texts">
+	     <span class="filter-subtitle">零件号</span>
+	     <%= text_field_tag :partNr, nil, :class=>"searchcontent", :placeholder=>"请输入零件号" %>
+	</div>
+	<div class="filter-box  texts" >
+	     <span class="filter-subtitle">操作类型</span>
+	     <%= select_tag :opType,  options_for_select(@opType), :class=>"searchcontent",  prompt: "请选择操作类型..." %>
+	</div>
+	<div class="filter-box  ranges" >
+	     <span class="filter-subtitle">数量</span>
+	     <%= text_field_tag :amountStart, nil, :class=>"searchcontent", :placeholder=>"请输入起始存量" %>
+	     <%= text_field_tag :amountEnd, nil, :class=>"searchcontent", :placeholder=>"请输入终止存量" %>
+	</div>
+	<div id="search_expired_button" >
+		<%= button_tag '搜索',:class=>"normal-small-btn",:type=>'button',:onclick=>"search_op_history(0);"%>
+	</div>
+</div>
+
 
 <script type="text/javascript">
 function search_op_history( page ){

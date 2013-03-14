@@ -329,6 +329,104 @@ margin-left:2px;
 .righttype {
 	margin-right: 38px;
 }
+/**************************************************         search_submit          **************/
+div.search_banner {
+	margin-top:50px;
+	padding-bottom:20px;
+	border-bottom: 5px solid #DBDBDB;
+	margin-bottom:20px;
+}
+div.search_banner input {
+	border-color: #DBDBDB;
+	border-style: solid;
+	border-width: 1px;
+	height: 30px;
+	width: 300px;
+	margin: 0px;
+	padding-left: 5px;
+	font-size: 14px;
+	line-height: 14px;
+	color: #9d9d9d;
+	margin: 0px
+}
+div.search_banner select {
+	padding-top: 6px;
+	padding-bottom: 4px;
+}
+/**************************************************         filter_criteria          **************/
+.filter_criteria {
+	
+}
+.filter-btn-first{
+	margin-left:151px;
+	margin-top:15px;
+	margin-right:5px
+}
+.filter-bar{
+	position:fixed;
+	left:860px;
+	top:40px;
+	border-bottom:4px solid #EAEDEC;
+    border-left:4px solid #EAEDEC;
+    border-right:4px solid #EAEDEC;
+	border-radius:0px 0px 10px 10px;
+	padding:23px 8px 10px;	
+	background-color:#ffffff;
+	color:#9d9d9d
+}
+.filter-bar > div {
+	position:relative;
+}
+.filter-searchtype-border{
+	background-color:#1297cf !important;
+	color:white !important;
+	border:#1297cf !important;
+}
+.filter-box{
+  background-color: #FFFFFF;
+  border-top: 1px solid #DBDBDB;
+    border-left: 1px solid #DBDBDB;
+    border-right: 1px solid #DBDBDB;
+    font-size: 14px;
+    width: 252px;
+}
+.filter-box-last{
+    border-bottom:1px solid #dbdbdb;
+    border-radius:0px 0px 10px 10px;	
+}
+.filter-subtitle{
+    background-color: #EAEDEC;
+    border-bottom: 1px solid #DBDBDB;
+    color: #9d9d9d;
+    float: left;
+    font-size: 14px;
+    padding: 3px;
+    width: 246px;
+    cursor:default;
+}
+/**************************************************         order_progress          **************/
+.orderprogress_baseline {
+	width: 300px;
+	border: 1px solid #dbdbdb;
+	background-color: red;
+	margin-top: 5px;
+	height: 18px;
+	float: left;
+}
+.orderprogress_receipt {
+	float: left;
+	height: 18px;
+	background-color: #208041;
+}
+/*.orderprogress_receipt:hover span {
+	position:absolute;
+	display:block;
+}*/
+.orderprogress_transit {
+	float: left;
+	height: 18px;
+	background-color: #FFFF00;
+}
 /*********************************************	    chart                   */
 .chartview {
 	width: 850px;

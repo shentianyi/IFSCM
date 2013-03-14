@@ -52,15 +52,20 @@
 
 <h4>公司关系</h4>
 <hr/>
+	<% if @adm %>
+		<span>更新：</span><%= check_box_tag(:orgrel_update) %>
+	<% end %>
 <%= form_tag( {:controller=>"organisation_manager", :action=>"create_org_relation"}, id:"formRelation" ) do  %>
 	<div>
 		<label>Client:</label>
 		<%= select_tag :clientId,  options_for_select(@list),  prompt: "All" %>
+		<label>Client名称:</label>
 		<%= text_field_tag :clientNr, nil, :placeholder => "example: Leoni" %>
 	</div>
 	<div>
 		<label>Supplier:</label>
 		<%= select_tag :supplierId,  options_for_select(@list),  prompt: "All" %>
+		<label>Supplier名称:</label>
 		<%= text_field_tag :supplierNr, nil, :placeholder => "example: nbtp" %>
 	</div>
     <%= button_tag '新建',:type=>'button',:onclick=>"org_rel_new();"%>
@@ -69,6 +74,10 @@
 
 <h4>公司关系 > 关系零件</h4>
 <hr/>
+	<% if @adm %>
+		<p>Client;Supplier;CpartNr;SpartNr</p>
+		<span>更新：</span><%= check_box_tag(:partrel_update) %>
+	<% end %>
 	<p>Client;Supplier;CpartNr;SpartNr;SaleNo;PurchaseNo</p>
 	<input id="relpartFile" type="file" name="files[]" data-url="../organisation_manager/create_relpart" >
 	<div class="abstractblock" id="relpartFile-preview" style="display:none;">	</div>
