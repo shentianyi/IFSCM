@@ -1,4 +1,3 @@
-<%= @total %>
 
 <% @orgs.each do |o| %>
 <div  class="supplierinfo">
@@ -36,6 +35,7 @@
 </div>
 <% end %>
 
+<div class="census" style="clear: left">共 <%= @total %> 条</div>
 <%= bri_pager options={:class=>"pagination",:pages=>@totalPages,:current=>@currentPage,:action=>'cs_search',:target=>@options}%>
 <script type="text/javascript">
 	$(document).ready(function() {

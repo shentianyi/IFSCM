@@ -110,43 +110,49 @@ class OrganisationManagerController < ApplicationController
       i=0
       if request.headers["CZ-partrel-update"] == "true"
             CSV.foreach(hfile,:headers=>true,:col_sep=>$CSVSP) do |row|
-              if row["Client"] and row["Supplier"] and row["CpartNr"] and row["SpartNr"]
+              if row["Client"] and row["Supplier"] and row["CpartNr"] and row["SpartNr"] and row["CpartDesc"] and row["SpartDesc"] and row["SaleNo"] and row["PurchaseNo"]
                 next unless cli = Organisation.where(:abbr=>row["Client"].strip).first
                 next unless sup = Organisation.where(:abbr=>row["Supplier"].strip).first
                 next unless orgrel = OrganisationRelation.where("origin_client_id = ? and origin_supplier_id = ? ", cli.id, sup.id).first
                 next unless cpart = Part.where("organisation_id = ? and partNr = ?", cli.id, row["CpartNr"].strip).first
                 next unless pr = PartRel.where(:client_part_id=>cpart.id,  :organisation_relation_id=>orgrel.id).first
-                i+=1 if pr.supplier_part.update_attributes(:partNr=>row["SpartNr"].strip)
+                i+=1 if pr.supplier_part.update_attributes(:partNr=>row["SpartNr"].strip, :desc=>row["SpartDesc"].strip)
+                cpart.update_attributes(:partNr=>row["CpartNr"].strip, :desc=>row["CpartDesc"].strip)
+                pr.update_attributes(:saleNo=>row["SaleNo"].strip, :purchaseNo=>row["PurchaseNo"].strip)
               else
                 result = false
-                info="缺少列值或文件标题错误,请重新修改上传！"
+                info<<"缺少列值或文件标题错误,请重新修改上传！" if info.size<15
               end
             end
       else
             CSV.foreach(hfile,:headers=>true,:col_sep=>$CSVSP) do |row|
-                        if row["Client"] and row["Supplier"] and row["CpartNr"] and row["SpartNr"] and row["SaleNo"] and row["PurchaseNo"]
+              # row.each {|k,v| print k.chomp.bytes.to_a; print "____" ; puts v}
+              # puts row["Client"].class ;puts row["Supplier"] ;puts row["CpartNr"] ;puts row["SpartNr"] ;puts row["SaleNo"] ;puts row["PurchaseNo"]
+                        if row["Client"] and row["Supplier"] and row["CpartNr"] and row["SpartNr"] and row["CpartDesc"] and row["SpartDesc"] and row["SaleNo"] and row["PurchaseNo"]
                           next unless cli = Organisation.where(:abbr=>row["Client"].strip).first
                           next unless sup = Organisation.where(:abbr=>row["Supplier"].strip).first
                           next unless orgrel = OrganisationRelation.where("origin_client_id = ? and origin_supplier_id = ? ", cli.id, sup.id).first
                           cpartNr = row["CpartNr"].strip
                           spartNr = row["SpartNr"].strip
                           unless cpart = Part.where("organisation_id = ? and partNr = ?", cli.id, cpartNr).first
-                            cpart = Part.new(:partNr=>cpartNr)
-                          cli.parts<<cpart
+                            cpart = Part.new(:partNr=>cpartNr, :desc=>row["CpartDesc"].strip)
+                            cli.parts<<cpart
                           end
                           unless spart = Part.where("organisation_id = ? and partNr = ?", sup.id, spartNr).first
-                            spart = Part.new(:partNr=>spartNr)
+                            spart = Part.new(:partNr=>spartNr, :desc=>row["SpartDesc"].strip)
                             sup.parts<<spart
                           end
-                          pr = PartRel.new(:saleNo=>row["SaleNo"].strip, :purchaseNo=>row["PurchaseNo"].strip, :client_part_id=>cpart.id, :supplier_part_id=>spart.id, :organisation_relation_id=>orgrel.id)
-                          i+=1 if pr.save
+                          unless PartRel.where(:client_part_id=>cpart.id, :supplier_part_id=>spart.id, :organisation_relation_id=>orgrel.id).first
+                            pr = PartRel.new(:saleNo=>row["SaleNo"].strip, :purchaseNo=>row["PurchaseNo"].strip, :client_part_id=>cpart.id, :supplier_part_id=>spart.id, :organisation_relation_id=>orgrel.id)
+                            i+=1 if pr.save
+                          end
                         else
                           result = false
-                          info="缺少列值或文件标题错误,请重新修改上传！"
+                          info<<"缺少列值或文件标题错误,请重新修改上传！" if info.size<15
                         end
             end
       end
-      info = "导入#{i}条。"
+      info << "导入#{i}条。"
       File.delete(hfile)
     else
       result = false
@@ -205,11 +211,11 @@ class OrganisationManagerController < ApplicationController
       @organs = []
       if session[:orgOpeType]==OrgOperateType::Client
         cs = cs.present? ?  cs : "none"
-        @search = Redis::Search.complete("OrganisationRelation", cs, :conditions=>{:origin_client_id=>@cz_org.id} )  ||[]
+        @search = Redis::Search.complete("OrganisationRelation", cs, :conditions=>{:origin_client_id=>@cz_org.id}, :limit=>500 )  ||[]
         @organs = @search.collect{|item| [ item["supplierNr"], Organisation.find_by_id(item['origin_supplier_id'].to_i),item['origin_supplier_id'] ]  }
       else
         cs = cs.present? ?  cs : "none"
-        @search = Redis::Search.complete("OrganisationRelation", cs, :conditions=>{:origin_supplier_id=>@cz_org.id} ) ||[]
+        @search = Redis::Search.complete("OrganisationRelation", cs, :conditions=>{:origin_supplier_id=>@cz_org.id}, :limit=>500 ) ||[]
         @organs = @search.collect{|item| [ item["clientNr"], Organisation.find_by_id(item['origin_client_id'].to_i),item['origin_client_id'] ]  }
       end
       puts "#___"
