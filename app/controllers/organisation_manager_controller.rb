@@ -119,11 +119,13 @@ class OrganisationManagerController < ApplicationController
                 i+=1 if pr.supplier_part.update_attributes(:partNr=>row["SpartNr"].strip)
               else
                 result = false
-                info="缺少列值或文件标题错误,请重新修改上传！"
+                info<<"缺少列值或文件标题错误,请重新修改上传！" if info.size<15
               end
             end
       else
             CSV.foreach(hfile,:headers=>true,:col_sep=>$CSVSP) do |row|
+              # row.each {|k,v| print k.chomp.bytes.to_a; print "____" ; puts v}
+              # puts row["Client"].class ;puts row["Supplier"] ;puts row["CpartNr"] ;puts row["SpartNr"] ;puts row["SaleNo"] ;puts row["PurchaseNo"]
                         if row["Client"] and row["Supplier"] and row["CpartNr"] and row["SpartNr"] and row["SaleNo"] and row["PurchaseNo"]
                           next unless cli = Organisation.where(:abbr=>row["Client"].strip).first
                           next unless sup = Organisation.where(:abbr=>row["Supplier"].strip).first
@@ -138,15 +140,17 @@ class OrganisationManagerController < ApplicationController
                             spart = Part.new(:partNr=>spartNr)
                             sup.parts<<spart
                           end
-                          pr = PartRel.new(:saleNo=>row["SaleNo"].strip, :purchaseNo=>row["PurchaseNo"].strip, :client_part_id=>cpart.id, :supplier_part_id=>spart.id, :organisation_relation_id=>orgrel.id)
-                          i+=1 if pr.save
+                          unless PartRel.where(:client_part_id=>cpart.id, :supplier_part_id=>spart.id, :organisation_relation_id=>orgrel.id).first
+                            pr = PartRel.new(:saleNo=>row["SaleNo"].strip, :purchaseNo=>row["PurchaseNo"].strip, :client_part_id=>cpart.id, :supplier_part_id=>spart.id, :organisation_relation_id=>orgrel.id)
+                            i+=1 if pr.save
+                          end
                         else
                           result = false
-                          info="缺少列值或文件标题错误,请重新修改上传！"
+                          info<<"缺少列值或文件标题错误,请重新修改上传！" if info.size<15
                         end
             end
       end
-      info = "导入#{i}条。"
+      info << "导入#{i}条。"
       File.delete(hfile)
     else
       result = false
