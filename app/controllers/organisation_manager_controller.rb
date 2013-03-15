@@ -205,11 +205,11 @@ class OrganisationManagerController < ApplicationController
       @organs = []
       if session[:orgOpeType]==OrgOperateType::Client
         cs = cs.present? ?  cs : "none"
-        @search = Redis::Search.complete("OrganisationRelation", cs, :conditions=>{:origin_client_id=>@cz_org.id} )  ||[]
+        @search = Redis::Search.complete("OrganisationRelation", cs, :conditions=>{:origin_client_id=>@cz_org.id}, :limit=>500 )  ||[]
         @organs = @search.collect{|item| [ item["supplierNr"], Organisation.find_by_id(item['origin_supplier_id'].to_i),item['origin_supplier_id'] ]  }
       else
         cs = cs.present? ?  cs : "none"
-        @search = Redis::Search.complete("OrganisationRelation", cs, :conditions=>{:origin_supplier_id=>@cz_org.id} ) ||[]
+        @search = Redis::Search.complete("OrganisationRelation", cs, :conditions=>{:origin_supplier_id=>@cz_org.id}, :limit=>500 ) ||[]
         @organs = @search.collect{|item| [ item["clientNr"], Organisation.find_by_id(item['origin_client_id'].to_i),item['origin_client_id'] ]  }
       end
       puts "#___"
