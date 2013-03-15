@@ -136,7 +136,7 @@ function get_orl_printers() {
 }
 
 function add_orl_printer() {
-	if (($("#clientId").val() != $("#supplierId").val()) && $("#template").val().length>0 && $("#moduleName").val().length>0) {
+	if (($("#clientId").val() != $("#supplierId").val()) && $("#template").val().length > 0 && $("#moduleName").val().length > 0) {
 		$.post('../organisation_manager/add_printer', {
 			cid : $("#clientId").val(),
 			sid : $("#supplierId").val(),
@@ -169,16 +169,22 @@ function add_orl_defalut_printer() {
 }
 
 function update_orl_default_printer() {
+	if($("#printerKey").val().length>0){
 	$.post('../organisation_manager/update_default_printer', {
 		printerKey : $("#printerKey").val(),
-		updated:$("#updatedcheck").attr('checked')=="checked"
+		updated : $("#updatedcheck").attr('checked') == "checked",
+		template : $("#template").val(),
+		moduleName : $("#moduleName").val()
 	}, function(data) {
 		alert(data.msg);
 	});
+	}else{
+		alert("oh,wowowo,请填写PrinterKey");
+	}
 }
 
 function get_orl_dncontact() {
-	if($("#clientId").val() != $("#supplierId").val()) {
+	if ($("#clientId").val() != $("#supplierId").val()) {
 		$.post('../organisation_manager/get_dncontact', {
 			cid : $("#clientId").val(),
 			sid : $("#supplierId").val(),
@@ -192,33 +198,34 @@ function get_orl_dncontact() {
 }
 
 function add_orl_dncontact(type) {
-	if($("#clientId").val() != $("#supplierId").val()) {
-	$.post('../organisation_manager/add_dncontact', {
-		cid : $("#clientId").val(),
-		sid : $("#supplierId").val(),
-		ctype : $("#contactType").val(),
-		recer_name : $("#recer_name").val(),
-		recer_contact : $("#recer_contact").val(),
-		rece_address : $("#rece_address").val(),
-		sender_name : $("#sender_name").val(),
-		sender_contact : $("#sender_contact").val(),
-		send_address : $("#send_address").val(),
-		type : type,
-		conKey : $("#dncontactKey").val()
-	}, function(data) {
-		if(type==300){
-			for(var k in data){
-				$("#"+k).val(data[k]);
+	if ($("#clientId").val() != $("#supplierId").val()) {
+		$.post('../organisation_manager/add_dncontact', {
+			cid : $("#clientId").val(),
+			sid : $("#supplierId").val(),
+			ctype : $("#contactType").val(),
+			recer_name : $("#recer_name").val(),
+			recer_contact : $("#recer_contact").val(),
+			rece_address : $("#rece_address").val(),
+			sender_name : $("#sender_name").val(),
+			sender_contact : $("#sender_contact").val(),
+			send_address : $("#send_address").val(),
+			type : type,
+			conKey : $("#dncontactKey").val()
+		}, function(data) {
+			if (type == 300) {
+				for (var k in data) {
+					$("#" + k).val(data[k]);
+				}
+			} else {
+				alert("done:" + data.key)
 			}
-		}else{
-			alert("done:"+data.key)
-		}
-	});} else {
+		});
+	} else {
 		alert("请检查填写信息");
 	}
 }
 
-function del_orl_dncontact() {	
+function del_orl_dncontact() {
 	$.post('../organisation_manager/del_dncontact', {
 		// cid : $("#clientId").val(),
 		// sid : $("#supplierId").val(),
