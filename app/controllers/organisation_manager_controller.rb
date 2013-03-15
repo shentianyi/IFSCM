@@ -298,9 +298,21 @@ class OrganisationManagerController < ApplicationController
   end
 
   def update_default_printer
-    printer=OrgRelPrinter.find(params[:printerKey])
-    printer.update(:updated=>params[:updated])
+    if printer=OrgRelPrinter.find(params[:printerKey])
+    data={}
+    if params[:template].strip.length>0
+      data[:template]=params[:template].strip
+    end
+    
+    if params[:moduleName].strip.length>0
+      data[:moduleName]=params[:moduleName].strip
+    end
+    data[:updated]=params[:updated]
+    printer.update(data)    
     render :json=>{:msg=>"DONE!!!"+printer.key}
+    else
+      render  :json=>{:msg=>"Error!!!"+params[:printerKey]+"不存在"}
+    end
   end
 
   def add_default_printer
