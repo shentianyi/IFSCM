@@ -1,13 +1,13 @@
 #encoding: utf-8
 class Part < ActiveRecord::Base
   attr_accessible :partNr,:organisation_id
-  
+
   belongs_to :organisation
   has_many :client_part_rels, :class_name=>"PartRel", :foreign_key=>"client_part_id" # org is client
   has_many :supplier_part_rels, :class_name=>"PartRel", :foreign_key=>"supplier_part_id" # org is supplier
   has_many :storages
   has_many :storage_histories
- 
+
   after_save :add_or_update_redis_index
   after_destroy :del_redis_index
   after_update :update_part_rel_info
@@ -16,16 +16,14 @@ class Part < ActiveRecord::Base
                      :prefix_index_enable => true,
                      :condition_fields=>[:organisation_id],
                      :ext_fields => [:partNr])
-  
   def self.get_id orgId,partNr
     find_id_from_redis(orgId,partNr)
   end
-  
-    
+
   def self.get_partNr orgId,partId
-   find_nr_from_redis(orgId,partId) 
+    find_nr_from_redis(orgId,partId)
   end
-  
+
   private
 
   def self.find_id_from_redis orgId,partNr
@@ -34,7 +32,7 @@ class Part < ActiveRecord::Base
     end
     return id
   end
-  
+
   def self.find_nr_from_redis orgId,partId
     $redis.zrangebyscore(generate_org_part_zset_key(orgId),partId,partId)[0]
   end
@@ -65,21 +63,34 @@ class Part < ActiveRecord::Base
     del_redis_index
     add_redis_index
   end
-  
+
   def update_part_rel_info
     if self.partNr_change
-     self.client_part_rels.each do |pl|
-      if pinfo=PartRelInfo.find(pl.id)
-        pinfo.update(:cpartNr=>self.partNr)
-      end 
-     end
-     
-     self.supplier_part_rels.each do |pl|
-      if pinfo=PartRelInfo.find(pl.id)
-        pinfo.update(:spartNr=>self.partNr)
-      end 
-     end
-     
+      self.client_part_rels.each do |pl|
+        if pinfo=PartRelInfo.find(pl.id)
+          pinfo.update(:cpartNr=>self.partNr)
+        end
+      end
+
+      self.supplier_part_rels.each do |pl|
+        if pinfo=PartRelInfo.find(pl.id)
+          pinfo.update(:spartNr=>self.partNr)
+        end
+      end
+    end
+
+    if self.desc_change
+      self.client_part_rels.each do |pl|
+        if pinfo=PartRelInfo.find(pl.id)
+          pinfo.update(:cpartDesc=>self.desc)
+        end
+      end
+
+      self.supplier_part_rels.each do |pl|
+        if pinfo=PartRelInfo.find(pl.id)
+          pinfo.update(:spartDesc=>self.desc)
+        end
+      end
     end
   end
 end

@@ -112,9 +112,6 @@ module DeliveryBll
       if dn=DeliveryNote.single_or_default(dnKey)
         if dn.items=DeliveryNote.get_children(dn.key,0,-1)[0]
           dn.items.each do |i|
-          # pl=PartRel.find(i.part_rel_id)
-          # i.rupdate(:cpartNr=>Part.get_partNr(dn.rece_org_id,pl.client_part_id),
-          # :spartNr=>Part.get_partNr(dn.organisation_id,pl.supplier_part_id),:saleNo=>pl.saleNo,:purchaseNo=>pl.purchaseNo)
             pl=PartRelInfo.find(i.part_rel_id)
             i.rupdate(:cpartNr=>pl.cpartNr,:spartNr=>pl.spartNr,:saleNo=>pl.saleNo,:purchaseNo=>pl.purchaseNo)
           end
@@ -321,7 +318,10 @@ module DeliveryBll
           ditKeys.each do |k|
             if item=DeliveryItem.single_or_default(k)
               p=DeliveryPackage.single_or_default(item.parentKey)
-              item.instance_variable_set('@attributes',item.attributes.merge({'cpartNr'=>p.cpartNr,'spartNr'=>p.spartNr,'perPackAmount'=>p.perPackAmount}))
+              item.instance_variable_set('@attributes',item.attributes.merge({'cpartNr'=>p.cpartNr,
+                'spartNr'=>p.spartNr,
+                'perPackAmount'=>p.perPackAmount,
+                'part_rel_id'=>p.part_rel_id}))
             items<<item
             end
           end
@@ -330,7 +330,10 @@ module DeliveryBll
           packs.each do |p|
             p.items=DeliveryPackage.get_children(p.key,0,-1)[0]
             p.items.each do |item|
-              item.instance_variable_set('@attributes',item.attributes.merge({'cpartNr'=>p.cpartNr,'spartNr'=>p.spartNr,'perPackAmount'=>p.perPackAmount}))
+               item.instance_variable_set('@attributes',item.attributes.merge({'cpartNr'=>p.cpartNr,
+                'spartNr'=>p.spartNr,
+                'perPackAmount'=>p.perPackAmount,
+                'part_rel_id'=>p.part_rel_id}))
               items<<item
             end
           end
@@ -338,7 +341,7 @@ module DeliveryBll
       end
     return items
     else
-      select="delivery_items.*,delivery_packages.cpartNr,delivery_packages.spartNr,delivery_packages.perPackAmount"
+      select="delivery_items.*,delivery_packages.cpartNr,delivery_packages.spartNr,delivery_packages.perPackAmount,delivery_packages.part_rel_id"
       condi={}
       condi["delivery_notes.key"]=dnKey
       condi["delivery_items.key"]=ditKeys if ditKeys
