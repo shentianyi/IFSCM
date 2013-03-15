@@ -12,7 +12,8 @@ page:
  :demand_page_size: 10
 
 title:
- :demand_csv_title: ["PartNr","Supplier","Date","Type","Amount"]
+ :demand_csv_title: ["PartNr","Supplier","Date","Type","OrderNr","Amount"]
+ :demand_csv_title_as_supplier: ["PartNr","Client","Date","Type","OrderNr","Amount"]
  
 resque:
  :resquedb: 0

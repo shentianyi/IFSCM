@@ -241,12 +241,16 @@ module DemanderBll
     csv_encode=FormatHelper::csv_write_encode user_agent
     path=File.join($DETMP,UUID.generate+'.csv')
     File.open(path,"wb:#{csv_encode}") do |f|
-      f.puts $DECSVT.join($CSVSP)
+      if opeType==OrgOperateType::Client
+        f.puts $DECSVT.join($CSVSP)
+      elsif opeType==OrgOperateType::Supplier
+        f.puts $DECSVTasS.join($CSVSP)
+      end
       demands.each do |nd|
         if opeType==OrgOperateType::Client
-          f.puts [nd.cpartNr,nd.supplierNr,nd.date,nd.type,nd.amount].join($CSVSP)
+          f.puts [nd.cpartNr,nd.supplierNr,nd.date,nd.type,nd.orderNr,nd.amount].join($CSVSP)
         elsif opeType==OrgOperateType::Supplier
-          f.puts [nd.spartNr,nd.clientNr,nd.date,nd.type,nd.amount].join($CSVSP)
+          f.puts [nd.spartNr,nd.clientNr,nd.date,nd.type,nd.orderNr,nd.amount].join($CSVSP)
         end
       end
     end

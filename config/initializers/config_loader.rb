@@ -15,6 +15,7 @@ $PRINTERTEMPLATEPATH=path_config[:printer_template_path] # printer template path
 # load title
 title_config=config['title']
 $DECSVT=title_config[:demand_csv_title]
+$DECSVTasS=title_config[:demand_csv_title_as_supplier]
 #load page
 page_config=config['page']
 $DEPSIZE=page_config[:demand_page_size].to_i # demand page size
