@@ -29,6 +29,7 @@ module LeoniPlymouthPDPack
       data[:Quantity]= FormatHelper.string_to_int(pack.perPackAmount.to_s)
       data[:CPartNr]=pack.cpartNr
       pinfo=PartRelInfo.find(pack.part_rel_id)
+      data[:Description]="#{pinfo.spartDesc}/#{pack.spartNr}"
       # data[:Description]="pack.spartNr"
     # else
       # data[:Quantity]= FormatHelper.string_to_int(pack.delivery_package.perPackAmount.to_s)
