@@ -327,9 +327,8 @@ class DemanderController<ApplicationController
   def search
     if params[:kestrel] && params[:kestrel]==Rns::Kes
           @demands, @total = Demander.get_kestrel( @cz_org.id, params[:type], params[:page] )
-          total=@total-@demands.size
-          @totalPages=total/Demander::NumPer+(total%Demander::NumPer==0 ? 0:1)
-          @currentPage=-1
+          @totalPages=@total/Demander::NumPer+(@total%Demander::NumPer==0 ? 0:1)
+          @currentPage=params[:page].to_i
           @options = params[:options]?params[:options]:{}
     else
             c = params[:client]
