@@ -95,10 +95,11 @@ ActiveRecord::Schema.define(:version => 20130313125727) do
     t.float    "oldamount"
     t.datetime "date"
     t.float    "rate"
-    t.datetime "created_at",    :null => false
-    t.datetime "updated_at",    :null => false
+    t.datetime "created_at",                       :null => false
+    t.datetime "updated_at",                       :null => false
     t.string   "orderNr"
     t.integer  "order_item_id"
+    t.boolean  "accepted",      :default => false
   end
 
   create_table "order_items", :force => true do |t|
@@ -153,6 +154,7 @@ ActiveRecord::Schema.define(:version => 20130313125727) do
     t.integer  "organisation_id"
     t.datetime "created_at",      :null => false
     t.datetime "updated_at",      :null => false
+    t.string   "desc"
   end
 
   add_index "parts", ["organisation_id"], :name => "index_parts_on_organisation_id"

@@ -23,6 +23,7 @@ module DemanderHelper
     thisLineWidth=demand.amount>0 ? 100 : 0
     lastLineWidth=demand.oldamount>0 ? 100 : 0
     end
+    img = 'dotunchecked'  unless demand.accepted
     return img,thisLineWidth,lastLineWidth
   end
   

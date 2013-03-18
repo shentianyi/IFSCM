@@ -9,12 +9,20 @@
 
 
 
-(29..70).each do |num|
-  key="Demander:"+num.to_s
-  date=$redis.hget(key,"date")
-  puts date
-  $redis.zadd( "date", Time.parse(date).to_i, key )
-end
+# (29..70).each do |num|
+  # key="Demander:"+num.to_s
+  # date=$redis.hget(key,"date")
+  # puts date
+  # $redis.zadd( "date", Time.parse(date).to_i, key )
+# end
 
 
 # puts $redis.zrange("date",0,-1,:withscores=>true)
+
+
+$redis.keys("Demander:*").each do |item|
+  if d=Demander.find_by_key(item)
+    d.rupdate(:accepted=>true)
+    puts "-"*10 + item.to_s
+  end
+end

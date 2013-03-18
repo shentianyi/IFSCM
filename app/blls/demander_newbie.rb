@@ -40,6 +40,7 @@ module DemanderNewbie
 
   def clear_kestrel( orgId )
     kesKey = gen_kestrel(orgId)
+    $redis.zrange( kesKey, 0, -1).each {|item| Demander.find_by_key(item).rupdate(:accepted=>true) }
     return $redis.del( kesKey )
   end
   
