@@ -3,7 +3,7 @@ require "base_class"
 class Demander < ActiveRecord::Base
   self.inheritance_column = "not_used_type"
   attr_accessible :id, :created_at, :updated_at
-  attr_accessible :key, :clientId,:relpartId,:supplierId, :type,:amount,:oldamount,:date,:rate
+  attr_accessible :key, :clientId,:relpartId,:supplierId, :type,:amount,:oldamount,:date,:rate, :accepted
   attr_accessible :orderNr, :order_item_id
   NumPer=$DEPSIZE
   

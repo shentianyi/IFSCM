@@ -40,13 +40,13 @@
 			<th>  
 	               <div class="forcastcompare">
 	                     <div class="lineforcast">
-                         <% if d.oldamount.nil?%>
-                         <span class="percentage"> new </span>
-                         <% else %>
-                         <span class="percentage"> <%= d.rate.to_f.round(2).abs %>% </span>
-                         <% end %>
-                         <img src="/assets/<%= img%>.png" class='percentageImg' />
-                    </div>
+	                         <% if d.oldamount.nil?%>
+	                         <span class="percentage"> new </span>
+	                         <% else %>
+	                         <span class="percentage"> <%= d.rate.to_f.round(2).abs %>% </span>
+	                         <% end %>
+	                         <img src="/assets/<%= img%>.png" class='percentageImg' />
+                    	</div>
 	                    <div class="lineforcast">
 	                         <span class="fnumbers">本次预测：<span id="this_demand_amount"><%= d.amount %></span></span>
 	                         <div class="forcastbaseline">
