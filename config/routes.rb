@@ -134,6 +134,10 @@ Demand::Application.routes.draw do
     match "analysis/demand_cf" => :demand_cf
     match "analysis/order_progress" => :order_progress
   end
+  
+  controller :support do
+     match "support" => :index
+  end
 
   namespace :api,defaults:{format:'json'} do
   # scope  constraints:ApiConstraints.new do

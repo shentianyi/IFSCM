@@ -1,5 +1,5 @@
 #encoding:utf-8
-module LeoniPlymouthPDPack
+module LeoniPlymouthDpack
   @@label_keys=["SupplierNr","CPartNr","Description","Quantity","DnPackNr","Destination"]
 
   def self.gen_data dn,orl,diKeys=nil

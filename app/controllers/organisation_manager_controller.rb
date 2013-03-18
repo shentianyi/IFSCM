@@ -126,8 +126,6 @@ class OrganisationManagerController < ApplicationController
             end
       else
             CSV.foreach(hfile,:headers=>true,:col_sep=>$CSVSP) do |row|
-              # row.each {|k,v| print k.chomp.bytes.to_a; print "____" ; puts v}
-              # puts row["Client"].class ;puts row["Supplier"] ;puts row["CpartNr"] ;puts row["SpartNr"] ;puts row["SaleNo"] ;puts row["PurchaseNo"]
                         if row["Client"] and row["Supplier"] and row["CpartNr"] and row["SpartNr"] and row["CpartDesc"] and row["SpartDesc"] and row["SaleNo"] and row["PurchaseNo"]
                           next unless cli = Organisation.where(:abbr=>row["Client"].strip).first
                           next unless sup = Organisation.where(:abbr=>row["Supplier"].strip).first
