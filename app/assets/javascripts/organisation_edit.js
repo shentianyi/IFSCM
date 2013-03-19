@@ -99,6 +99,8 @@ function organisation_manager(idStr) {
 		beforeSend : function(xhr) {
 			if ($('#partrel_update').attr("checked"))
 				xhr.setRequestHeader('CZ-partrel-update', true);
+			if ($('#strategy_update').attr("checked"))
+				xhr.setRequestHeader('CZ-strategy-update', true);
 			xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'));
 		},
 		success : function(data) {

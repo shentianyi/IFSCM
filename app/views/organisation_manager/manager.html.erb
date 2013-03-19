@@ -84,6 +84,10 @@
 
 <h4>公司关系 > 关系零件 > 零件策略</h4>
 <hr/>
+	<% if @adm %>
+		<p>Client;Supplier;CpartNr;SpartNr;Least</p>
+		<span>更新：</span><%= check_box_tag(:strategy_update) %>
+	<% end %>
 	<p>Client;Supplier;CpartNr;SpartNr;Least</p>
 	<input id="relpartPackageFile" type="file" name="files[]" data-url="../organisation_manager/create_relpart_package" >
 	<div class="abstractblock" id="relpartPackageFile-preview" style="display:none;">	</div>
