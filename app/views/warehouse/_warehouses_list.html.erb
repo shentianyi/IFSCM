@@ -6,7 +6,7 @@
  			<% @warehouses.each do |d|	%>
  				<li class="ware-li li-small" onclick="current_warehouse(<%= d.id %>, this);">
  					<div class="lb1 fake-label"><%= d.nr%></div><div class="lb2 fake-label"><%= d.name%></div>
- 					<div class="del-sign wh-del" onclick="delete_warehouse(<%= d.id %>);"></div>
+ 					<div class="wh-post btn-normal  " onclick="delete_warehouse(<%= d.id %>);"  >删除</div>
  					<% if d.type==200 %>
  						<div class="checked-logo pull-right"></div>
  					<% else %>

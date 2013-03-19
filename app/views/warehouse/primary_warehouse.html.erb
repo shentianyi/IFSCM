@@ -15,8 +15,8 @@
 		<li class="ware-li li-right">
 			<%= text_field_tag :posiNr, nil, :class=>"ip1", :placeholder=>"输入库位..." %>
 			<%= text_field_tag :capacity, nil, :class=>"ip2", :placeholder=>"容量..." %>
-			<div class="wh-post btn-normal " style="margin-right:15px;" onclick="delete_position();">删除</div>
-			<div class="wh-post btn-normal wh-small-add " onclick="new_position_single();">添加</div>
+			<div class="wh-post btn-normal  display-none" style="margin-right:15px;" onclick="delete_position();">删除</div>
+			<div class="wh-post btn-normal wh-small-add display-none " onclick="new_position_single();">添加</div>
 		</li>
 		<li class="ware-li li-right"><p><strong>连续添加/删除库位</strong></p></li>
 		<li class="ware-li li-right">
@@ -27,8 +27,8 @@
 		 	<p>-</p>
 		 	<%= text_field_tag :posiEnd, nil, :class=>"ip1", :placeholder=>"输入库位..." %>
 		 	<%= text_field_tag :capa, nil, :class=>"ip2", :placeholder=>"容量..." %>
-<!-- 		 	<div class="wh-post btn-normal" >删除</div> -->
-		 	<div class="wh-post btn-normal wh-small-add " onclick="new_position_range();">添加</div>
+		 	<div class="wh-post btn-normal display-none" >删除</div>
+		 	<div class="wh-post btn-normal wh-small-add  display-none" onclick="new_position_range();">添加</div>
 		 </li>
 	</ul>
 </div>

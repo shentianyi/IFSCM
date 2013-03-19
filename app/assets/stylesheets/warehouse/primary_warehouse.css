@@ -21,7 +21,7 @@
 		width:20px;
 		height:20px;
 		background:url("../iconqlt.png");
-		margin-right:10px;
+		margin-right:17px;
 		margin-top:4px;
 	}
 	.show-wareposition{
@@ -49,7 +49,10 @@
         font-size:13px;
 		margin-top:2px;
 		margin-right:2px;
-	    display:none;
+	    
+	}
+	.display-none{
+		display:none;
 	}
 	.del-sign{
 		width:20px;
