@@ -174,22 +174,42 @@ class OrganisationManagerController < ApplicationController
       dcsv.saveFile
       hfile = File.join($DETMP,dcsv.pathName)
       i=0
-      CSV.foreach(hfile,:headers=>true,:col_sep=>$CSVSP) do |row|
-        if row["Client"] and row["Supplier"] and row["CpartNr"] and row["SpartNr"] and row["Least"]
-          next unless cli = Organisation.where(:abbr=>row["Client"].strip).first
-          next unless sup = Organisation.where(:abbr=>row["Supplier"].strip).first
-          next unless orgrel = OrganisationRelation.where("origin_client_id = ? and origin_supplier_id = ? ", cli.id, sup.id).first
-          next unless cpart = Part.where("organisation_id = ? and partNr = ?", cli.id, row["CpartNr"].strip).first
-          # next unless spart = Part.where("organisation_id = ? and partNr = ?", sup.id, row["SpartNr"]).first
-          next unless pr = PartRel.where(:client_part_id=>cpart.id,  :organisation_relation_id=>orgrel.id).first
-          package = Strategy.new(:leastAmount=>row["Least"].strip, :part_rel_id=>pr.id)
-        i+=1 if package.save
-        else
-          result = false
-          info="缺少列值或文件标题错误,请重新修改上传！"
-        end
+      if request.headers["CZ-strategy-update"] == "true"
+              CSV.foreach(hfile,:headers=>true,:col_sep=>$CSVSP) do |row|
+                if row["Client"] and row["Supplier"] and row["CpartNr"] and row["SpartNr"] and row["Least"]
+                  next unless cli = Organisation.where(:abbr=>row["Client"].strip).first
+                  next unless sup = Organisation.where(:abbr=>row["Supplier"].strip).first
+                  next unless orgrel = OrganisationRelation.where("origin_client_id = ? and origin_supplier_id = ? ", cli.id, sup.id).first
+                  next unless cpart = Part.where("organisation_id = ? and partNr = ?", cli.id, row["CpartNr"].strip).first
+                  # next unless spart = Part.where("organisation_id = ? and partNr = ?", sup.id, row["SpartNr"]).first
+                  next unless pr = PartRel.where(:client_part_id=>cpart.id,  :organisation_relation_id=>orgrel.id).first
+                  next unless package = Strategy.where(:part_rel_id=>pr.id).first
+                  i+=1 if package.update_attributes(:leastAmount=>row["Least"].strip)
+                else
+                  result = false
+                  info<<"缺少列值或文件标题错误,请重新修改上传！" if info.size<15
+                end
+              end
+      else
+              CSV.foreach(hfile,:headers=>true,:col_sep=>$CSVSP) do |row|
+                if row["Client"] and row["Supplier"] and row["CpartNr"] and row["SpartNr"] and row["Least"]
+                  next unless cli = Organisation.where(:abbr=>row["Client"].strip).first
+                  next unless sup = Organisation.where(:abbr=>row["Supplier"].strip).first
+                  next unless orgrel = OrganisationRelation.where("origin_client_id = ? and origin_supplier_id = ? ", cli.id, sup.id).first
+                  next unless cpart = Part.where("organisation_id = ? and partNr = ?", cli.id, row["CpartNr"].strip).first
+                  # next unless spart = Part.where("organisation_id = ? and partNr = ?", sup.id, row["SpartNr"]).first
+                  next unless pr = PartRel.where(:client_part_id=>cpart.id,  :organisation_relation_id=>orgrel.id).first
+                  unless Strategy.where(:part_rel_id=>pr.id).first
+                      package = Strategy.new(:leastAmount=>row["Least"].strip, :part_rel_id=>pr.id)
+                      i+=1 if package.save
+                  end
+                else
+                  result = false
+                  info<<"缺少列值或文件标题错误,请重新修改上传！" if info.size<15
+                end
+              end
       end
-      info = "导入#{i}条。"
+      info << "导入#{i}条。"
       File.delete(hfile)
     else
       result = false
