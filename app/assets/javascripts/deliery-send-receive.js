@@ -932,7 +932,7 @@ function pack_inspect(type, action, pdata, call) {
 							var checked = $("#pack-return-checkbox").attr("checked");
 							for (var i = 0; i < ids.length; i++) {
 								$("#check-th-" + ids[i]).html("是");
-								$("#operate-th-" + ids[i]).html("已操作");
+								$("#operate-th-" + ids[i]).html("已质检");
 								$("#state-th-" + ids[i]).attr('class', get_dn_obj_state_css(msg.object)).html(msg.content);
 								if (checked != null) {
 									$("#waystate-th-" + ids[i]).attr('class', get_dn_obj_waystate_css(msg.wayStateCode)).html(msg.wayState);
