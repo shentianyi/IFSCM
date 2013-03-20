@@ -27,7 +27,7 @@ module LeoniNbtpDn
     data[:PackNum]=pack.packAmount
     data[:TotalQuantity]=FormatHelper.string_multiply(data[:PerPackNum],pack.packAmount)
     data[:CPartNr]=pack.cpartNr
-    data[:SPartNr]=pack.position_nr
+    data[:SPartNr]=pack.spartNr
     data[:OrderNr]=pack.orderNr.nil? ? "":pack.orderNr
     @@body_keys.each do |key|
       record<<{:Key=>key,:Value=>data[key.to_sym]}

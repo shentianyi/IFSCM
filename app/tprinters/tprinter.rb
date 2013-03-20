@@ -11,6 +11,8 @@ module TPrinter
     rescue DataMissingError=>e
       msg.content=e.message
     rescue NoMethodError=>e
+       puts e.message
+      puts e.backtrace
       msg.content="打印机模板未设置，联系系统供应商进行设置"
     rescue Exception=>e
       puts e.message
