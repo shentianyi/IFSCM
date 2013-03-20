@@ -18,7 +18,7 @@ class Wcfer
     # 返回值：
     # - bool,string : 生成结果，文件名 - hash 
     def self.generate_dn_pdf(template,dataset,dnKey)
-      result={:result=>false}
+        msg=ReturnMsg.new
        begin
          if dataset.length>0
        client = Savon.client do |wsdl,http|
@@ -34,17 +34,16 @@ class Wcfer
     end 
       if res.success?
         resResult=res.to_hash[:generate_dn_pdf_response][:generate_dn_pdf_result]
-        result[:result]=resResult[:result]
-        result[:content]=resResult[:content]
+        msg.result=resResult[:result]
+        msg.content =resResult[:content]
       end
       else
-         result[:content]="不存在需要打印条目"
+         msg.content ="不存在需要打印条目"
       end
       rescue => e
-        result[:content]=e.message.to_s
-        puts e.message.to_s
+         msg.content =e.message.to_s
       end
-      return result
+      return msg
     end
   end
 end
