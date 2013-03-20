@@ -31,7 +31,7 @@
 .wrap-ul{
 	margin-left:50px;
 }
-.wrap-content ul:first-child{
+.wrap-content  ul:first-child{
 	display:block;
 	border-bottom:1px dotted #a2a2a2;
 }
@@ -119,5 +119,14 @@
 }
 .outer-store:hover{
 	 background-image:url("img/outer-store-hover1.png");
+    
+}
+.require-delivery{
+	 background-image:url("img/require-delivery.png");
 
+	
+}
+.require-delivery:hover{
+	 background-image:url("img/require-delivery-hover.png");
+	
 }

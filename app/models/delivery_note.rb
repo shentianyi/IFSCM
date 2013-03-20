@@ -18,10 +18,10 @@ class DeliveryNote < ActiveRecord::Base
   after_create :update_wayState_next_role
   after_update :update_wayState_next_role
 
-  @@can_inspect_waystate=[DeliveryObjWayState::Received]
+  @@can_inspect_waystate=[DeliveryObjWayState::InAccept,DeliveryObjWayState::Received]
   @@can_accept_waystate=[DeliveryObjWayState::Intransit,DeliveryObjWayState::Arrived,DeliveryObjWayState::InAccept]
   @@can_doaccept_waystate=[DeliveryObjWayState::Arrived,DeliveryObjWayState::InAccept]
-  @@can_instore_waystate=[DeliveryObjWayState::Received]
+  @@can_instore_waystate=[DeliveryObjWayState::InAccept,DeliveryObjWayState::Received]
   @@can_arrive_waystate=[DeliveryObjWayState::Intransit]
 
   # ws

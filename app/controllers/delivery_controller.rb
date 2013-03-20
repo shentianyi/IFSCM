@@ -513,7 +513,7 @@ class DeliveryController < ApplicationController
   end 
   
   def instore    
-    @wares=Warehouse.selection_list(@cz_org)
+    @wares=Warehouse.selection_normal_list(@cz_org)
     @params={:dnKey=>params[:dnKey],:type=>params[:type],:ware=>params[:ware]}
     if @msg and @msg.result
       if @dn.can_instore

@@ -54,10 +54,14 @@
 			</div></th>
 			<th><div  id="check-th-<%= pack.id%>"> <%= pack.checked ? "是":"否"%> </div></th>			
 			 <th id="operate-th-<%= pack.id%>">
-			 	<%if pack.can_inspect and !pack.checked%>
+			 	<%if pack.can_inspect %>
+			 	<%if !pack.checked%>
 			<input class="id-check" id="<%= pack.id%>" type="checkbox"/>
 			<%else%>
-			  已操作
+			  已质检
+			<%end%>
+			<%else%>
+			  不可质检
 			<%end%>
 			</th>
 		</tr>

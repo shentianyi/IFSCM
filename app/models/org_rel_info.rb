@@ -3,6 +3,7 @@ require 'base_class'
 
 class OrgRelPrinter<CZ::BaseClass
   attr_accessor :org_rel_id,:template,:moduleName,:type,:updated
+  CLIENT_PACK_TEMPLATE= [OrgRelPrinterType::DPackPrinter,OrgRelPrinterType::DPackPrinterAFour]
   def self.get_default_printer orid,type
     zkey=g_or_dprinter_zset_key orid
     return find($redis.zrangebyscore(zkey,type,type)[0])
@@ -45,7 +46,7 @@ class OrgRelPrinter<CZ::BaseClass
     end
     return printers
   end
-
+  
   private
 
   def self.g_or_dprinter_zset_key orid

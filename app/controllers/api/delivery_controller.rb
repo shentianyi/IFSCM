@@ -1,5 +1,6 @@
 #encoding: utf-8
 require 'org_rel_info'
+
 module Api
   class DeliveryController<AppController
     def print_queue_list
@@ -26,61 +27,63 @@ module Api
     end
 
     def item_list
-      items=[]
-      if dn=DeliveryNote.single_or_default(params[:dnKey])
-        dn.items=DeliveryNote.get_children(dn.key,0,-1)[0]
-        dn.items.each do |pack|
-          pack.items=DeliveryPackage.get_children(pack.key,0,-1)[0]
-          pack.items.each do |item|
-            i=Class.new
-            i.instance_variable_set :@key,item.key
-            i.instance_variable_set :@cpartNr,pack.cpartNr
-            i.instance_variable_set :@spartNr,pack.spartNr
-            i.instance_variable_set :@perPackAmount,pack.perPackAmount
-            items<<i
-          end
-        end
-      end
+      items=DeliveryBll.get_dn_list params[:dnKey]
       render :json=>items
     end
 
     def item_print_data
       diKeys=params[:diKeys].split(',') if params[:diKeys]
+      type=params[:type].to_i
       dnKey=nil
       ddn=nil
-      if diKeys
-        if item=DeliveryItem.single_or_default(diKeys[0])
-          pack=DeliveryPackage.single_or_default(item.parentKey)
-          ddn=DeliveryNote.single_or_default(pack.parentKey)
+      msg=ReturnMsg.new
+      begin
+        if diKeys
+          if item=DeliveryItem.single_or_default(diKeys[0])
+            pack=DeliveryPackage.single_or_default(item.parentKey)
+            ddn=DeliveryNote.single_or_default(pack.parentKey)
+          end
+        else
+          dnKey=params[:dnKey]
         end
-      else
-        dnKey=params[:dnKey]
+        if dn=ddn||DeliveryNote.single_or_default(dnKey)
+          printer,dataset=TPrinter.generate_dn_item_print_data(dn.key,type,diKeys)
+          msg.result=true
+          msg.instance_variable_set :@template,printer.template
+          msg.instance_variable_set :@dataset,dataset
+        end
+      rescue DataMissingError=>e
+        msg.content=e.message
+      rescue NoMethodError=>e
+        msg.content="打印机模板未设置，联系系统供应商进行设置"
+      rescue Exception=>e
+        puts e.message
+        puts e.backtrace
+        msg.content="打印服务错误，请联系系统供应商"
       end
-      data=nil
-      if dn=ddn||DeliveryNote.single_or_default(dnKey)        
-        printer,dataset=TPrinter.generate_dn_item_print_data(dn.key,diKeys)
-        data=Class.new
-        data.instance_variable_set :@template,printer.template
-        data.instance_variable_set :@dataset,dataset
-      end
-      render :json=>data
+      render :json=> msg
     end
-    
+
     def updated_template
       templates=[]
       orgId=params[:orgId]
       OrganisationRelation.where(:origin_supplier_id=>orgId).each do |orgrel|
-        [OrgRelPrinterType::DNPrinter,OrgRelPrinterType::DPackPrinter].each do |type|
-          if printer=OrgRelPrinter.get_default_printer(orgrel.id,type) and printer.updated="true"         
-              templates<<printer.template
-              printer.update(:updated=>false)           
+        OrgRelPrinter::CLIENT_PACK_TEMPLATE.each do |type|
+          if printer=OrgRelPrinter.get_default_printer(orgrel.id,type) and printer.updated="true"
+            templates<<printer.template
+            printer.update(:updated=>false)
           end
         end
       end
-      puts templates.to_json
       render :json=>templates
     end
-    
-    
+
+    def client_pack_template
+      templates=[]
+      OrgRelPrinter::CLIENT_PACK_TEMPLATE.each do |v|
+        templates<<{:desc=>OrgRelPrinterType.get_desc_by_value(v),:value=>v}
+      end
+      render :json=>templates
+    end
   end
 end

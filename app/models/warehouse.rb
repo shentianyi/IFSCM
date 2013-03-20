@@ -10,4 +10,8 @@ class Warehouse < ActiveRecord::Base
     org.warehouses.map {|o| [o.nr, o.id] }
   end
   
+  def self.selection_normal_list( org )
+    org.warehouses.where(:type=>WarehouseType::Normal).map {|o| [o.nr, o.id] }
+  end
+  
 end
