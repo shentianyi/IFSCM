@@ -113,6 +113,7 @@ Demand::Application.routes.draw do
       match :abnormal
       match :item_state
       match :pack
+      post :remove_task
     end
   end
   

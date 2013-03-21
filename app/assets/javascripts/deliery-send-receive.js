@@ -1120,3 +1120,21 @@ function get_abnormal_packs(id, key) {
 function get_batch_pack(id) {
 	window.open("../delivery/pack?id=" + id + "&dnKey=" + $("#dnkey-hidden").val(), 'newwindow', 'height=800,width=750,top=50,left=200,toolbar=no,menubar=no,resizable=no,location=no, status=no');
 }
+
+
+// 功能 ： 移除运单操作任务
+// 参数 ：
+// - id : 运单id
+// 返回 ：
+// - 无
+function remove_staff_dn_task(e){
+	if(confirm('确定移除任务？')){
+		$.post('../delivery/remove_task',{dnKey:e.data.dnKey,role:e.data.role},function(msg){
+			if(msg.result){
+				$("#"+e.data.dnKey).parent().parent().remove();
+			}else{
+				alert(msg.content);
+			}
+		},'json');
+	}
+}
