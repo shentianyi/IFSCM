@@ -39,7 +39,8 @@ class AnalysisController < ApplicationController
             raise( RuntimeError, "OTD值不存在！" )  unless otd = OnTimeDelivery.get_otd_by_range( partrelId, tStart, tEnd )
             chart += [nil,[3,otd],[4,otd]]
             
-            x = [ [1.5,"需求"], [3.5,"到货"], [5.5,"在途"]]
+            x = [ [1.5,"需求"], [3.5,"到货"] ]
+            #x = [ [1.5,"需求"], [3.5,"到货"], [5.5,"在途"]]
             tips = "#{params[:start]} - #{params[:end]}"
             
             render :json=>{:flag=>true, :chart=>chart, :x=>x, :partNr=>p, :type=>type, :tips=>tips }
