@@ -11,8 +11,12 @@ module TPrinter
     rescue DataMissingError=>e
       msg.content=e.message
     rescue NoMethodError=>e
+       puts e.message
+      puts e.backtrace
       msg.content="打印机模板未设置，联系系统供应商进行设置"
     rescue Exception=>e
+      puts e.message
+      puts e.backtrace
       msg.content="打印服务错误，请联系系统供应商"
     end
     return msg
@@ -40,9 +44,9 @@ module TPrinter
     return printer,dataset
   end
 
-  def self.generate_dn_item_print_data dnKey,diKeys=nil
+  def self.generate_dn_item_print_data dnKey,type,diKeys=nil
     dn,orl=get_dn_orl(dnKey)
-    printer = OrgRelPrinter.get_default_printer(orl.id,OrgRelPrinterType::DPackPrinter)
+    printer = OrgRelPrinter.get_default_printer(orl.id,type)
     dataset = eval(printer.moduleName.camelize).send :gen_data,dn,orl,diKeys
     return printer,dataset
   end

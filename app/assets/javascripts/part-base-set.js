@@ -94,15 +94,15 @@ function set_part_strategy() {
 		var times = $("#demote-times").val();
 		var least = $("#least-amount").val();
 		var vali = true;
-		if (posi.length == 0) {
-			flash_hidden_message("#check-point-posi-error");
-			vali = false;
-		}
+		// if (posi.length == 0) {
+			// flash_hidden_message("#check-point-posi-error");
+			// vali = false;
+		// }
 		if (!isIntBetween(1, 10000, times) && $("input[name='group1'][checked]").val() == "1") {
 			flash_hidden_message("#demote-times-error");
 			vali = false;
 		}
-		if (!isPositiveNum(least)) {
+		if (least.length>0 && !isPositiveNum(least)) {
 			flash_hidden_message("#least-amount-error");
 			vali = false;
 		}

@@ -932,7 +932,7 @@ function pack_inspect(type, action, pdata, call) {
 							var checked = $("#pack-return-checkbox").attr("checked");
 							for (var i = 0; i < ids.length; i++) {
 								$("#check-th-" + ids[i]).html("是");
-								$("#operate-th-" + ids[i]).html("已操作");
+								$("#operate-th-" + ids[i]).html("已质检");
 								$("#state-th-" + ids[i]).attr('class', get_dn_obj_state_css(msg.object)).html(msg.content);
 								if (checked != null) {
 									$("#waystate-th-" + ids[i]).attr('class', get_dn_obj_waystate_css(msg.wayStateCode)).html(msg.wayState);
@@ -1119,4 +1119,22 @@ function get_abnormal_packs(id, key) {
 
 function get_batch_pack(id) {
 	window.open("../delivery/pack?id=" + id + "&dnKey=" + $("#dnkey-hidden").val(), 'newwindow', 'height=800,width=750,top=50,left=200,toolbar=no,menubar=no,resizable=no,location=no, status=no');
+}
+
+
+// 功能 ： 移除运单操作任务
+// 参数 ：
+// - id : 运单id
+// 返回 ：
+// - 无
+function remove_staff_dn_task(e){
+	if(confirm('确定移除任务？')){
+		$.post('../delivery/remove_task',{dnKey:e.data.dnKey,role:e.data.role},function(msg){
+			if(msg.result){
+				$("#"+e.data.dnKey).parent().parent().remove();
+			}else{
+				alert(msg.content);
+			}
+		},'json');
+	}
 }

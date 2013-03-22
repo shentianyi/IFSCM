@@ -3,7 +3,7 @@ class DeliveryController < ApplicationController
 
   before_filter  :authorize
   before_filter :auth_dn,:only=>[:arrive,:mark_abnormal,:doinspect]
-  before_filter :redis_auth_dn,:only=>[:dn_detail,:gen_dn_pdf,:accept,:doaccept,:receive,:inspect,:instore,:doinstore,:abnormal,:pack]
+  before_filter :redis_auth_dn,:only=>[:dn_detail,:gen_dn_pdf,:accept,:doaccept,:receive,:inspect,:instore,:doinstore,:abnormal,:pack,:remove_task]
   ##
   # ws
   # 运单列表
@@ -513,7 +513,7 @@ class DeliveryController < ApplicationController
   end 
   
   def instore    
-    @wares=Warehouse.selection_list(@cz_org)
+    @wares=Warehouse.selection_normal_list(@cz_org)
     @params={:dnKey=>params[:dnKey],:type=>params[:type],:ware=>params[:ware]}
     if @msg and @msg.result
       if @dn.can_instore
@@ -584,6 +584,7 @@ class DeliveryController < ApplicationController
   def link
       @list=DeliveryBll.get_all_org_role_dn(session[:org_id],params[:r])
       @action=get_delivery_link_action(params[:r].to_i)
+      @role=params[:r].to_i
   end
   
   
@@ -608,6 +609,14 @@ class DeliveryController < ApplicationController
       render :layout => "window"
     end
   end
+  
+  def remove_task
+    if @msg.result
+      @dn.remove_from_org_role @dn.rece_org_id,params[:role]
+    end  
+    render :json=>@msg
+  end
+  
   private 
   def auth_dn
     if params[:dnKey]     

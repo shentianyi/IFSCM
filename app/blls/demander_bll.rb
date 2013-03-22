@@ -207,7 +207,7 @@ module DemanderBll
                   puts "######{ncount}"
                   if ncount>0
                     nds.items.each do |nd|
-                      f.puts [nd.cpartNr,nd.supplierNr,nd.filedate,nd.type,nd.amount].join($CSVSP)
+                      f.puts [nd.cpartNr,nd.supplierNr,nd.filedate,nd.type,nd.amount,nd.orderNr].join($CSVSP)
                     end
                   end
                 end
@@ -242,15 +242,15 @@ module DemanderBll
     path=File.join($DETMP,UUID.generate+'.csv')
     File.open(path,"wb:#{csv_encode}") do |f|
       if opeType==OrgOperateType::Client
-        f.puts $DECSVT.join($CSVSP)
+        f.puts $DECSVTasC.join($CSVSP)
       elsif opeType==OrgOperateType::Supplier
         f.puts $DECSVTasS.join($CSVSP)
       end
       demands.each do |nd|
         if opeType==OrgOperateType::Client
-          f.puts [nd.cpartNr,nd.supplierNr,nd.date,nd.type,nd.orderNr,nd.amount].join($CSVSP)
+          f.puts [nd.cpartNr,nd.spartNr,nd.supplierNr,nd.date,nd.type,nd.orderNr,nd.amount].join($CSVSP)
         elsif opeType==OrgOperateType::Supplier
-          f.puts [nd.spartNr,nd.clientNr,nd.date,nd.type,nd.orderNr,nd.amount].join($CSVSP)
+          f.puts [nd.cpartNr,nd.spartNr,nd.clientNr,nd.date,nd.type,nd.orderNr,nd.amount].join($CSVSP)
         end
       end
     end
