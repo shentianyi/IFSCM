@@ -83,7 +83,7 @@ module FormatHelper
       if type=='D' or type=='T' or type=='O'
         return  "#{date.year}/#{date.month}/#{date.day}"
       elsif type=='W'
-        return  "#{date.year}/#{date.cweek}"
+        return  "#{date.year}/#{date.to_datetime.cweek}"
       elsif type=='M'
         return  "#{date.year}/#{date.month}"
       elsif type=='Y'
