@@ -445,17 +445,8 @@ class DeliveryController < ApplicationController
   # 返回值：
   # - ReturnMsg : JSON
   def arrive
-    if @msg.result
-      if @dn.wayState==DeliveryObjWayState::Intransit
-        @dn.update_attributes(:wayState=>DeliveryObjWayState::Arrived)  
-        Resque.enqueue(DeliveryNoteWayStateStateUpdater,@dn.id)
-        set_way_state_code(DeliveryObjWayState::Arrived)      
-      else
-        @msg.result=false
-        @msg.content="运单：#{DeliveryObjWayState.get_desc_by_value(@dn.wayState)}，不可再次到达"
-      end
-    end
-    render :json=>@msg
+    
+    render :json=>DeliveryBll.dn_arrive(@msg,@dn,session[:org_id])
   end
   
   # ws
@@ -499,7 +490,7 @@ class DeliveryController < ApplicationController
           itemState=@msg.object=DeliveryObjState::Abnormal
           if params[:return]        
              Resque.enqueue(DeliveryItemReturner,ids,@dn.id)
-             set_way_state_code(DeliveryObjWayState::Returned)                    
+             @msg=DeliveryBll.set_way_state_code(@msg,DeliveryObjWayState::Returned)                    
           end            
           @dn.update_attributes(:state=>itemState)           
         end             
@@ -644,11 +635,12 @@ class DeliveryController < ApplicationController
       @msg.content='运单不存在'
     end
   end
-  def set_way_state_code code
-      @msg.instance_variable_set "@wayState",DeliveryObjWayState.get_desc_by_value(code)
-      @msg.instance_variable_set "@wayStateCode",code
-  end
   
+  # def set_way_state_code code
+      # @msg.instance_variable_set "@wayState",DeliveryObjWayState.get_desc_by_value(code)
+      # @msg.instance_variable_set "@wayStateCode",code
+  # end
+#   
   def get_delivery_link_action code
    action=case code
      when OrgRoleType::DnReciver

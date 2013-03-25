@@ -330,7 +330,7 @@ module DeliveryBll
           packs.each do |p|
             p.items=DeliveryPackage.get_children(p.key,0,-1)[0]
             p.items.each do |item|
-               item.instance_variable_set('@attributes',item.attributes.merge({'cpartNr'=>p.cpartNr,
+              item.instance_variable_set('@attributes',item.attributes.merge({'cpartNr'=>p.cpartNr,
                 'spartNr'=>p.spartNr,
                 'perPackAmount'=>p.perPackAmount,
                 'part_rel_id'=>p.part_rel_id}))
@@ -558,4 +558,28 @@ module DeliveryBll
     end
   end
 
+  def self.dn_arrive msg,dn,orgId
+    if msg.result
+      if dn.rece_org_id==orgId
+        if dn.wayState==DeliveryObjWayState::Intransit
+          dn.update_attributes(:wayState=>DeliveryObjWayState::Arrived)
+          Resque.enqueue(DeliveryNoteWayStateStateUpdater,dn.id)
+          msg=set_way_state_code(msg,DeliveryObjWayState::Arrived)
+        else
+          msg.result=false
+          msg.content="运单：#{DeliveryObjWayState.get_desc_by_value(dn.wayState)}，不可再次到达"
+        end
+      else
+        msg.result=false
+        msg.content="无权限操作本运单"
+      end
+    end
+    return msg
+  end
+
+  def self.set_way_state_code msg,code
+    msg.instance_variable_set "@wayState",DeliveryObjWayState.get_desc_by_value(code)
+    msg.instance_variable_set "@wayStateCode",code
+    return msg
+  end
 end

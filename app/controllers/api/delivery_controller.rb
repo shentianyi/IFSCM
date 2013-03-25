@@ -3,6 +3,8 @@ require 'org_rel_info'
 
 module Api
   class DeliveryController<AppController
+    before_filter :delivery_auth,:only=>[:arrive]
+    
     def print_queue_list
       render :json=>DeliveryNote.get_all_print_dnKey(params[:staffId])
     end
@@ -85,5 +87,11 @@ module Api
       end
       render :json=>templates
     end
+    
+    def arrive
+      puts Base64.decode64(request.headers["Authorization"])
+      render :json=>DeliveryBll.dn_arrive(@msg,@dn,params[:org_id].to_i)
+    end
+    
   end
 end
