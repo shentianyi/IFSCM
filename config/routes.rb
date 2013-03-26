@@ -148,7 +148,7 @@ Demand::Application.routes.draw do
     controller :delivery do
       match 'delivery/print_queue_list'=>:print_queue_list
       match 'delivery/remove_from_print_queue'=>:remove_from_print_queue
-      match 'delivery/package_list'=>:package_list
+      # match 'delivery/package_list'=>:package_list
       match 'delivery/item_list'=>:item_list
       match 'delivery/item_print_data' => :item_print_data
       match 'delivery/updated_template' =>:updated_template

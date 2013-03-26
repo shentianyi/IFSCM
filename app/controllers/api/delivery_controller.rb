@@ -21,13 +21,13 @@ module Api
       render :json=>msg
     end
 
-    def package_list
-      items=[]
-      if dn=DeliveryNote.single_or_default(params[:dnKey])
-        items=DeliveryNote.get_children(dn.key,0,-1)[0]
-      end
-      render :json=>items
-    end
+    # def package_list
+      # items=[]
+      # if dn=DeliveryNote.single_or_default(params[:dnKey])
+        # items=DeliveryNote.get_children(dn.key,0,-1)[0]
+      # end
+      # render :json=>items
+    # end
 
     def item_list
       items=DeliveryBll.get_dn_list params[:dnKey]

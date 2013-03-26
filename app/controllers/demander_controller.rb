@@ -87,7 +87,7 @@ class DemanderController<ApplicationController
       bf,sf,od=RedisFile.find(params[:batchId]),RedisFile.find(params[:fileId]),DemanderTemp.find(params[:uuid])
       if bf and sf and od
         nd= DemanderTemp.new(:key=>od.key,:cpartNr=>params[:partNr],:clientId=>clientId,:supplierNr=>params[:supplierNr],
-        :filedate=>params[:filedate],:date=>(FormatHelper::demand_date_by_str_type(params[:filedate],params[:type])),
+        :filedate=>params[:filedate],:date=>params[:filedate],
         :type=>params[:type],:amount=>params[:amount],:lineNo=>od.lineNo,:source=>od.source)
 
         okey, nkey=od.gen_md5_repeat_key,nd.gen_md5_repeat_key
