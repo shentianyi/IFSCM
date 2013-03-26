@@ -58,6 +58,13 @@ module FormatHelper
     end
     return ""
   end
+  
+  def self.demand_date_vali date,type
+    if date=demand_date_inside(date,type)
+     return date<Date.today
+    end
+    true
+  end
 
   def self.demand_date_inside date,type
     if date

@@ -38,8 +38,8 @@ module DemanderBll
               demand= DemanderTemp.new(:cpartNr=>row["PartNr"].strip,:clientId=>clientId,:supplierNr=>row["Supplier"].strip,
               :filedate=>row["Date"].strip,:type=>row["Type"].strip,:amount=>row["Amount"].strip,:orderNr=>"",:lineNo=>sfile.itemCount,:source=>sfile.oriName,:oldamount=>0)
             end
-            demand.date=FormatHelper::demand_date_by_str_type(demand.filedate,demand.type)
-
+            # demand.date=FormatHelper::demand_date_by_str_type(demand.filedate,demand.type)
+            demand.date=demand.filedate
             # validate demand field
             msg=demand_field_validate(demand,batchFile)
             demand.vali=msg.result
@@ -123,7 +123,11 @@ module DemanderBll
     end
 
     # vali date
-    if FormatHelper::str_less_today(demand.filedate)
+    # if FormatHelper::str_less_today(demand.filedate)
+      # msg.result=false
+      # msg.content_key<<:fcDateErr
+    # end
+    if FormatHelper::demand_date_vali(demand.date,demand.type)
       msg.result=false
       msg.content_key<<:fcDateErr
     end
