@@ -61,7 +61,7 @@ module FormatHelper
   
   def self.demand_date_vali date,type
     if date=demand_date_inside(date,type)
-     return date.to_datetime<Date.today
+     return date<Date.today
     end
     true
   end
