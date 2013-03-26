@@ -517,13 +517,13 @@ module DeliveryBll
     end
   end
 
-  def self.delivery_note_wayState_state_update id
+  def self.delivery_note_wayState_state_update id,ids=nil
     dn=DeliveryNote.find(id)
     if dn
       case dn.wayState
       when DeliveryObjWayState::Arrived
-        dn.delivery_items.update_all(:wayState=>DeliveryObjWayState::Arrived)
-        delivery_item_update_all 300,dn.key,{:wayState=>DeliveryObjWayState::Arrived}
+        dn.delivery_items.update_all(:wayState=>DeliveryObjWayState::InAccept)
+        delivery_item_update_all 300,dn.key,{:wayState=>DeliveryObjWayState::InAccept}
       when DeliveryObjWayState::Returned
         dn.delivery_items.update_all(:wayState=>DeliveryObjWayState::Returned)
         delivery_item_update_all 300,dn.key,{:wayState=>DeliveryObjWayState::Returned}
@@ -558,13 +558,13 @@ module DeliveryBll
     end
   end
 
-  def self.dn_arrive msg,dn,orgId
+  def self.dn_arrive msg,dn,orgId,ids=nil
     if msg.result
       if dn.rece_org_id==orgId
         if dn.wayState==DeliveryObjWayState::Intransit
           dn.update_attributes(:wayState=>DeliveryObjWayState::Arrived)
           Resque.enqueue(DeliveryNoteWayStateStateUpdater,dn.id)
-          msg=set_way_state_code(msg,DeliveryObjWayState::Arrived)
+          msg=set_way_state_code(msg,DeliveryObjWayState::InAccept)
         else
           msg.result=false
           msg.content="运单：#{DeliveryObjWayState.get_desc_by_value(dn.wayState)}，不可再次到达"

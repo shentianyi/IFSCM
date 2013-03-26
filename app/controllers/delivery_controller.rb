@@ -444,8 +444,7 @@ class DeliveryController < ApplicationController
   # - string ： dnKey
   # 返回值：
   # - ReturnMsg : JSON
-  def arrive
-    
+  def arrive    
     render :json=>DeliveryBll.dn_arrive(@msg,@dn,session[:org_id])
   end
   

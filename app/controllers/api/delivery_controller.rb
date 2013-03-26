@@ -22,10 +22,11 @@ module Api
     end
 
     def package_list
+      items=[]
       if dn=DeliveryNote.single_or_default(params[:dnKey])
-        dn.items=DeliveryNote.get_children(dn.key,0,-1)[0]
+        items=DeliveryNote.get_children(dn.key,0,-1)[0]
       end
-      render :json=>dn.items
+      render :json=>items
     end
 
     def item_list
