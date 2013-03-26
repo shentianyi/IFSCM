@@ -153,6 +153,7 @@ Demand::Application.routes.draw do
       match 'delivery/item_print_data' => :item_print_data
       match 'delivery/updated_template' =>:updated_template
       match 'delivery/client_pack_template'=>:client_pack_template
+      match 'delivery/arrive'=>:arrive
     end
   #end
   end
