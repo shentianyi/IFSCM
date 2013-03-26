@@ -127,7 +127,7 @@ module DemanderBll
       # msg.result=false
       # msg.content_key<<:fcDateErr
     # end
-    if !FormatHelper::demand_date_vali(demand.date,demand.type)
+    if FormatHelper::demand_date_vali(demand.date,demand.type)
       msg.result=false
       msg.content_key<<:fcDateErr
     end
