@@ -31,9 +31,6 @@ class Redis
       prefix = w.downcase
       key = Search.mk_complete_key(type)
       
-       puts "-"*20
-       start = Redis::Search.config.redis.zrank(key,prefix)
-       puts start
      if start = Redis::Search.config.redis.zrank(key,prefix)
         steplen = rangelen*limit
         totalcount=Redis::Search.config.redis.zcard(key)
