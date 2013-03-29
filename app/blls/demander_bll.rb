@@ -38,8 +38,8 @@ module DemanderBll
               demand= DemanderTemp.new(:cpartNr=>row["PartNr"].strip,:clientId=>clientId,:supplierNr=>row["Supplier"].strip,
               :filedate=>row["Date"].strip,:type=>row["Type"].strip,:amount=>row["Amount"].strip,:orderNr=>"",:lineNo=>sfile.itemCount,:source=>sfile.oriName,:oldamount=>0)
             end
-            demand.date=FormatHelper::demand_date_by_str_type(demand.filedate,demand.type)
-
+            # demand.date=FormatHelper::demand_date_by_str_type(demand.filedate,demand.type)
+            demand.date=demand.filedate
             # validate demand field
             msg=demand_field_validate(demand,batchFile)
             demand.vali=msg.result
@@ -123,7 +123,11 @@ module DemanderBll
     end
 
     # vali date
-    if FormatHelper::str_less_today(demand.filedate)
+    # if FormatHelper::str_less_today(demand.filedate)
+      # msg.result=false
+      # msg.content_key<<:fcDateErr
+    # end
+    if FormatHelper::demand_date_vali(demand.date,demand.type)
       msg.result=false
       msg.content_key<<:fcDateErr
     end
@@ -207,7 +211,7 @@ module DemanderBll
                   puts "######{ncount}"
                   if ncount>0
                     nds.items.each do |nd|
-                      f.puts [nd.cpartNr,nd.supplierNr,nd.filedate,nd.type,nd.amount].join($CSVSP)
+                      f.puts [nd.cpartNr,nd.supplierNr,nd.filedate,nd.type,nd.amount,nd.orderNr].join($CSVSP)
                     end
                   end
                 end
@@ -242,15 +246,15 @@ module DemanderBll
     path=File.join($DETMP,UUID.generate+'.csv')
     File.open(path,"wb:#{csv_encode}") do |f|
       if opeType==OrgOperateType::Client
-        f.puts $DECSVT.join($CSVSP)
+        f.puts $DECSVTasC.join($CSVSP)
       elsif opeType==OrgOperateType::Supplier
         f.puts $DECSVTasS.join($CSVSP)
       end
       demands.each do |nd|
         if opeType==OrgOperateType::Client
-          f.puts [nd.cpartNr,nd.supplierNr,nd.date,nd.type,nd.orderNr,nd.amount].join($CSVSP)
+          f.puts [nd.cpartNr,nd.spartNr,nd.supplierNr,nd.date,nd.type,nd.orderNr,nd.amount].join($CSVSP)
         elsif opeType==OrgOperateType::Supplier
-          f.puts [nd.spartNr,nd.clientNr,nd.date,nd.type,nd.orderNr,nd.amount].join($CSVSP)
+          f.puts [nd.cpartNr,nd.spartNr,nd.clientNr,nd.date,nd.type,nd.orderNr,nd.amount].join($CSVSP)
         end
       end
     end

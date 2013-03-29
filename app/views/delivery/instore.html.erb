@@ -10,7 +10,7 @@
 		<option value="2">质检单</option>
 	</select>
 	<span class="uploadfile">仓库：</span><%= select_tag :wares,options_for_select(@wares),{:class=>'uploadfile select'}%>
-	<input type="button" name="delivery-up-btn" class="btupload" value="提交" onclick="redirect_delivery_action('instore',{'type':document.getElementById('type').selectedIndex,'ware':document.getElementById('wares').value});"  >
+	<input type="button" name="delivery-up-btn" class="btupload" value="查看" onclick="redirect_delivery_action('instore',{'type':document.getElementById('type').selectedIndex,'ware':document.getElementById('wares').value});"  >
 </div>
 <div id="accept-list-div">
 	<%if @msg

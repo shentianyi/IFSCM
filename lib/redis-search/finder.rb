@@ -22,6 +22,8 @@ class Redis
       limit = options[:limit] || 10 
       conditions = options[:conditions] || []
       return [] if (w.blank? and conditions.blank?) or type.blank?
+      conflag = (conditions.blank?) ? true : false
+      enflag = false
       
       prefix_matchs = []
       # This is not random, try to get replies < MTU size
@@ -37,16 +39,21 @@ class Redis
         steps=totalcount/steplen+(totalcount%steplen==0 ? 0 : 1)
         # puts "steps:#{steps}"
         for i in 0...steps
+          break  if enflag
           range = Redis::Search.config.redis.zrange(key,start, start+steplen)
-          break if !range or range.length == 0
+          break  if !range or range.length == 0
+          
           range.each {|entry|
             minlen = [entry.length,prefix.length].min
             if entry[0...minlen] != prefix[0...minlen]
-            count = prefix_matchs.count
-            break
+              enflag = true
+              break
             end
-            if entry[-1..-1] == "*" and prefix_matchs.length != count
-            prefix_matchs << entry[0...-1]
+            if entry[-1..-1] == "*"
+              prefix_matchs << entry[0...-1]
+              if conflag and prefix_matchs.length==limit
+                enflag = true ; break
+              end
             end
           }
           # puts "step no.#{i}"

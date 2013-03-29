@@ -3,7 +3,7 @@ class DeliveryController < ApplicationController
 
   before_filter  :authorize
   before_filter :auth_dn,:only=>[:arrive,:mark_abnormal,:doinspect]
-  before_filter :redis_auth_dn,:only=>[:dn_detail,:gen_dn_pdf,:accept,:doaccept,:receive,:inspect,:instore,:doinstore,:abnormal,:pack]
+  before_filter :redis_auth_dn,:only=>[:dn_detail,:gen_dn_pdf,:accept,:doaccept,:receive,:inspect,:instore,:doinstore,:abnormal,:pack,:remove_task]
   ##
   # ws
   # 运单列表
@@ -444,18 +444,8 @@ class DeliveryController < ApplicationController
   # - string ： dnKey
   # 返回值：
   # - ReturnMsg : JSON
-  def arrive
-    if @msg.result
-      if @dn.wayState==DeliveryObjWayState::Intransit
-        @dn.update_attributes(:wayState=>DeliveryObjWayState::Arrived)  
-        Resque.enqueue(DeliveryNoteWayStateStateUpdater,@dn.id)
-        set_way_state_code(DeliveryObjWayState::Arrived)      
-      else
-        @msg.result=false
-        @msg.content="运单：#{DeliveryObjWayState.get_desc_by_value(@dn.wayState)}，不可再次到达"
-      end
-    end
-    render :json=>@msg
+  def arrive    
+    render :json=>DeliveryBll.dn_arrive(@msg,@dn,session[:org_id])
   end
   
   # ws
@@ -499,7 +489,7 @@ class DeliveryController < ApplicationController
           itemState=@msg.object=DeliveryObjState::Abnormal
           if params[:return]        
              Resque.enqueue(DeliveryItemReturner,ids,@dn.id)
-             set_way_state_code(DeliveryObjWayState::Returned)                    
+             @msg=DeliveryBll.set_way_state_code(@msg,DeliveryObjWayState::Returned)                    
           end            
           @dn.update_attributes(:state=>itemState)           
         end             
@@ -584,6 +574,7 @@ class DeliveryController < ApplicationController
   def link
       @list=DeliveryBll.get_all_org_role_dn(session[:org_id],params[:r])
       @action=get_delivery_link_action(params[:r].to_i)
+      @role=params[:r].to_i
   end
   
   
@@ -608,6 +599,14 @@ class DeliveryController < ApplicationController
       render :layout => "window"
     end
   end
+  
+  def remove_task
+    if @msg.result
+      @dn.remove_from_org_role @dn.rece_org_id,params[:role]
+    end  
+    render :json=>@msg
+  end
+  
   private 
   def auth_dn
     if params[:dnKey]     
@@ -635,11 +634,12 @@ class DeliveryController < ApplicationController
       @msg.content='运单不存在'
     end
   end
-  def set_way_state_code code
-      @msg.instance_variable_set "@wayState",DeliveryObjWayState.get_desc_by_value(code)
-      @msg.instance_variable_set "@wayStateCode",code
-  end
   
+  # def set_way_state_code code
+      # @msg.instance_variable_set "@wayState",DeliveryObjWayState.get_desc_by_value(code)
+      # @msg.instance_variable_set "@wayStateCode",code
+  # end
+#   
   def get_delivery_link_action code
    action=case code
      when OrgRoleType::DnReciver

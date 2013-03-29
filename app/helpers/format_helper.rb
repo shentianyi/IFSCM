@@ -58,6 +58,13 @@ module FormatHelper
     end
     return ""
   end
+  
+  def self.demand_date_vali date,type
+    if date=demand_date_inside(date,type)
+     return date<Date.today
+    end
+    true
+  end
 
   def self.demand_date_inside date,type
     if date
@@ -83,7 +90,7 @@ module FormatHelper
       if type=='D' or type=='T' or type=='O'
         return  "#{date.year}/#{date.month}/#{date.day}"
       elsif type=='W'
-        return  "#{date.year}/#{date.cweek}"
+        return  "#{date.year}/#{date.to_datetime.cweek}"
       elsif type=='M'
         return  "#{date.year}/#{date.month}"
       elsif type=='Y'

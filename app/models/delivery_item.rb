@@ -17,7 +17,7 @@ class DeliveryItem < ActiveRecord::Base
   after_update  :update_delivery_note_state
   before_create :build_item_state
     
-  @@can_acc_rej_waystates=[DeliveryObjWayState::Intransit,DeliveryObjWayState::Arrived]
+  @@can_acc_rej_waystates=[DeliveryObjWayState::Intransit,DeliveryObjWayState::Arrived,DeliveryObjWayState::InAccept]
   @@can_inspect_waystates=[DeliveryObjWayState::Received]
   @@inspect_states=[DeliveryObjInspect::SamInspect,DeliveryObjInspect::FullInspect]
   @@can_instore_waystate=[DeliveryObjWayState::Received]

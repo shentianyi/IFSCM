@@ -11,6 +11,7 @@
 		<th>发货日期</th> 
 		<th>运单状态</th>
 		<th>是否异常</th>
+		<th>&nbsp;</th>
 	</tr>
 	<% i=0
 	@list.each do |dn|
@@ -27,9 +28,26 @@
 		<div class="<%= DeliveryHelper::get_delivery_obj_state_css(dn.state)%>">
 			<%= DeliveryHelper::get_delivery_obj_state(dn.state)%>
 		</div></th>
+		<th>
+			<input type="button" class="del_btn" title="移除" id="<%=dn.key%>"/>
+		</th>
 	</tr>
 	<%end%>
 </table>
+<input type="hidden" id="role-hidden" value="<%=@role%>"/>
+<script type="text/javascript">
+	$(document).ready(function() {
+	  var dd = $(".del_btn");
+					for (var i = 0; i < dd.length; i++) {
+						$(dd[i]).bind('click', {
+							dnKey : $(dd[i]).attr("id"),
+							role : $("#role-hidden").val()
+						}, function(e) {
+							remove_staff_dn_task(e);
+						});
+					}
+	});
+</script>
 <%else%>
 <div class="abstractblock">
 	无运单

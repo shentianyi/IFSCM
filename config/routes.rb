@@ -113,6 +113,7 @@ Demand::Application.routes.draw do
       match :abnormal
       match :item_state
       match :pack
+      post :remove_task
     end
   end
   
@@ -147,11 +148,12 @@ Demand::Application.routes.draw do
     controller :delivery do
       match 'delivery/print_queue_list'=>:print_queue_list
       match 'delivery/remove_from_print_queue'=>:remove_from_print_queue
-      match 'delivery/package_list'=>:package_list
+      # match 'delivery/package_list'=>:package_list
       match 'delivery/item_list'=>:item_list
       match 'delivery/item_print_data' => :item_print_data
       match 'delivery/updated_template' =>:updated_template
       match 'delivery/client_pack_template'=>:client_pack_template
+      match 'delivery/arrive'=>:arrive
     end
   #end
   end
