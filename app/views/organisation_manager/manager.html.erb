@@ -59,14 +59,14 @@
 	<div>
 		<label>Client:</label>
 		<%= select_tag :clientId,  options_for_select(@list),  prompt: "All" %>
-		<label>Client名称:</label>
-		<%= text_field_tag :clientNr, nil, :placeholder => "example: Leoni" %>
+		<label>ClientNr客户编号:</label>
+		<%= text_field_tag :clientNr, nil, :placeholder => "example: RM6178" %>
 	</div>
 	<div>
 		<label>Supplier:</label>
 		<%= select_tag :supplierId,  options_for_select(@list),  prompt: "All" %>
-		<label>Supplier名称:</label>
-		<%= text_field_tag :supplierNr, nil, :placeholder => "example: nbtp" %>
+		<label>SupplierNr供应商编号:</label>
+		<%= text_field_tag :supplierNr, nil, :placeholder => "example: 0061" %>
 	</div>
     <%= button_tag '新建',:type=>'button',:onclick=>"org_rel_new();"%>
 <% end %>

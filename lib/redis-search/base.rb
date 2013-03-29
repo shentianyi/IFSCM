@@ -123,6 +123,7 @@ class Redis
             if self.redis_search_index_need_reindex or self.new_record?
               self.redis_search_index_create
             end
+            Redis::Search.config.redis.keys("tmpsinterstore:OrganisationRelation:_by:*").each{|e| Redis::Search.config.redis.del(e) }
             true
           end
         )

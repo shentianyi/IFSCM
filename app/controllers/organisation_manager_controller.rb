@@ -125,6 +125,7 @@ class OrganisationManagerController < ApplicationController
               end
             end
       else
+            # CSV.foreach(hfile,:headers=>true,:col_sep=>$CSVSP,:encoding=>"gb2312") do |row|
             CSV.foreach(hfile,:headers=>true,:col_sep=>$CSVSP) do |row|
                         if row["Client"] and row["Supplier"] and row["CpartNr"] and row["SpartNr"] and row["CpartDesc"] and row["SpartDesc"] and row["SaleNo"] and row["PurchaseNo"]
                           next unless cli = Organisation.where(:abbr=>row["Client"].strip).first
