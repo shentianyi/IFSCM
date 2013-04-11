@@ -68,7 +68,7 @@ module DeliveryBll
           pl=PartRelInfo.find(t.part_rel_id)
           pack=DeliveryPackage.new(:key=>ClassKeyHelper::gen_key("DeliveryPackage"),:parentKey=>dn.key,:packAmount=>packcount,
           :perPackAmount=>t.perPackAmount,:part_rel_id=>t.part_rel_id,:saleNo=>pl.saleNo,:purchaseNo=>pl.purchaseNo,
-          :cpartNr=>pl.cpartNr,:spartNr=>pl.spartNr)
+          :cpartNr=>pl.cpartNr,:spartNr=>pl.spartNr,:remark=>t.remark)
           if t.order_item_id
           pack.order_item_id=t.order_item_id
           pack.orderNr=t.orderNr

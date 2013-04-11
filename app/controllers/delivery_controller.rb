@@ -298,7 +298,7 @@ class DeliveryController < ApplicationController
         if dit.order_item_id and dit.rest.to_f<total
             msg.content="订单未发送量为:#{dit.rest},目前总量超出"
         else
-          dit.update(:packAmount=>packN,:perPackAmount=>per,:total=>total)
+          dit.update(:packAmount=>packN,:perPackAmount=>per,:total=>total,:remark=>params[:remark])
             msg.result=true
             msg.object=dit
         end

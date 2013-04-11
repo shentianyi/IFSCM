@@ -2,7 +2,7 @@
 module LeoniNbtpDn
   @@head_keys=["DnNr","SendDate","SupplierOrgName","SupplierOrgAddress","ClientOrgName","ClientOrgAddress","DnDestination",
     "SupplierNr","ClientNr","ReceiverName","ContactWay"]
-  @@body_keys=["CPartNr","SPartNr","PerPackNum","PackNum","TotalQuantity","OrderNr"]
+  @@body_keys=["CPartNr","SPartNr","PerPackNum","PackNum","TotalQuantity","OrderNr","Remark"]
 
   def self.gen_data dn,orl
     dataset=[]
@@ -29,6 +29,7 @@ module LeoniNbtpDn
     data[:CPartNr]=pack.cpartNr
     data[:SPartNr]=pack.spartNr
     data[:OrderNr]=pack.orderNr.nil? ? "":pack.orderNr
+    data[:Remark]=pack.remark.nil? ? "":pack.remark
     @@body_keys.each do |key|
       record<<{:Key=>key,:Value=>data[key.to_sym]}
     end

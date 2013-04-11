@@ -9,9 +9,11 @@
 			<th>内部销售订单号</th>
 			<th>客户采购合同号</th>
 			<th>订单号</th>
+			<th>备注</th>
 		</tr>
 		<tr class="divide" style="display: none">
 			<th class="nordvd">&nbsp;</th>
+			<th class="nordvd"></th>
 			<th class="nordvd"></th>
 			<th class="nordvd"></th>
 			<th class="nordvd"></th>
@@ -24,7 +26,7 @@
 		per=FormatHelper.string_to_int(pack.perPackAmount.to_s)
 		pack.items=DeliveryPackage.get_children(pack.key,0,-1)[0]
 		pack.items.each do |item|
-		%>		
+		%>
 		<tr class="norline">
 			<th><%= (i+=1)%></th>
 			<th style="text-align:left;"><%= item.key%></th>
@@ -33,6 +35,7 @@
 			<th><%= pack.saleNo%></th>
 			<th><%= pack.purchaseNo%></th>
 			<th><%= pack.orderNr%></th>
+			<th><%= pack.remark%></th>
 		</tr>
 		<% end
 		end%>
