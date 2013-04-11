@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130313125727) do
+ActiveRecord::Schema.define(:version => 20130411064842) do
 
   create_table "cost_centers", :force => true do |t|
     t.string   "name"
@@ -79,6 +79,7 @@ ActiveRecord::Schema.define(:version => 20130313125727) do
     t.datetime "updated_at",       :null => false
     t.string   "orderNr"
     t.integer  "order_item_id"
+    t.string   "remark"
   end
 
   add_index "delivery_packages", ["delivery_note_id"], :name => "index_delivery_packages_on_delivery_note_id"

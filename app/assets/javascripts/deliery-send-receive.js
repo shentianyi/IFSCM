@@ -271,7 +271,8 @@ function update_staff_dit(key) {
 	var tr = $("[id='" + key + "']");
 	var per = tr.find('.pernum').val();
 	var packN = tr.find('.packnum').val();
-
+	var total = tr.find('.total').text();
+	var remark = tr.find('.remark').val();
 	if (!isPositiveNum(per)) {
 		alert('每包装箱量必须为正数！');
 		return;
@@ -280,18 +281,29 @@ function update_staff_dit(key) {
 		alert('包装箱数必须为正整数！');
 		return;
 	}
+	if (per * packN == total && remark.length == 0)
+		return;
 	$.ajax({
 		url : '../delivery/update_dit',
 		dataType : 'json',
 		data : {
 			ditkey : key,
 			packAmount : packN,
-			perPackAmount : per
+			perPackAmount : per,
+			remark : remark
 		},
 		type : 'post',
 		success : function(msg) {
 			if (msg.result) {
 				tr.find('.total').text(msg.object.total);
+				var btn=tr.find('.edit_btn');
+				var msg=tr.find('.msg');
+				btn.hide();
+				msg.text('修改成功').show();
+				window.setTimeout(function() {
+					msg.hide();
+					btn.show();
+				}, 2000);
 			} else {
 				alert(msg.content);
 			}
@@ -1074,14 +1086,14 @@ function return_delivery_note() {
 // 返回 ：
 // - 无
 function get_info_card(e, id, action, i) {
-	var left=e.pageX;
-	var top=e.pageY;
-	if(i==2){
-		left-=300;
-		
+	var left = e.pageX;
+	var top = e.pageY;
+	if (i == 2) {
+		left -= 300;
+
 	}
 	$(".tooltip-content").show().offset({
-		left :left,
+		left : left,
 		top : top
 	});
 	$("#tooltip-content-prepare").show();
@@ -1121,20 +1133,22 @@ function get_batch_pack(id) {
 	window.open("../delivery/pack?id=" + id + "&dnKey=" + $("#dnkey-hidden").val(), 'newwindow', 'height=800,width=750,top=50,left=200,toolbar=no,menubar=no,resizable=no,location=no, status=no');
 }
 
-
 // 功能 ： 移除运单操作任务
 // 参数 ：
 // - id : 运单id
 // 返回 ：
 // - 无
-function remove_staff_dn_task(e){
-	if(confirm('确定移除任务？')){
-		$.post('../delivery/remove_task',{dnKey:e.data.dnKey,role:e.data.role},function(msg){
-			if(msg.result){
-				$("#"+e.data.dnKey).parent().parent().remove();
-			}else{
+function remove_staff_dn_task(e) {
+	if (confirm('确定移除任务？')) {
+		$.post('../delivery/remove_task', {
+			dnKey : e.data.dnKey,
+			role : e.data.role
+		}, function(msg) {
+			if (msg.result) {
+				$("#" + e.data.dnKey).parent().parent().remove();
+			} else {
 				alert(msg.content);
 			}
-		},'json');
+		}, 'json');
 	}
 }

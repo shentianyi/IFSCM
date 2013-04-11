@@ -26,7 +26,7 @@
 			<th class="lastdvd"></th>
 		</tr>
 		<% @demands.each do |d|
-	      img,thisLineWidth,lastLineWidth=DemanderHelper::generate_demand_bar(d)
+	      img,thisLineWidth,lastLineWidth,title=DemanderHelper::generate_demand_bar(d)
 		%>
 		  <tr class="norline hoverable">
 			<% if session[:orgOpeType]==OrgOperateType::Client %>
@@ -48,7 +48,7 @@
 	                         <% else %>
 	                         <span class="percentage"> <%= d.rate.to_f.round(2).abs %>% </span>
 	                         <% end %>
-	                         <img src="/assets/<%= img%>.png" class='percentageImg' />
+	                         <img src="/assets/<%= img%>.png" title="<%=title%>" class='percentageImg' />
                     	</div>
 	                    <div class="lineforcast">
 	                         <span class="fnumbers">本次预测：<span id="this_demand_amount"><%= d.amount %></span></span>
