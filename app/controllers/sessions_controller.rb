@@ -19,9 +19,7 @@ class SessionsController < ApplicationController
   end
 
   def destroy
-    session[:staff_id] = nil
-    session[:org_id] = nil
-    session[:orgOpeType] = nil
+    reset_session
     redirect_to login_url, :notice => "已注销"
   end
 

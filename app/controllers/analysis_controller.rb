@@ -10,8 +10,10 @@ class AnalysisController < ApplicationController
             c = params[:client]
             s = params[:supplier]
             raise( ArgumentError, "缺少条件：零件号！" )  unless params[:partNr].is_a?(String) and p = params[:partNr].strip and p.present?
-            tStart = Time.parse(params[:start]).to_i if params[:start].present?
-            tEnd = Time.parse(params[:end]).to_i if params[:end].present?
+            raise( ArgumentError, "缺少条件：起始时间！" )  unless params[:start].present?
+            raise( ArgumentError, "缺少条件：结束时间！" )  unless params[:end].present?
+            tStart = Time.parse(params[:start]).to_i
+            tEnd = Time.parse(params[:end]).to_i
             raise( ArgumentError, "开始时间应小于结束时间！" )  if tStart>tEnd
             type = params[:type].strip if params[:type].is_a?(String)
         
