@@ -102,14 +102,17 @@ class OrganisationManagerController < ApplicationController
     files=params[:files]
     result = true
     info = ""
-    if files.size==1
+    encod = request.headers["CZ-partrel-encoding"]
+    begin
+      raise( RuntimeError, "文件数量不符合！" )  unless files.size==1
+      raise( RuntimeError, "请选择编码方式！" )  unless ["gb2312", "utf-8"].include?(encod)
       f = files.first
       dcsv=FileData.new(:data=>f,:type=>FileDataType::CSVPartRel,:oriName=>f.original_filename,:path=>$DETMP)
       dcsv.saveFile
       hfile = File.join($DETMP,dcsv.pathName)
       i=0
       if request.headers["CZ-partrel-update"] == "true"
-            CSV.foreach(hfile,:headers=>true,:col_sep=>$CSVSP) do |row|
+            CSV.foreach(hfile,:headers=>true,:col_sep=>$CSVSP,:encoding=>"#{encod}:utf-8") do |row|
               if row["Client"] and row["Supplier"] and row["CpartNr"] and row["SpartNr"] and row["CpartDesc"] and row["SpartDesc"] and row["SaleNo"] and row["PurchaseNo"]
                 next unless cli = Organisation.where(:abbr=>row["Client"].strip).first
                 next unless sup = Organisation.where(:abbr=>row["Supplier"].strip).first
@@ -125,8 +128,7 @@ class OrganisationManagerController < ApplicationController
               end
             end
       else
-            # CSV.foreach(hfile,:headers=>true,:col_sep=>$CSVSP,:encoding=>"gb2312") do |row|
-            CSV.foreach(hfile,:headers=>true,:col_sep=>$CSVSP) do |row|
+            CSV.foreach(hfile,:headers=>true,:col_sep=>$CSVSP,:encoding=>"#{encod}:utf-8") do |row|
                         if row["Client"] and row["Supplier"] and row["CpartNr"] and row["SpartNr"] and row["CpartDesc"] and row["SpartDesc"] and row["SaleNo"] and row["PurchaseNo"]
                           next unless cli = Organisation.where(:abbr=>row["Client"].strip).first
                           next unless sup = Organisation.where(:abbr=>row["Supplier"].strip).first
@@ -151,11 +153,18 @@ class OrganisationManagerController < ApplicationController
                         end
             end
       end
+      # CSV.foreach(hfile,:headers=>true,:col_sep=>$CSVSP,:encoding=>"#{encod}:utf-8") do |col|
+        # if col["Client"]
+          # puts col["Supplier"]
+        # else
+          # info<<"缺少列值或文件标题错误,请重新修改上传！" if info.size<15
+        # end
+      # end
       info << "导入#{i}条。"
       File.delete(hfile)
-    else
+    rescue Exception => e
       result = false
-      info = "文件数量不符合！"
+      info = e.to_s
     end
 
     if result
@@ -169,14 +178,17 @@ class OrganisationManagerController < ApplicationController
     files=params[:files]
     result = true
     info = ""
-    if files.size==1
+    encod = request.headers["CZ-strategy-encoding"]
+    begin
+      raise( RuntimeError, "文件数量不符合！" )  unless files.size==1
+      raise( RuntimeError, "请选择编码方式！" )  unless ["gb2312", "utf-8"].include?(encod)
       f = files.first
       dcsv=FileData.new(:data=>f,:type=>FileDataType::CSVRelpartPackage,:oriName=>f.original_filename,:path=>$DETMP)
       dcsv.saveFile
       hfile = File.join($DETMP,dcsv.pathName)
       i=0
       if request.headers["CZ-strategy-update"] == "true"
-              CSV.foreach(hfile,:headers=>true,:col_sep=>$CSVSP) do |row|
+              CSV.foreach(hfile,:headers=>true,:col_sep=>$CSVSP,:encoding=>"#{encod}:utf-8") do |row|
                 if row["Client"] and row["Supplier"] and row["CpartNr"] and row["SpartNr"] and row["Least"]
                   next unless cli = Organisation.where(:abbr=>row["Client"].strip).first
                   next unless sup = Organisation.where(:abbr=>row["Supplier"].strip).first
@@ -192,7 +204,7 @@ class OrganisationManagerController < ApplicationController
                 end
               end
       else
-              CSV.foreach(hfile,:headers=>true,:col_sep=>$CSVSP) do |row|
+              CSV.foreach(hfile,:headers=>true,:col_sep=>$CSVSP,:encoding=>"#{encod}:utf-8") do |row|
                 if row["Client"] and row["Supplier"] and row["CpartNr"] and row["SpartNr"] and row["Least"]
                   next unless cli = Organisation.where(:abbr=>row["Client"].strip).first
                   next unless sup = Organisation.where(:abbr=>row["Supplier"].strip).first
@@ -212,9 +224,9 @@ class OrganisationManagerController < ApplicationController
       end
       info << "导入#{i}条。"
       File.delete(hfile)
-    else
+    rescue Exception => e
       result = false
-      info = "文件数量不符合！"
+      info = e.to_s
     end
 
     if result
