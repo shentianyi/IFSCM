@@ -483,11 +483,13 @@ class DemanderController<ApplicationController
             :page=>params[:page] )
             
             orgRelIds = demands.map {|d| OrganisationRelation.where( :origin_supplier_id=>d.supplierId, :origin_client_id=>d.clientId).first.id }
-            if DeliveryBll.vali_current_di_temp( session[:staff_id], orgRelIds )
+            if orgRelIds.uniq.size==0
+              render :json => {:flag=>false, :msg=>"自动转换失败！请先选择要转化的需求。"}
+            elsif orgRelIds.uniq.size>1
+              render :json => {:flag=>false, :msg=>"自动转换失败！客户号不应多于一个。"}
+            else DeliveryBll.vali_current_di_temp( session[:staff_id], orgRelIds )
               demands.each { |d|  DeliveryHelper::automake_di_temp( session[:staff_id], d)  }
               render :json => {:flag=>true, :clientNr=>OrganisationRelation.find(orgRelIds.first).clientNr}
-            else
-              render :json => {:flag=>false, :msg=>"自动转换失败！客户号多于一个。"}
             end
   end
   
