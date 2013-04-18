@@ -20,6 +20,10 @@ class Organisation < ActiveRecord::Base
   def alias
     [self.description, self.address, self.website, self.abbr ]
   end
+  
+  def alias_was
+    [self.description_was, self.address_was, self.website_was, self.abbr_was ]
+  end
                      
 end
 
