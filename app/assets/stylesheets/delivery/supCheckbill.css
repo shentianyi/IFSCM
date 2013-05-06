@@ -16,7 +16,15 @@
     border-radius: 10px 10px 10px 10px;
 	-webkit-border-radius:10px 10px 10px 10px;
 	-moz-border-radius:10px 10px 10px 10px;
-	
+	background-image:url("../btn-big.png");
+	color:white;
+	font-size:20px;
+	font-weight:bold;
+	font-family:"微软雅黑";
+	letter-spacing:1px;
+	width:150px;
+	  left: 500px; 
+	  cursor:pointer;
 }
 .fixed-btn:hover{
 	box-shadow:-3px -3px 10px #a4e5ff;
@@ -24,18 +32,16 @@
 	-moz-box-shadow:-3px -3px 10px #a4e5ff;
 	
 }
-.generate-btn{
-	background-image:url("../fixed-btn.png");
-   left: 500px;
-    width: 180px;
-   
+
+/*.generate-btn{	
+   left: 500px;   
+}
+.giveUp-btn{
+   left: 500px; 
 }
 .add-btn{
-	background-image:url("../add-btn.png");
-    left:450px;
-    width: 160px;
-
-}
+    left:500px;
+}*/
 .content h3{
 	margin-top:35px;
 	margin-bottom:45px;
