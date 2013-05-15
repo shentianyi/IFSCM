@@ -30,7 +30,7 @@ class AnalysisController < ApplicationController
               raise( ArgumentError, "客户不存在！" )  unless org_rel = @cz_org.clients.where( clientNr:c ).first
               clientId = org_rel.origin_client_id
               supplierId = @cz_org.id
-              partrelId = @cz_org.parts.joins(:supplier_part_rels).where(:partNr=>p, :supplier_part_rels=>{:organisation_relation_id=>org_rel.id}).select("part_rels.id").first
+              partrelId = @cz_org.parts.joins(:supplier_part_rels).where(:partNr=>p, :part_rels=>{:organisation_relation_id=>org_rel.id}).select("part_rels.id").first
             end
             raise( ArgumentError, "零件不存在！" )  if partrelId.blank?
             partrelId = partrelId.id
