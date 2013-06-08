@@ -164,6 +164,7 @@ class DemanderController<ApplicationController
   end
 
   # ws demand history
+  # [功能：] 显示需求上传的历史记录。
   def demand_history
     if request.post?
       demandId=params[:demandId]
@@ -314,6 +315,7 @@ class DemanderController<ApplicationController
     end
   end
   
+  # [功能：] 获取新到的需求。
   def kestrel_newer
     if params[:type]
         render :json=>Demander.clear_kestrel(@cz_org.id)
@@ -324,6 +326,7 @@ class DemanderController<ApplicationController
     end
   end
 
+  # [功能：] 根据条件搜索需求。（附带：如点击查看新需求，则返回新需求。）
   def search
     if params[:kestrel] && params[:kestrel]==Rns::Kes
           @demands, @total = Demander.get_kestrel( @cz_org.id, params[:type], params[:page] )
@@ -384,6 +387,7 @@ class DemanderController<ApplicationController
     end
   end
 
+  # [功能：] 导出需求。
   def download_viewed_demand
     if request.post?
             c = params[:client]
@@ -438,6 +442,7 @@ class DemanderController<ApplicationController
     end
   end
   
+  # [功能：] 将搜到的需求自动转换为运单。
   def demand_transform_delivery
             c = params[:client]
             s = params[:supplier]
@@ -493,6 +498,7 @@ class DemanderController<ApplicationController
             end
   end
   
+  # [功能：] 搜索过期的需求。
   def search_expired
     if request.get?
     elsif request.post?
@@ -534,6 +540,7 @@ class DemanderController<ApplicationController
     end
   end
   
+  # [功能：] （目前仅供自用，未对客户开放）维护需求，可删除。
   def demander_maintenance
     if request.get?
       if params[:id].nil?

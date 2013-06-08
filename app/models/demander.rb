@@ -64,6 +64,7 @@ class Demander < ActiveRecord::Base
     end
   end
   
+  # [功能：] 根据时间范围，合并期间的 cf 值。
   def self.get_cf_by_range( iRelpartId, tStart, tEnd, type )
     zsetKey=Demander.generate_partrel_cf_zset_key( iRelpartId, type)
     arr = $redis.zrangebyscore( zsetKey, tStart, tEnd )

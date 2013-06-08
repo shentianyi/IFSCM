@@ -4,6 +4,8 @@ require 'org_rel_info'
 class OrganisationManagerController < ApplicationController
 
   before_filter  :authorize
+  
+  # [功能：] 新建公司。
   def new
     if request.get?
       @org = Organisation.new()
@@ -19,6 +21,7 @@ class OrganisationManagerController < ApplicationController
     end
   end
 
+  # [功能：] 显示公司信息的界面。
   def index
     if params[:id].nil?
       @org = @cz_org
@@ -27,6 +30,7 @@ class OrganisationManagerController < ApplicationController
     end
   end
 
+  # [功能：] 编辑公司信息。
   def edit
     if request.get?
       @org = Organisation.find_by_id(params[:id])
@@ -43,11 +47,13 @@ class OrganisationManagerController < ApplicationController
     end
   end
 
+  # [功能：] 维护基础数据的界面。（如果 GET 带参数 adms=cz ，则可以上传更新）
   def manager
     @list = Organisation.all.map {|o| [o.name, o.id] }
     @adm = true if params[:adms]=="cz"
   end
 
+  # [功能：] 新建用户。
   def create_staff
     if !s=Staff.where(:staffNr=>params[:staffNr].strip,:orgId=>params[:orgId],:organisation_id=>params[:orgId]).first
       st=Staff.new(:staffNr => params[:staffNr].strip, :name=>params[:name].strip, :orgId=>params[:orgId],:password => params[:pass], :organisation_id=>params[:orgId],
@@ -62,6 +68,7 @@ class OrganisationManagerController < ApplicationController
     end
   end
 
+  # [功能：] 新建成本中心。
   def create_costcenter
     unless cc=CostCenter.where(:name=>params[:ccName].strip,:organisation_id=>params[:orgId]).first
       st=CostCenter.new(:name=>params[:ccName].strip,:desc=>params[:ccDesc].strip,:organisation_id=>params[:orgId])
@@ -75,6 +82,7 @@ class OrganisationManagerController < ApplicationController
     end
   end
 
+  # [功能：] 新建公司间的关系。
   def create_org_relation
     begin
       raise( ArgumentError, "请选择客户！" )  unless params[:clientId].present?
@@ -98,6 +106,7 @@ class OrganisationManagerController < ApplicationController
     end
   end
 
+  # [功能：] 上传新建公司关系的零件。
   def create_relpart
     files=params[:files]
     result = true
@@ -174,6 +183,7 @@ class OrganisationManagerController < ApplicationController
     end
   end
 
+  # [功能：] 上传新建公司关系零件的定制策略。
   def create_relpart_strategy
     files=params[:files]
     result = true
@@ -236,6 +246,7 @@ class OrganisationManagerController < ApplicationController
     end
   end
 
+  # [功能：] 搜索建立关系的公司。（利用 Redis_search）
   def search
     if request.post?
       cs = params[:csNr]
@@ -269,6 +280,7 @@ class OrganisationManagerController < ApplicationController
   end
 
   #################  for Fuzzy Search
+  # [功能：] 自动填充，，，建立关系的公司。
   def redis_search
     if params[:term].blank?
       render :text => ""

@@ -3,6 +3,7 @@ class AnalysisController < ApplicationController
   
   before_filter  :authorize
   
+  # [功能：] 显示 cf 值的图表。
   def demand_cf
     if request.get?
     elsif request.post?
@@ -52,6 +53,7 @@ class AnalysisController < ApplicationController
     end
   end
   
+  # [功能：] 显示订单的进度。
   def order_progress
     if request.get?
     elsif request.post?

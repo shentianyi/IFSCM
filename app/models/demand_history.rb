@@ -4,6 +4,8 @@ require 'base_class'
 # the score of histoty is Time.to_i
 class DemandHistory<CZ::BaseClass
   attr_accessor :demandKey,:rate,:amount,:oldamount
+  
+  # [功能：] 获取需求上传的历史。
   def self.get_demander_hitories demander,startIndex,endIndex,score=true
     key=generate_zset_key demander.clientId,demander.supplierId,demander.relpartId,demander.type,demander.date
     dhs=nil
@@ -20,25 +22,30 @@ class DemandHistory<CZ::BaseClass
     return dhs
   end
 
+  # [功能：] 获取最后一个记录。
   def self.get_last_item_key key
     $redis.zrevrange(key,0,0)
   end
   
+  # [功能：] 获取两端的记录。
   def self.get_two_ends(demander)
     key=generate_zset_key demander.clientId,demander.supplierId,demander.relpartId,demander.type,demander.date
     return find($redis.zrange(key,0,0).first), find($redis.zrevrange(key,0,0).first)
   end
 
+  # [功能：] 获取变化率。
   def self.compare_rate(d)
     date=FormatHelper::demand_date_inside(d.date, d.type)
     ckey=generate_zset_key d.clientId,d.supplierId,d.relpartId,d.type,date
     return generate_rate d.amount,ckey
   end
 
+  # [功能：] 生成附带的 zset 类型的 key 。
   def self.generate_zset_key clientId,supplierId,relpartId,type,date
     "cId:#{clientId}:spId:#{supplierId}:relpartId:#{relpartId}:type:#{type}:date:#{date}"
   end
 
+  # [功能：] 判断某个需求的上传历史是否存在，如果存在，则返回需求的 key 。
   def self.exists clientId,supplierId,relpartId,type,date
     temp = generate_zset_key clientId,supplierId,relpartId,type,date
     if $redis.exists temp
@@ -48,22 +55,25 @@ class DemandHistory<CZ::BaseClass
     end
   end
 
+  # [功能：] 删除附带的 zset 类型的 key 。
  def self.delete_zset demander
    key=generate_zset_key demander.clientId,demander.supplierId,demander.relpartId,demander.type,demander.date
    $redis.del key
    puts key
  end
  
+ # [功能：] （重定义）输出格式。
   def amount t=nil
     return FormatHelper::get_number @amount,t
   end
 
+  # [功能：] （重定义）输出格式。
   def oldamount t=nil
     return FormatHelper::get_number @oldamount,t
   end
   
   private
-
+  # [功能：] 计算变化率。
   def self.generate_rate amount,zsetkey
     item_key=get_last_item_key zsetkey
     if item_key and item_key.count>0

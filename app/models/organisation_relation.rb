@@ -24,6 +24,7 @@ class OrganisationRelation < ActiveRecord::Base
     [self.supplierNr, self.origin_supplier.name, self.origin_client.name]
   end
   
+  # [功能：]  用于 Redis-Search 自动更新。
   def alias_was
     [self.supplierNr_was, self.origin_supplier.name, self.origin_client.name]
   end

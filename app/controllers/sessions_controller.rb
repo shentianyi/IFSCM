@@ -5,6 +5,7 @@ class SessionsController < ApplicationController
   def new
   end
 
+  # [功能：] 用户登录。
   def create
     if staff = Staff.authenticate( params[:staffNr], params[:password] )
       session[:staff_id] = staff.id
@@ -17,7 +18,8 @@ class SessionsController < ApplicationController
     end
 
   end
-
+  
+  # [功能：] 注销。
   def destroy
     reset_session
     redirect_to login_url, :notice => "已注销"
