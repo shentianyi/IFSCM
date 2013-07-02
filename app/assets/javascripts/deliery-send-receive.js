@@ -281,8 +281,8 @@ function update_staff_dit(key) {
 		alert('包装箱数必须为正整数！');
 		return;
 	}
-	if (per * packN == total && remark.length == 0)
-		return;
+	// if (per * packN == total && remark.length == 0)
+		// return;
 	$.ajax({
 		url : '../delivery/update_dit',
 		dataType : 'json',
