@@ -295,7 +295,7 @@ class DeliveryController < ApplicationController
         per=params[:perPackAmount]
         packN=params[:packAmount]
         total=FormatHelper.string_multiply(per,packN)
-        if dit.order_item_id and dit.rest.to_f<total
+        if dit.order_item_id.present? and dit.rest.to_f<total
             msg.content="订单未发送量为:#{dit.rest},目前总量超出"
         else
           dit.update(:packAmount=>packN,:perPackAmount=>per,:total=>total,:remark=>params[:remark])
