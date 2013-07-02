@@ -101,14 +101,12 @@ function organisation_manager(idStr) {
 				xhr.setRequestHeader('CZ-partrel-update', true);
 			if ($('#strategy_update').attr("checked"))
 				xhr.setRequestHeader('CZ-strategy-update', true);
+			xhr.setRequestHeader('CZ-partrel-encoding', $('input[name=partrel_encoding]:radio:checked').val() );
+			xhr.setRequestHeader('CZ-strategy-encoding', $('input[name=strategy_encoding]:radio:checked').val() );
 			xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'));
 		},
 		success : function(data) {
-			if (data.flag) {
-				$(idStr + '-preview > span[info]').html("处理：" + data.msg);
-			} else {
-				$(idStr + '-preview > span[info]').html("处理：" + data.msg);
-			}
+			$(idStr + '-preview > span[info]').html("处理：" + data.msg);
 		},
 		done : function(e, data) {
 			// data.context.text('Upload finished.');

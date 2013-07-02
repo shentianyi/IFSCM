@@ -9,9 +9,11 @@
 			<th>包装数量</th>
 			<th>总量</th>
 		    <th>订单号</th>
+		    <th>备注</th>
 		</tr>
 		<tr class="divide" style="display: none">
 			<th class="nordvd">&nbsp;</th>
+			<th class="nordvd"></th>
 			<th class="nordvd"></th>
 			<th class="nordvd"></th>
 			<th class="nordvd"></th>
@@ -31,6 +33,7 @@
 			<th <%="onclick=get_batch_pack(#{pack.id})" if pack.id%>><a href="#"><%= pack.packAmount%></a></th>
 			<th><%= FormatHelper.string_multiply(per,pack.packAmount)%></th>
 			<th><%= pack.orderNr%></th>
+			<th><%= pack.remark%></th>
 		</tr>
 		<%
 		end%>

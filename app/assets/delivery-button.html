@@ -3,6 +3,7 @@
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 		<title>IFSCM</title>
+		
 		<link href="stylesheets/masterpage.css" media="all" rel="stylesheet" type="text/css" />
 		<link href="stylesheets/application.css" media="all" rel="stylesheet" type="text/css" />
 		<link href="stylesheets/demand/basicView.css" media="all" rel="stylesheet" type="text/css" />
@@ -13,9 +14,11 @@
 		<script src="javascripts/jquery.ui/jquery.ui.datepicker.js" type="text/javascript"></script>
 		<script src="javascripts/scm-js-base.js" type="text/javascript"></script>
 		<script src="javascripts/application.js" type="text/javascript"></script>
+		<link rel="stylesheet"  type="text/css" href="stylesheets/delivery/supWaybill.css" />
+
+<link rel="stylesheet" type="text/css" href="stylesheets/delivery/supCheckbill.css"/>
 		<meta content="authenticity_token" name="csrf-param" />
 		<meta content="YuZwNQZ+kSKvzG8H4Ldq8dcsMVDUsrS9ROIIsrIu4CU=" name="csrf-token" />
-
 	</head>
 	<body>
 		<div class="subicons">
@@ -25,106 +28,6 @@
 						<a href="/welcome"><img src="images/homeicon.png"/></a>
 					</li>
 					<li><img src="images/backicon.png"/>
-					</li>
-					<li>
-						<a>需求模块</a>
-						<dl>
-							<dt>
-								操作
-							</dt>
-							<dd>
-								<a href="../demander/demand_upload">上传需求</a>
-							</dd>
-							<dt>
-								查询
-							</dt>
-							<dd>
-								<a href="../demander">查看需求</a>
-							</dd>
-							<dd>
-								<a href="../demander/search_expired">过期需求</a>
-							</dd>
-						</dl>
-					</li>
-					<li>
-						<a>运单模块</a>
-						<dl>
-							<dt>
-								操作
-							</dt>
-							<dd>
-								<a href="../delivery/accept">运单接收</a>
-							</dd>
-							<dd>
-								<a href="../delivery/inspect">运单质检</a>
-							</dd>
-							<dd>
-								<a href="../delivery/instore">运单入库</a>
-							</dd>
-							<dt>
-								查询
-							</dt>
-							<dd>
-								<a href="../delivery">查看运单</a>
-							</dd>
-						</dl>
-					</li>
-					<li>
-						<a>仓库模块</a>
-						<dl>
-							<dt>
-								操作
-							</dt>
-							<dd>
-								<a href="../warehouse/stock_out">出库</a>
-							</dd>
-							<dt>
-								查询
-							</dt>
-							<dd>
-								<a href="../warehouse/search_state">库存查询</a>
-							</dd>
-							<dd>
-								<a href="../warehouse/search_op_history">操作历史</a>
-							</dd>
-							<dt>
-								数据维护
-							</dt>
-							<dd>
-								<a href="../warehouse/primary_warehouse">仓库维护</a>
-							</dd>
-						</dl>
-					</li>
-					<li>
-						<a>质检模块</a>
-						<dl>
-							<dt>
-								操作
-							</dt>
-							<dd>
-								<a href="../organisation_manager/search">质检策略</a>
-							</dd>
-						</dl>
-					</li>
-					<li>
-						<a>分析模块</a>
-						<dl>
-							<dt>
-								查询
-							</dt>
-							<dd>
-								<a href="../analysis/demand_cf">CF值查询</a>
-							</dd>
-							<dd>
-								<a href="../analysis/order_progress">订单进度</a>
-							</dd>
-						</dl>
-					</li>
-					<li>
-						<a href="../organisation_manager/search">供应商信息</a>
-					</li>
-					<li>
-						<a href="#">下载</a>
 					</li>
 				</ul>
 				<!-- made change here!!! -->
@@ -171,26 +74,9 @@
 		<div class="content">
 			<div class="wrapcontent">
 				<!-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
-                  <ul class="down-load-interface">
-                  
-                  		<li class="down-client ">
-                  			<div class="pull-left down-items">
-                  				<h2>IFSCM&nbsp;客户端下载</h2>
-                  			
-                  			</div>
-                  				<div class="pull-right down-sign"></div>
-                  		</li>
-                 
-                 
-                  		<li class="down-user-ticket">
-                  			<div class="pull-left  down-items">
-                  				<h2>IFSCM&nbsp;用户手册下载</h2>
-                  			
-                  			</div>
-                  				<div class="pull-right down-sign"></div>
-                  		</li>
-             
-                  </ul>
+		<input class="fixed-btn add-btn" type="button" value="< 继续添加" />
+		<input class="fixed-btn giveUp-btn" type="button" value="放弃运单" />
+			<input class="fixed-btn generate-btn" type="button" value="生成运单  >" />
 				<!-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
 			</div>
 		</div>

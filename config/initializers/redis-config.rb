@@ -22,6 +22,7 @@ Redis::Search.configure do |config|
 end
 
  
+ # [功能：] 用于 Redis-Search 重建索引。
 # Organisation.new
 # OrganisationRelation.new
 # Part.new

@@ -7,6 +7,7 @@ class OnTimeDelivery<CZ::BaseClass
     return FormatHelper::get_number @amount,t
   end
   
+  # [功能：] 更新实际到货的记录。（cf 是据测值，otd 是实际值）
   def update_otd_record
     zsetKey=OnTimeDelivery.generate_partrel_otd_zset_key( self.part_rel_id )
     if !$redis.zscore zsetKey,self.key
@@ -14,6 +15,7 @@ class OnTimeDelivery<CZ::BaseClass
     end
   end
   
+  # [功能：] 根据时间范围，合并期间的 otd 值。
   def self.get_otd_by_range( iRelpartId, tStart, tEnd )
     zsetKey=OnTimeDelivery.generate_partrel_otd_zset_key( iRelpartId )
     total = 0

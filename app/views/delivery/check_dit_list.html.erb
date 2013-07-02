@@ -18,9 +18,9 @@
 		</p>
 	</li>
 </ul>
-<button class="normal-small-btn abandon-btn" onclick="clean_staff_dit();">
+<!-- <button class="normal-small-btn abandon-btn" onclick="clean_staff_dit();">
 	放弃运单
-</button>
+</button> -->
 <input type="hidden" name="clientNr" id="clientNr" value="<%= @clientNr%>"/>
 <div class="partsselection">
 	<div class="tableview">
@@ -34,6 +34,7 @@
 					<th>包装数量</th>
 					<th>总量</th>
 					<th>订单号</th>
+					<th>备注</th>
 					<th>&nbsp;</th>
 				</tr>
 				<%@temps.each do |temp|%>
@@ -49,11 +50,15 @@
 					<th>
 					<input type="text" value="<%= temp.packAmount%>" class="center-num-text packnum"/>
 					</th>
-					<th class="center-num-text packnum total"><%= temp.total%></th>
+					<th class="center-num-text total"><%= temp.total%></th>
 					<th><%= temp.orderNr%></th>
 					<th>
-					<input type="button" class="edit_btn" ditkey="<%= temp.key%>"/>
-					<input type="button" class="del_btn" ditkey="<%= temp.key%>"/>
+					<input type="text" value="<%= temp.remark%>" class="center-num-text remark"/>
+					</th>
+					<th>
+					<label class="msg" style="display: none;"></label>
+					<input type="button" class="edit_btn" ditkey="<%= temp.key%>" title="确认"/>
+					<input type="button" class="del_btn" ditkey="<%= temp.key%>" title="删除"/>
 					</th>
 				</tr>
 				<%end%>
@@ -64,8 +69,9 @@
 			<div class="pagers">
 				<%= bri_pager options={:class=>"pagination",:pages=>@totalPages,:current=>@currentPage,:action=>'page_change'}%>
 			</div>
-			<input class="fixed-btn add-btn" type="button" onclick="location.href='../delivery/pick_part?c=<%= @clientNr%>'" />
-			<input class="fixed-btn generate-btn" type="button" onclick="build_delivery_note();"/>
+			<input class="fixed-btn" type="button" value="< 继续添加" onclick="location.href='../delivery/pick_part?c=<%= @clientNr%>'" />
+			<input class="fixed-btn" type="button" value="放弃运单" onclick="clean_staff_dit();" />
+			<input class="fixed-btn" type="button" value="生成运单  >" onclick="build_delivery_note();"/>
 			<%= render :partial => "shared/handling_msg_box", :locals => { :handlemsg => "运单生成中..." } %>
 			<script type="text/javascript">
 				$(document).ready(function() {

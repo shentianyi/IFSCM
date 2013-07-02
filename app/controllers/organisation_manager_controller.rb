@@ -4,6 +4,8 @@ require 'org_rel_info'
 class OrganisationManagerController < ApplicationController
 
   before_filter  :authorize
+  
+  # [功能：] 新建公司。
   def new
     if request.get?
       @org = Organisation.new()
@@ -19,6 +21,7 @@ class OrganisationManagerController < ApplicationController
     end
   end
 
+  # [功能：] 显示公司信息的界面。
   def index
     if params[:id].nil?
       @org = @cz_org
@@ -27,6 +30,7 @@ class OrganisationManagerController < ApplicationController
     end
   end
 
+  # [功能：] 编辑公司信息。
   def edit
     if request.get?
       @org = Organisation.find_by_id(params[:id])
@@ -43,11 +47,13 @@ class OrganisationManagerController < ApplicationController
     end
   end
 
+  # [功能：] 维护基础数据的界面。（如果 GET 带参数 adms=cz ，则可以上传更新）
   def manager
     @list = Organisation.all.map {|o| [o.name, o.id] }
     @adm = true if params[:adms]=="cz"
   end
 
+  # [功能：] 新建用户。
   def create_staff
     if !s=Staff.where(:staffNr=>params[:staffNr].strip,:orgId=>params[:orgId],:organisation_id=>params[:orgId]).first
       st=Staff.new(:staffNr => params[:staffNr].strip, :name=>params[:name].strip, :orgId=>params[:orgId],:password => params[:pass], :organisation_id=>params[:orgId],
@@ -62,6 +68,7 @@ class OrganisationManagerController < ApplicationController
     end
   end
 
+  # [功能：] 新建成本中心。
   def create_costcenter
     unless cc=CostCenter.where(:name=>params[:ccName].strip,:organisation_id=>params[:orgId]).first
       st=CostCenter.new(:name=>params[:ccName].strip,:desc=>params[:ccDesc].strip,:organisation_id=>params[:orgId])
@@ -75,6 +82,7 @@ class OrganisationManagerController < ApplicationController
     end
   end
 
+  # [功能：] 新建公司间的关系。
   def create_org_relation
     begin
       raise( ArgumentError, "请选择客户！" )  unless params[:clientId].present?
@@ -98,18 +106,22 @@ class OrganisationManagerController < ApplicationController
     end
   end
 
+  # [功能：] 上传新建公司关系的零件。
   def create_relpart
     files=params[:files]
     result = true
     info = ""
-    if files.size==1
+    encod = request.headers["CZ-partrel-encoding"]
+    begin
+      raise( RuntimeError, "文件数量不符合！" )  unless files.size==1
+      raise( RuntimeError, "请选择编码方式！" )  unless ["gb2312", "utf-8"].include?(encod)
       f = files.first
       dcsv=FileData.new(:data=>f,:type=>FileDataType::CSVPartRel,:oriName=>f.original_filename,:path=>$DETMP)
       dcsv.saveFile
       hfile = File.join($DETMP,dcsv.pathName)
       i=0
       if request.headers["CZ-partrel-update"] == "true"
-            CSV.foreach(hfile,:headers=>true,:col_sep=>$CSVSP) do |row|
+            CSV.foreach(hfile,:headers=>true,:col_sep=>$CSVSP,:encoding=>"#{encod}:utf-8") do |row|
               if row["Client"] and row["Supplier"] and row["CpartNr"] and row["SpartNr"] and row["CpartDesc"] and row["SpartDesc"] and row["SaleNo"] and row["PurchaseNo"]
                 next unless cli = Organisation.where(:abbr=>row["Client"].strip).first
                 next unless sup = Organisation.where(:abbr=>row["Supplier"].strip).first
@@ -125,7 +137,7 @@ class OrganisationManagerController < ApplicationController
               end
             end
       else
-            CSV.foreach(hfile,:headers=>true,:col_sep=>$CSVSP) do |row|
+            CSV.foreach(hfile,:headers=>true,:col_sep=>$CSVSP,:encoding=>"#{encod}:utf-8") do |row|
                         if row["Client"] and row["Supplier"] and row["CpartNr"] and row["SpartNr"] and row["CpartDesc"] and row["SpartDesc"] and row["SaleNo"] and row["PurchaseNo"]
                           next unless cli = Organisation.where(:abbr=>row["Client"].strip).first
                           next unless sup = Organisation.where(:abbr=>row["Supplier"].strip).first
@@ -150,11 +162,18 @@ class OrganisationManagerController < ApplicationController
                         end
             end
       end
+      # CSV.foreach(hfile,:headers=>true,:col_sep=>$CSVSP,:encoding=>"#{encod}:utf-8") do |col|
+        # if col["Client"]
+          # puts col["Supplier"]
+        # else
+          # info<<"缺少列值或文件标题错误,请重新修改上传！" if info.size<15
+        # end
+      # end
       info << "导入#{i}条。"
       File.delete(hfile)
-    else
+    rescue Exception => e
       result = false
-      info = "文件数量不符合！"
+      info = e.to_s
     end
 
     if result
@@ -164,18 +183,22 @@ class OrganisationManagerController < ApplicationController
     end
   end
 
+  # [功能：] 上传新建公司关系零件的定制策略。
   def create_relpart_strategy
     files=params[:files]
     result = true
     info = ""
-    if files.size==1
+    encod = request.headers["CZ-strategy-encoding"]
+    begin
+      raise( RuntimeError, "文件数量不符合！" )  unless files.size==1
+      raise( RuntimeError, "请选择编码方式！" )  unless ["gb2312", "utf-8"].include?(encod)
       f = files.first
       dcsv=FileData.new(:data=>f,:type=>FileDataType::CSVRelpartPackage,:oriName=>f.original_filename,:path=>$DETMP)
       dcsv.saveFile
       hfile = File.join($DETMP,dcsv.pathName)
       i=0
       if request.headers["CZ-strategy-update"] == "true"
-              CSV.foreach(hfile,:headers=>true,:col_sep=>$CSVSP) do |row|
+              CSV.foreach(hfile,:headers=>true,:col_sep=>$CSVSP,:encoding=>"#{encod}:utf-8") do |row|
                 if row["Client"] and row["Supplier"] and row["CpartNr"] and row["SpartNr"] and row["Least"]
                   next unless cli = Organisation.where(:abbr=>row["Client"].strip).first
                   next unless sup = Organisation.where(:abbr=>row["Supplier"].strip).first
@@ -191,7 +214,7 @@ class OrganisationManagerController < ApplicationController
                 end
               end
       else
-              CSV.foreach(hfile,:headers=>true,:col_sep=>$CSVSP) do |row|
+              CSV.foreach(hfile,:headers=>true,:col_sep=>$CSVSP,:encoding=>"#{encod}:utf-8") do |row|
                 if row["Client"] and row["Supplier"] and row["CpartNr"] and row["SpartNr"] and row["Least"]
                   next unless cli = Organisation.where(:abbr=>row["Client"].strip).first
                   next unless sup = Organisation.where(:abbr=>row["Supplier"].strip).first
@@ -211,9 +234,9 @@ class OrganisationManagerController < ApplicationController
       end
       info << "导入#{i}条。"
       File.delete(hfile)
-    else
+    rescue Exception => e
       result = false
-      info = "文件数量不符合！"
+      info = e.to_s
     end
 
     if result
@@ -223,6 +246,7 @@ class OrganisationManagerController < ApplicationController
     end
   end
 
+  # [功能：] 搜索建立关系的公司。（利用 Redis_search）
   def search
     if request.post?
       cs = params[:csNr]
@@ -256,6 +280,7 @@ class OrganisationManagerController < ApplicationController
   end
 
   #################  for Fuzzy Search
+  # [功能：] 自动填充，，，建立关系的公司。
   def redis_search
     if params[:term].blank?
       render :text => ""

@@ -2,6 +2,7 @@
 class ApplicationController < ActionController::Base
   # protect_from_forgery
   protected
+  # [功能：] 验证用户是否登录。
   def authorize
     
     unless Staff.find_by_id(session[:staff_id])

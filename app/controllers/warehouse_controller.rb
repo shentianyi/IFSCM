@@ -3,6 +3,7 @@ class WarehouseController < ApplicationController
   
   before_filter  :authorize
   
+  # [功能：] 显示库存列表。
   def stock_out_list
     begin
       raise( ArgumentError, "格式错误：仓库ID！" )  unless params[:whId].is_a?(String) and warehouseId = params[:whId].strip
@@ -24,6 +25,7 @@ class WarehouseController < ApplicationController
     end
   end
   
+  # [功能：] 从库存出库。
   def stock_out
     if request.get?
       @whlist = Warehouse.selection_list(@cz_org)
@@ -54,6 +56,7 @@ class WarehouseController < ApplicationController
     end
   end
   
+  # [功能：] 新建仓库。
   def primary_warehouse
     if request.get?
       @warehouses = @cz_org.warehouses
@@ -78,6 +81,7 @@ class WarehouseController < ApplicationController
     end
   end
   
+  # [功能：] 删除仓库。
   def delete_warehouse
     begin
       raise( ArgumentError, "格式错误：仓库ID！" )  unless params[:whId].is_a?(String)
@@ -95,6 +99,7 @@ class WarehouseController < ApplicationController
     end
   end
   
+  # [功能：] 新建库位。
   def primary_position
     if request.get?
       begin
@@ -124,6 +129,7 @@ class WarehouseController < ApplicationController
     end
   end
   
+  # [功能：] 批量新建库位。
   def new_position_range
       begin
         raise( ArgumentError, "格式错误：仓库ID！" )  unless params[:whId].is_a?(String) and whId = params[:whId].strip
@@ -148,6 +154,7 @@ class WarehouseController < ApplicationController
       end
   end
   
+  # [功能：] 单个新建库位。
   def new_position_single
       begin
         raise( ArgumentError, "格式错误：仓库ID！" )  unless params[:whId].is_a?(String) and whId = params[:whId].strip
@@ -165,6 +172,7 @@ class WarehouseController < ApplicationController
       end
   end
   
+  # [功能：] 删除库位。
   def delete_position
     begin
       raise( ArgumentError, "格式错误：仓库ID！" )  unless params[:whId].is_a?(String) and whId = params[:whId].strip and whId.present?
@@ -183,6 +191,7 @@ class WarehouseController < ApplicationController
     end
   end
   
+  # [功能：] 搜索库存状态信息。
   def search_state
     if request.get?
       @whlist = Warehouse.selection_list(@cz_org)
@@ -245,6 +254,7 @@ class WarehouseController < ApplicationController
     end
   end
   
+  # [功能：] 搜索库存操作的历史记录。
   def search_op_history
     if request.get?
       @whlist = Warehouse.selection_list(@cz_org)

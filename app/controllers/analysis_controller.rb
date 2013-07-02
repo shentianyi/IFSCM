@@ -3,6 +3,7 @@ class AnalysisController < ApplicationController
   
   before_filter  :authorize
   
+  # [功能：] 显示 cf 值的图表。
   def demand_cf
     if request.get?
     elsif request.post?
@@ -10,8 +11,10 @@ class AnalysisController < ApplicationController
             c = params[:client]
             s = params[:supplier]
             raise( ArgumentError, "缺少条件：零件号！" )  unless params[:partNr].is_a?(String) and p = params[:partNr].strip and p.present?
-            tStart = Time.parse(params[:start]).to_i if params[:start].present?
-            tEnd = Time.parse(params[:end]).to_i if params[:end].present?
+            raise( ArgumentError, "缺少条件：起始时间！" )  unless params[:start].present?
+            raise( ArgumentError, "缺少条件：结束时间！" )  unless params[:end].present?
+            tStart = Time.parse(params[:start]).to_i
+            tEnd = Time.parse(params[:end]).to_i
             raise( ArgumentError, "开始时间应小于结束时间！" )  if tStart>tEnd
             type = params[:type].strip if params[:type].is_a?(String)
         
@@ -39,7 +42,8 @@ class AnalysisController < ApplicationController
             raise( RuntimeError, "OTD值不存在！" )  unless otd = OnTimeDelivery.get_otd_by_range( partrelId, tStart, tEnd )
             chart += [nil,[3,otd],[4,otd]]
             
-            x = [ [1.5,"需求"], [3.5,"到货"], [5.5,"在途"]]
+            x = [ [1.5,"需求"], [3.5,"到货"] ]
+            #x = [ [1.5,"需求"], [3.5,"到货"], [5.5,"在途"]]
             tips = "#{params[:start]} - #{params[:end]}"
             
             render :json=>{:flag=>true, :chart=>chart, :x=>x, :partNr=>p, :type=>type, :tips=>tips }
@@ -49,6 +53,7 @@ class AnalysisController < ApplicationController
     end
   end
   
+  # [功能：] 显示订单的进度。
   def order_progress
     if request.get?
     elsif request.post?

@@ -112,6 +112,7 @@ class Redis
             if self.redis_search_index_need_reindex
               titles = []
               titles = redis_search_alias_value("#{alias_field}_was")
+          #    ddtitles = redis_search_alias_value("#{alias_field}").map{|a| "\#{a}_was"}
               titles << self.#{title_field}_was
               redis_search_index_delete(titles)
             end
@@ -123,6 +124,7 @@ class Redis
             if self.redis_search_index_need_reindex or self.new_record?
               self.redis_search_index_create
             end
+            Redis::Search.config.redis.keys("tmpsinterstore:OrganisationRelation:_by:*").each{|e| Redis::Search.config.redis.del(e) }
             true
           end
         )

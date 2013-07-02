@@ -7,6 +7,7 @@ class PartController<ApplicationController
   end
 
   # ws part redis search
+  # [功能：] 自动填充，，，零件
   def redis_search
     parts=[]
     search = Redis::Search.complete("Part",params[:term],:conditions=>{:organisation_id=>@cz_org.id})

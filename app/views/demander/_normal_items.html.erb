@@ -24,7 +24,7 @@
           </tr>
           <% i=0
           demands.items.each do |item|
-         img,thisLineWidth,lastLineWidth=DemanderHelper::generate_demand_bar(item)
+         img,thisLineWidth,lastLineWidth,title=DemanderHelper::generate_demand_bar(item)
           %>
           <tr class="norline" id="<%= item.key%>">
                <th class="no-type-change"><%= i+=1%></th>
@@ -46,7 +46,7 @@
                          <% else %>
                          <span class="percentage"> <%= item.rate.to_f.round(2).abs %>% </span>
                          <% end %>
-                         <img src="/assets/<%= img%>.png" class='percentageImg' />
+                         <img src="/assets/<%= img%>.png" title="<%=title%>" class='percentageImg' />
                     </div>
                     <div class="lineforcast">
                          <span class="fnumbers">本次预测：<span id="this_demand_amount"><%= item.amount %></span></span>

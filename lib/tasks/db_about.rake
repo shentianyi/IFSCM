@@ -5,7 +5,7 @@ namespace :db do
     puts ActiveRecord::Base.connection.select_values('select version from schema_migrations order by version')
   end
   
-  
+  # [功能：] 将需求从 Redis 转入 Mysql ，代表需求过期。
   desc "Transform Redis to Mysql ... ..."
   task :redis_to_mysql => :environment do
       puts "Transform Redis to Mysql ... ..."

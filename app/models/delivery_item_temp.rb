@@ -3,7 +3,7 @@ require 'base_class'
 
 class DeliveryItemTemp<CZ::BaseClass
    attr_accessor :cpartNr, :key,:parentKey,:packAmount, :part_rel_id, :perPackAmount, :purchaseNo, :saleNo, :spartNr, :total,
-                 :order_item_id,:orderNr,:rest
+                 :order_item_id,:orderNr,:rest,:remark
    
   # ws
   # [功能：] 获取第一个运单项缓存
