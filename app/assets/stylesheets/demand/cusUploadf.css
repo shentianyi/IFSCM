@@ -138,12 +138,12 @@
      left: -170px;
      top: -8px;
 }
-@-moz-document url-prefix() {
+/*@-moz-document url-prefix() {
 #demandupload {
      left: -355px;
      width: 190px;
 }
-}
+}*/
 .add-file-button {
      position: relative;
      float: left;
