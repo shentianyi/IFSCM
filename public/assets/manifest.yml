@@ -58,7 +58,7 @@ deliver-printer.png: deliver-printer-42d5c9aadc12e9c4674568e3d9cd5be3.png
 dotchecked.png: dotchecked-57f19892433c7707ff733e8479b3bd70.png
 dotunchecked.png: dotunchecked-241a4c7e36785040e394206ea50f6c06.png
 down-sign.png: down-sign-51f7957763aad6a1e060b82dd68c8424.png
-down-sign.psd: down-sign-5c0e6b877a6db77b30b605287226ba88.psd
+down-sign.psd: down-sign-b8deda8bccdfa1763be359c796225c36.psd
 download.png: download-19eff3f1f04961ae45648739ac93a710.png
 drop-sign.png: drop-sign-a67ef0fa3ba9736765439cd150d5bad0.png
 edit.png: edit-4fd3be95cfc2cf7a200cb89f83c60637.png
@@ -72,7 +72,7 @@ fixed-btn.png: fixed-btn-d53d97d055974f75cb2768ae8523e194.png
 glyphicons-halflings-white.png: glyphicons-halflings-white-13553a5bf21ae3cc374006592488ec64.png
 glyphicons-halflings.png: glyphicons-halflings-ab3144065a860d198f1d7d9a4882640c.png
 headicon.png: headicon-305fe125c16964a802f1cace07eb8cff.png
-headicon.psd: headicon-6a9937246d50da4651f127a74e3ce30b.psd
+headicon.psd: headicon-657cd8137e3f7eaad3bddc92b9d9f95d.psd
 headiconxs.png: headiconxs-2d2925682456b90e49f6db2629931dc7.png
 home.png: home-16ee1a01685471e16e4c45b39342691e.png
 homeHov.png: homeHov-03f4ace1605b37755191bda0b1a6027c.png
@@ -125,6 +125,9 @@ img/progress-bar-choosen.png: img/progress-bar-choosen-009ffec005708178723d0fa35
 img/progress-bar-hover.png: img/progress-bar-hover-77780937fb6cc607dfb7ed0a748ece6a.png
 img/progress-bar.ai: img/progress-bar-3e61b766c6d800a1d52be9112d9edb62.ai
 img/progress-bar.png: img/progress-bar-aecc49b40adf856aa2a0f3d12894cb9b.png
+img/require-delivery-hover.png: img/require-delivery-hover-748cffc8c7130577c4b09141c62f6d7b.png
+img/require-delivery.png: img/require-delivery-c64236f490a3b647d6a8a21e6b8b86ae.png
+img/require-delivery.psd: img/require-delivery-1eb9bdc96f4bda066f5f8b9136aadc87.psd
 img/search.png: img/search-9004bfb571c3192a15e8aea86a20ca9c.png
 jquery.file.upload/glyphicons-halflings-white.png: jquery.file.upload/glyphicons-halflings-white-13553a5bf21ae3cc374006592488ec64.png
 jquery.file.upload/glyphicons-halflings.png: jquery.file.upload/glyphicons-halflings-ab3144065a860d198f1d7d9a4882640c.png
@@ -234,4 +237,4 @@ welcome/featurebg.png: welcome/featurebg-ee6fbfdb0d13de143d2b2a02ae047adc.png
 welcome/featurebg.psd: welcome/featurebg-b054fa82cfcfd29766833fee9df19a82.psd
 welcome/featuresshow.psd: welcome/featuresshow-3f3612bce08530e0b4a924a104c478a0.psd
 application.js: application-8698391623bac9a2bbce291d20dd461d.js
-application.css: application-c2eb09f465c81bffafa9da6816c8cb06.css
+application.css: application-2feb09878259feb9c622e140356f939e.css
