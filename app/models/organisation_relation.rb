@@ -90,7 +90,7 @@ class OrganisationRelation < ActiveRecord::Base
     type=type.nil? ? @@zstype.values : [type]
     type.each do |t|
       key_orgid_orgnr=generate_zset_members(t)
-      $redis.zrem(key_orgid_orgnr[0],key_orgid_orgnr[2])
+      $redis.zrem(key_orgid_orgnr[0],key_orgid_orgnr[3])
     end
   end
 
@@ -101,9 +101,9 @@ class OrganisationRelation < ActiveRecord::Base
 
   def generate_zset_members type
     if type==@@zstype[:s]
-      return OrganisationRelation.generate_org_rel_zset_key(self.origin_client_id,type),self.origin_supplier_id,self.supplierNr
+      return OrganisationRelation.generate_org_rel_zset_key(self.origin_client_id,type),self.origin_supplier_id,self.supplierNr,self.supplierNr_was
     else
-      return OrganisationRelation.generate_org_rel_zset_key(self.origin_supplier_id,type),self.origin_client_id,self.clientNr
+      return OrganisationRelation.generate_org_rel_zset_key(self.origin_supplier_id,type),self.origin_client_id,self.clientNr,self.clientNr_was
     end
   end
 end
