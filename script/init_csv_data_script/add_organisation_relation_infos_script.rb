@@ -3,36 +3,11 @@ require 'enum/org_rel_contact_type'
 require 'enum/org_rel_printer_type'
 require 'org_rel_info'
 
-class AddOrgRelInfos
-  def self.add_printer args
-    printer=OrgRelPrinter.new(args)
-    printer.add_to_printer
-    printer.add_to_dpriter
-    printer.save
-  end
-
-  def self.add_dn_contact args
-    dncontact=DnContact.new(args)
-    dncontact.add_to_contact
-    dncontact.save
-  end
+Organisation.all.each_with_index do |org,i|
+  puts "#{i+1}.#{org.name}"
+  printer=OrgPrinter.new(:key_id=>org.id,:template=>"Leoni_Nbtp_PackCheckA4Template.tff",
+  :moduleName=>"NbtpPreDnStoreCheckList",:type=> OrgRelPrinterType::DNPrecheckPrinter)
+  printer.add_to_printer
+  printer.add_to_dpriter
+  printer.save
 end
-
-orl = OrganisationRelation.where(:origin_client_id=>1,:origin_supplier_id=>3).first
-# add dn printer
-pargs={:org_rel_id=>orl.id,:template=>"Leoni_Nbtp_DNTemplate.tff",
-  :moduleName=>"leoni_nbtp_dn",:type=> OrgRelPrinterType::DNPrinter}
-
-AddOrgRelInfos.add_printer pargs
-# add dpack printer
-pargs={:org_rel_id=>orl.id,:template=>"Leoni_Nbtp_DPackTemplate.tff",
-  :moduleName=>"leoni_nbtp_dpack",:type=> OrgRelPrinterType::DPackPrinter}
-AddOrgRelInfos.add_printer pargs
-
-# add dn contact
-cargs={:org_rel_id=>orl.id,:type=> OrgRelContactType::DContact,
-  :recer_name=>"原材料仓库",:recer_contact=>"39939591",:sender_name=>"王英",:sender_contact=>"0574-86883025",:rece_address=>"上海市嘉定区嘉松北路1288号"}
-AddOrgRelInfos.add_dn_contact cargs
-# OrgRelPrinter.find("OrgRelPrinter:1").add_to_dpriter
-# OrgRelPrinter.find("OrgRelPrinter:2").add_to_dpriter
-# DnContact.find("DnContact:1").add_to_contact
