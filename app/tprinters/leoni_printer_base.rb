@@ -79,8 +79,8 @@ module LeoniPrinterBase
       items.each do |item|
         record=[]
         data[:SPartNr]=item.spartNr
-        data[:PerPackNum]=item.packAmount
-        data[:PackNum]=item.perPackAmount
+        data[:PerPackNum]=item.perPackAmount
+        data[:PackNum]=item.packAmount
         data[:TotalQuantity]=FormatHelper.string_multiply(data[:PerPackNum],data[:PackNum])
         @@pre_dn_store_check_list_body_keys.each do |key|
           record<<{:Key=>key,:Value=>data[key.to_sym]}
