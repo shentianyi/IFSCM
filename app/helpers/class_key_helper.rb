@@ -19,6 +19,7 @@ module ClassKeyHelper
     :PartRel=>:generate_redis_incr_key,
     :Part=>:generate_redis_incr_key,
     :RedisFile=>:generate_uuid_key,
+        :OrgPrinter=>:generate_redis_incr_key,
     :OrgRelPrinter=>:generate_redis_incr_key,
     :DnContact=>:generate_redis_incr_key
   }

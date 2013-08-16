@@ -250,17 +250,14 @@ class DeliveryController < ApplicationController
   def gen_dn_pdf
     if request.post?
       if @msg.result
-      msg=DeliveryBll.generate_dn_label_pdf params[:dnKey],params[:printType].to_i,params[:destination],params[:sendDate]
-      if msg.result
-        @msg.content= AliBucket.url_for(msg.content)
-      else
-        @msg=msg
+      @msg=DeliveryBll.generate_label_pdf params,session[:staff_id]
+       if @msg.result
+         @msg.content= AliBucket.url_for(@msg.content)
       end      
       end
       render :json=>@msg
     end
   end
-
   # ws
   # [功能：] 将运单放入客户端打印列表
   # 参数：
@@ -619,6 +616,8 @@ class DeliveryController < ApplicationController
        if params[:dnKey]        
       @dn=DeliveryNote.single_or_default(params[:dnKey])
       p_auth_dn
+      else
+        @msg=ReturnMsg.new(:result=>true)
       end
      end
   

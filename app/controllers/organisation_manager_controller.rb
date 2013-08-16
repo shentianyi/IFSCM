@@ -84,14 +84,14 @@ class OrganisationManagerController < ApplicationController
 
       orgrel_old =  OrganisationRelation.where("origin_client_id = ? and origin_supplier_id = ? ", params[:clientId], params[:supplierId]).first
       if params["CZ-orgrel-update"] == "true" and orgrel_old
-          orgrel_old.update_attributes(:clientNr=>params[:clientNr].strip, :supplierNr=>params[:supplierNr].strip)
-          render :json=>{flag:true,msg:"更新成功"}
+        orgrel_old.update_attributes(:clientNr=>params[:clientNr].strip, :supplierNr=>params[:supplierNr].strip)
+        render :json=>{flag:true,msg:"更新成功"}
       else
-          raise( RuntimeError, "失败！关系已存在，不可重复建立。" ) if orgrel_old
-          orgrel = OrganisationRelation.new(:clientNr=>params[:clientNr].strip, :supplierNr=>params[:supplierNr].strip,
-                                                                            :origin_supplier_id=>params[:supplierId], :origin_client_id=>params[:clientId])
-          raise( RuntimeError, "失败！" ) unless orgrel.save
-          render :json=>{flag:true,msg:"新建成功"}
+        raise( RuntimeError, "失败！关系已存在，不可重复建立。" ) if orgrel_old
+        orgrel = OrganisationRelation.new(:clientNr=>params[:clientNr].strip, :supplierNr=>params[:supplierNr].strip,
+        :origin_supplier_id=>params[:supplierId], :origin_client_id=>params[:clientId])
+        raise( RuntimeError, "失败！" ) unless orgrel.save
+        render :json=>{flag:true,msg:"新建成功"}
       end
     rescue Exception => e
       render :json=>{flag:false,msg:e.to_s}
@@ -112,59 +112,59 @@ class OrganisationManagerController < ApplicationController
       hfile = File.join($DETMP,dcsv.pathName)
       i=0
       if request.headers["CZ-partrel-update"] == "true"
-            CSV.foreach(hfile,:headers=>true,:col_sep=>$CSVSP,:encoding=>"#{encod}:utf-8") do |row|
-              if row["Client"] and row["Supplier"] and row["CpartNr"] and row["SpartNr"] and row["CpartDesc"] and row["SpartDesc"] and row["SaleNo"] and row["PurchaseNo"]
-                next unless cli = Organisation.where(:abbr=>row["Client"].strip).first
-                next unless sup = Organisation.where(:abbr=>row["Supplier"].strip).first
-                next unless orgrel = OrganisationRelation.where("origin_client_id = ? and origin_supplier_id = ? ", cli.id, sup.id).first
-                next unless cpart = Part.where("organisation_id = ? and partNr = ?", cli.id, row["CpartNr"].strip).first
-                next unless pr = PartRel.where(:client_part_id=>cpart.id,  :organisation_relation_id=>orgrel.id).first
-                i+=1 if pr.supplier_part.update_attributes(:partNr=>row["SpartNr"].strip, :desc=>row["SpartDesc"].strip)
-                cpart.update_attributes(:partNr=>row["CpartNr"].strip, :desc=>row["CpartDesc"].strip)
-                pr.update_attributes(:saleNo=>row["SaleNo"].strip, :purchaseNo=>row["PurchaseNo"].strip)
-              else
-                result = false
-                info<<"缺少列值或文件标题错误,请重新修改上传！" if info.size<15
-              end
-            end
+        CSV.foreach(hfile,:headers=>true,:col_sep=>$CSVSP,:encoding=>"#{encod}:utf-8") do |row|
+          if row["Client"] and row["Supplier"] and row["CpartNr"] and row["SpartNr"] and row["CpartDesc"] and row["SpartDesc"] and row["SaleNo"] and row["PurchaseNo"]
+            next unless cli = Organisation.where(:abbr=>row["Client"].strip).first
+            next unless sup = Organisation.where(:abbr=>row["Supplier"].strip).first
+            next unless orgrel = OrganisationRelation.where("origin_client_id = ? and origin_supplier_id = ? ", cli.id, sup.id).first
+            next unless cpart = Part.where("organisation_id = ? and partNr = ?", cli.id, row["CpartNr"].strip).first
+            next unless pr = PartRel.where(:client_part_id=>cpart.id,  :organisation_relation_id=>orgrel.id).first
+            i+=1 if pr.supplier_part.update_attributes(:partNr=>row["SpartNr"].strip, :desc=>row["SpartDesc"].strip)
+            cpart.update_attributes(:partNr=>row["CpartNr"].strip, :desc=>row["CpartDesc"].strip)
+            pr.update_attributes(:saleNo=>row["SaleNo"].strip, :purchaseNo=>row["PurchaseNo"].strip)
+          else
+            result = false
+            info<<"缺少列值或文件标题错误,请重新修改上传！" if info.size<15
+          end
+        end
       else
-            CSV.foreach(hfile,:headers=>true,:col_sep=>$CSVSP,:encoding=>"#{encod}:utf-8") do |row|
-                        if row["Client"] and row["Supplier"] and row["CpartNr"] and row["SpartNr"] and row["CpartDesc"] and row["SpartDesc"] and row["SaleNo"] and row["PurchaseNo"]
-                          next unless cli = Organisation.where(:abbr=>row["Client"].strip).first
-                          next unless sup = Organisation.where(:abbr=>row["Supplier"].strip).first
-                          next unless orgrel = OrganisationRelation.where("origin_client_id = ? and origin_supplier_id = ? ", cli.id, sup.id).first
-                          cpartNr = row["CpartNr"].strip
-                          spartNr = row["SpartNr"].strip
-                          unless cpart = Part.where("organisation_id = ? and partNr = ?", cli.id, cpartNr).first
-                            cpart = Part.new(:partNr=>cpartNr, :desc=>row["CpartDesc"].strip)
-                            cli.parts<<cpart
-                          end
-                          unless spart = Part.where("organisation_id = ? and partNr = ?", sup.id, spartNr).first
-                            spart = Part.new(:partNr=>spartNr, :desc=>row["SpartDesc"].strip)
-                            sup.parts<<spart
-                          end
-                          unless PartRel.where(:client_part_id=>cpart.id, :supplier_part_id=>spart.id, :organisation_relation_id=>orgrel.id).first
-                            pr = PartRel.new(:saleNo=>row["SaleNo"].strip, :purchaseNo=>row["PurchaseNo"].strip, :client_part_id=>cpart.id, :supplier_part_id=>spart.id, :organisation_relation_id=>orgrel.id)
-                            i+=1 if pr.save
-                          end
-                        else
-                          result = false
-                          info<<"缺少列值或文件标题错误,请重新修改上传！" if info.size<15
-                        end
+        CSV.foreach(hfile,:headers=>true,:col_sep=>$CSVSP,:encoding=>"#{encod}:utf-8") do |row|
+          if row["Client"] and row["Supplier"] and row["CpartNr"] and row["SpartNr"] and row["CpartDesc"] and row["SpartDesc"] and row["SaleNo"] and row["PurchaseNo"]
+            next unless cli = Organisation.where(:abbr=>row["Client"].strip).first
+            next unless sup = Organisation.where(:abbr=>row["Supplier"].strip).first
+            next unless orgrel = OrganisationRelation.where("origin_client_id = ? and origin_supplier_id = ? ", cli.id, sup.id).first
+            cpartNr = row["CpartNr"].strip
+            spartNr = row["SpartNr"].strip
+            unless cpart = Part.where("organisation_id = ? and partNr = ?", cli.id, cpartNr).first
+              cpart = Part.new(:partNr=>cpartNr, :desc=>row["CpartDesc"].strip)
+            cli.parts<<cpart
             end
+            unless spart = Part.where("organisation_id = ? and partNr = ?", sup.id, spartNr).first
+              spart = Part.new(:partNr=>spartNr, :desc=>row["SpartDesc"].strip)
+            sup.parts<<spart
+            end
+            unless PartRel.where(:client_part_id=>cpart.id, :supplier_part_id=>spart.id, :organisation_relation_id=>orgrel.id).first
+              pr = PartRel.new(:saleNo=>row["SaleNo"].strip, :purchaseNo=>row["PurchaseNo"].strip, :client_part_id=>cpart.id, :supplier_part_id=>spart.id, :organisation_relation_id=>orgrel.id)
+            i+=1 if pr.save
+            end
+          else
+            result = false
+            info<<"缺少列值或文件标题错误,请重新修改上传！" if info.size<15
+          end
+        end
       end
       # CSV.foreach(hfile,:headers=>true,:col_sep=>$CSVSP,:encoding=>"#{encod}:utf-8") do |col|
-        # if col["Client"]
-          # puts col["Supplier"]
-        # else
-          # info<<"缺少列值或文件标题错误,请重新修改上传！" if info.size<15
-        # end
+      # if col["Client"]
+      # puts col["Supplier"]
+      # else
+      # info<<"缺少列值或文件标题错误,请重新修改上传！" if info.size<15
+      # end
       # end
       info << "导入#{i}条。"
       File.delete(hfile)
     rescue Exception => e
-      result = false
-      info = e.to_s
+    result = false
+    info = e.to_s
     end
 
     if result
@@ -188,45 +188,45 @@ class OrganisationManagerController < ApplicationController
       hfile = File.join($DETMP,dcsv.pathName)
       i=0
       if request.headers["CZ-strategy-update"] == "true"
-              CSV.foreach(hfile,:headers=>true,:col_sep=>$CSVSP,:encoding=>"#{encod}:utf-8") do |row|
-                if row["Client"] and row["Supplier"] and row["CpartNr"] and row["SpartNr"] and row["Least"]
-                  next unless cli = Organisation.where(:abbr=>row["Client"].strip).first
-                  next unless sup = Organisation.where(:abbr=>row["Supplier"].strip).first
-                  next unless orgrel = OrganisationRelation.where("origin_client_id = ? and origin_supplier_id = ? ", cli.id, sup.id).first
-                  next unless cpart = Part.where("organisation_id = ? and partNr = ?", cli.id, row["CpartNr"].strip).first
-                  # next unless spart = Part.where("organisation_id = ? and partNr = ?", sup.id, row["SpartNr"]).first
-                  next unless pr = PartRel.where(:client_part_id=>cpart.id,  :organisation_relation_id=>orgrel.id).first
-                  next unless package = Strategy.where(:part_rel_id=>pr.id).first
-                  i+=1 if package.update_attributes(:leastAmount=>row["Least"].strip)
-                else
-                  result = false
-                  info<<"缺少列值或文件标题错误,请重新修改上传！" if info.size<15
-                end
-              end
+        CSV.foreach(hfile,:headers=>true,:col_sep=>$CSVSP,:encoding=>"#{encod}:utf-8") do |row|
+          if row["Client"] and row["Supplier"] and row["CpartNr"] and row["SpartNr"] and row["Least"]
+            next unless cli = Organisation.where(:abbr=>row["Client"].strip).first
+            next unless sup = Organisation.where(:abbr=>row["Supplier"].strip).first
+            next unless orgrel = OrganisationRelation.where("origin_client_id = ? and origin_supplier_id = ? ", cli.id, sup.id).first
+            next unless cpart = Part.where("organisation_id = ? and partNr = ?", cli.id, row["CpartNr"].strip).first
+            # next unless spart = Part.where("organisation_id = ? and partNr = ?", sup.id, row["SpartNr"]).first
+            next unless pr = PartRel.where(:client_part_id=>cpart.id,  :organisation_relation_id=>orgrel.id).first
+            next unless package = Strategy.where(:part_rel_id=>pr.id).first
+            i+=1 if package.update_attributes(:leastAmount=>row["Least"].strip)
+          else
+            result = false
+            info<<"缺少列值或文件标题错误,请重新修改上传！" if info.size<15
+          end
+        end
       else
-              CSV.foreach(hfile,:headers=>true,:col_sep=>$CSVSP,:encoding=>"#{encod}:utf-8") do |row|
-                if row["Client"] and row["Supplier"] and row["CpartNr"] and row["SpartNr"] and row["Least"]
-                  next unless cli = Organisation.where(:abbr=>row["Client"].strip).first
-                  next unless sup = Organisation.where(:abbr=>row["Supplier"].strip).first
-                  next unless orgrel = OrganisationRelation.where("origin_client_id = ? and origin_supplier_id = ? ", cli.id, sup.id).first
-                  next unless cpart = Part.where("organisation_id = ? and partNr = ?", cli.id, row["CpartNr"].strip).first
-                  # next unless spart = Part.where("organisation_id = ? and partNr = ?", sup.id, row["SpartNr"]).first
-                  next unless pr = PartRel.where(:client_part_id=>cpart.id,  :organisation_relation_id=>orgrel.id).first
-                  unless Strategy.where(:part_rel_id=>pr.id).first
-                      package = Strategy.new(:leastAmount=>row["Least"].strip, :part_rel_id=>pr.id)
-                      i+=1 if package.save
-                  end
-                else
-                  result = false
-                  info<<"缺少列值或文件标题错误,请重新修改上传！" if info.size<15
-                end
-              end
+        CSV.foreach(hfile,:headers=>true,:col_sep=>$CSVSP,:encoding=>"#{encod}:utf-8") do |row|
+          if row["Client"] and row["Supplier"] and row["CpartNr"] and row["SpartNr"] and row["Least"]
+            next unless cli = Organisation.where(:abbr=>row["Client"].strip).first
+            next unless sup = Organisation.where(:abbr=>row["Supplier"].strip).first
+            next unless orgrel = OrganisationRelation.where("origin_client_id = ? and origin_supplier_id = ? ", cli.id, sup.id).first
+            next unless cpart = Part.where("organisation_id = ? and partNr = ?", cli.id, row["CpartNr"].strip).first
+            # next unless spart = Part.where("organisation_id = ? and partNr = ?", sup.id, row["SpartNr"]).first
+            next unless pr = PartRel.where(:client_part_id=>cpart.id,  :organisation_relation_id=>orgrel.id).first
+            unless Strategy.where(:part_rel_id=>pr.id).first
+              package = Strategy.new(:leastAmount=>row["Least"].strip, :part_rel_id=>pr.id)
+            i+=1 if package.save
+            end
+          else
+            result = false
+            info<<"缺少列值或文件标题错误,请重新修改上传！" if info.size<15
+          end
+        end
       end
       info << "导入#{i}条。"
       File.delete(hfile)
     rescue Exception => e
-      result = false
-      info = e.to_s
+    result = false
+    info = e.to_s
     end
 
     if result
@@ -249,7 +249,6 @@ class OrganisationManagerController < ApplicationController
         @search = Redis::Search.complete("OrganisationRelation", cs, :conditions=>{:origin_supplier_id=>@cz_org.id}, :limit=>500 ) ||[]
         @organs = @search.collect{|item| [ item["clientNr"], Organisation.find_by_id(item['origin_client_id'].to_i),item['origin_client_id'] ]  }
       end
-      puts "#___"
       @search.each do |o|
         puts o.to_json
       end
@@ -299,57 +298,75 @@ class OrganisationManagerController < ApplicationController
   #__________________________________________delivery info set__________________________________
   def delivery_set
     @list = Organisation.all.map {|o| [o.name, o.id] }
-    @priterTypes=OrgRelPrinterType.all.collect{|t| [t.desc,t.value]}
+    @priterTypes=OrgRelPrinter.printer_list_options
+    @orgpriterTypes=OrgPrinter.printer_list_options
     @contactType=OrgRelContactType.all.collect{|t| [t.desc,t.value]}
   end
 
   def get_printer
-    cli=Organisation.find(params[:cid])
-    sup=Organisation.find(params[:sid])
-    orl= OrganisationRelation.where("origin_client_id = ? and origin_supplier_id = ? ", cli.id, sup.id).first
-    ps=OrgRelPrinter.all(orl.id,params[:ptype])
-    dp=OrgRelPrinter.get_default_printer(orl.id,params[:ptype])
+    if params[:type]
+      ps=OrgPrinter.all(params[:org],params[:ptype])
+      dp=OrgPrinter.get_default_printer(params[:org],params[:ptype])
+    else
+      cli=Organisation.find(params[:cid])
+      sup=Organisation.find(params[:sid])
+      orl= OrganisationRelation.where("origin_client_id = ? and origin_supplier_id = ? ", cli.id, sup.id).first
+      ps=OrgRelPrinter.all(orl.id,params[:ptype])
+      dp=OrgRelPrinter.get_default_printer(orl.id,params[:ptype])
+    end
     render :text=>{:printers=>ps.to_json,:defaultPrinter=>dp.to_json}
   end
 
   def add_printer
-    cli=Organisation.find(params[:cid])
-    sup=Organisation.find(params[:sid])
-    orl= OrganisationRelation.where("origin_client_id = ? and origin_supplier_id = ? ", cli.id, sup.id).first
-    type=params[:ptype]
-    printer=OrgRelPrinter.new(:org_rel_id=>orl.id,:template=>params[:template],
-    :moduleName=>params[:moduleName],:type=> type,:updated=>true)
+    if params[:type]
+      printer=OrgPrinter.new(:key_id=>params[:org],:template=>params[:template],
+      :moduleName=>params[:moduleName],:type=> params[:ptype],:updated=>true)
+    else
+      cli=Organisation.find(params[:cid])
+      sup=Organisation.find(params[:sid])
+      orl= OrganisationRelation.where("origin_client_id = ? and origin_supplier_id = ? ", cli.id, sup.id).first
+      printer=OrgRelPrinter.new(:key_id=>orl.id,:template=>params[:template],
+      :moduleName=>params[:moduleName],:type=> params[:ptype],:updated=>true)
+    end
     printer.add_to_printer
     printer.save
     render :json=>{:msg=>"DONE!!!"+printer.key}
   end
 
   def del_printer
-    printer=OrgRelPrinter.find(params[:printerKey])
-    printer.destroy
-    render :json=>{:msg=>"DONE!!!"+printer.key}
+    printer = params[:type].nil? ? OrgRelPrinter.find(params[:printerKey]) : OrgPrinter.find(params[:printerKey])
+    if printer
+      printer.destroy
+      render :json=>{:msg=>"DONE!!!"+printer.key}
+    else
+      printer = params[:type].nil? ? OrgRelPrinter.find(params[:printerKey]) : OrgPrinter.find(params[:printerKey])
+    end
   end
 
   def update_default_printer
-    if printer=OrgRelPrinter.find(params[:printerKey])
-    data={}
-    if params[:template].strip.length>0
-      data[:template]=params[:template].strip
-    end
-    
-    if params[:moduleName].strip.length>0
-      data[:moduleName]=params[:moduleName].strip
-    end
-    data[:updated]=params[:updated]
-    printer.update(data)    
-    render :json=>{:msg=>"DONE!!!"+printer.key}
+    printer = params[:type].nil? ? OrgRelPrinter.find(params[:printerKey]) : OrgPrinter.find(params[:printerKey])
+    if printer
+      data={}
+      if params[:template].strip.length>0
+        data[:template]=params[:template].strip
+      end
+      if params[:moduleName].strip.length>0
+        data[:moduleName]=params[:moduleName].strip
+      end
+      data[:updated]=params[:updated]
+      printer.update(data)
+      render :json=>{:msg=>"DONE!!!"+printer.key}
     else
       render  :json=>{:msg=>"Error!!!"+params[:printerKey]+"不存在"}
     end
   end
 
   def add_default_printer
-    printer=OrgRelPrinter.find(params[:printerKey])
+    if params[:type]
+      printer=OrgPrinter.find(params[:printerKey])
+    else
+      printer=OrgRelPrinter.find(params[:printerKey])
+    end
     printer.add_to_dpriter
     render :json=>{:msg=>"DONE!!!"+printer.key}
   end
@@ -419,7 +436,7 @@ class OrganisationManagerController < ApplicationController
         :send_address=>params[:send_address])
       end
     elsif params[:type].to_i==300
-       c=DnContact.find(params[:conKey])
+      c=DnContact.find(params[:conKey])
     end
     render :json=>c
   end

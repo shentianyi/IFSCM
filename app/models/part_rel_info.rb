@@ -24,9 +24,14 @@ class PartRelInfo<CZ::BaseClass
     key=generate_key(part_rel_id)
     super(key)
   end
+   
+  def default
+    {:needCheck=>DeliveryObjInspect::ExemInspect}
+  end
   
   private 
   def self.generate_key part_rel_id
     "part_rel_info:#{part_rel_id}"
   end
+ 
 end

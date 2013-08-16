@@ -17,7 +17,7 @@ class Wcfer
     # - json : dn
     # 返回值：
     # - bool,string : 生成结果，文件名 - hash 
-    def self.generate_dn_pdf(template,dataset,dnKey)
+    def self.generate_dn_pdf(template,dataset)
         msg=ReturnMsg.new
        begin
          if dataset.length>0
@@ -29,7 +29,7 @@ class Wcfer
       soap.body={
         :template=>template,
         :dataJson=>dataset.to_json,
-        :dnKey=>dnKey
+        :dnKey=>nil
       }  
     end 
       if res.success?

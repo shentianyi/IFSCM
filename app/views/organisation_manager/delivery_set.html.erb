@@ -3,6 +3,53 @@
 		cursor:pointer;
 	}
 </style>
+
+<h4>选择公司</h4>
+<div>
+     <label>Organisation</label>
+     <%= select_tag :org_id,  options_for_select(@list)%>
+</div>
+
+<h4 class="expand_heading">@公司> 打印模板设置</h4>
+<div class="toggle_container">
+     Printer Type: <%= select_tag :org_printerType,  options_for_select(@orgpriterTypes)%>
+     <input type="button" onclick=" get_org_printers()" value="查 询"／>
+     <div id="org_printer_result">
+
+     </div>
+     <div style=" border: 1px solid grey;">
+          ADD PRINTER:
+          <input type="button" onclick=" add_org_printer();" value=".add."/>
+          <br>
+          <div>
+               Template:
+               <input id="org_template" type="text" />
+          </div>
+          <div>
+               Module Name:
+               <input id="org_moduleName" type="text" />
+          </div>
+          <div>
+               UPLOAD PRINTER TEMPLATE：
+               <input id="dn-printer-template-uploader" type="file" name="files[]" data-url="../organisation_manager/upload_printer_template" >
+          <div class="abstractblock" id="dn-printer-template-uploader-preview" style="display:none;">    </div>
+          </div>
+     </div>
+     <div style=" border: 1px solid grey;">
+          OPERATE PRINTER:
+          <input type="button" onclick=" add_org_defalut_printer();" value=".add default."/>
+          <input type="button" onclick=" del_org_printer();" value=".delete."/>
+         <input type="button" onclick=" update_org_default_printer();" value=".update."/>
+          <br>
+          <div>
+               PRINTER KEY:
+               <input id="org_printerKey" type="text" />
+               <input id="org_updatedcheck" type="checkbox" checked/>已更新
+          </div>
+     </div>
+</div>
+<hr />
+
 <h4>选择客户-供应商</h4>
 <div>
 	<label>Client:</label>
@@ -52,7 +99,6 @@
 	</div>
 </div>
 <hr />
-
 <h4 class="expand_heading">@公司关系 > 运单信息 > 联系人设置</h4>
 <div class="toggle_container">
 	Contact Type: <%= select_tag :contactType,  options_for_select(@contactType)%>

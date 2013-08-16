@@ -4,6 +4,7 @@ module LeoniPrinterBase
     "SupplierNr","ClientNr","ReceiverName","ContactWay"]
   @@pack_body_keys=["SupplierNr","CPartNr","Description","Quantity","DnPackNr","Destination"]
   @@dn_check_body_keys=["CPartNr","PerPackNum","PackNr"]
+  @@pre_dn_store_check_list_body_keys=["SPartNr","PerPackNum","PackNum","TotalQuantity"]
   def self.generate_dn_head dn,sendOrg,receOrg,orl
     record=[]
     data={}
@@ -70,4 +71,24 @@ module LeoniPrinterBase
     end
     return dataset
   end
+  
+  def self.generate_pre_dn_store_check_list items
+    dataset=[]
+    if items
+      data={}
+      items.each do |item|
+        record=[]
+        data[:SPartNr]=item.spartNr
+        data[:PerPackNum]=item.packAmount
+        data[:PackNum]=item.perPackAmount
+        data[:TotalQuantity]=FormatHelper.string_multiply(data[:PerPackNum],data[:PackNum])
+        @@pre_dn_store_check_list_body_keys.each do |key|
+          record<<{:Key=>key,:Value=>data[key.to_sym]}
+        end
+        dataset<<record
+      end
+    end
+    return dataset
+  end
+   
 end

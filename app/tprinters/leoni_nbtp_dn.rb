@@ -1,7 +1,5 @@
 #encoding:utf-8
 module LeoniNbtpDn
-  @@head_keys=["DnNr","SendDate","SupplierOrgName","SupplierOrgAddress","ClientOrgName","ClientOrgAddress","DnDestination",
-    "SupplierNr","ClientNr","ReceiverName","ContactWay"]
   @@body_keys=["CPartNr","SPartNr","PerPackNum","PackNum","TotalQuantity","OrderNr","Remark"]
 
   def self.gen_data dn,orl

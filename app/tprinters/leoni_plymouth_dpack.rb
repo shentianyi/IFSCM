@@ -1,7 +1,5 @@
 #encoding:utf-8
 module LeoniPlymouthDpack
-  @@label_keys=["SupplierNr","CPartNr","Description","Quantity","DnPackNr","Destination"]
-
   def self.gen_data dn,orl,diKeys=nil
     dataset=[]
     items=DeliveryBll.get_dn_list dn.key,true,diKeys

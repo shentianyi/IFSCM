@@ -280,6 +280,16 @@ module DeliveryBll
     return DeliveryNote.all_org_role_dn(orgId,role)
   end
 
+  def self.generate_label_pdf params,staff_id
+    type=params[:printType].to_i
+    case type
+    when OrgRelPrinterType::DNPrecheckPrinter
+      return generate_pre_dn_check_label_pdf type,staff_id
+    else
+    return generate_dn_label_pdf type,params[:dnKey],params[:destination],params[:sendDate]
+    end
+  end
+
   # ws
   # [功能：] 生成运单标签PDF文件
   # 参数：
@@ -288,7 +298,7 @@ module DeliveryBll
   # - string : sendDate
   # 返回值：
   # - string : fileName
-  def self.generate_dn_label_pdf dnKey,type,destination=nil,sendDate=nil
+  def self.generate_dn_label_pdf type,dnKey,destination=nil,sendDate=nil
     msg=ReturnMsg.new
     if dn=DeliveryNote.single_or_default(dnKey)
       if !destination.nil?
@@ -296,11 +306,16 @@ module DeliveryBll
           dn.rupdate(:destination=>destination,:sendDate=>sendDate)
         end
       end
-      msg=TPrinter.print_dn_pdf(dnKey,type)
+      msg=TPrinter.print_dn_pdf(type,dnKey)
     else
       msg.content="运单不存在"
     end
     return msg
+  end
+
+  # ws
+  def self.generate_pre_dn_check_label_pdf type,staff_id
+    return TPrinter.print_pre_dn_check_pdf(type,staff_id)
   end
 
   # ws

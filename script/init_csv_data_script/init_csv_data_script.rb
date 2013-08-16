@@ -35,26 +35,27 @@ class InitCSVDataScript
 end
 
 # add org
-orgs=InitCSVDataScript.initOrgByFile 'org20121109-leoni-cz'
+#orgs=InitCSVDataScript.initOrgByFile 'org20121109-leoni-cz'
 # add org rel
-InitCSVDataScript.initCSByOrgFile orgs,'csrel20121109-leoni-cz'
+#InitCSVDataScript.initCSByOrgFile orgs,'csrel20121109-leoni-cz'
 # add part and build rel
-InitCSVDataScript.initPartAndCSPartRel orgs[0],orgs[1],'part20121109-leoni-cz'
+#InitCSVDataScript.initPartAndCSPartRel orgs[0],orgs[1],'part20121109-leoni-cz'
 
 # init staff
-staffs=[{:name=>'leoni',:staffNr=>'leoni',:pass=>'leoni',:conpass=>'leoni',:orgId=>orgs[0].id},
-{:name=>'leonicz',:staffNr=>'leonicz',:pass=>'leonicz',:conpass=>'leonicz',:orgId=>orgs[1].id}]
-InitCSVDataScript.initStaff staffs
+# staffs=[{:name=>'leoni',:staffNr=>'leoni',:pass=>'leoni',:conpass=>'leoni',:orgId=>orgs[0].id},
+# {:name=>'leonicz',:staffNr=>'leonicz',:pass=>'leonicz',:conpass=>'leonicz',:orgId=>orgs[1].id}]
+# InitCSVDataScript.initStaff staffs
 
 # add org
 orgs=[]
 orgs<<Organisation.find_by_id(1)
-orgs<<(InitCSVDataScript.initOrgByFile 'org20121203-leoni-nb')[0]
+orgs<<Organisation.find_by_id(3)
+#orgs<<(InitCSVDataScript.initOrgByFile 'org20121203-leoni-nb')[0]
 # add org rel
-InitCSVDataScript.initCSByOrgFile orgs,'csrel20121203-leoni-nb'
+#InitCSVDataScript.initCSByOrgFile orgs,'csrel20121203-leoni-nb'
 # add part and build rel
 InitCSVDataScript.initPartAndCSPartRel orgs[0],orgs[1],'part20121203-leoni-nb'
 
 # init staff
-staffs=[{:name=>'nbtp',:staffNr=>'nbtp',:pass=>'nbtp@',:conpass=>'nbtp@',:orgId=>orgs[1].id}]
+staffs=[{:name=>'nbtp',:staffNr=>'nbtp',:pass=>'nbtp',:conpass=>'nbtp',:orgId=>orgs[1].id}]
 InitCSVDataScript.initStaff staffs
