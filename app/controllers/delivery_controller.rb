@@ -617,7 +617,7 @@ class DeliveryController < ApplicationController
       @dn=DeliveryNote.single_or_default(params[:dnKey])
       p_auth_dn
       else
-        @msg=ReturnMsg.new(:result=>true)
+        @msg=ReturnMsg.new
       end
      end
   
