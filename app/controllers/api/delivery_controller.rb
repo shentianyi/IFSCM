@@ -31,7 +31,12 @@ module Api
 
     def item_list
       items=DeliveryBll.get_dn_list params[:dnKey]
-      render :json=>items
+      a=[]
+      items.each do |item|
+        item.created_at=nil
+        a<<item
+      end
+      render :json=>a
     end
 
     def item_print_data
