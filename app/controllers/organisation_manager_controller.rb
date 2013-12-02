@@ -210,11 +210,14 @@ class OrganisationManagerController < ApplicationController
             next unless sup = Organisation.where(:abbr=>row["Supplier"].strip).first
             next unless orgrel = OrganisationRelation.where("origin_client_id = ? and origin_supplier_id = ? ", cli.id, sup.id).first
             next unless cpart = Part.where("organisation_id = ? and partNr = ?", cli.id, row["CpartNr"].strip).first
+            next unless spart=Part.where("organisation_id = ? and partNr = ?", sup.id, row["SpartNr"].strip).first
             # next unless spart = Part.where("organisation_id = ? and partNr = ?", sup.id, row["SpartNr"]).first
-            next unless pr = PartRel.where(:client_part_id=>cpart.id,  :organisation_relation_id=>orgrel.id).first
-            unless Strategy.where(:part_rel_id=>pr.id).first
+            next unless pr = PartRel.where(:client_part_id=>cpart.id,  :organisation_relation_id=>orgrel.id,:supplier_part_id=>spart.id).first
+            unless strategy=Strategy.where(:part_rel_id=>pr.id).first
               package = Strategy.new(:leastAmount=>row["Least"].strip, :part_rel_id=>pr.id)
             i+=1 if package.save
+            else
+              strategy.update_attributes(:leastAmount=>row["Least"].strip)
             end
           else
             result = false
