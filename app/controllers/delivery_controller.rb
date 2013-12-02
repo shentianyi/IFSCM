@@ -249,7 +249,7 @@ class DeliveryController < ApplicationController
   # - string : 文件地址
   def gen_dn_pdf
     if request.post?
-      if @msg.result
+      if @msg.result || params[:dnKey].nil?
       @msg=DeliveryBll.generate_label_pdf params,session[:staff_id]
        if @msg.result
          @msg.content= AliBucket.url_for(@msg.content)
@@ -617,7 +617,7 @@ class DeliveryController < ApplicationController
       @dn=DeliveryNote.single_or_default(params[:dnKey])
       p_auth_dn
       else
-        @msg=ReturnMsg.new(:result=>true)
+        @msg=ReturnMsg.new
       end
      end
   
