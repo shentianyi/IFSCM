@@ -5,7 +5,6 @@ class Demander < ActiveRecord::Base
   attr_accessible :id, :created_at, :updated_at
   attr_accessible :key, :clientId,:relpartId,:supplierId, :type,:amount,:oldamount,:date,:rate, :accepted
   attr_accessible :orderNr, :order_item_id
-  attr_accessor :
   NumPer=$DEPSIZE
   
   include CZ::BaseModule

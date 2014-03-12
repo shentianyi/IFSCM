@@ -71,7 +71,7 @@
       <file leaf-file-name="demander.rb" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/models/demander.rb">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="16" column="52" selection-start="671" selection-end="671" vertical-scroll-proportion="0.5272206">
+            <state line="7" column="18" selection-start="332" selection-end="332" vertical-scroll-proportion="0.23065902">
               <folding />
             </state>
           </provider>
@@ -620,7 +620,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/models/demander.rb">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="16" column="52" selection-start="671" selection-end="671" vertical-scroll-proportion="0.5272206">
+        <state line="7" column="18" selection-start="332" selection-end="332" vertical-scroll-proportion="0.23065902">
           <folding />
         </state>
       </provider>
