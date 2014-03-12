@@ -40,6 +40,7 @@ module DemanderBll
             end
             # demand.date=FormatHelper::demand_date_by_str_type(demand.filedate,demand.type)
             demand.date=demand.filedate
+            demand.inputed_at = row["InputDate"].nil? ? Time.now.to_i : Time.new(row["InputDate"].strip).to_i
             # validate demand field
             msg=demand_field_validate(demand,batchFile)
             demand.vali=msg.result

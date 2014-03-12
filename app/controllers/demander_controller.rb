@@ -285,8 +285,8 @@ class DemanderController<ApplicationController
                       if nd.rate.to_i != 0 or nd.oldamount.nil?
                         Demander.send_kestrel(demand.supplierId, demand.key, demand.type)
                       end
-                      demandH=DemandHistory.new(:amount=>nd.amount,:rate=>nd.rate,:oldmount=>nd.oldamount,:demandKey=>demand.key)
-                      demand.add_to_history demandH.key
+                      demandH=DemandHistory.new(:amount=>nd.amount,:rate=>nd.rate,:oldmount=>nd.oldamount,:demandKey=>demand.key,:inputed_at=>nd.inputed_at)
+                      demand.add_to_history demandH.key,demandH.inputed_at
                       demandH.save
                     end
                   end

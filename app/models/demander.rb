@@ -5,15 +5,16 @@ class Demander < ActiveRecord::Base
   attr_accessible :id, :created_at, :updated_at
   attr_accessible :key, :clientId,:relpartId,:supplierId, :type,:amount,:oldamount,:date,:rate, :accepted
   attr_accessible :orderNr, :order_item_id
+  attr_accessor :
   NumPer=$DEPSIZE
   
   include CZ::BaseModule
   include DemanderRedisIndex
   extend  DemanderNewbie
   # ws : add demand history
-  def add_to_history history_key
+  def add_to_history history_key,inputed_at=nil
     zset_key=DemandHistory.generate_zset_key self.clientId,self.supplierId,self.relpartId,self.type,self.date
-    $redis.zadd(zset_key,Time.now.to_i,history_key)
+    $redis.zadd(zset_key,inputed_at||Time.now.to_i,history_key)
   end
 
   def clientNr

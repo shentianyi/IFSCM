@@ -3,7 +3,7 @@ require 'base_class'
 
 # the score of histoty is Time.to_i
 class DemandHistory<CZ::BaseClass
-  attr_accessor :demandKey,:rate,:amount,:oldamount
+  attr_accessor :demandKey,:rate,:amount,:oldamount,:inputed_at
   def self.get_demander_hitories demander,startIndex,endIndex,score=true
     key=generate_zset_key demander.clientId,demander.supplierId,demander.relpartId,demander.type,demander.date
     dhs=nil
