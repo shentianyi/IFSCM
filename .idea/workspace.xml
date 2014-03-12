@@ -80,7 +80,7 @@
       <file leaf-file-name="demander_controller.rb" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/controllers/demander_controller.rb">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="174" column="40" selection-start="6008" selection-end="6008" vertical-scroll-proportion="0.40438873">
+            <state line="175" column="44" selection-start="6024" selection-end="6024" vertical-scroll-proportion="0.3322884">
               <folding />
             </state>
           </provider>
@@ -620,7 +620,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/controllers/demander_controller.rb">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="174" column="40" selection-start="6008" selection-end="6008" vertical-scroll-proportion="0.40438873">
+        <state line="175" column="44" selection-start="6024" selection-end="6024" vertical-scroll-proportion="0.3322884">
           <folding />
         </state>
       </provider>
