@@ -172,7 +172,7 @@ class DemanderController<ApplicationController
         if demander=Demander.rfind(demandId)
           nt = Time.at(DemandHistory.get_two_ends(demander).last.created_at.to_i)
           endIndex=Time.local(nt.year, nt.mon, nt.day).to_i + 1.day.to_i
-          startIndex=endIndex - 10.day.to_i
+          startIndex=endIndex - 3.day.to_i
          end
       else
         startIndex=Time.parse(params[:startIndex]).to_i
