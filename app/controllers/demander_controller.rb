@@ -172,7 +172,7 @@ class DemanderController<ApplicationController
         if demander=Demander.rfind(demandId)
           nt = Time.at(DemandHistory.get_two_ends(demander).last.created_at.to_i)
           endIndex=Time.local(nt.year, nt.mon, nt.day).to_i + 1.day.to_i
-          startIndex=endIndex - 3.day.to_i
+          startIndex=endIndex - 5.day.to_i
          end
       else
         startIndex=Time.parse(params[:startIndex]).to_i
@@ -260,7 +260,6 @@ class DemanderController<ApplicationController
                   nds,type,ncount=DemanderBll.get_file_demands sf.key,0,-1
                   if ncount>0
                     nds.items.each do |nd|
-                      puts nd.to_json
                       d= FormatHelper::demand_date_inside( nd.date, nd.type )
                       if tempKey = DemandHistory.exists( nd.clientId,nd.supplierId,nd.relpartId,nd.type, d )
                         demand = Demander.rfind(tempKey)
