@@ -127,10 +127,11 @@ module DemanderBll
       # msg.result=false
       # msg.content_key<<:fcDateErr
     # end
-    if FormatHelper::demand_date_vali(demand.date,demand.type)
-      msg.result=false
-      msg.content_key<<:fcDateErr
-    end
+
+    #if FormatHelper::demand_date_vali(demand.date,demand.type)
+    #  msg.result=false
+    #  msg.content_key<<:fcDateErr
+    #end
 
     # vali amount
     if !FormatHelper::str_is_positive_float(demand.amount false)
