@@ -2,12 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="6cb96807-3c74-439a-914d-095234ea18c8" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.project" afterPath="$PROJECT_DIR$/.project" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/blls/delivery_bll.rb" afterPath="$PROJECT_DIR$/app/blls/delivery_bll.rb" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/controllers/delivery_controller.rb" afterPath="$PROJECT_DIR$/app/controllers/delivery_controller.rb" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/views/delivery/inspect.html.erb" afterPath="$PROJECT_DIR$/app/views/delivery/inspect.html.erb" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/views/delivery/instore.html.erb" afterPath="$PROJECT_DIR$/app/views/delivery/instore.html.erb" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/tprinters/tprinter.rb" afterPath="$PROJECT_DIR$/app/tprinters/tprinter.rb" />
     </list>
     <ignored path="ifSCM.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -31,19 +26,19 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="delivery_controller.rb" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="delivery_controller.rb" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/controllers/delivery_controller.rb">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="457" column="5" selection-start="11709" selection-end="11709" vertical-scroll-proportion="-3.35">
+            <state line="255" column="47" selection-start="6440" selection-end="6440" vertical-scroll-proportion="0.30508474">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="instore.html.erb" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="instore.html.erb" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/views/delivery/instore.html.erb">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="66" column="42" selection-start="2436" selection-end="2436" vertical-scroll-proportion="1.4016298">
+            <state line="66" column="42" selection-start="2436" selection-end="2436" vertical-scroll-proportion="-47.148148">
               <folding />
             </state>
           </provider>
@@ -85,9 +80,9 @@
   <component name="IdeDocumentHistory">
     <option name="changedFiles">
       <list>
-        <option value="$PROJECT_DIR$/app/controllers/delivery_controller.rb" />
         <option value="$PROJECT_DIR$/app/views/delivery/inspect.html.erb" />
         <option value="$PROJECT_DIR$/app/views/delivery/instore.html.erb" />
+        <option value="$PROJECT_DIR$/app/controllers/delivery_controller.rb" />
       </list>
     </option>
   </component>
@@ -500,16 +495,16 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/controllers/delivery_controller.rb">
+    <entry file="file://$PROJECT_DIR$/app/views/delivery/instore.html.erb">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="457" column="5" selection-start="11709" selection-end="11709" vertical-scroll-proportion="-3.35">
+        <state line="66" column="42" selection-start="2436" selection-end="2436" vertical-scroll-proportion="-47.148148">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/views/delivery/instore.html.erb">
+    <entry file="file://$PROJECT_DIR$/app/controllers/delivery_controller.rb">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="66" column="42" selection-start="2436" selection-end="2436" vertical-scroll-proportion="1.4016298">
+        <state line="255" column="47" selection-start="6440" selection-end="6440" vertical-scroll-proportion="0.30508474">
           <folding />
         </state>
       </provider>
