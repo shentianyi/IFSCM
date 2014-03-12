@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="6cb96807-3c74-439a-914d-095234ea18c8" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/controllers/demander_controller.rb" afterPath="$PROJECT_DIR$/app/controllers/demander_controller.rb" />
-    </list>
+    <list default="true" id="6cb96807-3c74-439a-914d-095234ea18c8" name="Default" comment="" />
     <ignored path="ifSCM.iws" />
     <ignored path=".idea/workspace.xml" />
     <file path="/Dummy.txt" changelist="6cb96807-3c74-439a-914d-095234ea18c8" time="1394605453554" ignored="false" />
@@ -32,10 +30,19 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="demander_bll.rb" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="demander_bll.rb" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/blls/demander_bll.rb">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="165" column="33" selection-start="5916" selection-end="5916" vertical-scroll-proportion="0.0">
+            <state line="92" column="48" selection-start="3806" selection-end="3806" vertical-scroll-proportion="1.8102189">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="clean_demander_keys.rb" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/script/clean_redis_data_script/clean_demander_keys.rb">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="7" column="36" selection-start="294" selection-end="294" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -71,16 +78,16 @@
       <file leaf-file-name="demander.rb" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/models/demander.rb">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="13" column="6" selection-start="449" selection-end="449" vertical-scroll-proportion="0.0">
+            <state line="15" column="64" selection-start="654" selection-end="665" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="demander_controller.rb" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="demander_controller.rb" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/controllers/demander_controller.rb">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="174" column="33" selection-start="6001" selection-end="6001" vertical-scroll-proportion="0.29623824">
+            <state line="289" column="92" selection-start="11121" selection-end="11121" vertical-scroll-proportion="-6.133333">
               <folding />
             </state>
           </provider>
@@ -89,7 +96,7 @@
       <file leaf-file-name="demand_history.rb" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/models/demand_history.rb">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="26" column="11" selection-start="735" selection-end="735" vertical-scroll-proportion="0.0">
+            <state line="37" column="11" selection-start="1178" selection-end="1178" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -186,42 +193,6 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="app" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="views" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="ifSCM" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="ifSCM" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="app" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="ifSCM" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="ifSCM" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="app" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="observers" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -437,7 +408,7 @@
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.23664922" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.06600111" sideWeight="0.7633508" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.17581809" sideWeight="0.7633508" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
@@ -513,13 +484,6 @@
     <breakpoint-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/app/views/shared/_handling_msg_box.html.erb">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="7" column="57" selection-start="232" selection-end="232" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/views/delivery/inspect.html.erb">
       <provider selected="true" editor-type-id="text-editor">
         <state line="91" column="38" selection-start="3205" selection-end="3205" vertical-scroll-proportion="0.0">
@@ -597,30 +561,37 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/models/demander.rb">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="13" column="6" selection-start="449" selection-end="449" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/models/demand_history.rb">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="26" column="11" selection-start="735" selection-end="735" vertical-scroll-proportion="0.0">
+        <state line="37" column="11" selection-start="1178" selection-end="1178" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/blls/demander_bll.rb">
+    <entry file="file://$PROJECT_DIR$/app/models/demander.rb">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="165" column="33" selection-start="5916" selection-end="5916" vertical-scroll-proportion="0.0">
+        <state line="15" column="64" selection-start="654" selection-end="665" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/controllers/demander_controller.rb">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="174" column="33" selection-start="6001" selection-end="6001" vertical-scroll-proportion="0.29623824">
+        <state line="289" column="92" selection-start="11121" selection-end="11121" vertical-scroll-proportion="-6.133333">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/script/clean_redis_data_script/clean_demander_keys.rb">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="7" column="36" selection-start="294" selection-end="294" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/blls/demander_bll.rb">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="92" column="48" selection-start="3806" selection-end="3806" vertical-scroll-proportion="1.8102189">
           <folding />
         </state>
       </provider>
