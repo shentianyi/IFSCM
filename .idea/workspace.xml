@@ -2,11 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="6cb96807-3c74-439a-914d-095234ea18c8" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/models/demand_history.rb" afterPath="$PROJECT_DIR$/app/models/demand_history.rb" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/models/demander.rb" afterPath="$PROJECT_DIR$/app/models/demander.rb" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/blls/demander_bll.rb" afterPath="$PROJECT_DIR$/app/blls/demander_bll.rb" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/controllers/demander_controller.rb" afterPath="$PROJECT_DIR$/app/controllers/demander_controller.rb" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/models/demander_temp.rb" afterPath="$PROJECT_DIR$/app/models/demander_temp.rb" />
     </list>
     <ignored path="ifSCM.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -72,19 +68,19 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="demander.rb" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="demander.rb" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/models/demander.rb">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="17" column="43" selection-start="688" selection-end="688" vertical-scroll-proportion="0.0">
+            <state line="16" column="52" selection-start="671" selection-end="671" vertical-scroll-proportion="0.5272206">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="demander_controller.rb" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="demander_controller.rb" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/controllers/demander_controller.rb">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="288" column="74" selection-start="11100" selection-end="11100" vertical-scroll-proportion="0.8714734">
+            <state line="288" column="74" selection-start="11100" selection-end="11100" vertical-scroll-proportion="-9.266666">
               <folding />
             </state>
           </provider>
@@ -123,8 +119,8 @@
         <option value="$PROJECT_DIR$/app/models/demander_temp.rb" />
         <option value="$PROJECT_DIR$/app/models/demand_history.rb" />
         <option value="$PROJECT_DIR$/app/blls/demander_bll.rb" />
-        <option value="$PROJECT_DIR$/app/models/demander.rb" />
         <option value="$PROJECT_DIR$/app/controllers/demander_controller.rb" />
+        <option value="$PROJECT_DIR$/app/models/demander.rb" />
       </list>
     </option>
   </component>
@@ -615,16 +611,16 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/models/demander.rb">
+    <entry file="file://$PROJECT_DIR$/app/controllers/demander_controller.rb">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="17" column="43" selection-start="688" selection-end="688" vertical-scroll-proportion="0.0">
+        <state line="288" column="74" selection-start="11100" selection-end="11100" vertical-scroll-proportion="-9.266666">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/controllers/demander_controller.rb">
+    <entry file="file://$PROJECT_DIR$/app/models/demander.rb">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="288" column="74" selection-start="11100" selection-end="11100" vertical-scroll-proportion="0.8714734">
+        <state line="16" column="52" selection-start="671" selection-end="671" vertical-scroll-proportion="0.5272206">
           <folding />
         </state>
       </provider>

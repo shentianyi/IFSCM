@@ -14,7 +14,7 @@ class Demander < ActiveRecord::Base
   # ws : add demand history
   def add_to_history history_key,inputed_at=nil
     zset_key=DemandHistory.generate_zset_key self.clientId,self.supplierId,self.relpartId,self.type,self.date
-    $redis.zadd(zset_key,inputed_at||Time.now.to_i,history_key)
+    $redis.zadd(zset_key,(inputed_at||Time.now.to_i),history_key)
   end
 
   def clientNr
