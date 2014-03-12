@@ -282,6 +282,7 @@ module DeliveryBll
 
   def self.generate_label_pdf params,staff_id
     type=params[:printType].to_i
+    puts '__________type'
     case type
     when OrgRelPrinterType::DNPrecheckPrinter
       return generate_pre_dn_check_label_pdf type,staff_id

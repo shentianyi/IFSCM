@@ -21,6 +21,7 @@ module TPrinter
 
   def self.print_pre_dn_check_pdf type,staff_id
     msg=ReturnMsg.new
+    puts '------------------------'
     begin
       printer,dataset=generate_pre_dn_check_print_data(type,staff_id)
       msg=Wcfer::PdfPrinter.generate_dn_pdf(printer.template,dataset)
