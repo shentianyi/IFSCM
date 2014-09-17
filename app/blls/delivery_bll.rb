@@ -336,6 +336,8 @@ module DeliveryBll
               p=DeliveryPackage.single_or_default(item.parentKey)
               item.instance_variable_set('@attributes',item.attributes.merge({'cpartNr'=>p.cpartNr,
                 'spartNr'=>p.spartNr,
+                'parentKey'=>p.parentKey,
+                'orderNr'=>p.orderNr,
                 'perPackAmount'=>p.perPackAmount,
                 'part_rel_id'=>p.part_rel_id}))
             items<<item
@@ -348,6 +350,8 @@ module DeliveryBll
             p.items.each do |item|
               item.instance_variable_set('@attributes',item.attributes.merge({'cpartNr'=>p.cpartNr,
                 'spartNr'=>p.spartNr,
+                'parentKey'=>p.parentKey,
+                'orderNr'=>p.orderNr,
                 'perPackAmount'=>p.perPackAmount,
                 'part_rel_id'=>p.part_rel_id}))
               items<<item

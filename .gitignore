@@ -14,8 +14,8 @@
 /log/*.log
 /tmp
 .project
-#/uploadfiles
-#/uploadfiles/**/*
+/uploadfiles
+/uploadfiles/**/*
 !/uploadfiles/printerTemplate/*
 !/uploadfiles/demands/csv/read.md
 !/uploadfiles/demands/tmp/read.md
