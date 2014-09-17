@@ -15,5 +15,7 @@
 /tmp
 .project
 /uploadfiles
-!/uploadfiles/printerTemplate
+!/uploadfiles/printerTemplate/*.tff
+!/uploadfiles/demands/csv/read.md
+!/uploadfiles/demands/tmp/read.md
 /db/schema.rb
