@@ -18,6 +18,8 @@ class Wcfer
     # 返回值：
     # - bool,string : 生成结果，文件名 - hash 
     def self.generate_dn_pdf(template,dataset)
+      puts                 template
+
         msg=ReturnMsg.new
        begin
          if dataset.length>0

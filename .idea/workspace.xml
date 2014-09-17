@@ -31,11 +31,8 @@
       <change type="DELETED" beforePath="$PROJECT_DIR$/uploadfiles/demands/csv/bf505810-fe46-012f-87d8-000c29aa609f.csv" afterPath="" />
       <change type="DELETED" beforePath="$PROJECT_DIR$/uploadfiles/demands/csv/bf509250-fe46-012f-87d9-000c29aa609f.csv" afterPath="" />
       <change type="DELETED" beforePath="$PROJECT_DIR$/uploadfiles/demands/csv/ccd0c780-fe6a-012f-01a8-78e3b5abe385.csv" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gitignore" afterPath="$PROJECT_DIR$/.gitignore" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Gemfile.lock" afterPath="$PROJECT_DIR$/Gemfile.lock" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Gemfile" afterPath="$PROJECT_DIR$/Gemfile" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/blls/delivery_bll.rb" afterPath="$PROJECT_DIR$/app/blls/delivery_bll.rb" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/tprinters/leoni_printer_base.rb" afterPath="$PROJECT_DIR$/app/tprinters/leoni_printer_base.rb" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/wcfer/pdf_printer.rb" afterPath="$PROJECT_DIR$/lib/wcfer/pdf_printer.rb" />
     </list>
     <ignored path="ifSCM.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -48,7 +45,8 @@
     <file path="/demander_controller.rb" changelist="6cb96807-3c74-439a-914d-095234ea18c8" time="1394608262964" ignored="false" />
     <file path="/Gemfile" changelist="6cb96807-3c74-439a-914d-095234ea18c8" time="1410939286683" ignored="false" />
     <file path="/delivery_bll.rb" changelist="6cb96807-3c74-439a-914d-095234ea18c8" time="1410939923424" ignored="false" />
-    <file path="/leoni_printer_base.rb" changelist="6cb96807-3c74-439a-914d-095234ea18c8" time="1410942162828" ignored="false" />
+    <file path="/leoni_printer_base.rb" changelist="6cb96807-3c74-439a-914d-095234ea18c8" time="1410945396156" ignored="false" />
+    <file path="/pdf_printer.rb" changelist="6cb96807-3c74-439a-914d-095234ea18c8" time="1410944572804" ignored="false" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -107,7 +105,25 @@
       <file leaf-file-name="leoni_printer_base.rb" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/tprinters/leoni_printer_base.rb">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="49" column="23" selection-start="1982" selection-end="1982" vertical-scroll-proportion="0.5519481">
+            <state line="46" column="26" selection-start="1818" selection-end="1818" vertical-scroll-proportion="0.2524698">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="tprinter.rb" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/tprinters/tprinter.rb">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="8" column="34" selection-start="218" selection-end="218" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="pdf_printer.rb" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/lib/wcfer/pdf_printer.rb">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="21" column="6" selection-start="524" selection-end="524" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -142,6 +158,7 @@
         <option value="$PROJECT_DIR$/app/controllers/organisation_manager_controller.rb" />
         <option value="$PROJECT_DIR$/Gemfile" />
         <option value="$PROJECT_DIR$/app/blls/delivery_bll.rb" />
+        <option value="$PROJECT_DIR$/lib/wcfer/pdf_printer.rb" />
         <option value="$PROJECT_DIR$/app/tprinters/leoni_printer_base.rb" />
       </list>
     </option>
@@ -209,6 +226,24 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="app" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ifSCM" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ifSCM" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="app" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="tprinters" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -429,7 +464,7 @@
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.18080977" sideWeight="0.7633508" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.18080977" sideWeight="0.7633508" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
@@ -506,18 +541,6 @@
     <breakpoint-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/app/controllers/delivery_controller.rb">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/db/schema.rb">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/views/organisation_manager/delivery_set.html.erb">
       <provider selected="true" editor-type-id="text-editor">
         <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="58.77778">
@@ -581,13 +604,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/models/delivery_package.rb">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="14" column="23" selection-start="508" selection-end="508" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/tprinters/leoni_nbtp_dpack.rb">
       <provider selected="true" editor-type-id="text-editor">
         <state line="5" column="30" selection-start="122" selection-end="122" vertical-scroll-proportion="0.0">
@@ -602,6 +618,13 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/app/models/delivery_package.rb">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="14" column="23" selection-start="508" selection-end="508" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/app/blls/delivery_bll.rb">
       <provider selected="true" editor-type-id="text-editor">
         <state line="340" column="30" selection-start="9785" selection-end="9798" vertical-scroll-proportion="0.0">
@@ -609,9 +632,23 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/app/tprinters/tprinter.rb">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="8" column="34" selection-start="218" selection-end="218" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/wcfer/pdf_printer.rb">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="21" column="6" selection-start="524" selection-end="524" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/app/tprinters/leoni_printer_base.rb">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="49" column="23" selection-start="1982" selection-end="1982" vertical-scroll-proportion="0.5519481">
+        <state line="46" column="26" selection-start="1818" selection-end="1818" vertical-scroll-proportion="0.2524698">
           <folding />
         </state>
       </provider>

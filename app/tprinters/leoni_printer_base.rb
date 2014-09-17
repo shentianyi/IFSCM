@@ -2,7 +2,7 @@
 module LeoniPrinterBase
   @@dn_head_keys=["DnNr","SendDate","SupplierOrgName","SupplierOrgAddress","ClientOrgName","ClientOrgAddress","DnDestination",
     "SupplierNr","ClientNr","ReceiverName","ContactWay"]
-  @@pack_body_keys=["SupplierNr","CPartNr","Description","Quantity","DnPackNr","Destination"]
+  @@pack_body_keys=["SupplierNr","CPartNr","Description","Quantity","DnPackNr","Destination",'PO','Transfer_Data','DeliveryNote']
   @@dn_check_body_keys=["CPartNr","PerPackNum","PackNr"]
   @@pre_dn_store_check_list_body_keys=["SPartNr","PerPackNum","PackNum","TotalQuantity"]
   def self.generate_dn_head dn,sendOrg,receOrg,orl
@@ -46,11 +46,13 @@ module LeoniPrinterBase
     data[:DeliveryNote]=pack.parentKey
     data[:PO]=pack.orderNr
     data[:DnPackNr]=pack.key
-    pack_scan_string=('%-15s' % 'V'+orl.supplierNr)+('%-15s' % 'P'+pack.cpartNr)+('%-15s' % 'N'+pack.parentKey)+('%-15s' % 'Q'+pack.perPackAmount)
+   pack_scan_string=('%-15s' % ('V'+orl.supplierNr))+('%-15s' % ('P'+pack.cpartNr))+('%-15s' % ('N'+pack.parentKey))+('%-15s' % ('Q'+pack.perPackAmount.to_s)) +('%15s' % '')*4+ pack.orderNr
     data[:Transfer_Data]=pack_scan_string
     @@pack_body_keys.each do |key|
       record<<{:Key=>key,:Value=>data[key.to_sym]}
     end
+    puts '------------------'
+    puts record
     return record
   end
   
