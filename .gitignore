@@ -15,5 +15,5 @@
 /tmp
 .project
 /uploadfiles
-
+!/uploadfiles/printerTemplate
 /db/schema.rb
