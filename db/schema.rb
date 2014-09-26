@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130411064842) do
+ActiveRecord::Schema.define(:version => 20140926040834) do
 
   create_table "cost_centers", :force => true do |t|
     t.string   "name"
@@ -59,6 +59,7 @@ ActiveRecord::Schema.define(:version => 20130411064842) do
     t.datetime "updated_at",                       :null => false
     t.integer  "staff_id"
     t.integer  "organisation_id"
+    t.string   "cusDnnr"
   end
 
   add_index "delivery_notes", ["organisation_id"], :name => "index_delivery_notes_on_organisation_id"

@@ -273,6 +273,7 @@ function update_staff_dit(key) {
 	var packN = tr.find('.packnum').val();
 	var total = tr.find('.total').text();
 	var remark = tr.find('.remark').val();
+    var orderNr = tr.find('.orderNr').val();
 	if (!isPositiveNum(per)) {
 		alert('每包装箱量必须为正数！');
 		return;
@@ -290,7 +291,8 @@ function update_staff_dit(key) {
 			ditkey : key,
 			packAmount : packN,
 			perPackAmount : per,
-			remark : remark
+			remark : remark,
+            orderNr:orderNr
 		},
 		type : 'post',
 		success : function(msg) {
@@ -339,13 +341,16 @@ function delete_dit_from_list(key) {
 // - 无
 function build_delivery_note() {
 	var desiOrgNr = document.getElementById('clientNr').value;
+    var cusDnnr=$('#cusDnnr').val();
+   // if(cusDnnr.length>0){
 	show_handle_dialog();
 	$.ajax({
-		url : '../delivery/build_dn',
+		url : '/delivery/build_dn',
 		type : 'post',
 		dataType : 'json',
 		data : {
-			desiOrgNr : desiOrgNr
+			desiOrgNr : desiOrgNr,
+            cusDnnr:cusDnnr
 		},
 		success : function(data) {
 			if (data.result) {
@@ -356,6 +361,9 @@ function build_delivery_note() {
 			}
 		}
 	});
+//}else{
+//        alert('请填写自定义运单号');
+//    }
 }
 
 // ws
@@ -378,19 +386,21 @@ function get_dn_detail(type, pageIndex) {
 function send_staff_dn(ele) {
 	var desi = $("#destination-text");
 	var sendDate = $("#sendDate-text");
-	if (desi.val() == "" || sendDate.val() == "") {
+    var cusDnnr=$("#cusDnnr").val();
+	if (desi.val() == "" || sendDate.val() == "" || cusDnnr=="") {
 		flash_message(".errparts");
 	} else {
 		show_handle_dialog();
 		$.ajax({
-			url : '../delivery/send_delivery',
+			url : '/delivery/send_delivery',
 			type : 'post',
 			dataType : 'json',
 			async : false,
 			data : {
 				dnKey : $('#dnkey-hidden').val(),
 				destiStr : desi.val(),
-				sendDate : sendDate.val()
+				sendDate : sendDate.val(),
+                cusDnnr: cusDnnr
 			},
 			success : function(data) {
 				if (data.result) {
@@ -679,7 +689,8 @@ function pop_cancel(e) {
 function generate_dn_label_pdf(type) {
 	var desi = $("#destination-text").val();
 	var sendDate = $("#sendDate-text").val();
-	if ((desi == "" || sendDate == "") && type == 100) {
+    var cusDnnr=$("#cusDnnr").val();
+	if ((desi == "" || sendDate == "" || cusDnnr=="") && type == 100) {
 		flash_message(".errparts");
 	} else {
 		show_handle_dialog();
@@ -691,7 +702,8 @@ function generate_dn_label_pdf(type) {
 				printType : type,
 				dnKey : $("#dnkey-hidden").val(),
 				destination : desi,
-				sendDate : sendDate
+				sendDate : sendDate,
+                cusDnnr: cusDnnr
 			},
 			dataType : 'json',
 			success : function(data) {

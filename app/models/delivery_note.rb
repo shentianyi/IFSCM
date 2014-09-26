@@ -3,7 +3,7 @@ require 'base_class'
 require 'base_delivery'
 
 class DeliveryNote < ActiveRecord::Base
-  attr_accessible :rece_org_id, :destination, :key, :state, :wayState,:sendDate
+  attr_accessible :rece_org_id, :destination, :key, :state, :wayState,:sendDate,:cusDnnr
   attr_accessible :staff_id,:organisation_id
   attr_accessible :id, :created_at, :updated_at
 

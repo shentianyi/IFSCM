@@ -21,6 +21,7 @@
 <!-- <button class="normal-small-btn abandon-btn" onclick="clean_staff_dit();">
 	放弃运单
 </button> -->
+<p>填写自定义运单号： <input type="text" placeholder="请您填写自定义运单号-选填" id="cusDnnr"   style="width: 200px;height: 25px;" /></p>
 <input type="hidden" name="clientNr" id="clientNr" value="<%= @clientNr%>"/>
 <div class="partsselection">
 	<div class="tableview">
@@ -51,7 +52,8 @@
 					<input type="text" value="<%= temp.packAmount%>" class="center-num-text packnum"/>
 					</th>
 					<th class="center-num-text total"><%= temp.total%></th>
-					<th><%= temp.orderNr%></th>
+					<th>
+                      <input type="text" value="<%= temp.orderNr%>" class="center-num-text orderNr"/></th>
 					<th>
 					<input type="text" value="<%= temp.remark%>" class="center-num-text remark"/>
 					</th>

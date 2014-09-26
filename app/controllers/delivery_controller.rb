@@ -28,7 +28,7 @@ class DeliveryController < ApplicationController
   def send_delivery
     if request.post?
       if request.post?
-        msg=DeliveryBll.send_dn session[:staff_id], params[:dnKey], params[:destiStr], params[:sendDate]
+        msg=DeliveryBll.send_dn session[:staff_id], params[:dnKey], params[:destiStr], params[:sendDate],params[:cusDnnr]
         render :json => msg
       end
     end
@@ -170,7 +170,7 @@ class DeliveryController < ApplicationController
   # - ReturnMsg : JSON
   def build_dn
     if request.post?
-      msg=DeliveryBll.build_delivery_note(session[:staff_id], session[:org_id], params[:desiOrgNr])
+      msg=DeliveryBll.build_delivery_note(session[:staff_id], session[:org_id], params[:desiOrgNr],params[:cusDnnr])
       respond_to do |format|
         format.xml { render :xml => msg }
         format.json { render json: msg }
@@ -296,7 +296,7 @@ class DeliveryController < ApplicationController
         if dit.order_item_id.present? and dit.rest.to_f<total
           msg.content="订单未发送量为:#{dit.rest},目前总量超出"
         else
-          dit.update(:packAmount => packN, :perPackAmount => per, :total => total, :remark => params[:remark])
+          dit.update(:packAmount => packN, :perPackAmount => per, :total => total, :remark => params[:remark],:orderNr=>params[:orderNr])
           msg.result=true
           msg.object=dit
         end

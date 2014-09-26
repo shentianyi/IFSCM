@@ -43,16 +43,17 @@ module LeoniPrinterBase
     else
       data[:Destination]= pl.position_nr
     end
-    data[:DeliveryNote]=pack.parentKey
+    #data[:DeliveryNote]=pack.parentKey
+    data[:DeliveryNote]=pack.cusDnnr
     data[:PO]=pack.orderNr
     data[:DnPackNr]=pack.key
-   pack_scan_string=('%-15s' % ('V'+orl.supplierNr))+('%-15s' % ('P'+pack.cpartNr))+('%-15s' % ('N'+pack.parentKey))+('%-15s' % ('Q'+pack.perPackAmount.to_s)) +('%15s' % '')*4+ pack.orderNr
+    pack_scan_string=('%-15s' % ('V'+orl.supplierNr))+('%-15s' % ('P'+pack.cpartNr))+('%-15s' % ('N'+pack.cusDnnr))+('%-15s' % ('Q'+pack.perPackAmount.to_s)) +('%15s' % '')*4+ pack.orderNr
     data[:Transfer_Data]=pack_scan_string
     @@pack_body_keys.each do |key|
       record<<{:Key=>key,:Value=>data[key.to_sym]}
     end
-    puts '------------------'
-    puts record
+    #puts '------------------'
+   # puts record
     return record
   end
   

@@ -54,15 +54,17 @@ module DeliveryBll
   # - string : desiOrgNr
   # 返回值：
   # - ReturnMsg : JSON
-  def self.build_delivery_note staffId,orgId,desiOrgNr
+  def self.build_delivery_note staffId,orgId,desiOrgNr,cusDnnr
     msg=ReturnMsg.new
     if desiOrgId=OrganisationRelation.get_partnerid(:oid=>orgId,:pt=>:c,:pnr=>desiOrgNr)
       #get di temps
       if temps=DeliveryItemTemp.get_staff_cache(staffId)[0]
         #new delivery note
         dstate=DeliveryObjState::Normal
-        dn=DeliveryNote.new(:key=>ClassKeyHelper::gen_key("DeliveryNote"),
-        :state=>dstate,:staff_id=>staffId,:organisation_id=>orgId,:rece_org_id=>desiOrgId)
+        dnKey=ClassKeyHelper::gen_key("DeliveryNote")
+        cusDnnr = cusDnnr.blank? ? dnKey : cusDnnr
+        dn=DeliveryNote.new(:key=>dnKey,
+        :state=>dstate,:staff_id=>staffId,:organisation_id=>orgId,:rece_org_id=>desiOrgId,:cusDnnr=>cusDnnr)
         temps.each do |t|
           packcount=t.packAmount
           pl=PartRelInfo.find(t.part_rel_id)
@@ -106,7 +108,7 @@ module DeliveryBll
   # - string : sendDate
   # 返回值：
   # - ReturnMsg : JSON
-  def self.send_dn  staffId,dnKey,destiStr,sendDate
+  def self.send_dn  staffId,dnKey,destiStr,sendDate,cusDnnr
     msg=ReturnMsg.new
     if DeliveryNote.exist_in_staff_cache(staffId,dnKey)
       if dn=DeliveryNote.single_or_default(dnKey)
@@ -115,7 +117,7 @@ module DeliveryBll
             pl=PartRelInfo.find(i.part_rel_id)
             i.rupdate(:cpartNr=>pl.cpartNr,:spartNr=>pl.spartNr,:saleNo=>pl.saleNo,:purchaseNo=>pl.purchaseNo)
           end
-          dn.rupdate(:wayState=>DeliveryObjWayState::Intransit,:destination=>destiStr,:sendDate=>sendDate)
+          dn.rupdate(:wayState=>DeliveryObjWayState::Intransit,:destination=>destiStr,:sendDate=>sendDate,:cusDnnr=>cusDnnr)
 
           dn.delete_from_staff_cache
           dn.add_to_new_queue OrgOperateType::Client
@@ -282,12 +284,11 @@ module DeliveryBll
 
   def self.generate_label_pdf params,staff_id
     type=params[:printType].to_i
-    puts '__________type'
     case type
     when OrgRelPrinterType::DNPrecheckPrinter
       return generate_pre_dn_check_label_pdf type,staff_id
     else
-    return generate_dn_label_pdf type,params[:dnKey],params[:destination],params[:sendDate]
+    return generate_dn_label_pdf type,params[:dnKey],params[:destination],params[:sendDate],params[:cusDnnr]
     end
   end
 
@@ -299,12 +300,12 @@ module DeliveryBll
   # - string : sendDate
   # 返回值：
   # - string : fileName
-  def self.generate_dn_label_pdf type,dnKey,destination=nil,sendDate=nil
+  def self.generate_dn_label_pdf type,dnKey,destination=nil,sendDate=nil,cusDnnr=nil
     msg=ReturnMsg.new
     if dn=DeliveryNote.single_or_default(dnKey)
       if !destination.nil?
         if dn.wayState.nil?
-          dn.rupdate(:destination=>destination,:sendDate=>sendDate)
+          dn.rupdate(:destination=>destination,:sendDate=>sendDate,:cusDnnr=>cusDnnr)
         end
       end
       msg=TPrinter.print_dn_pdf(type,dnKey)
@@ -338,6 +339,7 @@ module DeliveryBll
                 'spartNr'=>p.spartNr,
                 'parentKey'=>p.parentKey,
                 'orderNr'=>p.orderNr,
+                'cusDnnr'=>dn.cusDnnr,
                 'perPackAmount'=>p.perPackAmount,
                 'part_rel_id'=>p.part_rel_id}))
             items<<item
@@ -352,6 +354,7 @@ module DeliveryBll
                 'spartNr'=>p.spartNr,
                 'parentKey'=>p.parentKey,
                 'orderNr'=>p.orderNr,
+                'cusDnnr'=>dn.cusDnnr,
                 'perPackAmount'=>p.perPackAmount,
                 'part_rel_id'=>p.part_rel_id}))
               items<<item
