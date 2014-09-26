@@ -118,6 +118,7 @@ $(function() {
      organisation_manager("#relpartFile");
      organisation_manager("#relpartPackageFile");
      organisation_manager("#relpartCheckFile");
+    organisation_manager("#org-dn-printer-template-uploader");
      organisation_manager("#dn-printer-template-uploader");
      $(".toggle_container").hide();
      $(".expand_heading").click(function() {

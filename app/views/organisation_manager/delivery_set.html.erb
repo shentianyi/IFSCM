@@ -13,7 +13,7 @@
 <h4 class="expand_heading">@公司> 打印模板设置</h4>
 <div class="toggle_container">
      Printer Type: <%= select_tag :org_printerType,  options_for_select(@orgpriterTypes)%>
-     <input type="button" onclick=" get_org_printers()" value="查 询"／>
+     <input type="button" onclick=" get_org_printers()" value="查 询"/>
      <div id="org_printer_result">
 
      </div>
@@ -31,8 +31,8 @@
           </div>
           <div>
                UPLOAD PRINTER TEMPLATE：
-               <input id="dn-printer-template-uploader" type="file" name="files[]" data-url="../organisation_manager/upload_printer_template" >
-          <div class="abstractblock" id="dn-printer-template-uploader-preview" style="display:none;">    </div>
+               <input id="org-dn-printer-template-uploader" type="file" name="files[]" data-url="../organisation_manager/upload_printer_template" >
+          <div class="abstractblock" id="org-dn-printer-template-uploader-preview" style="display:none;">    </div>
           </div>
      </div>
      <div style=" border: 1px solid grey;">
@@ -63,7 +63,7 @@
 <h4 class="expand_heading">@公司关系 > 运单信息 > 打印模板设置</h4>
 <div class="toggle_container">
 	Printer Type: <%= select_tag :printerType,  options_for_select(@priterTypes)%>
-	<input type="button" onclick=" get_orl_printers()" value="查 询"／>
+	<input type="button" onclick=" get_orl_printers()" value="查 询"/>
 	<div id="printer_result">
 
 	</div>
@@ -102,7 +102,7 @@
 <h4 class="expand_heading">@公司关系 > 运单信息 > 联系人设置</h4>
 <div class="toggle_container">
 	Contact Type: <%= select_tag :contactType,  options_for_select(@contactType)%>
-	<input type="button" onclick=" get_orl_dncontact()" value="查 询"／>
+	<input type="button" onclick=" get_orl_dncontact()" value="查 询"/>
 	<div id="contact_result">
 
 	</div>
