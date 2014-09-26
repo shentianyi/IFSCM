@@ -1,6 +1,7 @@
 #encoding:utf-8
 module LeoniPlymouthDpack
   def self.gen_data dn,orl,diKeys=nil
+#puts '------------server'
     dataset=[]
     items=DeliveryBll.get_dn_list dn.key,true,diKeys
     if items and items.count>0

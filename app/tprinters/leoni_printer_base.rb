@@ -27,6 +27,7 @@ module LeoniPrinterBase
   end
 
   def self.generate_pack_body pack,orl,&block
+#puts '------------------'
     record=[]
     data={}
     data[:SupplierNr]= orl.supplierNr
@@ -52,8 +53,8 @@ module LeoniPrinterBase
     @@pack_body_keys.each do |key|
       record<<{:Key=>key,:Value=>data[key.to_sym]}
     end
-    #puts '------------------'
-   # puts record
+  #  puts '------------------'
+ #   puts record
     return record
   end
   
